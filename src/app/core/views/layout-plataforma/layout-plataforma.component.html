@@ -1,15 +1,32 @@
+<div style="margin: 20px;">
+    <mat-toolbar class="win-proceso">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <span>Recepción Laundry</span>
 
-<div style="background-color: honeydew; margin: 20px;">
-    <p>layout-plataforma works!</p>
-    <div>
-        <div>Menu Recepcion</div>
-        <ul>
-            <li>Emision</li>
-            <li>Retiros</li>
-            <li>Caja</li>
-            <li>Consultas</li>
-        </ul>
-    </div>
+        <span class="example-spacer"></span>
+        <button mat-button>
+            <mat-icon>description</mat-icon>
+            <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
+        </button>
+
+        <button mat-button>
+            <mat-icon>exit_to_app</mat-icon>
+            <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Retiros</a>
+        </button>
+
+        <button mat-button>
+            <mat-icon>point_of_sale</mat-icon>
+            <a [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">Caja</a>
+        </button>
+
+        <button mat-button>
+            <mat-icon>person_search</mat-icon>            
+            <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
+        </button>
+
+    </mat-toolbar>
     <div>
         <router-outlet />
     </div>

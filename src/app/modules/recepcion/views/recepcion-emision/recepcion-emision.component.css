@@ -1,0 +1,187 @@
+.container-emision {
+    width: 100%;
+    /* background-color: aqua;     */
+}
+
+.container-area-trabajo {
+    width: 100%;
+    display: flex;
+    min-height: 500px;
+}
+
+.container-lado-izq {
+    /* background-color: aqua; */
+    /* display: table-cell; */
+    width: 40%;
+    border: 1px solid grey;
+}
+
+.container-scroll {
+    overflow-y: scroll;
+    max-height: 500px;
+    margin-top: 5px;
+}
+
+.container-lado-der {
+    /* background-color: coral;     */
+    width: 60%;
+    border: 1px solid grey;
+}
+
+.container-categories {
+    /* background-color: antiquewhite; */
+    padding: 5px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.container-categories button {
+    width: 200px;
+}
+
+.example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
+
+
+table {
+    width: 100%;
+}
+
+
+
+
+
+.botonera {
+    background-color: aqua;
+    display: flex;
+    /* width: 100%; */
+    padding: 10px;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+/* Estilos específicos para la tabla con la clase custom-table */
+.custom-table .mat-row {
+    height: 60px;
+    /* Ajusta la altura de las filas según sea necesario */
+}
+
+.custom-table .mat-header-row {
+    height: 60px;
+    /* Asegúrate de que la fila del encabezado tenga la misma altura si es necesario */
+}
+
+
+.section-detalles {
+    width: 100%;
+    /* background-color: yellow; */
+}
+
+.fila-detalle {
+    display: flex;
+    align-items: center;
+    gap: 5px;    
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+.fila-detalle-pago {
+    display: flex;
+    /* flex-direction: column; */
+    align-items: center;
+    gap: 5px;
+    /* background-color: darkgoldenrod; */
+    padding: 5px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 2px;
+}
+
+
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.example-full-width {
+    width: 100%;
+}
+
+
+
+
+.container-items-prod {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.items-prods {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 5px;
+    background-color: azure;
+    width: 150px;
+    height: 150px;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+}
+
+.titulo-nombre {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.titulo-precio {
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+.mat-column-nomProd {
+    padding: 0;
+    width: 100%;
+}
+
+.mat-column-Cant,
+.mat-column-Precio,
+.mat-column-Subtotal {
+    width: 50px;
+    /* background-color: aqua; */
+    flex: none;
+    padding: 0;
+
+}
+
+
+.win-proceso {
+    display: block;
+}
+
+app-ticket-venta {
+    display: none;
+}
+
+@media print {
+    .win-proceso {
+        display: none;
+    }
+
+    app-ticket-venta {
+        display: block;
+    }
+}

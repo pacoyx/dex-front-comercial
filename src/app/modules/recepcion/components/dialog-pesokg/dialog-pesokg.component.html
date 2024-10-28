@@ -1,0 +1,52 @@
+<h2 mat-dialog-title> Lavado por Peso </h2>
+<mat-dialog-content class="mat-typography">
+
+    <div style="display: flex; margin-top: 10px;">
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Peso KG.</mat-label>
+            <input (keydown.enter)="calcularPrecio()" matInput placeholder="peso en kilogramos" type="number"
+                [(ngModel)]="pesoKg">
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Precio x KG.</mat-label>
+            <input (keydown.enter)="precioFocus()" matInput placeholder="precio por kg" type="number"
+                [(ngModel)]="precioKg">
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Total soles</mat-label>
+            <!--
+
+                El atributo `md-select-on-focus` se utiliza para seleccionar automáticamente el contenido del campo de entrada 
+                cuando este recibe el foco. Esto facilita al usuario la tarea de editar el valor actual, ya que no necesita 
+                borrar manualmente el contenido existente antes de ingresar un nuevo valor.
+            -->
+            <input (keydown.enter)="calcularPeso()" md-select-on-focus matInput placeholder="total" type="number"
+                [(ngModel)]="total" #publicTotalBox>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput placeholder="comentarios" [(ngModel)]="obs"></textarea>
+        </mat-form-field>
+    </div>
+    <div style="display: flex;gap: 20px;">
+        <button mat-raised-button (click)="cerrar()">
+            <mat-icon fontIcon="close"></mat-icon>
+            Cerrar
+        </button>
+        <button mat-flat-button (click)="registrarYcerrar()" class="example-full-width">
+            <mat-icon fontIcon="done_all"></mat-icon>
+            Registrar
+        </button>
+
+        
+    </div>
+
+
+</mat-dialog-content>
+
+<!-- <mat-dialog-actions align="end">
+    
+ 
+</mat-dialog-actions> -->

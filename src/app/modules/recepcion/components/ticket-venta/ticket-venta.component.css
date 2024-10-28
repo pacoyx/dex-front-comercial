@@ -1,0 +1,191 @@
+.container-report {
+  /* background-color: wheat; */
+  width: 350px;
+  /* width: 100%; */
+}
+
+.numguia {
+  font-size: 18pt;
+  color: #0a0606;
+  font-family: 'Verdana';
+}
+
+
+
+.tituloPrin {
+  font-size: 24pt;
+  color: #0a0606;
+  font-family: 'Verdana';
+  text-align: center;
+}
+
+.titulo {
+  /* font-style:italic;
+      font-weight:bold; */
+  font-size: 12pt;
+  color: #0a0606;
+  font-family: 'Verdana';
+}
+
+.detalle {
+  /* font-style:italic;
+      font-weight:bold; */
+  display: flex;
+  font-size: 12pt;
+  color: #0a0a0a;
+  text-align: justify;
+  font-family: 'Verdana';
+  padding: 4px;
+}
+
+.txtCancelado{
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.subtitulo {
+  /* font-style:italic;
+      font-weight:bold; */
+  text-align: center;
+  font-size: 12pt;
+  color: #0a0a0a;
+  font-family: 'Verdana';
+}
+
+.glosa1 {
+  /* font-style:italic;
+      font-weight:bold; */
+  text-align: justify;
+  font-size: 12pt;
+  color: #0a0a0a;
+  font-family: 'Verdana';
+}
+
+.tituloTablaDet {
+  /* background-color: tomato; */
+  display: flex;
+  font-weight: bold;
+  border: thin solid black;
+  border-radius: 5px;
+}
+
+.filaTablaDet {
+  /* background-color: tomato; */
+  border-bottom: thin solid black;
+  /* border-radius: 5px; */
+}
+
+
+.col-1{
+  width:8.33%;
+}
+.col-2{
+  width:16.67%;
+}
+.col-3{
+  width:25%;
+}
+.col-4{
+  width:33.33%;
+}
+.col-5{
+  width:41.67%;
+}
+.col-6{
+  width:50%;
+}
+.col-7{
+  width:58.33%;
+}
+.col-8{
+  width:66.67%;
+}
+.col-9{
+  width:75%;
+}
+.col-10{
+  width:83.33%;
+}
+.col-11{
+  width:91.67%;
+}
+.col-12{
+  width:100%;
+}
+
+@media print {
+
+  /* @page {
+      margin-top: 3mm !important;
+      margin-left: 3mm !important;
+      size: portrait;
+    } */
+
+  /* All your print styles go here */
+  #header,
+  #footer,
+  #nav {
+    display: none !important;
+  }
+
+  .botonprinter {
+    display: none !important;
+  }
+
+  .tituloPrin {
+    font-size: 24pt;
+    color: #0a0606;
+    font-family: 'Verdana';
+    font-weight: normal;
+  }
+
+  .titulo {
+    font-size: 12pt;
+    color: #0a0606;
+    font-family: 'Verdana';
+    font-weight: normal;
+  }
+
+
+  .detalle {
+    font-size: 12pt;
+    color: #0a0a0a;
+    font-family: 'Verdana';
+    font-weight: normal;
+    text-align: justify;
+  }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 9pt;
+    color: #0a0a0a;
+    font-family: 'Verdana';
+    font-weight: normal;
+  }
+
+  .glosa1 {
+    /* font-style:italic;
+        font-weight:bold; */
+    text-align: justify;
+    font-size: 10pt;
+    color: #0a0a0a;
+    font-family: 'Verdana';
+    font-weight: normal;
+  }
+
+
+  .tituloTablaDet {
+    font-weight: bold;
+    border: thin solid black;
+    border-radius: 5px;
+  }
+
+  .filaTablaDet {
+    border-bottom: thin solid black;
+  }
+
+
+
+}

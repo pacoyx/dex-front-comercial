@@ -1,0 +1,9 @@
+.example-full-width{
+    width: 100%;
+    margin-top: 5px;
+}
+
+.container-busqueda{
+    width: 100%;
+    display: flex;
+}

@@ -1,0 +1,94 @@
+@if (data.edicion) {
+<h2 mat-dialog-title> Edicion de item N° {{itemEdit?.id}} </h2>
+} @else{
+<h2 mat-dialog-title> Servicio: {{data.item.name}} </h2>
+}
+
+<mat-dialog-content class="mat-typography">
+
+    <div style="display: flex; margin-top: 10px;">
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Cantidad</mat-label>
+            <input (keydown.enter)="calcularPrecio()" (blur)="calcularPrecio()" matInput placeholder="peso en kilogramos" type="number"
+                [(ngModel)]="cantidad">
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Precio</mat-label>
+            <input (keydown.enter)="focusTotal()" (blur)="calcularPrecio()" matInput placeholder="precio por kg" type="number"
+                [(ngModel)]="precio">
+        </mat-form-field>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Total soles</mat-label>
+            <input (keydown.enter)="calcularPrecioPesoKG()" (blur)="calcularPrecio()" md-select-on-focus matInput placeholder="total" type="number"
+                [(ngModel)]="total">
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Observaciones</mat-label>
+            <textarea matInput placeholder="comentarios" [(ngModel)]="obs"></textarea>
+        </mat-form-field>
+
+    </div>
+    <div>
+
+
+        <mat-tab-group fitInkBarToContent>
+
+            <mat-tab label="Colores">
+                <form [formGroup]="form">
+                    <div formArrayName="checkboxesColores">
+                        @for (color of checkboxesColoresFormArray.controls; track $index) {
+                        <mat-checkbox class="chip-colores" [style.backgroundColor]="colores[$index].valor"
+                            [formControlName]="$index" (change)="onCheckboxChange($event, $index)">
+                            {{colores[$index].nombre}}
+                        </mat-checkbox>
+                        }
+                    </div>
+                </form>
+            </mat-tab>
+
+            <mat-tab label="Diseños">
+                <form [formGroup]="formTemas">
+                    <div formArrayName="checkboxesTemas">
+                        @for (tema of checkboxesTemasFormArray.controls; track $index) {
+                        <div class="chip-colores" [style.background]="temaStyles[$index].estilo">
+                            <mat-checkbox [formControlName]="$index">
+                                {{temaStyles[$index].nombre}}
+                            </mat-checkbox>
+                        </div>
+                        }
+                    </div>
+                </form>
+
+            </mat-tab>
+
+            <mat-tab label="Marcas">
+
+                <!-- <form [formGroup]="formMarcas">
+                    <div formArrayName="checkboxesColores"> -->
+                <mat-chip-listbox aria-label="select a shirt size">
+                    @for (marca of marcasRopas; track $index) {
+                    <mat-chip-option> {{marca}} </mat-chip-option>
+                    }
+                </mat-chip-listbox>
+                <!-- </div>
+                </form> -->
+            </mat-tab>
+        </mat-tab-group>
+
+    </div>
+
+
+    <div style="display: flex;gap: 20px;">
+        <button mat-raised-button (click)="cerrar()">
+            <mat-icon fontIcon="close"></mat-icon>
+            Cerrar
+        </button>
+        <button mat-flat-button (click)="registrarItem()" class="example-full-width">
+            <mat-icon fontIcon="done_all"></mat-icon>
+            Registrar
+        </button>
+    </div>
+
+</mat-dialog-content>

@@ -1,0 +1,16 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.win-proceso {
+  display: block;
+}
+
+
+
+@media print {
+  .win-proceso {
+    display: none;
+  }
+
+}

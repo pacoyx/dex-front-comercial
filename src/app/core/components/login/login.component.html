@@ -1,4 +1,46 @@
-<div class="container">
-    <h1>Login</h1>
-    <button mat-raised-button (click)="login()" >Basic</button>
+<div class="container" [ngStyle]="{'height': screenHeight + 'px'}">
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container-login">
+        <h1>Login</h1>
+
+        <mat-form-field class="cajaLogin" appearance="outline">
+            <mat-label>Usuario</mat-label>
+            <input matInput placeholder="nombre de usuario" type="text" formControlName="username">
+            <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+                El campo de usuario es obligatorio.
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="cajaLogin" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="clave de usuario" [type]="hide() ? 'password' : 'text'"
+                formControlName="password">
+            <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide()">
+                <mat-icon>{{hide() ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+                El campo de contraseña es obligatorio.
+            </mat-error>
+        </mat-form-field>
+        <!-- <button mat-raised-button (click)="login()">Ingresar</button> -->
+        <button mat-raised-button type="submit" [disabled]="loginForm.invalid">
+            Iniciar Sesión
+        </button>
+        <div>
+            <a href="http://www.google.com">Pedir ayuda</a>
+        </div>
+        @if (this.loading()) {
+        <div style="width: 100%; display: flex; justify-content: center;">
+            <app-loading></app-loading>
+        </div>
+        }
+        @if (this.showError()) {
+        <div style="display: flex; justify-content: center; width: 100%;color: red;">
+            <p>{{this.errorMessage}}</p>
+        </div>
+        }
+
+    </form>
+
 </div>

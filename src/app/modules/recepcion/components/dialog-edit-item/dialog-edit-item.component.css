@@ -1,0 +1,24 @@
+.example-full-width{
+    width: 100%;
+}
+.chip-colores{
+    width: 100px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+
+.chk-diseños{
+    width: 110px;
+    text-align: center;
+    border: 1px solid #000;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.chip-temas{
+    width: 120px;
+    text-align: center;
+}

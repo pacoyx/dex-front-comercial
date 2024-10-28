@@ -1,1 +1,149 @@
-<p>recepcion-retirar works!</p>
+<div class="container-retiros win-proceso">
+    <h2>Retiros</h2>
+    <div class="section-busqueda">
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline" style="width: 100px; height: 75px;">
+                <mat-label>N° Guia</mat-label>
+                <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()"  />
+            </mat-form-field>
+            <!-- <button mat-mini-fab (click)="buscarGuia()">
+                <mat-icon>search</mat-icon>
+            </button> -->
+        </div>
+        <div class="seccion-detalle">
+            <div><mat-icon>calendar_month</mat-icon>: 01/01/2024</div>
+            <div><mat-icon>people</mat-icon>: Carlos Bazan Huaman</div>
+            <div><mat-icon>phone</mat-icon>: 921876544</div>
+        </div>
+
+        <div class="seccion-detalle-check">
+            <div style="display: flex; gap: 10px;">
+                <mat-checkbox (change)="cancelar($event)">Cancelado</mat-checkbox>
+                <mat-chip-set aria-label="tipo pago">
+                    <mat-chip> <small> Efectivo </small></mat-chip>
+                    <mat-chip> <small> 25/09/2024 20:05:01</small></mat-chip>                    
+                </mat-chip-set>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <mat-checkbox>Entregado</mat-checkbox>
+                <mat-chip-set aria-label="entrega">
+                    <mat-chip> <small> 25/09/2024 </small></mat-chip>
+                    <mat-chip> <small> 20:05 </small></mat-chip>
+                </mat-chip-set>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="section-totales">
+        <div>Total:<b> 250.00 </b></div> 
+        <div>Adelanto: <b>50.00</b></div> 
+        <div style="color: blue;">Saldo: <b>200.00</b></div> 
+    </div>
+
+    <!-- TABLA DETALLE -->
+    <div style="padding: 1px;">
+        <table mat-table [dataSource]="dataSource" class="custom-table">
+
+
+            <!-- Cant Column -->
+            <ng-container matColumnDef="Cant">
+                <th mat-header-cell *matHeaderCellDef class="cant-column"> Cant </th>
+                <td mat-cell *matCellDef="let element"> {{element.cant | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <!-- Producto Column -->
+            <ng-container matColumnDef="Producto">
+                <th mat-header-cell *matHeaderCellDef class="producto-column"> Producto </th>
+                <td mat-cell *matCellDef="let element" class="producto-celda"> {{element.nomProd}} </td>
+            </ng-container>
+
+            <!-- Observaciones Column -->
+            <ng-container matColumnDef="Observaciones">
+                <th mat-header-cell *matHeaderCellDef class="observaciones-column"> Observaciones </th>
+                <td mat-cell *matCellDef="let element" class="observaciones-celda"> {{element.obs}} </td>
+            </ng-container>
+
+            <!-- Precio Column -->
+            <ng-container matColumnDef="Precio">
+                <th mat-header-cell *matHeaderCellDef class="precio-column"> Precio </th>
+                <td mat-cell *matCellDef="let element" class="column-right"> {{element.precio | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <!-- Subtotal Column -->
+            <ng-container matColumnDef="Subtotal">
+                <th mat-header-cell *matHeaderCellDef class="subtotal-column"> Subtotal </th>
+                <td mat-cell *matCellDef="let element" class="column-right"> {{element.subtotal | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <!-- Estado Column -->
+            <ng-container matColumnDef="Estado">
+                <th mat-header-cell *matHeaderCellDef class="estado-column"> Estado </th>
+                <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+            </ng-container>
+
+            <!-- Entrega Column -->
+            <ng-container matColumnDef="Entrega">
+                <th mat-header-cell *matHeaderCellDef class="entrega-column"> Entrega </th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-stroked-button class="btn-block" (click)="cambiarEntrega(element)">
+                        {{element.fechaEntrega }}
+                    </button>
+                </td>
+            </ng-container>
+
+            <!-- Operaciones Column -->
+            <ng-container matColumnDef="Operaciones">
+                <th mat-header-cell *matHeaderCellDef class="operaciones-column"> Operaciones </th>
+                <td mat-cell *matCellDef="let element">
+                    <div style="display: flex; gap: 5px;">
+                        <button mat-stroked-button (click)="editData(element)" class="btn-block btn-devolver">
+                            Devolver
+                        </button>
+                        <!-- <button mat-mini-fab (click)="deleteData(element)">
+                            <mat-icon style="color: red;">delete</mat-icon>
+                        </button> -->
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Ubicacion Column -->
+            <ng-container matColumnDef="Ubicacion">
+                <th mat-header-cell *matHeaderCellDef class="ubicacion-column"> Ubicacion </th>
+                <td mat-cell *matCellDef="let element">
+
+                    @switch (element.ubicacion) {
+                    @case ('L') {
+                    <button mat-stroked-button class="btn-block btn-lavanderia">
+                        <span>Lavanderia</span>
+                    </button>
+                    }
+                    @case ('P') {
+                    <button mat-stroked-button class="btn-block btn-planta">
+                        <span>Planta</span>
+                    </button>
+                    }
+                    @case ('A') {
+                    <button mat-stroked-button class="btn-block btn-almacen">
+                        <span>Almacen</span>
+                    </button>
+                    }
+                    @default {
+                    <button mat-stroked-button class="btn-block btn-lavanderia">
+                        <span>Lavanderia</span>
+                    </button>
+                    }
+                    }
+
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="filas"></tr>
+        </table>
+    </div>
+
+</div>

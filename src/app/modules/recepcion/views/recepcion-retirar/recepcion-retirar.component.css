@@ -1,0 +1,144 @@
+.container-retiros {
+    width: 100%;
+}
+
+.section-busqueda {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.seccion-detalle {
+    background-color: aliceblue;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    /* width: 100%; */
+    /* display: flex; */
+    /* justify-content: space-around; */
+}
+
+.seccion-detalle-check {    
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-totales {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    font-size: 25px;
+}
+
+
+.win-proceso {
+    display: block;
+}
+
+
+
+.cant-column {    
+    width: 60px;    
+    text-align: center;
+    padding: 0;
+}
+
+.producto-column {
+    width: 150px;
+    padding: 0;
+}
+
+
+.observaciones-column {
+    width: 200px!important;        
+    padding: 0;
+}
+
+
+.precio-column {    
+    width: 60px;    
+    text-align: center;
+    padding: 0;
+}
+
+.subtotal-column {    
+    width: 60px;    
+    text-align: center;
+    padding: 0;
+}
+
+.estado-column {
+    width: 100px;
+    /* Ajusta el ancho según sea necesario */
+}
+
+.entrega-column {
+    width: 100px;
+    text-align: center;
+}
+
+.operaciones-column {
+    width: 100px;
+    /* Ajusta el ancho según sea necesario */
+}
+
+.ubicacion-column {
+    width: 100px;
+    text-align: center;
+}
+
+.column-right {
+    text-align: right;
+    
+}
+.column-center {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-block{
+    width: 100%;
+    font-size: 12px;
+ }
+
+.btn-almacen {
+    background-color: #007bff;
+    color: white;
+    
+}
+.btn-planta {
+    background-color: #28a745;
+    color: white;
+}
+.btn-lavanderia {
+    background-color: #ffc107;
+    color: white;
+}
+
+.filas {
+    font-size: 12px;
+    padding: 0;
+}
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #ccc!important;
+}
+.btn-devolver{
+    background-color: #dc3545;
+    color: white;
+}

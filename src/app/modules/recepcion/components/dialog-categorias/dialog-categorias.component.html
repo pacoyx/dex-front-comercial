@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>Categoria: <mat-icon>{{categoria.icon}}</mat-icon> {{ categoria.name }}  </h2>
+<mat-dialog-content class="mat-typography">    
+    <hr>
+    <div class="container-items-prod">
+        @for (item of items; track item.id; let idx = $index, e = $even) {
+        <div class="items-prods">
+            <div class="titulo-nombre">                
+                    {{ item.name }}                
+            </div>
+            <div class="titulo-precio">
+                {{ item.price | currency}}
+            </div>
+            <button mat-raised-button (click)="agregar(item)">Agregar</button>
+        </div>
+        }
+
+    </div>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close cdkFocusInitial>Cerrar</button>
+    <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>

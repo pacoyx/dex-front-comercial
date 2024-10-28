@@ -1,0 +1,33 @@
+.container-items-prod {
+    display: flex;    
+    flex-direction: row;
+    justify-content: center;
+
+    /* justify-content: space-around; */
+    gap: 10px;
+    flex-wrap: wrap;
+    /* background-color: antiquewhite; */
+}
+
+.items-prods {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 5px;
+    background-color: azure;
+    width: 150px;
+    height: 150px;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+}
+
+.titulo-nombre{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.titulo-precio{
+    margin-top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
