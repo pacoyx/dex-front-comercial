@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Devolucion de Prenda</h2>
+<mat-dialog-content>
+    <div style="display: flex; flex-direction: column; gap: 10px;">        
+        <div>
+            <mat-checkbox [(ngModel)]="objForm.isMonto">Devolver el monto</mat-checkbox>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput type="number" [(ngModel)]="objForm.monto" placeholder="Monto" required [disabled]="!objForm.isMonto">
+            </mat-form-field>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-button (click)="onOk()" cdkFocusInitial>        
+        @if(bolCargando){
+            <mat-icon>cached</mat-icon>
+        }
+        Devolver
+    </button>
+</mat-dialog-actions>

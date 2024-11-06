@@ -2,8 +2,12 @@
   flex: 1 1 auto;
 }
 
+.flexExpand {
+  flex: 1 1 auto;
+}
+
 .win-proceso {
-  display: block;
+  display: flex;
 }
 
 

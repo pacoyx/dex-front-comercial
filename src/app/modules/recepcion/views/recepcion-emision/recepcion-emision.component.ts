@@ -29,6 +29,7 @@ import { INumeracionDoc } from '../../interfaces/INumeracionDoc';
 import { ICreateGuideWork } from '../../interfaces/ICreateGuideWork';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
+import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
 
 @Component({
   selector: 'app-recepcion-emision',
@@ -71,6 +72,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   numeracion: INumeracionDoc = { id: 0, branchId: 0, typeDoc: '', serieDoc: '', numberDoc: '', status: '' };
 
   isDelivery = false;
+  blockSave = false;
 
   subscriptionCategorias!: Subscription;
   subscriptionNumeracion!: Subscription;
@@ -210,7 +212,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       if (result.id == undefined) {
         return;
       }
-      this.store.addCliente({ codigo: result.id, nombre: result.nombres + ' ' + result.apellidos, telefono: result.telefono })
+      this.store.addCliente({ codigo: result.id, nombre: result.nombres + ' ' + result.apellidos, telefono: result.telefono });
       this.clienteNombre = result.nombres + ' ' + result.apellidos;
       this.clienteTelefono = result.telefono;
     });
@@ -245,23 +247,28 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   grabarRecibo() {
-    console.log('grabando recibo');
+
+    if (!this.store.selectedCliente()) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe seleccionar un cliente antes de grabar el recibo.', err: true } });
+      return;
+    }
+
+    if (this.store.items().length === 0) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe agregar al menos un item antes de grabar el recibo.', err: true } });
+      return;
+    }
 
     // Leer los datos del localStorage
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
-      console.log('No se encontraron datos en el localStorage para la clave especificada.');
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
       return;
     }
-
     const parsedData: ILoginResponseData = JSON.parse(storedData);
-
 
     let objGuia: ICreateGuideWork = {
       serieGuia: this.numeracion.serieDoc,
-      numeroGuia: this.numeracion.numberDoc.toString(),
-      fechaOperacion: new Date().toISOString(),
-      fechaHoraEntrega: new Date().toISOString(),
+      numeroGuia: this.numeracion.numberDoc.toString(),      
       mensajeAlertas: '',
       observaciones: '',
       tipoPago: this.tipoPago,
@@ -277,6 +284,9 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       branchStoreId: parsedData.branchSales[0].branchSalesId,
       typeDocument: this.tipoDocUsuario,
       userId: parsedData.userId,
+      estadoPago: this.store.itemSumTotal() === this.store.selectedPago()?.monto ? 'PA' : 'PE', // PE: Pendiente, PA: Pagado, AN: Anulado      
+      estadoRegistro: "A",
+      estadoSituacion: "P",
 
       workGuideDetailsDTO: this.store.items().map((item) => {
         return {
@@ -290,7 +300,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           productId: parseInt(item.codProd),
           estadoRegistro: 'A', // A: Activo, I: Inactivo    
           estadoSituacion: 'P', // P: Pendiente, E: Entregado; D: Devuelto
-          estadoPago: 'P', // A: Pendiente, P: Pagado, C: Anulado
+          estadoPago: 'PE', // PE: Pendiente, PA: Pagado, AN: Anulado
         }
       })
     };
@@ -301,9 +311,12 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.subscriptionGrabarGuia = this.emisionService.grabarGuiaTrabajo(objGuia).subscribe({
       next: (resp) => {
         console.log('EXITO grabarRecibo:::', resp);
+        this.blockSave = true;
+        this.dialog.open(DialogMsgComponent, { data: { title: 'Mensaje', msg: 'Se grabó correctamente la guía de trabajo.', err: false } });
       },
       error: (err) => {
         console.log('ERROR ', err);
+        this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: err, err: true } });
       },
       complete: () => { console.log('complete grabarRecibo'); }
     });
@@ -332,11 +345,21 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.showMenuItems = true;
   }
 
-  nuevaGuia(){
-    this.store.resetState();    
+  onChangueToggle(event: any) {
+    console.log('event.checked:::', event.checked);
+    this.store.addRecepcion(event.checked ? 'D' : 'R');
+    this.isDelivery = event.checked;
+  }
+
+  nuevaGuia() {
+    this.store.resetState();
     this.cargarNumeracion();
     this.tipoPago = 'SP';
     this.showPago = false;
+    this.clienteNombre = '';
+    this.clienteTelefono = '';
+    this.blockSave = false;
+    this.isDelivery = false;
     this.actualizarPago();
   }
 }

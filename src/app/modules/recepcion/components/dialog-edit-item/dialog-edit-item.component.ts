@@ -141,12 +141,15 @@ export class DialogEditItemComponent implements OnInit {
   }
 
   calcularPrecioPesoKG() {
-    // TODO: revisar si el item es lavado por peso para calcular el precio
-    if (this.itemEdit?.nomProd === 'Lavado KG') {      
-      this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
-    } else {
-      this.total = this.cantidad * this.precio;
-    }
+
+    this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
+
+    
+    // if (this.itemEdit?.nomProd === 'Lavado KG' || this.itemEdit?.nomProd.toLocaleLowerCase().includes('alfombra')) {      
+    //   this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
+    // } else {
+    //   this.total = this.cantidad * this.precio;
+    // }
 
   }
 

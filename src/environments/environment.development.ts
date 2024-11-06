@@ -7,5 +7,13 @@ export const environment = {
     EPRegistrarCliente:'api/customer',
     EPFiltrarServiciosPorPatron:'api/prodService/search',
     EPObtenerNumeracion:'api/numbersDocument/search',
-    EPGrabarGuiaTrabajo:'api/workGuideMain'
+    EPGrabarGuiaTrabajo:'api/workGuideMain',
+    EPRetiroGuiaTrabajo:'api/workGuideMain',
+    EPObtenerGuiaPorDocumento:'api/workGuideMain/document',
+    EPActualizarGuiaInfoPago:'api/workGuideMain/updateWorkGuideInfoPay',
+    EPActualizarEstadoRecojo:'api/workGuideMain/pickupDate',
+    EPAnularGuia:'api/workGuideMain/cancelWorkGuide',
+    EPCrearAlerta:'api/workGuideMain/createAlert',
+    EPListarAlertas:'api/workGuideMain/getAlertsByWorkGuide',
+    EPDevolverPrendas:'api/workGuideMain/returnUnwashedClothes',
 };

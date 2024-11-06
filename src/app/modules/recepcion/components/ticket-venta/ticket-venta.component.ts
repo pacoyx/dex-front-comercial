@@ -1,11 +1,11 @@
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { Component, inject, OnInit, effect } from '@angular/core';
 import { EmisionStoreService } from '../../services/emision.store.service';
 
 @Component({
   selector: 'app-ticket-venta',
   standalone: true,
-  imports: [NgIf, NgFor, DecimalPipe],
+  imports: [NgIf, NgFor, DecimalPipe, DatePipe],
   templateUrl: './ticket-venta.component.html',
   styleUrl: './ticket-venta.component.css'
 })
@@ -18,6 +18,7 @@ export class TicketVentaComponent implements OnInit {
   adelanto = 0 ;
   saldo = 0 ;
   tipoPago='SP';
+  isDelivery = false;
 
   constructor() {
     effect(() => {
@@ -25,7 +26,7 @@ export class TicketVentaComponent implements OnInit {
       this.total = this.store.itemSumTotal();
       this.adelanto = this.store.selectedPago()?.monto!;
       this.tipoPago = this.store.selectedPago()?.tipo!;
-      console.log(this.adelanto);
+      this.isDelivery = this.store.selectedRecepcion() === 'D';
       this.saldo =  this.total - this.adelanto;  
       this.bol_cancelado = this.total === this.adelanto;  
     });

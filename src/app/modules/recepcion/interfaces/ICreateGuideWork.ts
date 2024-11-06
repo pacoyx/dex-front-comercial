@@ -1,8 +1,6 @@
 export interface ICreateGuideWork {
   serieGuia: string;
-  numeroGuia: string;
-  fechaOperacion: string;
-  fechaHoraEntrega: string;
+  numeroGuia: string;  
   mensajeAlertas: string;
   observaciones: string;
   tipoPago: string;
@@ -17,6 +15,9 @@ export interface ICreateGuideWork {
   branchStoreId: number;
   typeDocument: string;
   userId: number;
+  estadoPago:string;  
+  estadoRegistro:string;
+  estadoSituacion:string;  
   workGuideDetailsDTO: WorkGuideDetailsDTO[];
 }
 

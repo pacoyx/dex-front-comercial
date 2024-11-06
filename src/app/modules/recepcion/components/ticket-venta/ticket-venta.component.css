@@ -45,6 +45,13 @@
   font-size: 20px;
 }
 
+.txtDelivery{
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
 .subtitulo {
   /* font-style:italic;
       font-weight:bold; */

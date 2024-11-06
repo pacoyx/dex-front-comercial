@@ -177,7 +177,7 @@
       <div class="fila-detalle">
         <div style="width: 100%; text-align: right; padding-right: 10px;">
           <div style="font-size: 20px; color: blue; display: flex; justify-content: space-between;">
-            <mat-slide-toggle [(ngModel)]="isDelivery">Delivery</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)" >Delivery</mat-slide-toggle>
             Total: {{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue;">
@@ -227,7 +227,7 @@
           Nuevo
         </button>
         <div style="display: flex; gap: 10px;">
-          <button mat-fab extended (click)="grabarRecibo()">  
+          <button mat-fab extended (click)="grabarRecibo()" [disabled]="blockSave">  
             <mat-icon>save</mat-icon> 
             Grabar
           </button>
@@ -242,14 +242,6 @@
   </div>
 
 
-
-  <!-- <div>
-    <ul>
-      @for (book of store.items(); track book.id) {
-      <li>{{ book.nomProd }}</li>
-      }
-    </ul>
-  </div> -->
 </div>
 
 

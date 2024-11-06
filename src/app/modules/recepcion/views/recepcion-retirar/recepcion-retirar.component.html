@@ -1,47 +1,107 @@
 <div class="container-retiros win-proceso">
-    <h2>Retiros</h2>
+    <!-- <h2>Retiros</h2> -->
     <div class="section-busqueda">
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; flex-direction: column;">
             <mat-form-field appearance="outline" style="width: 100px; height: 75px;">
                 <mat-label>N° Guia</mat-label>
-                <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()"  />
+                <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
             </mat-form-field>
             <!-- <button mat-mini-fab (click)="buscarGuia()">
                 <mat-icon>search</mat-icon>
             </button> -->
+            <div style="width: 100%; text-align: center;">
+                @if (guiaRetiroData?.estadoRegistro == 'A') {
+                <span style="color: darkblue;font-weight: bold;">ACTIVO</span>
+                }
+
+                @if (guiaRetiroData?.estadoRegistro == 'I') {
+                <span style="color: red; font-weight: bold;">ANULADO</span>
+                }
+            </div>
         </div>
         <div class="seccion-detalle">
-            <div><mat-icon>calendar_month</mat-icon>: 01/01/2024</div>
-            <div><mat-icon>people</mat-icon>: Carlos Bazan Huaman</div>
-            <div><mat-icon>phone</mat-icon>: 921876544</div>
+            <div><mat-icon style="padding-top: 5px;">calendar_month</mat-icon> <span
+                    style="color: darkblue;">Emision:</span> {{guiaRetiroData?.fechaOperacion | date :'dd/MM/yyyy
+                hh:mm:ss'}}</div>
+            <div><mat-icon>calendar_month</mat-icon> <span style="color: darkblue;">Entrega:</span>
+                {{guiaRetiroData?.fechaHoraEntrega | date :'dd/MM/yyyy hh:mm:ss'}}</div>
+            <div>
+                @switch (guiaRetiroData?.tipoRecepcion) {
+                @case ('R') {
+                <mat-icon>account_box</mat-icon>
+                <span style="color: darkblue;">
+                    Recibido por:
+                </span>
+                Recepción
+                }
+                @case ('D') {
+                <mat-icon>local_shipping</mat-icon>
+                <span style="color: darkblue;">
+                    Recibido por:
+                </span>
+                Delivery
+                }
+                }
+
+            </div>
         </div>
+
+        <div class="seccion-detalle">
+            <div><mat-icon>people</mat-icon>: {{guiaRetiroData?.customerName}}</div>
+            <div><mat-icon>phone</mat-icon>: {{guiaRetiroData?.customerPhone}}</div>
+        </div>
+
 
         <div class="seccion-detalle-check">
             <div style="display: flex; gap: 10px;">
-                <mat-checkbox (change)="cancelar($event)">Cancelado</mat-checkbox>
+                <mat-checkbox (change)="cancelar($event)" [(ngModel)]="bolCancelado"
+                    [disabled]="bolCancelado">Cancelado</mat-checkbox>
                 <mat-chip-set aria-label="tipo pago">
-                    <mat-chip> <small> Efectivo </small></mat-chip>
-                    <mat-chip> <small> 25/09/2024 20:05:01</small></mat-chip>                    
+                    @if (guiaRetiroData?.tipoPagoCancelacion) {
+                    <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion}} </small></mat-chip>
+                    }
+                    @if(guiaRetiroData?.fechaPago){
+                    <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small></mat-chip>
+                    }
                 </mat-chip-set>
             </div>
 
             <div style="display: flex; gap: 10px;">
-                <mat-checkbox>Entregado</mat-checkbox>
+                <mat-checkbox (change)="actualizarEstadoEntrega($event)" [ngModel]="bolEntregado"
+                    [disabled]="bolEntregado">Recogio todo</mat-checkbox>
                 <mat-chip-set aria-label="entrega">
-                    <mat-chip> <small> 25/09/2024 </small></mat-chip>
-                    <mat-chip> <small> 20:05 </small></mat-chip>
+                    @if(guiaRetiroData?.fechaRecojo){
+                    <mat-chip> <small> {{guiaRetiroData?.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}} </small></mat-chip>
+                    }
                 </mat-chip-set>
             </div>
 
+        </div>
+
+        <div class="seccion-detalle">
+            <div style="display: flex; gap: 10px;">
+                <button mat-fab extended (click)="anularGuia()" [disabled]="guiaRetiroData?.estadoRegistro == 'I'">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete_forever"></mat-icon>
+                    Anular
+                </button>
+                <button mat-fab extended (click)="registrarAlerta()">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="warning"></mat-icon>
+                    Alertas
+                </button>
+                <button mat-fab extended (click)="imprimirGuia()">
+                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="print"></mat-icon>
+                    Imprimir
+                </button>
+            </div>
         </div>
 
     </div>
 
 
     <div class="section-totales">
-        <div>Total:<b> 250.00 </b></div> 
-        <div>Adelanto: <b>50.00</b></div> 
-        <div style="color: blue;">Saldo: <b>200.00</b></div> 
+        <div>Total:<b> {{guiaRetiroData?.total | number:'1.2-2'}} </b></div>
+        <div>Adelanto: <b>{{guiaRetiroData?.acuenta | number:'1.2-2'}}</b> ({{guiaRetiroData?.tipoPago}}) </div>
+        <div style="color: blue;">Saldo: <b>{{guiaRetiroData?.saldo | number:'1.2-2'}}</b></div>
     </div>
 
     <!-- TABLA DETALLE -->
@@ -50,95 +110,146 @@
 
 
             <!-- Cant Column -->
-            <ng-container matColumnDef="Cant">
+            <ng-container matColumnDef="cant">
                 <th mat-header-cell *matHeaderCellDef class="cant-column"> Cant </th>
                 <td mat-cell *matCellDef="let element"> {{element.cant | number:'1.2-2'}} </td>
             </ng-container>
 
             <!-- Producto Column -->
-            <ng-container matColumnDef="Producto">
+            <ng-container matColumnDef="productName">
                 <th mat-header-cell *matHeaderCellDef class="producto-column"> Producto </th>
-                <td mat-cell *matCellDef="let element" class="producto-celda"> {{element.nomProd}} </td>
+                <td mat-cell *matCellDef="let element" class="producto-celda"> {{element.product.name}} </td>
             </ng-container>
 
             <!-- Observaciones Column -->
-            <ng-container matColumnDef="Observaciones">
+            <ng-container matColumnDef="observaciones">
                 <th mat-header-cell *matHeaderCellDef class="observaciones-column"> Observaciones </th>
-                <td mat-cell *matCellDef="let element" class="observaciones-celda"> {{element.obs}} </td>
+                <td mat-cell *matCellDef="let element" class="observaciones-celda"> {{element.observaciones}} </td>
             </ng-container>
 
             <!-- Precio Column -->
-            <ng-container matColumnDef="Precio">
+            <ng-container matColumnDef="precio">
                 <th mat-header-cell *matHeaderCellDef class="precio-column"> Precio </th>
                 <td mat-cell *matCellDef="let element" class="column-right"> {{element.precio | number:'1.2-2'}} </td>
             </ng-container>
 
             <!-- Subtotal Column -->
-            <ng-container matColumnDef="Subtotal">
-                <th mat-header-cell *matHeaderCellDef class="subtotal-column"> Subtotal </th>
-                <td mat-cell *matCellDef="let element" class="column-right"> {{element.subtotal | number:'1.2-2'}} </td>
+            <ng-container matColumnDef="total">
+                <th mat-header-cell *matHeaderCellDef class="subtotal-column"> Total </th>
+                <td mat-cell *matCellDef="let element" class="column-right"> {{element.total | number:'1.2-2'}} </td>
             </ng-container>
+
+            <!-- <ng-container matColumnDef="tipoLavado">
+                <th mat-header-cell *matHeaderCellDef> tipoLavado </th>
+                <td mat-cell *matCellDef="let element"> {{element.tipoLavado}} </td>
+            </ng-container> -->
+
+            <ng-container matColumnDef="estadoTrabajo">
+                <th mat-header-cell *matHeaderCellDef> Trabajo </th>
+                <td mat-cell *matCellDef="let element">
+
+                    @switch (element.estadoTrabajo) {
+                    @case ('P') {
+                    <span style="color: darkblue;">Pendiente</span>
+                    }
+                    @case ('E') {
+                    <span style="color: darkblue;">En Proceso</span>
+                    }
+                    @case ('F') {
+                    <span style="color: darkblue;">Finalizado</span>
+                    }
+                    }
+                </td>
+            </ng-container>
+
+            <!-- <ng-container matColumnDef="productId">
+                <th mat-header-cell *matHeaderCellDef> productId </th>
+                <td mat-cell *matCellDef="let element"> {{element.productId}} </td>
+            </ng-container> -->
+
+            <ng-container matColumnDef="estadoSituacion">
+                <th mat-header-cell *matHeaderCellDef> Recojo </th>
+                <td mat-cell *matCellDef="let element">
+                    @switch (element.estadoSituacion) {
+                    @case ('P') {
+                    <span style="color: darkblue;">Pendiente</span>
+                    }
+                    @case ('E') {
+                    <span style="color: darkblue;">Entregado</span>
+                    }
+                    @case ('D') {
+                    <span style="color: darkblue;">Devuelto</span>
+                    }
+                    }
+
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="estadoPago">
+                <th mat-header-cell *matHeaderCellDef> Pago </th>
+                <td mat-cell *matCellDef="let element">
+                    @switch (element.estadoPago) {
+                    @case ('PE') {
+                    <span style="color: darkblue;">Pendiente</span>
+                    }
+                    @case ('PA') {
+                    <span style="color: darkblue;">Pagado</span>
+                    }
+                    @case ('AN') {
+                    <span style="color: darkblue;">Anulado</span>
+                    }
+                    }
+                </td>
+            </ng-container>
+
+
+
+
+
 
             <!-- Estado Column -->
-            <ng-container matColumnDef="Estado">
+            <ng-container matColumnDef="estadoRegistro">
                 <th mat-header-cell *matHeaderCellDef class="estado-column"> Estado </th>
-                <td mat-cell *matCellDef="let element"> {{element.estado}} </td>
+                <td mat-cell *matCellDef="let element">
+                    @switch (element.estadoRegistro) {
+                    @case ('A') {
+                    <span style="color: darkblue;">Activo</span>
+                    }
+                    @case ('I') {
+                    <span style="color: darkblue;">Anulado</span>
+                    }
+                    }
+                </td>
             </ng-container>
 
+
             <!-- Entrega Column -->
-            <ng-container matColumnDef="Entrega">
+            <!-- <ng-container matColumnDef="Entrega">
                 <th mat-header-cell *matHeaderCellDef class="entrega-column"> Entrega </th>
                 <td mat-cell *matCellDef="let element">
                     <button mat-stroked-button class="btn-block" (click)="cambiarEntrega(element)">
                         {{element.fechaEntrega }}
                     </button>
                 </td>
-            </ng-container>
+            </ng-container> -->
 
             <!-- Operaciones Column -->
-            <ng-container matColumnDef="Operaciones">
+            <ng-container matColumnDef="operaciones">
                 <th mat-header-cell *matHeaderCellDef class="operaciones-column"> Operaciones </th>
                 <td mat-cell *matCellDef="let element">
                     <div style="display: flex; gap: 5px;">
-                        <button mat-stroked-button (click)="editData(element)" class="btn-block btn-devolver">
+                        <button mat-stroked-button (click)="devolverPrenda(element)" class="btn-block"
+                            [disabled]="element.estadoSituacion == 'D'">
                             Devolver
                         </button>
-                        <!-- <button mat-mini-fab (click)="deleteData(element)">
-                            <mat-icon style="color: red;">delete</mat-icon>
-                        </button> -->
                     </div>
                 </td>
             </ng-container>
 
             <!-- Ubicacion Column -->
-            <ng-container matColumnDef="Ubicacion">
+            <ng-container matColumnDef="ubicacion">
                 <th mat-header-cell *matHeaderCellDef class="ubicacion-column"> Ubicacion </th>
-                <td mat-cell *matCellDef="let element">
-
-                    @switch (element.ubicacion) {
-                    @case ('L') {
-                    <button mat-stroked-button class="btn-block btn-lavanderia">
-                        <span>Lavanderia</span>
-                    </button>
-                    }
-                    @case ('P') {
-                    <button mat-stroked-button class="btn-block btn-planta">
-                        <span>Planta</span>
-                    </button>
-                    }
-                    @case ('A') {
-                    <button mat-stroked-button class="btn-block btn-almacen">
-                        <span>Almacen</span>
-                    </button>
-                    }
-                    @default {
-                    <button mat-stroked-button class="btn-block btn-lavanderia">
-                        <span>Lavanderia</span>
-                    </button>
-                    }
-                    }
-
-                </td>
+                <td mat-cell *matCellDef="let element"> {{element.ubicacion }} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
@@ -147,3 +258,5 @@
     </div>
 
 </div>
+
+<app-ticket-venta></app-ticket-venta>

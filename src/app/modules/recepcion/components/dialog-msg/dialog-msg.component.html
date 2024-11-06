@@ -1,0 +1,21 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+<mat-dialog-content>
+  @if(data.err) {
+    <mat-icon fontIcon="error" style="color: red; font-weight: bold;"></mat-icon>
+    <br>
+    <span style="font-size: x-large; color: brown;">
+      {{data.msg}}
+    </span>  
+  }
+  @else{
+    <mat-icon fontIcon="check" style="color: green; font-weight: bold; font-size: 30px;"></mat-icon>
+    <br>
+    <span style="font-size: x-large;color: darkblue;">
+      {{data.msg}}
+    </span>  
+  }
+  
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

@@ -29,7 +29,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         // Handle unauthorized error
         router.navigate(['/login']);
       }
-      return throwError(() => new Error('Unauthorized'));
+      // console.log('error ==>', error.error);
+      
+      return throwError(() => new Error(error.error));
     })
   );
 

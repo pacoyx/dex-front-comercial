@@ -1,11 +1,10 @@
 <div style="margin: 20px;">
-    <mat-toolbar class="win-proceso">
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <!-- <mat-toolbar class="win-proceso">
+        <button mat-icon-button>
             <mat-icon>menu</mat-icon>
         </button>
         <span>Recepción Laundry</span>
 
-        <span class="example-spacer"></span>
         <button mat-button>
             <mat-icon>description</mat-icon>
             <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
@@ -22,12 +21,92 @@
         </button>
 
         <button mat-button>
-            <mat-icon>person_search</mat-icon>            
+            <mat-icon>person_search</mat-icon>
             <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
         </button>
 
-    </mat-toolbar>
-    <div>
-        <router-outlet />
+        <span class="flexExpand"></span>
+
+        <span class="example-spacer"></span>
+        <button mat-button (click)="cerrarSesion()">
+            <mat-icon>logout</mat-icon>
+            Cerrar Sesion
+        </button>
+
+    </mat-toolbar> -->
+    <div>        
+        <!-- <router-outlet></router-outlet> -->
+
+        <mat-sidenav-container class="example-container">
+            <mat-sidenav #sidenav mode="side">
+              <mat-nav-list>
+                <a mat-list-item [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">
+                  <mat-icon>exit_to_app</mat-icon>
+                  Recepcion
+                </a>
+                <a mat-list-item [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">
+                  <mat-icon>point_of_sale</mat-icon>
+                  Compras
+                </a>
+                <a mat-list-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
+                  <mat-icon>person_search</mat-icon>
+                  Operaciones
+                </a>
+                <a mat-list-item (click)="cerrarSesion()">
+                  <mat-icon>logout</mat-icon>
+                  Cerrar Sesion
+                </a>
+              </mat-nav-list>
+            </mat-sidenav>
+          
+            <mat-sidenav-content>
+              <mat-toolbar class="win-proceso">
+                <button mat-button (click)="sidenav.toggle()">
+                  <mat-icon>menu</mat-icon>
+                </button>
+
+                <span>Lavanderia Kyo</span>
+
+                <button mat-button>
+                    <mat-icon>description</mat-icon>
+                    <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
+                </button>
+        
+                <button mat-button>
+                    <mat-icon>exit_to_app</mat-icon>
+                    <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Retiros</a>
+                </button>
+
+                <button mat-button>
+                  <mat-icon>price_check</mat-icon>
+                  <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Gastos</a>
+              </button>
+        
+                <button mat-button>
+                    <mat-icon>point_of_sale</mat-icon>
+                    <a [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">Caja</a>
+                </button>
+        
+                <button mat-button>
+                    <mat-icon>person_search</mat-icon>
+                    <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
+                </button>
+
+
+
+                <span class="flexExpand"></span>
+                <span class="example-spacer"></span>
+                <button mat-button (click)="cerrarSesion()">
+                  <mat-icon>logout</mat-icon>
+                  Cerrar Sesion
+                </button>
+              </mat-toolbar>
+              <div>
+                <router-outlet></router-outlet>
+              </div>
+            </mat-sidenav-content>
+          </mat-sidenav-container>
+
+
     </div>
 </div>

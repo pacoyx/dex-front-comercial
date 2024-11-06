@@ -13,7 +13,7 @@
 }
 
 .seccion-detalle {
-    background-color: aliceblue;
+    /* background-color: aliceblue; */
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px;
@@ -22,7 +22,7 @@
     /* justify-content: space-around; */
 }
 
-.seccion-detalle-check {    
+.seccion-detalle-check {
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 5px;
@@ -48,8 +48,8 @@
 
 
 
-.cant-column {    
-    width: 60px;    
+.cant-column {
+    width: 60px;
     text-align: center;
     padding: 0;
 }
@@ -61,19 +61,19 @@
 
 
 .observaciones-column {
-    width: 200px!important;        
+    width: 200px !important;
     padding: 0;
 }
 
 
-.precio-column {    
-    width: 60px;    
+.precio-column {
+    width: 60px;
     text-align: center;
     padding: 0;
 }
 
-.subtotal-column {    
-    width: 60px;    
+.subtotal-column {
+    width: 60px;
     text-align: center;
     padding: 0;
 }
@@ -100,34 +100,37 @@
 
 .column-right {
     text-align: right;
-    
+
 }
+
 .column-center {
     display: flex;
     justify-content: center;
 }
 
-.btn-block{
+.btn-block {
     width: 100%;
     font-size: 12px;
- }
+}
 
 .btn-almacen {
     background-color: #007bff;
     color: white;
-    
+
 }
+
 .btn-planta {
     background-color: #28a745;
     color: white;
 }
+
 .btn-lavanderia {
     background-color: #ffc107;
     color: white;
 }
 
 .filas {
-    font-size: 12px;
+    /* font-size: 12px; */
     padding: 0;
 }
 
@@ -136,9 +139,28 @@
     padding: 0px 0px !important;
     background-color: #007bff;
     color: white;
-    border: 1px solid #ccc!important;
+    border: 1px solid #ccc !important;
 }
-.btn-devolver{
+
+.btn-devolver {
     background-color: #dc3545;
     color: white;
+}
+
+.win-proceso {
+    display: block;
+}
+
+app-ticket-venta {
+    display: none;
+}
+
+@media print {
+    .win-proceso {
+        display: none;
+    }
+
+    app-ticket-venta {
+        display: block;
+    }
 }

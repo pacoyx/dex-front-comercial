@@ -1,5 +1,5 @@
 @if (data.edicion) {
-<h2 mat-dialog-title> Edicion de item N° {{itemEdit?.id}} </h2>
+<h2 mat-dialog-title> Edicion de item: {{itemEdit?.nomProd}} </h2>
 } @else{
 <h2 mat-dialog-title> Servicio: {{data.item.name}} </h2>
 }
@@ -19,7 +19,7 @@
         </mat-form-field>
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Total soles</mat-label>
-            <input (keydown.enter)="calcularPrecioPesoKG()" (blur)="calcularPrecio()" md-select-on-focus matInput placeholder="total" type="number"
+            <input (keydown.enter)="calcularPrecioPesoKG()" (blur)="calcularPrecioPesoKG()" md-select-on-focus matInput placeholder="total" type="number"
                 [(ngModel)]="total">
         </mat-form-field>
     </div>

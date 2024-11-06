@@ -12,6 +12,7 @@ export type GuiaServicioState = {
   cliente: IEmisionCliente | null;
   pago: IEmisionPago | null;
   documento: IEmisionDocumento | null;
+  recepcion: string;
 };
 
 @Injectable({
@@ -25,6 +26,7 @@ export class EmisionStoreService {
     cliente: null,
     pago: null,
     documento: null,
+    recepcion: 'R'
   });
 
   private idCounter = 1;
@@ -34,6 +36,7 @@ export class EmisionStoreService {
   public readonly selectedCliente = this.guiaServicioState.cliente;
   public readonly selectedDocumento = this.guiaServicioState.documento;
   public readonly selectedPago = this.guiaServicioState.pago;
+  public readonly selectedRecepcion = this.guiaServicioState.recepcion;
   public readonly itemCounter = computed(() => this.items().length);
   public readonly itemSumTotal = computed(() => this.items().reduce((ant, act) => ant + act.Subtotal, 0));
 
@@ -46,6 +49,13 @@ export class EmisionStoreService {
       cliente: null,
       pago: null,
       documento: null,
+      recepcion: 'R'
+    });
+  }
+
+  public addRecepcion(recepcion: string): void {
+    patchState(this.guiaServicioState, {
+      recepcion: recepcion,
     });
   }
 

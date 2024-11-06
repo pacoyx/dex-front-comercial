@@ -2,11 +2,11 @@
     <div mat-subheader>Tipo de Pago</div>
 
     @for (item of pagos; track $index) {
-    <mat-list-item (click)="actualizarTipoPago($event, item)">
-        <mat-icon matListItemIcon>{{item.icon}}</mat-icon>
-        <div matListItemTitle>{{item.tipo}}</div>
-        <div matListItemLine>{{item.detalle}}</div>
+    <mat-list-item (click)="actualizarTipoPago($event, item)" [ngClass]="{'itemRed': item.id === 'CA'}">
+        <mat-icon matListItemIcon [ngClass]="{'itemRed': item.id === 'CA'}">{{item.icon}}</mat-icon>
+        <div matListItemTitle [ngClass]="{'itemRed': item.id === 'CA'}">{{item.tipo}}</div>
+        <div matListItemLine [ngClass]="{'itemRed': item.id === 'CA'}">{{item.detalle}}</div>
     </mat-list-item>
     }
-   
+
 </mat-nav-list>
