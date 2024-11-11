@@ -1,4 +1,4 @@
-.container-caja {
+.container-gastos {
     width: 100%;
     margin: 10px;
     background-color: snow;
@@ -12,9 +12,4 @@
     border-radius: 5px;
     padding: 5px;
     margin-bottom: 10px;
-}
-
-.example-tab-icon{
-    margin-right: 5px;
-    
 }

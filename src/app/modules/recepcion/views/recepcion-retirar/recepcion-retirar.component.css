@@ -98,6 +98,12 @@
     text-align: center;
 }
 
+.estadoSituacion-column {
+    width: 200px !important;
+    padding: 0;
+    text-align: center;
+}
+
 .column-right {
     text-align: right;
 

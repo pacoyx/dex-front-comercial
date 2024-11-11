@@ -1,0 +1,69 @@
+<div class="container-apertura">
+
+    <div class="container-form">
+
+        <div style="display: flex; justify-content: space-evenly;">
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha</mat-label>
+                <input matInput [(ngModel)]="fechaHoy" readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <input matInput [(ngModel)]="estadoCaja" readonly style="color: blue;">
+            </mat-form-field>
+        </div>
+        <form [formGroup]="frmApertura" style="display: flex; flex-direction: column;">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Saldo Inicial</mat-label>
+                <input matInput type="number" formControlName="saldoInicial">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Observaciones</mat-label>
+                <input matInput formControlName="observaciones" style="width: 100%;">
+            </mat-form-field>
+
+            <div style="display: flex; justify-content: space-between;">
+                <mat-form-field appearance="outline">
+                    <mat-label>Sucursal</mat-label>
+                    <input matInput formControlName="branchSalesId" style="width: 100%;">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Horario</mat-label>
+                    <input matInput formControlName="workShiftId" style="width: 100%;">
+                </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline">
+                <mat-label>Usuario</mat-label>
+                <input matInput formControlName="userId" style="width: 100%;">
+            </mat-form-field>
+
+
+
+
+            @if(!loading){
+            <button mat-fab extended (click)="registrarAperturaCaja()" [disabled]="estadoCaja != 'PENDIENTE'">
+                <mat-icon>save</mat-icon>
+                Guardar
+            </button>
+            }
+            @if(loading){
+            <button mat-fab extended>
+                <div style="display: flex; gap: 5px;">
+                    <app-loading></app-loading>
+                    Grabando...
+                </div>
+            </button>
+            }
+
+        </form>
+
+    </div>
+
+
+
+
+</div>

@@ -48,23 +48,18 @@ export class DialogDevolucionComponent implements OnInit, OnDestroy {
   }
 
   onOk(): void {
-
-
     let objReq: IDevolucionPrendaRequest = {
       devolverEfectivo: this.objForm.isMonto,
       monto: this.objForm.monto,
       userId: this.loginService.getLoginData()?.userId || 0
     };
 
-    console.log('objReq para devlocuion', objReq);
-
-
     this.bolCargando = true;
     this.devolucionSubscription = this.emisionService.DevolverPrendas(this.data.idItem, objReq).subscribe({
       next: (resp) => {
         console.log(resp);
-        this.bolCargando = false;
-        this.dialogRef.close({ ok: true, descontar: objReq.devolverEfectivo });
+        this.bolCargando = false;        
+        this.dialogRef.close({ ok: true, descontar: objReq.devolverEfectivo, fechaDevolucion: resp.data });
       },
       error: (err) => {
         console.log(err);

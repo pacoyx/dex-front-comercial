@@ -30,13 +30,14 @@ import { ICreateGuideWork } from '../../interfaces/ICreateGuideWork';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 
 @Component({
   selector: 'app-recepcion-emision',
   standalone: true,
   imports: [MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, DatePipe, MatButtonToggleModule,
     FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe, DecimalPipe, JsonPipe,
-    TicketVentaComponent, MatSlideToggleModule
+    TicketVentaComponent, MatSlideToggleModule, LoadingComponent
   ],
   templateUrl: './recepcion-emision.component.html',
   styleUrl: './recepcion-emision.component.css'
@@ -73,6 +74,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   isDelivery = false;
   blockSave = false;
+  loading = false;
+  loadingSave = false;
 
   subscriptionCategorias!: Subscription;
   subscriptionNumeracion!: Subscription;
@@ -106,6 +109,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.store.resetState();
     this.cargarNumeracion();
     this.cargarCategorias();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
@@ -117,12 +121,15 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   cargarCategorias() {
+    this.loading = true;
     this.subscriptionCategorias = this.emisionService.listarCategoriasSevicios().subscribe({
       next: (resp) => {
+        this.loading = false;
         this.categories = resp;
       },
       error: (err) => {
         console.log(err);
+        this.loading = false;
       },
       complete: () => { console.log('complete listarCategoriasSevicios'); }
     });
@@ -268,7 +275,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
     let objGuia: ICreateGuideWork = {
       serieGuia: this.numeracion.serieDoc,
-      numeroGuia: this.numeracion.numberDoc.toString(),      
+      numeroGuia: this.numeracion.numberDoc.toString(),
       mensajeAlertas: '',
       observaciones: '',
       tipoPago: this.tipoPago,
@@ -305,17 +312,18 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       })
     };
 
-    console.log('objGuia:::', objGuia);
 
 
+    this.loadingSave = true;
     this.subscriptionGrabarGuia = this.emisionService.grabarGuiaTrabajo(objGuia).subscribe({
       next: (resp) => {
-        console.log('EXITO grabarRecibo:::', resp);
+        this.loadingSave = false;
         this.blockSave = true;
         this.dialog.open(DialogMsgComponent, { data: { title: 'Mensaje', msg: 'Se grabó correctamente la guía de trabajo.', err: false } });
       },
       error: (err) => {
         console.log('ERROR ', err);
+        this.loadingSave = false;
         this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: err, err: true } });
       },
       complete: () => { console.log('complete grabarRecibo'); }

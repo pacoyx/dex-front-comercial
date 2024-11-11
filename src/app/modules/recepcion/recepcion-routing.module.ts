@@ -4,6 +4,7 @@ import { RecepcionEmisionComponent } from './views/recepcion-emision/recepcion-e
 import { RecepcionRetirarComponent } from './views/recepcion-retirar/recepcion-retirar.component';
 import { RecepcionCajaComponent } from './views/recepcion-caja/recepcion-caja.component';
 import { RecepcionConsultasComponent } from './views/recepcion-consultas/recepcion-consultas.component';
+import { RecepcionGastosComponent } from './views/recepcion-gastos/recepcion-gastos.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'retiros', component: RecepcionRetirarComponent },
   { path: 'caja', component: RecepcionCajaComponent },
   { path: 'consultas', component: RecepcionConsultasComponent },
+  { path: 'gastos', component: RecepcionGastosComponent },
 ];
 
 @NgModule({

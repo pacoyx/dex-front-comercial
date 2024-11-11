@@ -1,0 +1,91 @@
+<div class="container-movimientos">
+
+    <div class="section-filters">
+        <div class="section-filters__search">
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar Por Nombre</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Buscar">
+            </mat-form-field>
+        </div>
+
+        <div class="section-filters__tipo-pago">
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo Pago</mat-label>
+                <mat-select placeholder="Tipo de Pago" (selectionChange)="applyTipoPagoFilter($event.value)">
+                    @for (tipo of tiposPago; track $index) {
+                    <mat-option [value]="tipo.id">{{tipo.tipo}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="section-filters__buttons">
+            <button mat-fab extended (click)="addItem()">
+                <mat-icon>add</mat-icon>
+                Otros Ingresos
+            </button>
+        </div>
+
+    </div>
+
+    <div class="section-tabla">
+        
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="documento">
+                <th mat-header-cell *matHeaderCellDef> Documento </th>
+                <td mat-cell *matCellDef="let element">
+                    {{element.tipoComprobante}} -
+                    {{element.serieComprobante}} -
+                    {{element.numComprobante}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cliente">
+                <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                <td mat-cell *matCellDef="let element"> {{element.customer.firtsName}} {{element.customer.lastName}}
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="tipoPago">
+                <th mat-header-cell *matHeaderCellDef> Tipo Pago </th>
+                <td mat-cell *matCellDef="let element"> {{element.tipoPago}} {{element.descripcionPago}} </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="adelanto">
+                <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Adelanto </th>
+                <td mat-cell *matCellDef="let element" style="text-align: right; background-color: rgb(237, 243, 237);">
+                    {{element.adelanto | number:'1.2-2'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="importe">
+                <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Importe </th>
+                <td mat-cell *matCellDef="let element" style="text-align: right; background-color: rgb(237, 243, 237);">
+                    {{element.importe | number:'1.2-2'}} </td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="operaciones">
+                <th mat-header-cell *matHeaderCellDef style="text-align: center;"> Operaciones </th>
+                <td mat-cell *matCellDef="let element">
+                    <div style="display: flex; justify-content: space-evenly;">
+
+                        <button mat-mini-fab (click)="editItem(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab (click)="deleteItem(element)">
+                            <mat-icon style="color: red;">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+    </div>
+
+</div>

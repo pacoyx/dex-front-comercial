@@ -1,4 +1,9 @@
 <div class="container-emision win-proceso">
+  <h2>
+    <mat-icon>point_of_sale</mat-icon>
+    Emision de Recibo
+  </h2>
+  <hr>
 
   <div class="container-area-trabajo">
 
@@ -29,6 +34,13 @@
       </div>
       }
       <div class="container-scroll">
+        @if(loading){
+        <div style="display: flex;justify-content: center;">
+          <app-loading></app-loading>
+          Cargando...
+        </div>
+        }
+
 
         @if (!showMenuItems) {
         <div class="container-categories">
@@ -61,13 +73,6 @@
 
       </div>
 
-
-
-
-
-
-
-
     </div>
 
 
@@ -89,11 +94,11 @@
               {{fechaHoy | date:'dd/MM/yyyy'}}
             </div>
           </div>
-          
+
           <div style="margin-left: 40px;">
-            <label><strong>              
-              {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}}
-            </strong></label>
+            <label><strong>
+                {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}}
+              </strong></label>
           </div>
         </div>
 
@@ -177,7 +182,7 @@
       <div class="fila-detalle">
         <div style="width: 100%; text-align: right; padding-right: 10px;">
           <div style="font-size: 20px; color: blue; display: flex; justify-content: space-between;">
-            <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)" >Delivery</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
             Total: {{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue;">
@@ -227,12 +232,26 @@
           Nuevo
         </button>
         <div style="display: flex; gap: 10px;">
-          <button mat-fab extended (click)="grabarRecibo()" [disabled]="blockSave">  
-            <mat-icon>save</mat-icon> 
+
+          @if(loadingSave){
+          <button mat-fab extended>
+            <div style="display: flex; gap: 5px;">
+              <app-loading></app-loading>
+              Grabando...
+            </div>
+          </button>
+          }
+
+          @if(!loadingSave){
+          <button mat-fab extended (click)="grabarRecibo()" [disabled]="blockSave">
+            <mat-icon>print</mat-icon>
             Grabar
           </button>
+          }
+
+
           <button mat-fab extended (click)="imprimirTicket()">
-            <mat-icon>print</mat-icon> 
+            <mat-icon>print</mat-icon>
             Imprimir
           </button>
         </div>

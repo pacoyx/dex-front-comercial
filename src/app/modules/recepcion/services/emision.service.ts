@@ -13,7 +13,9 @@ import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGuiaRetiro } from '../interfaces/IDetalleGuiaRetiro';
 import { IReqGuiaInfoPay } from '../interfaces/IReqGuiaInfoPay';
 import { ICreateAlertaRequest, ICreateAlertaResponse, IListarAlertasResponse } from '../interfaces/IAlertas';
-import { IDevolucionPrendaRequest } from '../interfaces/IDevoluciones';
+import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDevoluciones';
+import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
+import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IListarCajaPorUsuarioResponse } from '../interfaces/ICajaVentas';
 
 
 @Injectable({
@@ -113,6 +115,68 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPDevolverPrendas}/${idItem}`;
     return this.http.put<IResponseGeneric<string>>(url, req, { headers });
+  }
+
+  RecogerPrenda(idItem: number, req: IRecogerItemRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPRecogerItem}/${idItem}`;
+    return this.http.put<IResponseGeneric<string>>(url, req, { headers });
+  }
+
+
+
+  ListarGastosPorIdUser(idUser: number): Observable<IResponseGeneric<IListaGastosPorUserResponse[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarGastosPorUsuario}/${idUser}`;
+    return this.http.get<IResponseGeneric<IListaGastosPorUserResponse[]>>(url, { headers });
+  }
+
+  RegistrarGasto(gasto: ICreateGastoRequest): Observable<IResponseGeneric<ICreateGastoResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCrearGasto}`;
+    return this.http.post<IResponseGeneric<ICreateGastoResponse>>(url, gasto, { headers });
+  }
+
+  ActualizarGasto(idGasto: number, gasto: IActualizarGastoRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPActualizarGasto}/${idGasto}`;
+    return this.http.put<IResponseGeneric<string>>(url, gasto, { headers });
+  }
+
+  EliminarGasto(idGasto: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarGasto}/${idGasto}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  AperturarCaja(caja:IAperturaCajaRequest ): Observable<IResponseGeneric<number>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPAperturaCaja}`;
+    return this.http.post<IResponseGeneric<number>>(url, caja, { headers });
+  }
+
+  RegistrarMovimientosCaja(ItemCaja:IDetalleCajaRequest ): Observable<IResponseGeneric<number>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPRegistrarMovimientosCaja}`;
+    return this.http.post<IResponseGeneric<number>>(url, ItemCaja, { headers });
+  }
+
+  CerrarCaja(caja:ICerrarCajaRequest ): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCerrarCaja}`;
+    return this.http.post<IResponseGeneric<string>>(url, caja, { headers });
+  }
+
+  ListarCajaPorIdUser(idUser: number): Observable<IResponseGeneric<IListarCajaPorUsuarioResponse[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarCajaPorUsuario}/${idUser}`;
+    return this.http.get<IResponseGeneric<IListarCajaPorUsuarioResponse[]>>(url, { headers });
+  }
+
+  ListarCajaDetallesPorUser(idUser: number): Observable<IResponseGeneric<ICashBoxDetailResponseDto[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarCajaDetallePorUsuario}/${idUser}`;
+    return this.http.get<IResponseGeneric<ICashBoxDetailResponseDto[]>>(url, { headers });
   }
 
 }

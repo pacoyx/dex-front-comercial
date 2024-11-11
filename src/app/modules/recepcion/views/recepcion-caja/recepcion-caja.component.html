@@ -1,1 +1,33 @@
-<p>recepcion-caja works!</p>
+<div class="container-caja">
+    <h2>
+        <mat-icon>point_of_sale</mat-icon>
+        Caja de Ventas
+    </h2>
+    <hr>
+    
+    <div style="width: 100%;">
+        <mat-tab-group>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">open_in_browser</mat-icon>
+                    Apertura
+                </ng-template>
+                <app-caja-apertura></app-caja-apertura>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">dynamic_feed</mat-icon>
+                    Movimientos
+                </ng-template>
+                <app-caja-movimientos></app-caja-movimientos>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon class="example-tab-icon">blinds_closed</mat-icon>
+                    Arqueo y Cierre
+                </ng-template>
+                <app-caja-cierre></app-caja-cierre>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

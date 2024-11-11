@@ -1,6 +1,39 @@
+@if (data.verTipoPago) {
+<div>
+    <mat-checkbox [(ngModel)]="checkCobrarEfectivo">Retiro con Cobranza</mat-checkbox>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Monto a Cobrar</mat-label>
+        <input matInput [disabled]="!checkCobrarEfectivo" [(ngModel)]="montoCobrar">
+    </mat-form-field>
+</div>
+
+
+}
+
+
+@if(data.verTipoPago && !checkCobrarEfectivo){
+<mat-nav-list>
+    <div mat-subheader>Retiro sin Pago</div>
+    
+    <mat-list-item (click)="aceptar()">
+        <mat-icon matListItemIcon style="color: darkblue;">check</mat-icon>
+        <div matListItemTitle style="color: darkblue;">Aceptar</div>
+        <div matListItemLine style="color: darkblue;">Se actualizara como retirado pero quedara pendiente el pago</div>
+    </mat-list-item>
+
+    <mat-list-item (click)="cancelar()">
+        <mat-icon matListItemIcon style="color: red;">close</mat-icon>
+        <div matListItemTitle style="color: red;">Cancelar</div>
+        <div matListItemLine style="color: red;">Se cancelara la operación</div>
+    </mat-list-item>
+    
+</mat-nav-list>
+}
+@else {
+
 <mat-nav-list>
     <div mat-subheader>Tipo de Pago</div>
-
     @for (item of pagos; track $index) {
     <mat-list-item (click)="actualizarTipoPago($event, item)" [ngClass]="{'itemRed': item.id === 'CA'}">
         <mat-icon matListItemIcon [ngClass]="{'itemRed': item.id === 'CA'}">{{item.icon}}</mat-icon>
@@ -8,5 +41,5 @@
         <div matListItemLine [ngClass]="{'itemRed': item.id === 'CA'}">{{item.detalle}}</div>
     </mat-list-item>
     }
-
 </mat-nav-list>
+}

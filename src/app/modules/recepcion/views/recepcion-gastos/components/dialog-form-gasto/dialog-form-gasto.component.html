@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>{{data.title}}</h2>
+
+<mat-dialog-content>
+    <hr>
+    <mat-form-field appearance="outline">
+        <mat-label>Fecha</mat-label>
+        <input matInput type="text" [(ngModel)]="fechaHoy" disabled=true>
+    </mat-form-field>
+
+    <form [formGroup]="frmGasto" style="width: 100%;">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Categoría de Gasto</mat-label>
+            <mat-select formControlName="categoria">
+                @for (categoria of categoriasGastos; track $index) {
+                <mat-option [value]="categoria.id">
+                    {{ categoria.id }}
+                </mat-option>
+                }
+
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Personal Autoriza</mat-label>
+            <input matInput formControlName="personalAutoriza" style="width: 100%;">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Importe</mat-label>
+            <input matInput formControlName="importe" type="number" style="width: 100%;">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Detalles Egreso</mat-label>
+            <input matInput formControlName="detallesEgreso" style="width: 100%;">
+        </mat-form-field>
+
+    </form>
+    @if(bolMensaje){
+    <div style="border: 1px solid rgb(11, 71, 236); border-radius: 5px; text-align: center;">
+        <p>
+            <mat-icon>done</mat-icon>
+            {{errMensaje}}
+        </p>
+    </div>
+    }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    @if(!loading){
+    <button mat-button color="primary" (click)="onSave()">Guardar</button>
+    }
+    @if(loading){
+    <button mat-button color="primary">
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+</mat-dialog-actions>

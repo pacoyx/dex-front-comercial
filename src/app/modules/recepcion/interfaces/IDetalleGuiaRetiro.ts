@@ -53,6 +53,8 @@ export interface IGuiaRetiroWgdDTO {
     estadoRegistro: string;
     estadoSituacion: string;
     estadoPago: string;    
+    fechaRecojo: string;
+    fechaDevolucion: string;
 }
 
 interface IGuiaRetiroWgdDTOProduct {

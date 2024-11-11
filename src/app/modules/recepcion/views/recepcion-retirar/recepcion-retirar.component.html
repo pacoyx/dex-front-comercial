@@ -1,8 +1,12 @@
 <div class="container-retiros win-proceso">
-    <!-- <h2>Retiros</h2> -->
+    <h2>
+        <mat-icon>point_of_sale</mat-icon>
+        Retiro de Prendas
+    </h2>
+    <hr>
     <div class="section-busqueda">
         <div style="display: flex; gap: 10px; flex-direction: column;">
-            <mat-form-field appearance="outline" style="width: 100px; height: 75px;">
+            <mat-form-field appearance="outline" style="width: 110px; height: 75px;">
                 <mat-label>N° Guia</mat-label>
                 <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
             </mat-form-field>
@@ -20,9 +24,10 @@
             </div>
         </div>
         <div class="seccion-detalle">
-            <div><mat-icon style="padding-top: 5px;">calendar_month</mat-icon> <span
-                    style="color: darkblue;">Emision:</span> {{guiaRetiroData?.fechaOperacion | date :'dd/MM/yyyy
-                hh:mm:ss'}}</div>
+            <div><mat-icon style="padding-top: 5px;">calendar_month</mat-icon>
+                <span style="color: darkblue;">Emision:</span>
+                {{guiaRetiroData?.fechaOperacion | date :'dd/MM/yyyy hh:mm:ss'}}
+            </div>
             <div><mat-icon>calendar_month</mat-icon> <span style="color: darkblue;">Entrega:</span>
                 {{guiaRetiroData?.fechaHoraEntrega | date :'dd/MM/yyyy hh:mm:ss'}}</div>
             <div>
@@ -75,6 +80,14 @@
                     }
                 </mat-chip-set>
             </div>
+            @if(loadingCancelado){
+                <div style="display: flex; gap: 5px;">
+                    <app-loading></app-loading>
+                    <b>
+                        Procesando...
+                    </b>                    
+                </div>
+            }
 
         </div>
 
@@ -168,17 +181,48 @@
             </ng-container> -->
 
             <ng-container matColumnDef="estadoSituacion">
-                <th mat-header-cell *matHeaderCellDef> Recojo </th>
+                <th mat-header-cell *matHeaderCellDef  class="estadoSituacion-column"> Estado </th>
                 <td mat-cell *matCellDef="let element">
                     @switch (element.estadoSituacion) {
                     @case ('P') {
-                    <span style="color: darkblue;">Pendiente</span>
+                    <button mat-stroked-button (click)="recogerPrendaxItem(element)" class="btn-block">
+                        Por Recoger
+                    </button>
+
                     }
                     @case ('E') {
-                    <span style="color: darkblue;">Entregado</span>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <div style="display: flex; width: 100%; gap: 5px; justify-content: center;">
+                            <mat-icon style="color: blue;" aria-hidden="false" aria-label="entregado"
+                                fontIcon="check"></mat-icon>
+                            @if(element.estadoPago == 'PA'){
+                            <mat-icon style="color: green;" aria-hidden="false" aria-label="pagado"
+                                fontIcon="credit_score">
+                            </mat-icon>
+                            }
+                            <span style="color: darkblue;">Entregado</span>
+                        </div>
+                        <div style="width: 100%; text-align: center;">
+                            {{element.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}} 
+                        </div>
+                    </div>
+
                     }
                     @case ('D') {
-                    <span style="color: darkblue;">Devuelto</span>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <div style="display: flex; width: 100%; gap: 5px; justify-content: center;">
+                            <mat-icon style="color: red;" aria-hidden="false" aria-label="prenda devuelta"
+                                fontIcon="keyboard_return"></mat-icon>
+                            <mat-icon style="color: #75FB4C;" aria-hidden="false" aria-label="dinero devuelto"
+                                fontIcon="payments"></mat-icon>
+
+                            <span style="color: red;">Devuelto</span>
+                        </div>
+                        <div style="width: 100%; text-align: center;">
+                            {{element.fechaDevolucion | date:'dd/MM/yyyy hh:mm:ss'}}
+                        </div>
+                    </div>
+
                     }
                     }
 
@@ -239,7 +283,7 @@
                 <td mat-cell *matCellDef="let element">
                     <div style="display: flex; gap: 5px;">
                         <button mat-stroked-button (click)="devolverPrenda(element)" class="btn-block"
-                            [disabled]="element.estadoSituacion == 'D'">
+                            [disabled]="element.estadoSituacion == 'D' || element.estadoSituacion == 'E' ">
                             Devolver
                         </button>
                     </div>

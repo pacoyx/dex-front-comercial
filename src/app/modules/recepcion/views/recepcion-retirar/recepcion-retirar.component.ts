@@ -20,13 +20,17 @@ import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.compo
 import { DialogDevolucionComponent } from '../../components/dialog-devolucion/dialog-devolucion.component';
 import { TicketVentaComponent } from '../../components/ticket-venta/ticket-venta.component';
 import { EmisionStoreService } from '../../services/emision.store.service';
+import { IReqGuiaInfoPay } from '../../interfaces/IReqGuiaInfoPay';
+import { LoginService } from '../../../../core/services/login.service';
+import { IRecogerItemRequest } from '../../interfaces/IDevoluciones';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 
 @Component({
   selector: 'app-recepcion-retirar',
   standalone: true,
   imports: [MatFormFieldModule, MatInputModule, MatButtonModule,
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
-    DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe, TicketVentaComponent],
+    DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe, TicketVentaComponent, LoadingComponent],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
 })
@@ -37,20 +41,24 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   emisionService = inject(EmisionService);
   readonly dialog = inject(MatDialog);
   readonly store = inject(EmisionStoreService);
+  loginService = inject(LoginService);
+
   guiaRetiroSubscription!: Subscription;
   estadoSituacionSubscription!: Subscription;
+  UpdateInfoPagoSubscription!: Subscription;
 
-
-  displayedColumns: string[] = ['cant', 'productName', 'observaciones', 'precio', 'total', 'estadoSituacion', 'estadoTrabajo', 'estadoPago', 'operaciones', 'ubicacion'];
+  displayedColumns: string[] = ['cant', 'productName', 'observaciones', 'precio', 'total', 'estadoSituacion', 'estadoTrabajo', 'operaciones', 'ubicacion'];
   dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>([]);
   guiaRetiroData: IGuiaRetiro | null = null;
 
   bolCancelado = false;
   bolEntregado = false;
+  loadingCancelado = false;
 
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
     if (this.estadoSituacionSubscription) this.estadoSituacionSubscription.unsubscribe();
+    if (this.UpdateInfoPagoSubscription) this.UpdateInfoPagoSubscription.unsubscribe();
   }
   ngOnInit(): void {
   }
@@ -86,8 +94,9 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.store.resetState();
     this.store.addRecepcion(this.guiaRetiroData.tipoRecepcion);
-    this.store.addPago({ tipo: this.guiaRetiroData.tipoPago, monto: this.guiaRetiroData.acuenta });    
+    this.store.addPago({ tipo: this.guiaRetiroData.tipoPago, monto: this.guiaRetiroData.acuenta });
     this.store.addDocumento({
       tipoDoc: 'GS',
       serieDoc: this.guiaRetiroData.serieGuia,
@@ -95,9 +104,9 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       fechaEmision: this.guiaRetiroData.fechaOperacion,
       fechaEntrega: this.guiaRetiroData.fechaHoraEntrega
     });
-    this.store.addCliente({ 
-      codigo: this.guiaRetiroData.customerId, 
-      nombre: this.guiaRetiroData.customerName, 
+    this.store.addCliente({
+      codigo: this.guiaRetiroData.customerId,
+      nombre: this.guiaRetiroData.customerName,
       telefono: this.guiaRetiroData.customerPhone
     });
 
@@ -114,16 +123,15 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   }
 
-  devolverPrenda(ele: any) {
-    console.log('editando:', ele);
+  devolverPrenda(ele: IGuiaRetiroWgdDTO) {
 
     var dialogDevolver = this.dialog.open(DialogDevolucionComponent,
       { data: { idItem: ele.id, monto: ele.total } });
 
     dialogDevolver.afterClosed().subscribe((respuesta) => {
-      console.log('data devolucion response:', respuesta);
       if (respuesta.ok) {
         ele.estadoSituacion = 'D';
+        ele.fechaDevolucion = respuesta.fechaDevolucion;
         if (respuesta.descontar) {
           if (this.guiaRetiroData) {
             this.guiaRetiroData.saldo = this.guiaRetiroData.saldo! - ele.total;
@@ -145,35 +153,54 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   }
 
   cancelar(event: any) {
-    console.log(event);
     if (event.checked) {
       var dialogCancelar = this._bottomSheet.open(ButtonsheetPagosComponent,
-        { data: { idGuia: this.guiaRetiroData?.id } });
+        { data: { idGuia: this.guiaRetiroData?.id, verTipoPago: false } });
 
       dialogCancelar.afterDismissed().subscribe((respuesta) => {
-        console.log('data pago response:', respuesta);
-        if (respuesta.status === 'ERR') {
-          this.bolCancelado = false;
-          return;
-        }
-        if (respuesta.status === 'CANCEL') {
+        if (respuesta.data.id === 'CA') {
           this.bolCancelado = false;
           return;
         }
 
-        this.bolCancelado = true;
-        this.guiaRetiroData!.tipoPagoCancelacion = respuesta.data.tipoPago;
-        this.guiaRetiroData!.fechaPago = respuesta.data.fechaPago;
+        let objInfoPago: IReqGuiaInfoPay = {
+          id: this.guiaRetiroData?.id || 0,
+          tipoPago: respuesta.data.id,
+          descripcionPago: respuesta.data.tipo,
+          fechaPago: new Date().toISOString(), //esta fecha se envia pero no se usa en el backend
+          estadoPago: 'PA',
+          idUser: this.loginService.getLoginData()?.userId || 0
+        }
+
+        this.loadingCancelado = true;
+        this.UpdateInfoPagoSubscription = this.emisionService.ActualizarGuiaInfoPago(this.guiaRetiroData!.id, objInfoPago)
+          .subscribe({
+            next: (respBack) => {
+              this.loadingCancelado = false;
+              this.bolCancelado = true;
+              this.guiaRetiroData!.tipoPagoCancelacion = respuesta.data.id;
+              this.guiaRetiroData!.fechaPago = respBack.data;
+              this.guiaRetiroData!.saldo = 0;
+            },
+            error: (err) => {
+              console.log(err);
+              this.bolCancelado = false;
+              this.loadingCancelado = false;
+            },
+            complete: () => {
+              console.log('completado ActualizarGuiaInfoPago()');
+            }
+          });
       });
-
     }
   }
 
   actualizarEstadoEntrega(event: any) {
     if (event.checked) {
+      this.loadingCancelado = true;
       this.estadoSituacionSubscription = this.emisionService.ActualizarEstadoRecojo(this.guiaRetiroData!.id).subscribe({
         next: (resp) => {
-          console.log(resp);
+          this.loadingCancelado = false;
           if (!resp.success) {
             this.bolEntregado = false;
             return;
@@ -186,6 +213,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.log(err);
+          this.loadingCancelado = false;
         }, complete: () => {
           console.log('complete() ActualizarEstadoRecojo');
         },
@@ -277,5 +305,54 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       return;
     }
     window.print();
+  }
+
+  recogerPrendaxItem(item: IGuiaRetiroWgdDTO) {
+    var dialogCancelar = this._bottomSheet.open(ButtonsheetPagosComponent,
+      { data: { idGuia: this.guiaRetiroData?.id, verTipoPago: true, montoCobrar: item.total } });
+
+    dialogCancelar.afterDismissed().subscribe((respuesta) => {
+
+      if (!respuesta) {
+        return;
+      }
+
+      if (respuesta.data.id === 'CA') {
+        return;
+      }
+
+      let objRecoger: IRecogerItemRequest = {
+        cobrarEfectivo: respuesta.checkCobrarEfectivo,
+        monto: respuesta.montoCobrar,
+        userId: this.loginService.getLoginData()?.userId || 0,
+        tipoPago: respuesta.data.id,
+        descripcionPago: respuesta.data.tipo
+      }
+
+      console.log('objRecoger:', objRecoger);
+
+
+      this.UpdateInfoPagoSubscription = this.emisionService.RecogerPrenda(item.id, objRecoger)
+        .subscribe({
+          next: (respBack) => {
+            if (!respBack.success) {
+              return;
+            }
+
+            if (respuesta.checkCobrarEfectivo) {
+              item.estadoPago = 'PA';
+              this.guiaRetiroData!.saldo = this.guiaRetiroData!.saldo - respuesta.montoCobrar;
+            }
+            item.estadoSituacion = 'E';
+            item.fechaRecojo = new Date().toUTCString();
+          },
+          error: (err) => {
+            console.log(err.error);            
+          },
+          complete: () => {
+            console.log('completado ActualizarGuiaInfoPago()');
+          }
+        });
+    });
   }
 }
