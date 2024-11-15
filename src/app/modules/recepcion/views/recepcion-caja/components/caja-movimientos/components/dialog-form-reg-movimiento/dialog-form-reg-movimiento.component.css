@@ -1,0 +1,27 @@
+.container-registro {
+    width: 100%;
+    margin: 10px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container-form-registro {
+    width: 500px;
+    margin: 10px;
+    background-color: snow;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.mensajeInfo {
+    color: darkred;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid darkred;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ccc; 
+    padding : 10px;
+}

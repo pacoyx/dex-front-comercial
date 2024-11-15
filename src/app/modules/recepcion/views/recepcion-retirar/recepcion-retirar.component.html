@@ -3,6 +3,9 @@
         <mat-icon>point_of_sale</mat-icon>
         Retiro de Prendas
     </h2>
+    @if(!bolExisteCaja){
+        <app-alert-danger [message]="msgValidacion" [timeShow]="5000"></app-alert-danger>
+      }
     <hr>
     <div class="section-busqueda">
         <div style="display: flex; gap: 10px; flex-direction: column;">
@@ -63,7 +66,10 @@
                     [disabled]="bolCancelado">Cancelado</mat-checkbox>
                 <mat-chip-set aria-label="tipo pago">
                     @if (guiaRetiroData?.tipoPagoCancelacion) {
-                    <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion}} </small></mat-chip>
+                    <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion  }} </small></mat-chip>
+                    }
+                    @if (guiaRetiroData?.tipoPago) {
+                        <mat-chip> <small> {{guiaRetiroData!.tipoPago }} </small></mat-chip>
                     }
                     @if(guiaRetiroData?.fechaPago){
                     <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small></mat-chip>

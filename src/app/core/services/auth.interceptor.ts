@@ -25,11 +25,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
-      if (error.status === 401) {
-        // Handle unauthorized error
+      if (error.status === 401) {        
         router.navigate(['/login']);
       }
-      // console.log('error ==>', error.error);
+      // console.log('error interceptor ==>', error.error);      
+      // return throwError(() => new Error(JSON.stringify(error.error)));
       
       return throwError(() => new Error(error.error));
     })

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { EmisionService } from '../../../../services/emision.service';
 import { LoginService } from '../../../../../../core/services/login.service';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogFormRegMovimientoComponent } from './components/dialog-form-reg-movimiento/dialog-form-reg-movimiento.component';
+import { DialogQuestionComponent } from '../../../../components/dialog-question/dialog-question.component';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-caja-movimientos',
@@ -18,13 +22,20 @@ import { MatSelectModule } from '@angular/material/select';
   templateUrl: './caja-movimientos.component.html',
   styleUrl: './caja-movimientos.component.css'
 })
-export class CajaMovimientosComponent implements OnInit, OnDestroy {
+export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+
+  @Output() cargarData = new EventEmitter<boolean>();
+  @Input() userIdData: number = 0;
+  @Input() movimientosData: ICashBoxDetailResponseDto[] = [];
+
 
   emisionService = inject(EmisionService);
-  loginSerivce = inject(LoginService);
+  readonly dialog = inject(MatDialog);
+
   userId = 0;
   loading = false;
   subscriptionListaDetalles!: Subscription;
+  filterSubscription!: Subscription;
 
   displayedColumns: string[] = [
     'documento',
@@ -35,6 +46,8 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy {
     'operaciones',
   ];
   dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>([]);
+  listsItems: ICashBoxDetailResponseDto[] = [];
+  selectedTP='';
 
   tiposPago = [
     { id: 'TO', tipo: '[Todos]' },
@@ -42,19 +55,34 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy {
     { id: 'QR', tipo: 'Yape' },
     { id: 'TA', tipo: 'Tarjeta' },
     { id: 'TR', tipo: 'Transferencia' },
-    { id: 'CA', tipo: 'Cancelar' },
   ];
 
   constructor() { }
 
   ngOnInit(): void {
-    this.userId = this.loginSerivce.getLoginData()?.userId!;
-    this.cargarMovimientos();
   }
 
   ngOnDestroy(): void {
     if (this.subscriptionListaDetalles) {
       this.subscriptionListaDetalles.unsubscribe();
+    }
+  }
+
+  ngAfterViewInit(): void {
+
+    // Suscribirse a los cambios en el filtro
+    this.filterSubscription = this.dataSource.connect().subscribe(() => {
+      this.getTotalAdelanto();
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['userIdData'] && changes['userIdData'].currentValue) {
+      this.userId = this.userIdData;
+    }
+    if (changes['movimientosData'] && changes['movimientosData'].currentValue) {
+      this.dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>(this.movimientosData);
+      this.listsItems = this.movimientosData;
     }
   }
 
@@ -64,6 +92,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy {
       next: (response) => {
         this.loading = false;
         this.dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>(response.data);
+        this.listsItems = response.data;
       },
       error: (err) => {
         console.log(err);
@@ -74,12 +103,59 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  getTotalAdelanto() {
+    // return this.listsItems.map(t => t.adelanto).reduce((acc, value) => acc + value, 0);
+    const filteredData = this.dataSource.filteredData;
+    return filteredData.reduce((acc, item) => acc + item.adelanto, 0);
+  }
+
+  getTotalImporte() {
+    // return this.listsItems.map(t => t.importe).reduce((acc, value) => acc + value, 0);
+    const filteredData = this.dataSource.filteredData;
+    return filteredData.reduce((acc, item) => acc + item.importe, 0);
+  }
+
   editItem(item: ICashBoxDetailResponseDto): void {
     console.log('editItem', item);
   }
 
   deleteItem(item: ICashBoxDetailResponseDto): void {
     console.log('deleteItem', item);
+
+
+    var dialogResponse = this.dialog.open(DialogQuestionComponent, {
+      width: '600px',
+      data: {
+        title: 'Eliminar movimiento',
+        message: '¿Está seguro de eliminar el movimiento seleccionado?',
+        msgButton: 'Eliminar'
+      }
+    });
+
+    dialogResponse.afterClosed().subscribe({
+      next: (result) => {
+        console.log('dialogResponse.afterClosed()', result);
+        if (result == 'OK') {
+          this.emisionService.EliminarItemCajaDetalle(item.id).subscribe({
+            next: (response) => {
+              console.log(response);
+              if (response.success) {
+                this.cargarData.emit(true);
+              }
+            },
+            error: (err) => {
+              console.log(err);
+            },
+            complete: () => {
+              console.log('complete EliminarCajaDetalle()');
+            }
+          });
+        }
+      }
+    });
+
+
   }
 
   applyFilter(event: Event): void {
@@ -98,22 +174,38 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy {
 
   addItem(): void {
     console.log('addItem');
+    var dialogResponse = this.dialog.open(DialogFormRegMovimientoComponent, {
+      width: '600px',
+      data: {
+        userId: this.userId,
+      }
+    });
+    dialogResponse.afterClosed().subscribe({
+      next: (result) => {
+        console.log('dialogResponse.afterClosed()', result);
+        if (result) {
+          this.cargarData.emit(true);
+        }
+      }
+    });
   }
 
   applyTipoPagoFilter(event: string): void {
-    console.log('evnto====>', event);
-
     if (event === 'TO') {
       this.dataSource.filter = '';
       return;
     }
-
 
     const filterValue = event.trim().toLowerCase();
     this.dataSource.filterPredicate = (data: ICashBoxDetailResponseDto, filter: string) => {
       return data.tipoPago.toLowerCase().includes(filter); // Change 'cliente' to the specific field you want to filter by
     };
     this.dataSource.filter = filterValue;
-
   }
+  quitarFiltros(): void {
+    this.dataSource.filter = '';    
+    this.selectedTP = 'TO';
+  }
+
+
 }

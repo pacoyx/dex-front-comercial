@@ -8,22 +8,23 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogCategoriasComponent } from '../../components/dialog-categorias/dialog-categorias.component';
 import { IListaCategorias } from '../../interfaces/IListaCategorias';
 import { EmisionStoreService } from '../../services/emision.store.service';
-import { DatePipe, DecimalPipe, JsonPipe } from '@angular/common';
+import { AsyncPipe, DatePipe, DecimalPipe, JsonPipe, NgFor, TitleCasePipe, UpperCasePipe } from '@angular/common';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { IListaItemsBusqueda } from '../../interfaces/IListaItemsBusqueda';
 import { CurrencyPipe } from '@angular/common';
-import { DialogClienteComponent, IClienteBusqueda } from '../../components/dialog-cliente/dialog-cliente.component';
+import { DialogClienteComponent, IClienteBusqueda, ResponseIClienteBusqueda } from '../../components/dialog-cliente/dialog-cliente.component';
 import { DialogPesokgComponent } from '../../components/dialog-pesokg/dialog-pesokg.component';
 import { TicketVentaComponent } from '../../components/ticket-venta/ticket-venta.component';
 import { IEmisionDocumento } from '../../models/IEmisionDocumento';
 import { IEmisionPago } from '../../models/IEmisionPago';
 import { DialogEditItemComponent } from '../../components/dialog-edit-item/dialog-edit-item.component';
 import { EmisionService } from '../../services/emision.service';
-import { iif, Subject, Subscription } from 'rxjs';
+import { Observable, of, Subject, Subscription } from 'rxjs';
+import { map, startWith, switchMap } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { INumeracionDoc } from '../../interfaces/INumeracionDoc';
 import { ICreateGuideWork } from '../../interfaces/ICreateGuideWork';
@@ -31,13 +32,19 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NotificationServiceService } from '../../services/notification-service.service';
+import { LoginService } from '../../../../core/services/login.service';
+import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-recepcion-emision',
   standalone: true,
   imports: [MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, DatePipe, MatButtonToggleModule,
-    FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe, DecimalPipe, JsonPipe,
-    TicketVentaComponent, MatSlideToggleModule, LoadingComponent
+    FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe,
+    TicketVentaComponent, MatSlideToggleModule, LoadingComponent, MatAutocompleteModule,
+    ReactiveFormsModule, AsyncPipe, AlertDangerComponent, MatDividerModule, TitleCasePipe, NgFor
   ],
   templateUrl: './recepcion-emision.component.html',
   styleUrl: './recepcion-emision.component.css'
@@ -46,6 +53,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   readonly store = inject(EmisionStoreService);
   emisionService = inject(EmisionService);
+  notificacionService = inject(NotificationServiceService);
+  dataLogin = inject(LoginService);
 
   sucursalId = 1;
   tipoDocUsuario = 'GS';
@@ -76,17 +85,24 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   blockSave = false;
   loading = false;
   loadingSave = false;
+  bolExisteCaja = true;
+  msgValidacion = '';
+
 
   subscriptionCategorias!: Subscription;
   subscriptionNumeracion!: Subscription;
   subscriptionServixcat!: Subscription;
   subscriptionGrabarGuia!: Subscription;
   subscriptionFiltrarServixpatron!: Subscription;
+  subscriptionConsulta!: Subscription;
+
+  clienteControl = new FormControl();
+  filteredClientes!: Observable<IClienteBusqueda[]>;
+
 
 
   constructor() {
     effect(() => {
-      console.log('cambio el valor');
       this.dataSource.data = this.store.items();
       this.montoPago = this.store.itemSumTotal();
       this.total = this.store.itemSumTotal();
@@ -106,14 +122,65 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     if (this.subscriptionServixcat) this.subscriptionServixcat.unsubscribe();
     if (this.subscriptionGrabarGuia) this.subscriptionGrabarGuia.unsubscribe();
     if (this.subscriptionFiltrarServixpatron) this.subscriptionFiltrarServixpatron.unsubscribe();
+    if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
   }
 
   ngOnInit(): void {
+
+    this.validarExisteCajaPorUsuario();
+
+    this.filteredClientes = this.clienteControl.valueChanges.pipe(
+      startWith(''),
+      debounceTime(300),
+      switchMap(value => {
+        if (value === '') {
+          return of([]);
+        }
+        return this.emisionService.filtrarClientesPorPatron(value).pipe(
+          map(response => response.data)
+        );
+      })
+    );
+
     this.store.resetState();
     this.cargarNumeracion();
     this.cargarCategorias();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
+  }
+
+  validarExisteCajaPorUsuario(): void {
+
+    this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.dataLogin.getLoginData()?.userId!).subscribe({
+      next: (data) => {
+        if (data.success) {
+          if (!data.data) {
+            this.bolExisteCaja = false;
+          }
+        } else {
+          this.bolExisteCaja = false;
+        }
+      },
+      error: (err) => {
+        this.notificacionService.showError(err);
+        this.bolExisteCaja = false;
+        this.msgValidacion = err;
+      },
+      complete: () => {
+        console.log('complete obtenerCajaPorUsuario()');
+      }
+    });
+  }
+
+  onClienteSelected(event: any) {
+    const cliente = event.option.value;
+    this.clienteTelefono = cliente.telefono;
+    this.clienteNombre = cliente.nombres + ' ' + cliente.apellidos;
+    this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
+  }
+
+  displayFn(cliente: any): string {
+    return cliente && cliente.nombres && cliente.apellidos ? `${cliente.nombres} ${cliente.apellidos}` : cliente;
   }
 
   onSearchInputChange() {
@@ -128,7 +195,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
         this.categories = resp;
       },
       error: (err) => {
-        console.log(err);
+        this.notificacionService.showError(err);
         this.loading = false;
       },
       complete: () => { console.log('complete listarCategoriasSevicios'); }
@@ -144,13 +211,13 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
             tipoDoc: this.numeracion.typeDoc,
             serieDoc: this.numeracion.serieDoc,
             numeroDoc: this.numeracion.numberDoc,
-            fechaEmision: new Date().toLocaleDateString(),
-            fechaEntrega: new Date().toLocaleDateString()
+            fechaEmision: new Date().toDateString(),
+            fechaEntrega: new Date().toDateString()
           };
           this.store.addDocumento(objDoc);
         },
         error: (err) => {
-          console.log(err);
+          this.notificacionService.showError(err);
         },
         complete: () => {
           console.log('complete obtenerNumeracion');
@@ -212,16 +279,14 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDialogClientes() {
+  openDialogClientes() {    
     const dialogRef = this.dialog.open(DialogClienteComponent, { data: { filtro: '' } });
-    dialogRef.afterClosed().subscribe((result: IClienteBusqueda) => {
-      console.log(`Dialog result cliente: ${result}`);
-      if (result.id == undefined) {
-        return;
-      }
+    dialogRef.afterClosed().subscribe((result: IClienteBusqueda) => {      
+      if (result.id == undefined) return;     
       this.store.addCliente({ codigo: result.id, nombre: result.nombres + ' ' + result.apellidos, telefono: result.telefono });
       this.clienteNombre = result.nombres + ' ' + result.apellidos;
       this.clienteTelefono = result.telefono;
+      this.clienteControl.setValue(result.nombres, { emitEvent: false });
     });
   }
 
@@ -322,7 +387,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
         this.dialog.open(DialogMsgComponent, { data: { title: 'Mensaje', msg: 'Se grabó correctamente la guía de trabajo.', err: false } });
       },
       error: (err) => {
-        console.log('ERROR ', err);
+        this.notificacionService.showError(err);
         this.loadingSave = false;
         this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: err, err: true } });
       },
@@ -369,5 +434,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.blockSave = false;
     this.isDelivery = false;
     this.actualizarPago();
+    this.clienteControl.setValue('');
   }
 }

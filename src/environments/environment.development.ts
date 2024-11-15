@@ -25,8 +25,10 @@ export const environment = {
 
     EPAperturaCaja: 'api/cashBox',
     EPRegistrarMovimientosCaja: 'api/cashBox/details',
+    EPRegistrarMovimientosCajaOtros: 'api/cashBox/detail/otherIn',
     EPListarCajaPorUsuario: 'api/cashBox/cashboxopenbyuser',
     EPCerrarCaja: 'api/cashBox/close',
     EPListarCajaDetallePorUsuario: 'api/cashBox/detail',
+    EPEliminarCajaDetalle: 'api/cashBox/detail',
 
 };

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,11 +16,17 @@ import { CUSTOM_DATE_FORMATS } from '../../config/custom-date-formats';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormGastoComponent } from './components/dialog-form-gasto/dialog-form-gasto.component';
 import { DialogQuestionComponent } from '../../components/dialog-question/dialog-question.component';
+import { Subscription } from 'rxjs';
+import { NotificationServiceService } from '../../services/notification-service.service';
+import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 
 @Component({
   selector: 'app-recepcion-gastos',
   standalone: true,
-  imports: [FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatButtonModule, MatTableModule, DatePipe, DecimalPipe],
+  imports: [
+    FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, 
+    MatDatepickerModule, MatButtonModule, MatTableModule, DatePipe, 
+    DecimalPipe, AlertDangerComponent],
   providers: [
 
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -29,11 +35,13 @@ import { DialogQuestionComponent } from '../../components/dialog-question/dialog
   templateUrl: './recepcion-gastos.component.html',
   styleUrl: './recepcion-gastos.component.css'
 })
-export class RecepcionGastosComponent implements OnInit {
+export class RecepcionGastosComponent implements OnInit, OnDestroy {
 
   emisionService = inject(EmisionService);
   loginService = inject(LoginService);
   readonly dialog = inject(MatDialog);
+  notificacionService = inject(NotificationServiceService);
+
   listGastos: IListaGastosPorUserResponse[] = [];
 
   displayedColumns: string[] = ['categoryGasto', 'personalAutoriza', 'fechaGasto', 'importe', 'detallesEgreso', 'operaciones'];
@@ -41,9 +49,49 @@ export class RecepcionGastosComponent implements OnInit {
 
   loadingGastos = false;
   fechaHoy = new Date();
+  bolExisteCaja = true;
+  msgValidacion = '';
+
+  subscriptionListaGastos!: Subscription;
+  subscriptionConsulta!: Subscription;
+
 
   ngOnInit(): void {
+    this.validarExisteCajaPorUsuario();
     this.cargarGastos()
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscriptionListaGastos) this.subscriptionListaGastos.unsubscribe();
+    if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
+
+  }
+
+  getTotalImporte() {
+    return this.listGastos.map(t => t.importe).reduce((acc, value) => acc + value, 0);
+  }
+
+  validarExisteCajaPorUsuario(): void {
+
+    this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginService.getLoginData()?.userId!).subscribe({
+      next: (data) => {
+        if (data.success) {
+          if (!data.data) {
+            this.bolExisteCaja = false;
+          }
+        } else {
+          this.bolExisteCaja = false;
+        }
+      },
+      error: (err) => {
+        this.notificacionService.showError(err);
+        this.bolExisteCaja = false;
+        this.msgValidacion = err;
+      },
+      complete: () => {
+        console.log('complete obtenerCajaPorUsuario()');
+      }
+    });
   }
 
   cargarGastos() {
@@ -53,7 +101,7 @@ export class RecepcionGastosComponent implements OnInit {
     }
 
     this.loadingGastos = true;
-    this.emisionService.ListarGastosPorIdUser(idIser).subscribe({
+    this.subscriptionListaGastos = this.emisionService.ListarGastosPorIdUser(idIser).subscribe({
       next: (res) => {
         console.log(res);
         this.loadingGastos = false;
@@ -64,7 +112,7 @@ export class RecepcionGastosComponent implements OnInit {
 
       },
       error: (err) => {
-        console.log(err);
+        this.notificacionService.showError(err);
         this.loadingGastos = false;
       },
       complete: () => {

@@ -24,13 +24,16 @@ import { IReqGuiaInfoPay } from '../../interfaces/IReqGuiaInfoPay';
 import { LoginService } from '../../../../core/services/login.service';
 import { IRecogerItemRequest } from '../../interfaces/IDevoluciones';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
+import { NotificationServiceService } from '../../services/notification-service.service';
+import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 
 @Component({
   selector: 'app-recepcion-retirar',
   standalone: true,
   imports: [MatFormFieldModule, MatInputModule, MatButtonModule,
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
-    DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe, TicketVentaComponent, LoadingComponent],
+    DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
+    TicketVentaComponent, LoadingComponent, AlertDangerComponent],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
 })
@@ -42,10 +45,12 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
   readonly store = inject(EmisionStoreService);
   loginService = inject(LoginService);
+  notificacionService = inject(NotificationServiceService);
 
   guiaRetiroSubscription!: Subscription;
   estadoSituacionSubscription!: Subscription;
   UpdateInfoPagoSubscription!: Subscription;
+  subscriptionConsulta!: Subscription;
 
   displayedColumns: string[] = ['cant', 'productName', 'observaciones', 'precio', 'total', 'estadoSituacion', 'estadoTrabajo', 'operaciones', 'ubicacion'];
   dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>([]);
@@ -55,12 +60,17 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   bolEntregado = false;
   loadingCancelado = false;
 
+  bolExisteCaja = true;
+  msgValidacion = '';
+
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
     if (this.estadoSituacionSubscription) this.estadoSituacionSubscription.unsubscribe();
     if (this.UpdateInfoPagoSubscription) this.UpdateInfoPagoSubscription.unsubscribe();
+    if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
   }
   ngOnInit(): void {
+    this.validarExisteCajaPorUsuario();
   }
 
   buscarGuia() {
@@ -86,6 +96,29 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           console.log('complete() ObtenerGuiaPorDocumento');
         },
       })
+  }
+
+  validarExisteCajaPorUsuario(): void {
+
+    this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginService.getLoginData()?.userId || 0).subscribe({
+      next: (data) => {
+        if (data.success) {
+          if (!data.data) {
+            this.bolExisteCaja = false;
+          }
+        } else {
+          this.bolExisteCaja = false;
+        }
+      },
+      error: (err) => {
+        this.notificacionService.showError(err);
+        this.bolExisteCaja = false;
+        this.msgValidacion = err;
+      },
+      complete: () => {
+        console.log('complete obtenerCajaPorUsuario()');
+      }
+    });
   }
 
   cargarStore() {
@@ -347,7 +380,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
             item.fechaRecojo = new Date().toUTCString();
           },
           error: (err) => {
-            console.log(err.error);            
+            console.log(err.error);
           },
           complete: () => {
             console.log('completado ActualizarGuiaInfoPago()');

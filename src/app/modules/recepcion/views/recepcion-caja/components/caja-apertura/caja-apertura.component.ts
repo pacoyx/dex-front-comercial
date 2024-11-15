@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmisionService } from '../../../../services/emision.service';
 import { Subscription } from 'rxjs';
@@ -8,9 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
 import { LoginService } from '../../../../../../core/services/login.service';
-import { IAperturaCajaRequest } from '../../../../interfaces/ICajaVentas';
+import { IAperturaCajaRequest, IListarCajaPorUsuarioResponse } from '../../../../interfaces/ICajaVentas';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMsgComponent } from '../../../../components/dialog-msg/dialog-msg.component';
+import { ILoginResponseData } from '../../../../../../core/interfaces/ILoginResponse';
 
 @Component({
   selector: 'app-caja-apertura',
@@ -19,67 +20,66 @@ import { DialogMsgComponent } from '../../../../components/dialog-msg/dialog-msg
   templateUrl: './caja-apertura.component.html',
   styleUrl: './caja-apertura.component.css'
 })
-export class CajaAperturaComponent implements OnInit, OnDestroy {
+export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
+  @Input() dataCaja!: IListarCajaPorUsuarioResponse;
+  @Input() dataLogin!: ILoginResponseData;
+
   emisionService = inject(EmisionService);
-  loginService = inject(LoginService);
+  
   readonly dialog = inject(MatDialog);
   frmApertura: FormGroup;
   loading = false;
   loadingCarga = false;
   estadoCaja = 'PENDIENTE';
 
-  subscriptionApertura!: Subscription;
-  subscriptionConsulta!: Subscription;
+  subscriptionApertura!: Subscription;  
   fechaHoy = new Date().toLocaleDateString();
 
   constructor() {
     this.frmApertura = new FormGroup({
       saldoInicial: new FormControl('', [Validators.required]),
       observaciones: new FormControl(''),
-      branchSalesId: new FormControl({ value: this.loginService.getLoginData()?.branchSales[0].branchSalesName, disabled: true }, [Validators.required]),
+      branchSalesId: new FormControl({ value: '', disabled: true }, [Validators.required]),
       workShiftId: new FormControl({ value: 'turno normal', disabled: true }, [Validators.required]),
-      userId: new FormControl({ value: this.loginService.getLoginData()?.userName, disabled: true }, [Validators.required])
+      userId: new FormControl({ value: '', disabled: true }, [Validators.required])
     });
   }
+ 
   ngOnDestroy(): void {
     if (this.subscriptionApertura) {
       this.subscriptionApertura.unsubscribe();
+    }    
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dataLogin'] && changes['dataLogin'].currentValue) {
+      this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
+      this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
     }
-    if (this.subscriptionConsulta) {
-      this.subscriptionConsulta.unsubscribe();
+
+    if (changes['dataCaja'] && changes['dataCaja'].currentValue) {
+      this.validarCajaPorUsuario();
     }
   }
 
   ngOnInit(): void {
-    this.obtenerCajaPorUsuario();
+    // this.validarCajaPorUsuario();
+    this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);    
+    this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
   }
 
-  obtenerCajaPorUsuario(): void {
-    this.loadingCarga = true;
-    this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginService.getLoginData()?.userId!).subscribe({
-      next: (data) => {
-        console.log(data);
-        this.loadingCarga = false;
+  validarCajaPorUsuario(): void {
+        
+    if (this.dataCaja) {
+      this.estadoCaja = 'CAJA ABIERTA';
+      this.frmApertura.get('saldoInicial')?.setValue(this.dataCaja.saldoInicial);
+      this.frmApertura.get('observaciones')?.setValue(this.dataCaja.observaciones);
+      this.frmApertura.disable();
 
-        if (data.success) {
-          if (data.data) {
-            this.estadoCaja = 'CAJA ABIERTA';
-            this.frmApertura.disable();
-          } else {
-            this.estadoCaja = 'PENDIENTE';
-            this.frmApertura.enable();
-          }
-        }
-
-      },
-      error: (err) => {
-        console.log(err);
-        this.loadingCarga = false;
-      },
-      complete: () => {
-        console.log('complete obtenerCajaPorUsuario()');
-      }
-    });
+    } else {
+      this.estadoCaja = 'PENDIENTE';
+      this.frmApertura.enable();
+    }
   }
 
   registrarAperturaCaja(): void {
@@ -112,8 +112,8 @@ export class CajaAperturaComponent implements OnInit, OnDestroy {
 
 
     let objApertura: IAperturaCajaRequest = {
-      branchSalesId: this.loginService.getLoginData()?.branchSales[0].branchSalesId!,
-      userId: this.loginService.getLoginData()?.userId!,
+      branchSalesId: this.dataLogin.branchSales[0].branchSalesId!,
+      userId: this.dataLogin.userId!,
       workShiftId: 1,
       saldoInicial: this.frmApertura.get('saldoInicial')?.value,
       observaciones: this.frmApertura.get('observaciones')?.value
@@ -121,15 +121,12 @@ export class CajaAperturaComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.subscriptionApertura = this.emisionService.AperturarCaja(objApertura).subscribe({
-      next: (data) => {
-        console.log(data);
+      next: (data) => {        
         this.loading = false;
-
         if (data.success) {
           this.estadoCaja = 'CAJA ABIERTA';
           this.frmApertura.disable();
         }
-
       },
       error: (err) => {
         console.log(err);
@@ -139,9 +136,6 @@ export class CajaAperturaComponent implements OnInit, OnDestroy {
         console.log('complete registrarAperturaCaja()');
       }
     });
-
-
-
   }
 
 

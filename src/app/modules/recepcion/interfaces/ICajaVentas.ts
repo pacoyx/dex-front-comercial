@@ -21,6 +21,17 @@ export interface IDetalleCajaRequest {
   cashBoxMainId: number;
 }
 
+export interface IDetalleCajaRequestOtherIn {
+  serieComprobante: string;
+  numComprobante: string;
+  importe: number;
+  tipoPago: string;
+  descripcionPago: string;
+  observaciones: string;
+  userId: number;
+  customerId: number | null;
+}
+
 export interface ICerrarCajaRequest {
   id: number;
   estadoCaja: string;
@@ -34,7 +45,7 @@ export interface IListarCajaPorUsuarioResponse {
   id: number;
   fechaCaja: string;
   fechaHoraApertura: string;
-  fechaHoraCierre: null;
+  fechaHoraCierre: null | string;
   estadoCaja: string;
   saldoInicial: number;
   saldoFinal: number;
@@ -72,4 +83,11 @@ interface Customer {
   email: string;
   docPersonal: string;
   status: string;
+}
+
+export interface ITotalizadoPorTipoPago {
+  tipoPago: string;
+  totalImporte: number;
+  totalAdelanto: number;
+  total: number;
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { IListaCategorias } from '../interfaces/IListaCategorias';
 import { IListaItemsBusqueda } from '../interfaces/IListaItemsBusqueda';
 import { ResponseIClienteBusqueda } from '../components/dialog-cliente/dialog-cliente.component';
@@ -15,7 +16,7 @@ import { IReqGuiaInfoPay } from '../interfaces/IReqGuiaInfoPay';
 import { ICreateAlertaRequest, ICreateAlertaResponse, IListarAlertasResponse } from '../interfaces/IAlertas';
 import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDevoluciones';
 import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
-import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IListarCajaPorUsuarioResponse } from '../interfaces/ICajaVentas';
+import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse } from '../interfaces/ICajaVentas';
 
 
 @Injectable({
@@ -26,6 +27,18 @@ export class EmisionService {
   private apiUrl = environment.apiUrlBase;
 
   constructor(private http: HttpClient) { }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // Error del lado del servidor
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);      
+    }
+    return throwError(error);
+  }
 
   obtenerNumeracion(branchId: number, typeDoc: string, serieDoc: string): Observable<IResponseGeneric<INumeracionDoc>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -45,7 +58,7 @@ export class EmisionService {
     return this.http.get<IListaItemsBusqueda[]>(url, { headers });
   }
 
-  filtrarClientesPorPatron(patron: string): Observable<ResponseIClienteBusqueda> {
+  filtrarClientesPorPatron(patron: string): Observable<ResponseIClienteBusqueda> {    
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPFiltrarClientesPorPatron}/${patron}`;
     return this.http.get<ResponseIClienteBusqueda>(url, { headers });
@@ -149,34 +162,56 @@ export class EmisionService {
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
-  AperturarCaja(caja:IAperturaCajaRequest ): Observable<IResponseGeneric<number>> {
+  AperturarCaja(caja: IAperturaCajaRequest): Observable<IResponseGeneric<number>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPAperturaCaja}`;
     return this.http.post<IResponseGeneric<number>>(url, caja, { headers });
   }
 
-  RegistrarMovimientosCaja(ItemCaja:IDetalleCajaRequest ): Observable<IResponseGeneric<number>> {
+
+
+
+  RegistrarMovimientosCaja(ItemCaja: IDetalleCajaRequest): Observable<IResponseGeneric<number>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPRegistrarMovimientosCaja}`;
     return this.http.post<IResponseGeneric<number>>(url, ItemCaja, { headers });
   }
 
-  CerrarCaja(caja:ICerrarCajaRequest ): Observable<IResponseGeneric<string>> {
+  RegistrarMovimientosCajaOtrosIngresos(ItemCaja: IDetalleCajaRequestOtherIn): Observable<IResponseGeneric<number>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.apiUrl}${environment.EPCerrarCaja}`;
-    return this.http.post<IResponseGeneric<string>>(url, caja, { headers });
+    const url = `${this.apiUrl}${environment.EPRegistrarMovimientosCajaOtros}`;
+    return this.http.post<IResponseGeneric<number>>(url, ItemCaja, { headers });
   }
 
-  ListarCajaPorIdUser(idUser: number): Observable<IResponseGeneric<IListarCajaPorUsuarioResponse[]>> {
+
+
+
+
+  CerrarCaja(caja: ICerrarCajaRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCerrarCaja}/${caja.id}`;
+    return this.http.put<IResponseGeneric<string>>(url, caja, { headers });
+  }
+
+  ListarCajaPorIdUser(idUser: number): Observable<IResponseGeneric<IListarCajaPorUsuarioResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPListarCajaPorUsuario}/${idUser}`;
-    return this.http.get<IResponseGeneric<IListarCajaPorUsuarioResponse[]>>(url, { headers });
+    return this.http.get<IResponseGeneric<IListarCajaPorUsuarioResponse>>(url, { headers })
+    .pipe(
+      catchError(this.handleError)
+    );
   }
 
   ListarCajaDetallesPorUser(idUser: number): Observable<IResponseGeneric<ICashBoxDetailResponseDto[]>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPListarCajaDetallePorUsuario}/${idUser}`;
     return this.http.get<IResponseGeneric<ICashBoxDetailResponseDto[]>>(url, { headers });
+  }
+
+  EliminarItemCajaDetalle(idDet: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarCajaDetalle}/${idDet}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
 }

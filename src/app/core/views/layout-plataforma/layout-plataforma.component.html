@@ -61,16 +61,17 @@
           
             <mat-sidenav-content>
               <mat-toolbar class="win-proceso">
-                <button mat-button (click)="sidenav.toggle()">
+                <button mat-icon-button (click)="sidenav.toggle()">
                   <mat-icon>menu</mat-icon>
                 </button>
 
                 <span>Lavanderia Kyo</span>
 
-                <button mat-button>
-                    <mat-icon>description</mat-icon>
-                    <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
+                <button mat-button>                  
+                  <mat-icon>description</mat-icon>
+                  <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
                 </button>
+                
         
                 <button mat-button>
                     <mat-icon>exit_to_app</mat-icon>
@@ -78,7 +79,7 @@
                 </button>
 
                 <button mat-button>
-                  <mat-icon>price_check</mat-icon>
+                  <mat-icon>local_atm</mat-icon>
                   <a [routerLink]="['/recepcion/gastos']" routerLinkActive="router-link-active">Gastos</a>
               </button>
         
@@ -96,10 +97,29 @@
 
                 <span class="flexExpand"></span>
                 <span class="example-spacer"></span>
-                <button mat-button (click)="cerrarSesion()">
+                <!-- <button mat-button (click)="cerrarSesion()">
                   <mat-icon>logout</mat-icon>
                   Cerrar Sesion
+                </button> -->
+
+                <mat-menu #userMenu="matMenu">
+                  <button mat-menu-item (click)="cerrarSesion()">
+                    <mat-icon>logout</mat-icon>
+                    Cerrar Sesion
+                  </button>
+                  <mat-divider></mat-divider>
+                  <button mat-menu-item [routerLink]="['/admin']" routerLinkActive="router-link-active">
+                    <mat-icon>settings</mat-icon>
+                    Administrar
+                  </button>
+                </mat-menu>
+
+                <button mat-button [matMenuTriggerFor]="userMenu">
+                  <mat-icon>account_circle</mat-icon>
+                  {{ loginService.getLoginData()?.userName }}
                 </button>
+
+
               </mat-toolbar>
               <div>
                 <router-outlet></router-outlet>

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,6 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { EmisionService } from '../../services/emision.service';
 import { IClienteCreate } from '../../interfaces/IClienteCreate';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarModule, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
+import { Subscription } from 'rxjs';
+import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 
 
 export interface ResponseIClienteBusqueda {
@@ -31,28 +34,38 @@ export interface IClienteBusqueda {
 @Component({
   selector: 'app-dialog-cliente',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, MatTableModule, MatDialogModule, MatButtonModule, MatIconModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [
+    MatFormFieldModule, MatInputModule, FormsModule,
+    MatTableModule, MatDialogModule, MatButtonModule,
+    MatIconModule, ReactiveFormsModule, MatSnackBarModule,
+    LoadingComponent, AlertDangerComponent
+  ],
   templateUrl: './dialog-cliente.component.html',
   styleUrl: './dialog-cliente.component.css'
 })
-export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @ViewChild('publicSearchBox', { static: false }) searchBoxField!: ElementRef;
   readonly dialogRef = inject(MatDialogRef<DialogClienteComponent>);
   readonly data = inject<{ filtro: string }>(MAT_DIALOG_DATA);
   emisionService = inject(EmisionService);
-  private _snackBar = inject(MatSnackBar);
 
-  horizontalPosition: MatSnackBarHorizontalPosition = 'right';
-  verticalPosition: MatSnackBarVerticalPosition = 'top';
 
-  filtroNombre = '';
-  dataMock: IClienteBusqueda[] = [];
-  showNuevoCliente = false;
 
-  displayedColumns: string[] = ['nombres', 'apellidos', 'telefono', 'actions'];
-  dataSource = new MatTableDataSource<IClienteBusqueda>(this.dataMock);
+  loadingSave = false;
+  bolShowError = false;
+  msgError = '';
 
   formRegistrarCliente: FormGroup;
+
+  subscriptionRegistrar!: Subscription;
+
+
+  // filtroNombre = '';
+  // dataMock: IClienteBusqueda[] = [];
+  // showNuevoCliente = false;
+  // displayedColumns: string[] = ['nombres', 'apellidos', 'telefono', 'actions'];
+  // dataSource = new MatTableDataSource<IClienteBusqueda>(this.dataMock);
+
 
   constructor() {
     this.formRegistrarCliente = new FormGroup({
@@ -60,17 +73,16 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
       telefono: new FormControl('')
     });
   }
+  ngOnDestroy(): void {
+    if (this.subscriptionRegistrar) this.subscriptionRegistrar.unsubscribe();
+  }
 
   ngAfterViewChecked(): void {
-    console.log('ngAfterViewChecked()');
-    // this.searchBoxField.nativeElement.select();
-    this.searchBoxField.nativeElement.focus();
-
+    // this.searchBoxField.nativeElement.focus();
   }
 
   ngAfterViewInit(): void {
-    console.log('ngAfterViewInit()');
-    this.filtroNombre = this.data.filtro;
+    // this.filtroNombre = this.data.filtro;
   }
 
   ngOnInit(): void {
@@ -79,39 +91,42 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
 
   }
 
-  filtrar() {
-    console.log('filtrando....');
+  // filtrar() {
 
+  //   if (this.filtroNombre.length == 0 || this.filtroNombre == '') {
+  //     return;
+  //   }
 
-    if (this.filtroNombre.length == 0 || this.filtroNombre == '') {
-      return;
-    }
+  //   this.emisionService.filtrarClientesPorPatron(this.filtroNombre).subscribe({
+  //     next: (response) => {
+  //       this.dataSource = new MatTableDataSource<IClienteBusqueda>(response.data);
+  //     },
+  //     error: (error) => {
+  //       console.log('error', error);
+  //     }
+  //   })
+  // }
 
-    this.emisionService.filtrarClientesPorPatron(this.filtroNombre).subscribe({
-      next: (response) => {
-        this.dataSource = new MatTableDataSource<IClienteBusqueda>(response.data);
-      },
-      error: (error) => {
-        console.log('error', error);
-      },
-      complete: () => {
-        console.log('complete');
-      }
-    })
-  }
-
-  nuevoCliente() {
-    this.showNuevoCliente = true;
-  }
-  verBusqueda() {
-    this.showNuevoCliente = false;
-  }
-  seleccionarCliente(cliente: IClienteBusqueda) {
-    this.dialogRef.close(cliente);
-  }
+  // nuevoCliente() {
+  //   this.showNuevoCliente = true;
+  // }
+  // verBusqueda() {
+  //   this.showNuevoCliente = false;
+  // }
+  // seleccionarCliente(cliente: IClienteBusqueda) {
+  //   this.dialogRef.close(cliente);
+  // }
 
   registrarCliente() {
-    console.log('registrando cliente', this.formRegistrarCliente.value);
+
+    if (this.formRegistrarCliente.invalid) {
+      this.bolShowError = true;
+        this.msgError = 'Falta ingresar los campos obligatorios';
+        setTimeout(() => {
+          this.bolShowError = false;
+        }, 3000);
+      return;
+    }
 
     const nombres = this.formRegistrarCliente.get('nombres')?.value.toLowerCase().split(' ');
     var firstName = nombres[0].charAt(0).toUpperCase() + nombres[0].slice(1);
@@ -127,10 +142,10 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
       status: 'A'
     }
 
-    this.emisionService.registrarCliente(cliente).subscribe({
+    this.loadingSave = true;
+    this.subscriptionRegistrar = this.emisionService.registrarCliente(cliente).subscribe({
       next: (data) => {
-        console.log('data', data);
-
+        this.loadingSave = false;
         var clienteNuevo: IClienteBusqueda = {
           id: data.id,
           codigo: '',
@@ -138,24 +153,16 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
           apellidos: '',
           telefono: data.phone
         }
-
-        this._snackBar.open('CLIENTE REGISTRADO', 'OK', {
-          duration: 3000,
-        });
-
-        setTimeout(() => {
-          this.dialogRef.close(clienteNuevo);
-        }, 3000);
-
+        this.dialogRef.close(clienteNuevo);
       },
       error: (error) => {
         console.log('error', error);
-        this._snackBar.open('ERROR', 'OK', {
-          duration: 3000,
-        });
-      },
-      complete: () => {
-        console.log('complete');
+        this.loadingSave = false;
+        this.bolShowError = true;
+        this.msgError = 'Error al registrar el cliente';
+        setTimeout(() => {
+          this.bolShowError = false;
+        }, 3000);
       }
     })
   }

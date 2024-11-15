@@ -3,6 +3,8 @@
     /* background-color: aqua;     */
 }
 
+
+
 .container-area-trabajo {
     width: 100%;
     display: flex;
@@ -10,10 +12,15 @@
 }
 
 .container-lado-izq {
-    /* background-color: aqua; */
+    /* background-color: #19c3f767; */
     /* display: table-cell; */
     width: 40%;
-    border: 1px solid grey;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    margin-right: 5px;
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .container-scroll {
@@ -25,7 +32,7 @@
 .container-lado-der {
     /* background-color: coral;     */
     width: 60%;
-    border: 1px solid grey;
+    /* border: 1px solid grey; */
 }
 
 .container-categories {
@@ -51,18 +58,24 @@
 table {
     width: 100%;
 }
-
-
-
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #ccc !important;
+}
 
 
 .botonera {
-    background-color: aqua;
-    display: flex;
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    /* background-color: aqua; */
     /* width: 100%; */
+    display: flex;
+    justify-content: flex-end;
     padding: 10px;
     gap: 10px;
-    justify-content: flex-end;
 }
 
 /* Estilos específicos para la tabla con la clase custom-table */
@@ -87,9 +100,9 @@ table {
     align-items: center;
     gap: 5px;    
     padding: 5px;
-    border: 1px solid gray;
+    border: 1px solid #d0cccc;
     border-radius: 5px;
-    margin: 2px;
+    /* margin: 2px; */
 }
 
 .fila-detalle-pago {
@@ -99,9 +112,9 @@ table {
     gap: 5px;
     /* background-color: darkgoldenrod; */
     padding: 5px;
-    border: 1px solid gray;
+    border: 1px solid #d0cccc;
     border-radius: 5px;
-    margin: 2px;
+    /* margin: 2px; */
 }
 
 
@@ -153,7 +166,7 @@ table {
 
 
 .mat-column-nomProd {
-    padding: 0;
+    padding: 5px;
     width: 100%;
 }
 
@@ -163,7 +176,7 @@ table {
     width: 50px;
     /* background-color: aqua; */
     flex: none;
-    padding: 0;
+    padding: 5px;
 
 }
 

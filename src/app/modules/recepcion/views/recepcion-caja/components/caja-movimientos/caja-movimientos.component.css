@@ -24,3 +24,10 @@
     display: flex;
     gap: 10px;
 }
+
+.section-filters__buttons{
+    width: 100%;
+    display: flex;
+    /* gap: 10px; */
+    justify-content: space-between;
+}

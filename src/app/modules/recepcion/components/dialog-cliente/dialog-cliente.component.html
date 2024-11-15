@@ -1,7 +1,7 @@
-<h2 mat-dialog-title> Busqueda de Clientes </h2>
+<h2 mat-dialog-title> Registrar Cliente </h2>
 <mat-dialog-content class="mat-typography">
 
-    @if (!showNuevoCliente) {
+    <!-- @if (!showNuevoCliente) {
     <div class="container-busqueda">
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Cliente</mat-label>
@@ -44,28 +44,48 @@
         </table>
     </div>
     }
-    @else {
-    <div style="margin-top: 5px; margin-bottom:10px;">
+    @else { -->
+    <!-- <div style="margin-top: 5px; margin-bottom:10px;">
         <button mat-fab extended (click)="verBusqueda()">
             <mat-icon>arrow_back</mat-icon>
             Regresar
         </button>
-    </div>
+    </div> -->
     <form style="width: 100%;" [formGroup]="formRegistrarCliente">
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput placeholder="escriba su nombre" type="text" formControlName="nombres">
         </mat-form-field>
         <mat-form-field class="example-full-width" appearance="outline">
-            <mat-label>telefono</mat-label>
+            <mat-label>Telefono</mat-label>
             <input matInput placeholder="escriba su telefono" type="tel" formControlName="telefono">
         </mat-form-field>
-        <button mat-raised-button class="primary" style="width: 100%; margin-top: 5px;margin-bottom: 5px;" (click)="registrarCliente()">
+
+        
+
+
+        @if(loadingSave){
+        <button mat-fab extended>
+            <div style="display: flex; gap: 5px; width: 100%; margin-top: 5px;margin-bottom: 5px;">
+                <app-loading></app-loading>
+                Grabando...
+            </div>
+        </button>
+        }
+        @if(!loadingSave){
+        <button mat-fab extended class="primary" style="width: 100%; margin-top: 5px;margin-bottom: 5px;"
+            (click)="registrarCliente()">
             <mat-icon>save</mat-icon>
             Registrar
         </button>
+        }
+
+        @if (bolShowError) {
+            <app-alert-danger [message]="msgError" [timeShow]="3000"></app-alert-danger>
+        }
+
     </form>
-    }
+    <!-- } -->
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

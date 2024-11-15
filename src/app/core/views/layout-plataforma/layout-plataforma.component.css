@@ -10,6 +10,14 @@
   display: flex;
 }
 
+a{
+  text-decoration: none;
+}
+
+.router-link-active{
+  color: #007bff;
+  
+}
 
 
 @media print {
