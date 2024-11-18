@@ -16,4 +16,13 @@ export class NotificationServiceService {
       politeness: 'polite'
     });
   }
+
+  showSuccess(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 4000,
+      horizontalPosition: 'right',
+      verticalPosition: 'top',      
+      politeness: 'polite'
+    });
+  }
 }

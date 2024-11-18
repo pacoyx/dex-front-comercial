@@ -9,18 +9,18 @@
     <div style="display: flex; margin-top: 10px;">
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Cantidad</mat-label>
-            <input (keydown.enter)="calcularPrecio()" (blur)="calcularPrecio()" matInput placeholder="peso en kilogramos" type="number"
-                [(ngModel)]="cantidad">
+            <input (keydown.enter)="calcularPrecio()" (blur)="calcularPrecio()" matInput
+                placeholder="peso en kilogramos" type="number" [(ngModel)]="cantidad">
         </mat-form-field>
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Precio</mat-label>
-            <input (keydown.enter)="focusTotal()" (blur)="calcularPrecio()" matInput placeholder="precio por kg" type="number"
-                [(ngModel)]="precio">
+            <input (keydown.enter)="focusTotal()" (blur)="calcularPrecio()" matInput placeholder="precio por kg"
+                type="number" [(ngModel)]="precio">
         </mat-form-field>
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Total soles</mat-label>
-            <input (keydown.enter)="calcularPrecioPesoKG()" (blur)="calcularPrecioPesoKG()" md-select-on-focus matInput placeholder="total" type="number"
-                [(ngModel)]="total">
+            <input (keydown.enter)="calcularPrecioPesoKG()" (blur)="calcularPrecioPesoKG()" md-select-on-focus matInput
+                placeholder="total" type="number" [(ngModel)]="total">
         </mat-form-field>
     </div>
     <div>
@@ -64,16 +64,18 @@
             </mat-tab>
 
             <mat-tab label="Marcas">
-
-                <!-- <form [formGroup]="formMarcas">
-                    <div formArrayName="checkboxesColores"> -->
-                <mat-chip-listbox aria-label="select a shirt size">
-                    @for (marca of marcasRopas; track $index) {
-                    <mat-chip-option> {{marca}} </mat-chip-option>
-                    }
-                </mat-chip-listbox>
-                <!-- </div>
-                </form> -->
+                <div style="height: 500px;">
+                    <form [formGroup]="formMarcasx">
+                        <mat-selection-list #shoesList [formControl]="marcasControl" name="marcasx" [multiple]="false">
+                            @for (marca of marcasRopas; track marca) {
+                            <mat-list-option [value]="marca">{{marca}}</mat-list-option>
+                            }
+                        </mat-selection-list>
+                        <p>
+                            Option selected: {{marcasControl.value}}
+                        </p>
+                    </form>
+                </div>
             </mat-tab>
         </mat-tab-group>
 

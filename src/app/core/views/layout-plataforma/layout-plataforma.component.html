@@ -1,132 +1,110 @@
 <div style="margin: 20px;">
-    <!-- <mat-toolbar class="win-proceso">
-        <button mat-icon-button>
-            <mat-icon>menu</mat-icon>
-        </button>
-        <span>Recepción Laundry</span>
+  <div>
+    <!-- <router-outlet></router-outlet> -->
 
-        <button mat-button>
-            <mat-icon>description</mat-icon>
-            <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
-        </button>
-
-        <button mat-button>
+    <mat-sidenav-container class="example-container">
+      <mat-sidenav #sidenav mode="side">
+        <mat-nav-list>
+          <a mat-list-item [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">
             <mat-icon>exit_to_app</mat-icon>
-            <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Retiros</a>
-        </button>
-
-        <button mat-button>
+            Recepcion
+          </a>
+          <a mat-list-item [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">
             <mat-icon>point_of_sale</mat-icon>
-            <a [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">Caja</a>
-        </button>
-
-        <button mat-button>
+            Compras
+          </a>
+          <a mat-list-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
             <mat-icon>person_search</mat-icon>
-            <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
-        </button>
-
-        <span class="flexExpand"></span>
-
-        <span class="example-spacer"></span>
-        <button mat-button (click)="cerrarSesion()">
+            Operaciones
+          </a>
+          <a mat-list-item (click)="cerrarSesion()">
             <mat-icon>logout</mat-icon>
             Cerrar Sesion
-        </button>
+          </a>
+        </mat-nav-list>
+      </mat-sidenav>
 
-    </mat-toolbar> -->
-    <div>        
-        <!-- <router-outlet></router-outlet> -->
+      <mat-sidenav-content>
+        <mat-toolbar class="win-proceso">
+          <button mat-icon-button (click)="sidenav.toggle()">
+            <mat-icon>menu</mat-icon>
+          </button>
 
-        <mat-sidenav-container class="example-container">
-            <mat-sidenav #sidenav mode="side">
-              <mat-nav-list>
-                <a mat-list-item [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">
-                  <mat-icon>exit_to_app</mat-icon>
-                  Recepcion
-                </a>
-                <a mat-list-item [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">
-                  <mat-icon>point_of_sale</mat-icon>
-                  Compras
-                </a>
-                <a mat-list-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
-                  <mat-icon>person_search</mat-icon>
-                  Operaciones
-                </a>
-                <a mat-list-item (click)="cerrarSesion()">
-                  <mat-icon>logout</mat-icon>
-                  Cerrar Sesion
-                </a>
-              </mat-nav-list>
-            </mat-sidenav>
-          
-            <mat-sidenav-content>
-              <mat-toolbar class="win-proceso">
-                <button mat-icon-button (click)="sidenav.toggle()">
-                  <mat-icon>menu</mat-icon>
-                </button>
+          <span>Lavanderia Kyo</span>
 
-                <span>Lavanderia Kyo</span>
+          <button mat-button>
+            <mat-icon>description</mat-icon>
+            <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
+          </button>
 
-                <button mat-button>                  
-                  <mat-icon>description</mat-icon>
-                  <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
-                </button>
-                
-        
-                <button mat-button>
-                    <mat-icon>exit_to_app</mat-icon>
-                    <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Retiros</a>
-                </button>
 
-                <button mat-button>
-                  <mat-icon>local_atm</mat-icon>
-                  <a [routerLink]="['/recepcion/gastos']" routerLinkActive="router-link-active">Gastos</a>
-              </button>
-        
-                <button mat-button>
-                    <mat-icon>point_of_sale</mat-icon>
-                    <a [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">Caja</a>
-                </button>
-        
-                <button mat-button>
-                    <mat-icon>person_search</mat-icon>
-                    <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
-                </button>
+          <button mat-button>
+            <mat-icon>exit_to_app</mat-icon>
+            <a [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">Retiros</a>
+          </button>
+
+          <button mat-button>
+            <mat-icon>local_atm</mat-icon>
+            <a [routerLink]="['/recepcion/gastos']" routerLinkActive="router-link-active">Gastos</a>
+          </button>
+
+          <button mat-button>
+            <mat-icon>point_of_sale</mat-icon>
+            <a [routerLink]="['/recepcion/caja']" routerLinkActive="router-link-active">Caja</a>
+          </button>
+
+          <button mat-button>
+            <mat-icon>person_search</mat-icon>
+            <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
+          </button>
+
+
+          <button mat-button [matMenuTriggerFor]="mntMenu">
+            <mat-icon>tab_group</mat-icon>
+            Maestros
+          </button>
+          <mat-menu #mntMenu="matMenu">
+            <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
+              <mat-icon>manage_accounts</mat-icon>
+              Clientes
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/recepcion/servicios']" routerLinkActive="router-link-active">
+              <mat-icon>inventory_2</mat-icon>
+              Servicios
+            </button>
+          </mat-menu>
 
 
 
-                <span class="flexExpand"></span>
-                <span class="example-spacer"></span>
-                <!-- <button mat-button (click)="cerrarSesion()">
-                  <mat-icon>logout</mat-icon>
-                  Cerrar Sesion
-                </button> -->
 
-                <mat-menu #userMenu="matMenu">
-                  <button mat-menu-item (click)="cerrarSesion()">
-                    <mat-icon>logout</mat-icon>
-                    Cerrar Sesion
-                  </button>
-                  <mat-divider></mat-divider>
-                  <button mat-menu-item [routerLink]="['/admin']" routerLinkActive="router-link-active">
-                    <mat-icon>settings</mat-icon>
-                    Administrar
-                  </button>
-                </mat-menu>
+          <span class="flexExpand"></span>
+          <span class="example-spacer"></span>
+          <mat-menu #userMenu="matMenu">
+            <button mat-menu-item (click)="cerrarSesion()">
+              <mat-icon>logout</mat-icon>
+              Cerrar Sesion
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/admin']" routerLinkActive="router-link-active">
+              <mat-icon>settings</mat-icon>
+              Administrar
+            </button>
+          </mat-menu>
 
-                <button mat-button [matMenuTriggerFor]="userMenu">
-                  <mat-icon>account_circle</mat-icon>
-                  {{ loginService.getLoginData()?.userName }}
-                </button>
+          <button mat-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>account_circle</mat-icon>
+            {{ loginService.getLoginData()?.userName }}
+          </button>
 
 
-              </mat-toolbar>
-              <div>
-                <router-outlet></router-outlet>
-              </div>
-            </mat-sidenav-content>
-          </mat-sidenav-container>
+        </mat-toolbar>
+        <div>
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
 
 
-    </div>
+  </div>
 </div>

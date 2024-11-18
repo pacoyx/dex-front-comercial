@@ -7,7 +7,7 @@ import { IListaCategorias } from '../interfaces/IListaCategorias';
 import { IListaItemsBusqueda } from '../interfaces/IListaItemsBusqueda';
 import { ResponseIClienteBusqueda } from '../components/dialog-cliente/dialog-cliente.component';
 import { IClienteCreate } from '../interfaces/IClienteCreate';
-import { ICliente } from '../interfaces/ICliente';
+import { ICliente, IUpdatePhoneRequest } from '../interfaces/ICliente';
 import { INumeracionDoc } from '../interfaces/INumeracionDoc';
 import { ICreateGuideWork } from '../interfaces/ICreateGuideWork';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
@@ -17,6 +17,7 @@ import { ICreateAlertaRequest, ICreateAlertaResponse, IListarAlertasResponse } f
 import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDevoluciones';
 import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
 import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse } from '../interfaces/ICajaVentas';
+import { IIdsPesoLavadoResponse } from '../interfaces/IProdServices';
 
 
 @Injectable({
@@ -68,6 +69,12 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPRegistrarCliente}`;
     return this.http.post<ICliente>(url, cliente, { headers });
+  }
+
+  ActualizarTelefonoCliente(cliente: IUpdatePhoneRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPActualizarClienteTelefono}/${cliente.id}`;
+    return this.http.put<IResponseGeneric<string>>(url, cliente, { headers });
   }
 
   filtrarServiciosPorPatron(patron: string): Observable<IListaItemsBusqueda[]> {
@@ -212,6 +219,12 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPEliminarCajaDetalle}/${idDet}`;
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  ObtenerIdsPesoLavado(): Observable<IResponseGeneric<IIdsPesoLavadoResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPObtenerIdsPesoLavado}`;
+    return this.http.get<IResponseGeneric<IIdsPesoLavadoResponse>>(url, { headers });
   }
 
 }

@@ -4,8 +4,8 @@
         Retiro de Prendas
     </h2>
     @if(!bolExisteCaja){
-        <app-alert-danger [message]="msgValidacion" [timeShow]="5000"></app-alert-danger>
-      }
+    <app-alert-danger [message]="msgValidacion" [timeShow]="5000"></app-alert-danger>
+    }
     <hr>
     <div class="section-busqueda">
         <div style="display: flex; gap: 10px; flex-direction: column;">
@@ -16,15 +16,23 @@
             <!-- <button mat-mini-fab (click)="buscarGuia()">
                 <mat-icon>search</mat-icon>
             </button> -->
-            <div style="width: 100%; text-align: center;">
-                @if (guiaRetiroData?.estadoRegistro == 'A') {
-                <span style="color: darkblue;font-weight: bold;">ACTIVO</span>
-                }
 
-                @if (guiaRetiroData?.estadoRegistro == 'I') {
-                <span style="color: red; font-weight: bold;">ANULADO</span>
-                }
-            </div>
+            @if(bolBuscandoGuia){
+            <app-loading></app-loading>
+            Buscando...
+            }@else {
+                <div style="width: 100%; text-align: center;">
+                    @if (guiaRetiroData?.estadoRegistro == 'A') {
+                    <span style="color: darkblue;font-weight: bold;">ACTIVO</span>
+                    }
+    
+                    @if (guiaRetiroData?.estadoRegistro == 'I') {
+                    <span style="color: red; font-weight: bold;">ANULADO</span>
+                    }
+                </div>
+            }
+
+           
         </div>
         <div class="seccion-detalle">
             <div><mat-icon style="padding-top: 5px;">calendar_month</mat-icon>
@@ -66,11 +74,8 @@
                     [disabled]="bolCancelado">Cancelado</mat-checkbox>
                 <mat-chip-set aria-label="tipo pago">
                     @if (guiaRetiroData?.tipoPagoCancelacion) {
-                    <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion  }} </small></mat-chip>
-                    }
-                    @if (guiaRetiroData?.tipoPago) {
-                        <mat-chip> <small> {{guiaRetiroData!.tipoPago }} </small></mat-chip>
-                    }
+                    <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion }} </small></mat-chip>
+                    }                    
                     @if(guiaRetiroData?.fechaPago){
                     <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small></mat-chip>
                     }
@@ -87,12 +92,12 @@
                 </mat-chip-set>
             </div>
             @if(loadingCancelado){
-                <div style="display: flex; gap: 5px;">
-                    <app-loading></app-loading>
-                    <b>
-                        Procesando...
-                    </b>                    
-                </div>
+            <div style="display: flex; gap: 5px;">
+                <app-loading></app-loading>
+                <b>
+                    Procesando...
+                </b>
+            </div>
             }
 
         </div>
@@ -187,11 +192,15 @@
             </ng-container> -->
 
             <ng-container matColumnDef="estadoSituacion">
-                <th mat-header-cell *matHeaderCellDef  class="estadoSituacion-column"> Estado </th>
+                <th mat-header-cell *matHeaderCellDef class="estadoSituacion-column"> Estado </th>
                 <td mat-cell *matCellDef="let element">
                     @switch (element.estadoSituacion) {
                     @case ('P') {
                     <button mat-stroked-button (click)="recogerPrendaxItem(element)" class="btn-block">
+                        @if(element.estadoPago == 'PA'){
+                        <mat-icon style="color: green;" aria-hidden="false" aria-label="pagado" fontIcon="credit_score">
+                        </mat-icon>
+                        }
                         Por Recoger
                     </button>
 
@@ -209,7 +218,7 @@
                             <span style="color: darkblue;">Entregado</span>
                         </div>
                         <div style="width: 100%; text-align: center;">
-                            {{element.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}} 
+                            {{element.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}}
                         </div>
                     </div>
 

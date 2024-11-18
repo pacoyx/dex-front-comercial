@@ -59,9 +59,11 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   sucursalId = 1;
   tipoDocUsuario = 'GS';
   serieDocUsuario = '001';
-
+  idServicioPeso = 0;
+  idServicioLavado = 0;
 
   fechaHoy = Date.now();
+  fechaHEntrega = Date.now() + 2 * 24 * 60 * 60 * 1000;
   tipoPago = 'SP';
   montoPago = 0;
   canceladoPago = true;
@@ -77,7 +79,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   items: IListaItemsBusqueda[] = [];
   categories: IListaCategorias[] = [];
   DataDemo: IEmisionPrevia[] = [];
-  displayedColumns: string[] = ['nomProd', 'Cant', 'Precio', 'Subtotal', 'actions'];
+  displayedColumns: string[] = ['item', 'nomProd', 'Cant', 'Precio', 'Subtotal', 'actions'];
   dataSource = new MatTableDataSource<IEmisionPrevia>(this.store.items());
   numeracion: INumeracionDoc = { id: 0, branchId: 0, typeDoc: '', serieDoc: '', numberDoc: '', status: '' };
 
@@ -85,6 +87,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   blockSave = false;
   loading = false;
   loadingSave = false;
+  loadingUpdatePhone = false;
   bolExisteCaja = true;
   msgValidacion = '';
 
@@ -95,6 +98,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   subscriptionGrabarGuia!: Subscription;
   subscriptionFiltrarServixpatron!: Subscription;
   subscriptionConsulta!: Subscription;
+  subscriptionIdsPesoLavado!: Subscription;
 
   clienteControl = new FormControl();
   filteredClientes!: Observable<IClienteBusqueda[]>;
@@ -123,6 +127,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     if (this.subscriptionGrabarGuia) this.subscriptionGrabarGuia.unsubscribe();
     if (this.subscriptionFiltrarServixpatron) this.subscriptionFiltrarServixpatron.unsubscribe();
     if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
+    if (this.subscriptionIdsPesoLavado) this.subscriptionIdsPesoLavado.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -142,11 +147,48 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       })
     );
 
+    this.obtenerIdsServicioPesoLavado();
     this.store.resetState();
     this.cargarNumeracion();
     this.cargarCategorias();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
+  }
+
+  obtenerIdsServicioPesoLavado() {
+    this.emisionService.ObtenerIdsPesoLavado().subscribe({
+      next: (resp) => {
+        console.log(resp);
+        this.idServicioPeso = resp.data.idPeso;
+        this.idServicioLavado = resp.data.idLavado;
+      },
+      error: (err) => {
+        console.log(err);
+      },
+      complete: () => { console.log('complete ObtenerIdsPesoLavado()'); }
+    });
+  }
+
+  actualizarTelefonoCliente(event: any) {
+    this.clienteTelefono = event.target.value;
+    this.store.addCliente({ codigo: this.store.selectedCliente()?.codigo ?? 0, nombre: this.clienteNombre, telefono: this.clienteTelefono });
+    this.loadingUpdatePhone = true;
+    this.emisionService.ActualizarTelefonoCliente({ id: this.store.selectedCliente()?.codigo ?? 0, phone: this.clienteTelefono }).subscribe({
+      next: (resp) => {
+        console.log(resp);
+        if (resp.success) {
+          this.notificacionService.showSuccess('Se actualizó correctamente el teléfono del cliente.');
+        }
+        this.loadingUpdatePhone = false;
+      },
+      error: (err) => {
+        console.log(err);
+        this.loadingUpdatePhone = false;
+      },
+      complete: () => { console.log('complete ActualizarTelefonoCliente()'); }
+    });
+
+
   }
 
   validarExisteCajaPorUsuario(): void {
@@ -279,10 +321,10 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     });
   }
 
-  openDialogClientes() {    
+  openDialogClientes() {
     const dialogRef = this.dialog.open(DialogClienteComponent, { data: { filtro: '' } });
-    dialogRef.afterClosed().subscribe((result: IClienteBusqueda) => {      
-      if (result.id == undefined) return;     
+    dialogRef.afterClosed().subscribe((result: IClienteBusqueda) => {
+      if (result.id == undefined) return;
       this.store.addCliente({ codigo: result.id, nombre: result.nombres + ' ' + result.apellidos, telefono: result.telefono });
       this.clienteNombre = result.nombres + ' ' + result.apellidos;
       this.clienteTelefono = result.telefono;
@@ -291,7 +333,31 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   openDialogPeso() {
-    this.dialog.open(DialogPesokgComponent);
+    this.dialog.open(DialogPesokgComponent,
+      {
+        data:
+        {
+          inTitulo: 'Lavado por Peso Kg.',
+          inIdServicio: this.idServicioPeso,
+          inDesServicio: 'Peso',
+          inEsPeso: true,
+          inPrecio: 3
+        }
+      });
+  }
+
+  openDialogLavado() {
+    this.dialog.open(DialogPesokgComponent,
+      {
+        data:
+        {
+          inTitulo: 'Lavado',
+          inIdServicio: this.idServicioLavado,
+          inDesServicio: 'Lavado',
+          inEsPeso: false,
+          inPrecio: 1
+        }
+      });
   }
 
   openDialogAddItem(ele: IListaItemsBusqueda) {

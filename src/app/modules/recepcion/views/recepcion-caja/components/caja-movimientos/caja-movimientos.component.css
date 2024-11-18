@@ -31,3 +31,11 @@
     /* gap: 10px; */
     justify-content: space-between;
 }
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #7d9ad6;
+    color: white;
+    border: 1px solid #ccc !important;
+}

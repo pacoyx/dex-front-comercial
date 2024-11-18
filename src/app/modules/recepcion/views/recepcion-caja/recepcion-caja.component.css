@@ -1,11 +1,9 @@
 .container-caja {
-    width: 100%;
     margin: 10px;
     background-color: snow;
 }
 
 .section-controls {
-    width: 100%;
     display: flex;
     gap: 10px;
     border: 1px solid #ccc;
@@ -15,6 +13,5 @@
 }
 
 .example-tab-icon{
-    margin-right: 5px;
-    
+    margin-right: 5px;    
 }

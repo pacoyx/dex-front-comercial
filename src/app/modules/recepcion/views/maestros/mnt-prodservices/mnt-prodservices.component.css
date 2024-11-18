@@ -1,0 +1,57 @@
+.container-mntclientes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+    /* background-color: pink; */
+}
+
+.section-controls-mnt-cliente {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+
+/* .mat-column-name {
+    background-color: #f0f8ff;
+    color: #000;
+} */
+
+.mat-header-cell.mat-column-name {
+    width: 250px;
+}
+
+.mat-column-price {
+    text-align: right;
+    width: 100px;
+}
+
+.mat-column-isPeso {
+    text-align: center;
+    width: 100px;
+}
+
+.mat-column-isLavado {
+    text-align: center;
+    width: 100px;
+}
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #7d9ad6;
+    color: white;
+    border: 1px solid #ccc !important;
+    border-radius: 5px;
+}
+
+
+.mat-row,
+.mat-header-row {
+    height: 50px;
+    /* Ajusta este valor según tus necesidades */
+}

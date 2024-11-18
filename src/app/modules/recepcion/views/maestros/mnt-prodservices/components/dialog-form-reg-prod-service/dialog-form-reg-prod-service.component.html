@@ -1,0 +1,87 @@
+<h2 mat-dialog-title>
+    <mat-icon>edit_note</mat-icon> {{titulo}}
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="servicioForm">
+        <div style="padding: 5px; display: flex; flex-direction: column;">
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Description</mat-label>
+                <input matInput formControlName="description">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Precio</mat-label>
+                <input matInput formControlName="price" type="number">
+            </mat-form-field>
+            
+            <div style="display: flex; justify-content: space-between;">
+                <mat-form-field appearance="outline">
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="catServiceId">
+                        @for (service of services; track $index) {
+                            <mat-option [value]="service.id">{{service.name}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 120px;">
+                    <mat-label>Estado</mat-label>
+                    <mat-select formControlName="status">
+                        <mat-option value="A">Activo</mat-option>
+                        <mat-option value="I">Inactivo</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            
+            
+            <div style="display: flex;justify-content: space-between;">
+                
+                <mat-form-field appearance="outline" style="width: 150px;">
+                    <mat-label>Es Peso?</mat-label>
+                    <mat-select formControlName="isPeso">
+                        <mat-option value="S">Sí</mat-option>
+                        <mat-option value="N">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 150px;">
+                    <mat-label>Es Lavado?</mat-label>
+                    <mat-select formControlName="isLavado">
+                        <mat-option value="S">Sí</mat-option>
+                        <mat-option value="N">No</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon>cancel</mat-icon>
+        Cancelar
+    </button>
+
+    <!-- 
+    <button mat-button (click)="onSubmit()" [disabled]="clienteForm.invalid">Guardar</button> -->
+
+    @if(loadingSave){
+    <button mat-fab extended>
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+
+</mat-dialog-actions>

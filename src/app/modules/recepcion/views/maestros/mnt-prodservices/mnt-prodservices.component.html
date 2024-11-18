@@ -1,0 +1,86 @@
+<div class="container-mntclientes">
+
+    <h2>
+        <mat-icon>inventory_2</mat-icon>
+        Registro de Servicios
+    </h2>
+
+    <div class="section-controls-mnt-cliente">
+        <mat-form-field appearance="outline">
+            <mat-label>Buscar Servicio</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar">
+        </mat-form-field>
+
+        <button mat-fab extended (click)="nuevoServicio()">
+            <mat-icon>post_add</mat-icon>
+            Nuevo Servicio
+        </button>
+        <mat-paginator [length]="totalClientes" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+        </mat-paginator>
+    </div>
+
+    <div>
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Servicio </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio </th>
+                <td mat-cell *matCellDef="let element"> {{element.price | number:'1.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="isPeso">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Es Peso </th>
+                <td mat-cell *matCellDef="let element"> {{element.isPeso}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="isLavado">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Es Lavado </th>
+                <td mat-cell *matCellDef="let element"> {{element.isLavado}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                <td mat-cell *matCellDef="let element">
+
+                    @switch (element.status) {
+                    @case ('A') {
+                    <span style="color: green;">Activo</span>
+                    }
+                    @case ('I') {
+                    <span style="color: red;">Inactivo</span>
+                    }
+                    @default {
+                    <span style="color: red;">Inactivo</span>
+                    }
+                    }
+
+
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="operaciones">
+                <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+                <td mat-cell *matCellDef="let element">
+                    <div style="display: flex; justify-content: space-evenly;">
+
+
+                        <button mat-mini-fab (click)="editServicio(element)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-mini-fab (click)="deleteServicio(element)">
+                            <mat-icon style="color: red;">delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+                <td mat-footer-cell *matFooterCellDef> </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+    </div>

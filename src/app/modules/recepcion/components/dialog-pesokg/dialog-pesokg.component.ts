@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { EmisionStoreService } from '../../services/emision.store.service';
@@ -15,25 +15,45 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './dialog-pesokg.component.css'
 })
 export class DialogPesokgComponent implements OnInit, AfterViewInit {
-  @ViewChild('publicTotalBox') totalBoxField!: ElementRef;
+  @ViewChild('publicTotalBox', { static: false }) totalBoxField!: ElementRef;
+
+
+  readonly dataInput = inject<{ inTitulo: string, inPrecio: number, inEsPeso: boolean, inIdServicio: number, inDesServicio: string }>(MAT_DIALOG_DATA);
+
+
 
   readonly store = inject(EmisionStoreService);
   readonly dialogRef = inject(MatDialogRef<DialogPesokgComponent>);
-  pesoKg = 0.0;
-  precioKg = 3.0;
+  pesoKg = 1.0;
+  precioKg = 1.0;
   total = 0.0;
   obs = '';
-  codProd = 1;
-  nomProd = 'Lavado KG';
+  codProd = 0;
+  nomProd = '';
+
+  constructor() { }
+
+  ngOnInit(): void {
+
+    this.codProd = this.dataInput.inIdServicio;
+    this.nomProd = this.dataInput.inDesServicio;
+    if (this.dataInput.inEsPeso) {
+      this.pesoKg = 0;
+      this.precioKg = this.dataInput.inPrecio;
+    }
+
+    this.total = 0;
+    this.totalBoxField.nativeElement.focus();
+  }
 
   ngAfterViewChecked(): void {
-    console.log('ngAfterViewChecked()');
+    // console.log('ngAfterViewChecked()');
     // this.totalBoxField.nativeElement.focus();
     // this.totalBoxField.nativeElement.select();
   }
 
   ngAfterViewInit(): void {
-    console.log('ngAfterViewInit()');    
+    // console.log('ngAfterViewInit()');
     // this.totalBoxField.nativeElement.focus();
     // this.totalBoxField.nativeElement.select();
 
@@ -43,22 +63,12 @@ export class DialogPesokgComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
+  precioFocus() { }
 
-  constructor() { }
-
-  ngOnInit(): void {
-    this.total = 0;        
-    this.totalBoxField.nativeElement.focus();
-  }
-
-  precioFocus() {
-
-  }
-
-  registrarItem() {    
+  registrarItem() {
     this.store.add({
       codProd: this.codProd.toString(),
-      nomProd: this.nomProd,
+      nomProd: this.dataInput.inEsPeso ? 'Lavado por Peso' + ' '+ this.pesoKg +' Kg.' : this.nomProd,
       Cant: this.pesoKg,
       Precio: this.precioKg,
       Subtotal: this.total,

@@ -11,13 +11,22 @@ import { IListaItemsBusqueda } from '../../interfaces/IListaItemsBusqueda';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
-import { NgFor } from '@angular/common';
+import { MatListModule } from '@angular/material/list';
+
+
+interface Marcas {
+  value: string;
+  name: string;
+}
 
 @Component({
   selector: 'app-dialog-edit-item',
   standalone: true,
-  imports: [NgFor,
-    MatFormFieldModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatIconModule, MatInputModule, MatButtonModule, MatChipsModule, MatCheckboxModule, MatTabsModule],
+  imports: [
+    MatFormFieldModule, FormsModule, ReactiveFormsModule,
+    MatDialogModule, MatIconModule, MatInputModule, MatButtonModule,
+    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule
+  ],
   templateUrl: './dialog-edit-item.component.html',
   styleUrl: './dialog-edit-item.component.css'
 })
@@ -35,6 +44,7 @@ export class DialogEditItemComponent implements OnInit {
   form: FormGroup;
   formTemas: FormGroup;
   formMarcas: FormGroup;
+  formMarcasx: FormGroup;
 
   colores = [
     { nombre: 'Blanco', valor: '#FFFFFF' },
@@ -59,15 +69,15 @@ export class DialogEditItemComponent implements OnInit {
     { nombre: 'Cebra', estilo: 'repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px);' }
   ];
 
-
-  marcasRopas = [
-    'NIKE', 'ADIDAS', 'REEBOK', 'TOPITOP', 'UMBRO', 'PUMA',
-    'NEW BALANCE', 'CONVERSE', 'VANS', 'UNDER ARMOUR',
-    'GUCCI', 'PRADA', 'LOUIS VUITTON', 'H&M', 'ZARA',
-    'UNIQLO', 'BURBERRY', 'RALPH LAUREN', 'TOMMY HILFIGER',
-    'CALVIN KLEIN', 'LACOSTE', 'FILA', 'CHAMPION', 'LEVI\'S'
+  marcasRopas = ['ADIDAS', 'ARMANI', 'ASICS', 'BERSHKA', 'CALVIN KLEIN', 'CONVERSE',
+    'GUCCI', 'H&M', 'LACOSTE', 'LEVI\'S', 'LOUIS VUITTON', 'NEW BALANCE',
+    'NIKE', 'PUMA', 'PRADA', 'RALPH LAUREN', 'REEBOK', 'TOMMY HILFIGER',
+    'TOPITOP', 'TPT', 'UMBRO', 'UNDER ARMOUR', 'UNIQLO', 'VANS', 'ZARA', 'BILLABONG', 'COLUMBIA', 'DC SHOES', 'DIESEL', 'FILA', 'GUESS', 'HOLLISTER', 'HURLEY',
+    'MC GREGOR', 'OAKLEY', 'O´NEILL', 'QUIKSILVER', 'MARTINA', 'TIGRE', 'POWER', 'DIADORA', 'BARONET', 'CACHAREL', 'CHEROKEE', 'CAT'
   ];
 
+  
+  marcasControl = new FormControl();
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -79,6 +89,11 @@ export class DialogEditItemComponent implements OnInit {
     });
     this.formMarcas = this.fb.group({
       checkboxesMarcas: this.fb.array([]),
+    });
+
+
+    this.formMarcasx = new FormGroup({
+      marcas: this.marcasControl,
     });
 
   }
@@ -137,14 +152,14 @@ export class DialogEditItemComponent implements OnInit {
   }
 
   calcularPrecio() {
-    this.total = this.cantidad * this.precio;  
+    this.total = this.cantidad * this.precio;
   }
 
   calcularPrecioPesoKG() {
 
     this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
 
-    
+
     // if (this.itemEdit?.nomProd === 'Lavado KG' || this.itemEdit?.nomProd.toLocaleLowerCase().includes('alfombra')) {      
     //   this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
     // } else {
@@ -177,11 +192,15 @@ export class DialogEditItemComponent implements OnInit {
 
     let obsControls = '';
     if (selectedColores.length > 0) {
-      obsControls += ' | colores:' + selectedColores.toString();
+      obsControls += ' |colores:' + selectedColores.toString();
     }
     if (selectedTemas.length > 0) {
-      obsControls += ' | diseño:' + selectedTemas.toString();
+      obsControls += ' |diseño:' + selectedTemas.toString();
     }
+    if (this.marcasControl.value) {
+      obsControls += ' |marca:' + this.marcasControl.value;
+    }
+
     this.obs += obsControls;
 
     if (this.data.edicion) {

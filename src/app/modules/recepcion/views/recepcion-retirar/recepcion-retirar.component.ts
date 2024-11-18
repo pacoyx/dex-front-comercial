@@ -59,6 +59,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   bolCancelado = false;
   bolEntregado = false;
   loadingCancelado = false;
+  bolBuscandoGuia = false;
 
   bolExisteCaja = true;
   msgValidacion = '';
@@ -73,16 +74,26 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     this.validarExisteCajaPorUsuario();
   }
 
-  buscarGuia() {
-    console.log('buscando guia', this.numeroGuia);
+  buscarGuia() {    
     if (!this.numeroGuia) {
       return;
     }
-
+    this.bolBuscandoGuia = true;
     this.guiaRetiroSubscription = this.emisionService.ObtenerGuiaPorDocumento("001", this.numeroGuia.toString())
       .subscribe({
         next: (resp) => {
-          console.log(resp);
+          this.bolBuscandoGuia = false;
+          if (!resp.success) {
+            this.dialog.open(DialogMsgComponent, {
+              width: '250px',
+              data: {
+                title: 'Buscar Guía '+ this.numeroGuia,
+                msg: 'No se encontró la guía de retiro.',
+                err: true
+              }
+            });
+            return;
+          }
           this.guiaRetiroData = resp.data;
           this.dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>(resp.data.workGuideDetailsDTO);
           this.bolCancelado = this.guiaRetiroData.estadoPago === 'PA';
@@ -92,6 +103,15 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.log(err);
+          this.bolBuscandoGuia = false;
+          this.dialog.open(DialogMsgComponent, {
+            width: '250px',
+            data: {
+              title: 'Buscando guia '+ this.numeroGuia,
+              msg: 'No se encontró la guía de retiro.',
+              err: true
+            }
+          });
         }, complete: () => {
           console.log('complete() ObtenerGuiaPorDocumento');
         },
@@ -211,9 +231,10 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
             next: (respBack) => {
               this.loadingCancelado = false;
               this.bolCancelado = true;
-              this.guiaRetiroData!.tipoPagoCancelacion = respuesta.data.id;
-              this.guiaRetiroData!.fechaPago = respBack.data;
-              this.guiaRetiroData!.saldo = 0;
+              // this.guiaRetiroData!.tipoPagoCancelacion = respuesta.data.id;
+              // this.guiaRetiroData!.fechaPago = respBack.data;
+              // this.guiaRetiroData!.saldo = 0;
+              this.buscarGuia();
             },
             error: (err) => {
               console.log(err);
@@ -238,10 +259,10 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
             this.bolEntregado = false;
             return;
           }
-
-          this.bolEntregado = true;
-          this.guiaRetiroData!.estadoSituacion = 'E';
-          this.guiaRetiroData!.fechaRecojo = new Date().toUTCString();
+          this.buscarGuia();
+          // this.bolEntregado = true;
+          // this.guiaRetiroData!.estadoSituacion = 'E';
+          // this.guiaRetiroData!.fechaRecojo = new Date().toUTCString();
 
         },
         error: (err) => {

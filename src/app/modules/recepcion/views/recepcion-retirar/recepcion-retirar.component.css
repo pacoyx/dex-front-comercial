@@ -1,9 +1,6 @@
-.container-retiros {
-    width: 100%;
-}
 
 .section-busqueda {
-    width: 100%;
+ 
     display: flex;
     gap: 10px;
     border: 1px solid #ccc;
@@ -31,7 +28,7 @@
 }
 
 .section-totales {
-    width: 100%;
+    /* width: 100%; */
     display: flex;
     gap: 20px;
     border: 1px solid #ccc;
@@ -143,7 +140,7 @@
 .cabecera {
     text-align: center;
     padding: 0px 0px !important;
-    background-color: #007bff;
+    background-color: #7d9ad6;
     color: white;
     border: 1px solid #ccc !important;
 }

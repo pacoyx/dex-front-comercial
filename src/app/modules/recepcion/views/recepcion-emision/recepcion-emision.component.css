@@ -61,9 +61,11 @@ table {
 .cabecera {
     text-align: center;
     padding: 0px 0px !important;
-    background-color: #007bff;
+    /* background-color: #a2cadf; */
+    background-color: #7d9ad6;
     color: white;
     border: 1px solid #ccc !important;
+    border-radius: 5px;
 }
 
 
@@ -103,18 +105,28 @@ table {
     border: 1px solid #d0cccc;
     border-radius: 5px;
     /* margin: 2px; */
+    margin-bottom: 2px;
 }
 
 .fila-detalle-pago {
     display: flex;
-    /* flex-direction: column; */
+    /* flex-direction: column;     */
     align-items: center;
-    gap: 5px;
-    /* background-color: darkgoldenrod; */
+    gap: 5px;    
     padding: 5px;
     border: 1px solid #d0cccc;
     border-radius: 5px;
-    /* margin: 2px; */
+    margin-top: 2px;
+    margin-bottom: 2px;
+    height: 88px;
+}
+.forma-pago-cuadro{
+    border: 1px solid #d0cccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
+    width: 110px;
+
 }
 
 

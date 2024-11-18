@@ -4,8 +4,20 @@ export const environment = {
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
+    
     EPRegistrarCliente: 'api/customer',
+    EPActualizarCliente: 'api/customer',
+    EPEliminarCliente: 'api/customer',
+    EPListarClientes: 'api/customer',
+    EPActualizarClienteTelefono: 'api/customer/phone',
+
     EPFiltrarServiciosPorPatron: 'api/prodService/search',
+
+    EPRegistrarProdServices: 'api/prodService',
+    EPActualizarProdServices: 'api/prodService',
+    EPREliminarProdServices: 'api/prodService',
+    EPListarProdServices: 'api/prodService',
+
     EPObtenerNumeracion: 'api/numbersDocument/search',
     EPGrabarGuiaTrabajo: 'api/workGuideMain',
     EPRetiroGuiaTrabajo: 'api/workGuideMain',
@@ -31,4 +43,10 @@ export const environment = {
     EPListarCajaDetallePorUsuario: 'api/cashBox/detail',
     EPEliminarCajaDetalle: 'api/cashBox/detail',
 
+    EPObtenerIdsPesoLavado: 'api/prodService/getidservicepesolavado',
+
+    
+    
+    
+    EPListarUsuarios: 'api/user',
 };
