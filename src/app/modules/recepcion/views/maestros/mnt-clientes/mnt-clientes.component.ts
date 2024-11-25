@@ -12,6 +12,7 @@ import { DialogFormRegClienteComponent } from './components/dialog-form-reg-clie
 import { MatButtonModule } from '@angular/material/button';
 import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
 
+
 @Component({
   selector: 'app-mnt-clientes',
   standalone: true,

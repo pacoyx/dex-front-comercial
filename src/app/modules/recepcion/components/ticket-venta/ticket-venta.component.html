@@ -12,6 +12,7 @@
                 <!-- Ruc: 10436190455<br> -->
                 Av. Bocanegra Mz. H Lt 19 Los Jazmines - Callao<br>
                 (01) 635-8458 / 934-984-123<br>
+                Horario Atencion Lunes a Sabado 08:00AM - 08:00PM<br>
                 www.lavanderiakyo.com<br>
             </div>
 
@@ -26,35 +27,37 @@
 
 
         <div class="detalle">
-            <div style="padding-top: 5px;">
-                <div class="text-left align-items-center">
-                    GUIA_N°:
+            <div class="col-4">
+                <div style="padding-top: 5px;">
+                    <div class="text-left align-items-center">
+                        GUIA_N°:
+                    </div>
                 </div>
             </div>
-            <div>
-                <span class="numguia">{{ store.selectedDocumento()?.serieDoc }}-{{ store.selectedDocumento()?.numeroDoc
-                    }}</span>
+            <div class="col-8">
+                <span class="numguia">{{store.selectedDocumento()?.serieDoc }}-{{
+                    store.selectedDocumento()?.numeroDoc}}</span>
             </div>
         </div>
 
         <div class="detalle">
-            <div class="col-3">
+            <div class="col-4">
                 <div style="text-align: left;">
                     FECHA:
                 </div>
             </div>
-            <div class="col-9">
-                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy hh:mm:ss' }} {{hora}}
+            <div class="col-8">
+                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy' }} {{hora}}
             </div>
 
         </div>
         <div class="detalle">
-            <div class="col-3">
+            <div class="col-4">
                 <div style="text-align: left;">
                     CLIENTE:
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-8">
                 {{ store.selectedCliente()?.nombre }}
             </div>
         </div>
@@ -70,12 +73,12 @@
         </div>
 
         <div class="detalle">
-            <div class="col-3">
+            <div class="col-4">
                 <div style="text-align: left;">
                     ENTREGA:
                 </div>
             </div>
-            <div class="col-9">
+            <div class="col-8">
                 <div class="detalle">
                     {{ store.selectedDocumento()?.fechaEntrega | date :'dd/MM/yyyy hh:mm:ss'}}<br>
                 </div>
@@ -112,14 +115,14 @@
 
 
         <div class="detalle filaTablaDet" *ngFor="let item of store.items()">
-            <div style="width: 17%;">{{ item.Cant| number:'1.2-2' }} </div>
+            <div style="width: 17%;">{{ item.Cant| number:'1.2-2' }} <br> {{item.Identificador}} </div>
             <div style="width: 50%;" *ngIf="item.Obs">{{ item.nomProd }}, {{ item.Obs }}</div>
             <div style="width: 50%;" *ngIf="!item.Obs">{{ item.nomProd }}</div>
             <div style="width: 17%;text-align: right;">{{ item.Precio | number:'1.2-2' }}</div>
             <div style="width: 17%;text-align: right;">{{ item.Subtotal| number:'1.2-2' }}</div>
         </div>
 
-        
+
         <div class="detalle">
             <div style="text-align: right; width: 80%;">
                 <!-- <div *ngIf="bol_cancelado">
@@ -131,23 +134,23 @@
             </div>
             <div style="text-align: right; width: 20%;">{{ this.total| number:'1.2-2' }}</div>
         </div>
-  
-        <div class="detalle">            
+
+        <div class="detalle">
             <div style="text-align: right; width: 80%;">
                 @switch (tipoPago) {
-                    @case ('QR') {
-                      YAPE |
-                    }
-                    @case ('EF') {
-                      EFECTIVO |
-                    }
-                    @case ('TA') {
-                      TARJETA |
-                    }
-                    @default {
-                        
-                    }
-                  }  
+                @case ('QR') {
+                YAPE |
+                }
+                @case ('EF') {
+                EFECTIVO |
+                }
+                @case ('TA') {
+                TARJETA |
+                }
+                @default {
+
+                }
+                }
                 A Cuenta:S/
             </div>
             <div style="text-align: right; width: 20%;">{{ this.adelanto | number:'1.2-2' }}</div>
@@ -157,17 +160,17 @@
             <div style="text-align: right; width: 80%;">Saldo:S/</div>
             <div style="text-align: right; width: 20%;">{{ saldo | number:'1.2-2' }}</div>
         </div>
-       
-        <div class="detalle" *ngIf="bol_cancelado">        
+
+        <div class="detalle" *ngIf="bol_cancelado">
             <div class="txtCancelado">
-                *** CANCELADO ***            
-            </div>                
+                *** CANCELADO ***
+            </div>
         </div>
 
-        <div class="detalle" *ngIf="isDelivery">        
+        <div class="detalle" *ngIf="isDelivery">
             <div class="txtDelivery">
-                ----- DELIVERY -----        
-            </div>                
+                ----- DELIVERY -----
+            </div>
         </div>
 
         <hr>
@@ -194,7 +197,7 @@
             <div style="text-align: left; width: 40%;">
                 <span class="numguia">{{ store.selectedDocumento()?.numeroDoc }}</span>
             </div>
-            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision }} / {{hora}}</div>
+            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy'}} / {{hora}}</div>
         </div>
 
         <div class="detalle">
@@ -217,7 +220,7 @@
             </div>
         </div>
         <div class="detalle filaTablaDet" *ngFor="let item of store.items()">
-            <div style="width: 17%;">{{ item.Cant| number:'1.2-2' }} </div>
+            <div style="width: 17%;">{{ item.Cant| number:'1.2-2' }} <br> {{item.Identificador}}</div>
             <div style="width: 50%;" *ngIf="item.Obs">{{ item.nomProd }}, {{ item.Obs }}</div>
             <div style="width: 50%;" *ngIf="!item.Obs">{{ item.nomProd }}</div>
             <div style="width: 17%;text-align: right;">{{ item.Precio | number:'1.2-2' }}</div>
@@ -239,20 +242,20 @@
         <div class="detalle">
             <div style="text-align: right; width: 80%;">
                 @switch (tipoPago) {
-                    @case ('QR') {
-                      YAPE |
-                    }
-                    @case ('EF') {
-                      EFCTIVO |
-                    }
-                    @case ('TA') {
-                      TARJETA |
-                    }
-                    @default {
-                        
-                    }
-                  }  
-                  A Cuenta:S/</div>
+                @case ('QR') {
+                YAPE |
+                }
+                @case ('EF') {
+                EFCTIVO |
+                }
+                @case ('TA') {
+                TARJETA |
+                }
+                @default {
+
+                }
+                }
+                A Cuenta:S/</div>
             <div style="text-align: right; width: 20%;">{{ adelanto | number:'1.2-2' }}</div>
         </div>
 
@@ -261,16 +264,21 @@
             <div style="text-align: right; width: 20%;">{{ saldo | number:'1.2-2' }}</div>
         </div>
 
-        <div class="detalle" *ngIf="bol_cancelado">        
+        <div class="detalle" *ngIf="bol_cancelado">
             <div class="txtCancelado">
-                *** CANCELADO ***            
-            </div>                
+                *** CANCELADO ***
+            </div>
         </div>
 
-        <div class="detalle" *ngIf="isDelivery">        
+        <div class="detalle" *ngIf="isDelivery">
             <div class="txtDelivery">
                 ----- DELIVERY -----
-            </div>                
+            </div>
+        </div>
+        <div class="titulo" style="text-align: center; padding-top: 50px; height: 100px;">
+            --------------------------------------------<br>
+            CONTROL ADMINISTRATIVO<br>
+            --------------------------------------------
         </div>
 
     </div>

@@ -212,6 +212,7 @@ export class DialogEditItemComponent implements OnInit {
         Precio: this.precio,
         Subtotal: this.total,
         Obs: this.obs,
+        Identificador: this.itemEdit?.Identificador!
       });
     } else {
       this.store.add({
@@ -220,7 +221,8 @@ export class DialogEditItemComponent implements OnInit {
         Cant: this.cantidad,
         Precio: this.precio,
         Subtotal: this.total,
-        Obs: this.obs
+        Obs: this.obs,
+        Identificador: ''
       });
     }
     this.dialogRef.close();

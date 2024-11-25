@@ -30,6 +30,7 @@ export class EmisionStoreService {
   });
 
   private idCounter = 1;
+  alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   public readonly items = this.guiaServicioState.items;
   public readonly selectedItem = this.guiaServicioState.selectedItem;
@@ -43,6 +44,7 @@ export class EmisionStoreService {
   constructor() { }
 
   public resetState(): void {
+    this.idCounter = 1;
     patchState(this.guiaServicioState, {
       items: [],
       selectedItem: null,
@@ -58,10 +60,16 @@ export class EmisionStoreService {
       recepcion: recepcion,
     });
   }
-
+  
   public add(item: Omit<IEmisionItem, 'id'>): void {
+ 
+    const identifier = this.alphabet[(this.idCounter - 1) % this.alphabet.length];
+
+    console.log( 'identificador', identifier);
+
+
     patchState(this.guiaServicioState, {
-      items: [...this.guiaServicioState.items(), { ...item, id: this.idCounter++ }],
+      items: [...this.guiaServicioState.items(), { ...item, id: this.idCounter++, Identificador: identifier }],
     });
   }
 

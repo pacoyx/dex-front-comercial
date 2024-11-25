@@ -6,4 +6,5 @@ export interface IEmisionItem {
     Precio: number;
     Subtotal: number;
     Obs: string;
+    Identificador: string;
 }

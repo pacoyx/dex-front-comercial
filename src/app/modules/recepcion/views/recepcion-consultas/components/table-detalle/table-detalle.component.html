@@ -1,0 +1,89 @@
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Servicio</th>
+            <th>Observaciones</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Subtotal</th>
+            <th>Ubicacion</th>
+            <th>Estado Trabajo</th>
+            <th>Estado Registro</th>
+            <th>Estado Situacion</th>
+            <th>Estado Pago</th>
+            <th>Fecha Recojo</th>
+            <th>Fecha Devolucion</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of dataSource; track item.id; let idx = $index) {
+        <tr>
+            <td>{{ idx +1 }}</td>
+            <td>{{ item.servicio }}</td>
+            <td>{{ item.observaciones }}</td>
+            <td>{{ item.cant }}</td>
+            <td>{{ item.precio | number:'1.2-2' }}</td>
+            <td>{{ item.total | number:'1.2-2' }}</td>
+            <td>{{ item.ubicacion }}</td>
+            <td>
+                @switch (item.estadoTrabajo) {
+                @case ('P') {
+                <span style="color: darkblue;">Pendiente</span>
+                }
+                @case ('E') {
+                <span style="color: darkblue;">En Proceso</span>
+                }
+                @case ('F') {
+                <span style="color: darkblue;">Finalizado</span>
+                }
+                }
+
+            </td>
+            <td>
+                @switch (item.estadoRegistro) {
+                @case('A'){
+                <span style="color: darkblue;">Activo</span>
+                }
+                @case('I')
+                {
+                <span style="color: red;">Anulado</span>
+                }
+                }
+            </td>
+            <td>
+                @switch (item.estadoSituacion) {
+                @case('P') {
+                <span style="color: green;">Por Recoger</span>
+                }
+                @case('E') {
+                <span style="color: darkblue;">Entregado</span>
+                }
+                @case('D') {
+                <span style="color: red;">Devuelto</span>
+                }
+                }
+            </td>
+            <td>
+                @switch (item.estadoPago) {
+                @case('PA') {
+                <span style="color: darkblue;">Pagado</span>
+                }
+                @case('PE') {
+                <span style="color: green;">Pendiente</span>
+                }
+                @case('AN') {
+                <span style="color: red;">Anulado</span>
+                }
+                }
+
+            </td>
+            <td>{{ item.fechaRecojo | date :'dd/MM/yyyy hh:mm:ss' }}</td>
+            <td>{{ item.fechaDevolucion | date :'dd/MM/yyyy hh:mm:ss' }}</td>
+        </tr>
+
+        } @empty {
+        <li>There are no items.</li>
+        }
+    </tbody>
+</table>

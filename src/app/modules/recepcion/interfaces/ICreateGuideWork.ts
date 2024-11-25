@@ -33,4 +33,5 @@ interface WorkGuideDetailsDTO {
   estadoRegistro: string;
   estadoSituacion: string;
   estadoPago: string;
+  identificador: string;
 }

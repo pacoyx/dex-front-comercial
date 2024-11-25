@@ -286,7 +286,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   agregarItem(item: IListaItemsBusqueda) {
-    this.store.add({ codProd: item.id.toString(), nomProd: item.name, Cant: 1, Precio: item.price, Subtotal: item.price, Obs: '[sin comentarios]' })
+    this.store.add({ codProd: item.id.toString(), nomProd: item.name, Cant: 1, Precio: item.price, Subtotal: item.price, Obs: '[sin comentarios]', Identificador: 'A' });
   }
 
   onValChangePago(value: any) {
@@ -426,21 +426,24 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       estadoRegistro: "A",
       estadoSituacion: "P",
 
-      workGuideDetailsDTO: this.store.items().map((item) => {
+      workGuideDetailsDTO: this.store.items().map((item, index) => {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const identifier = alphabet[index % alphabet.length];
         return {
           cant: item.Cant,
           precio: item.Precio,
           total: item.Subtotal,
           observaciones: item.Obs,
-          tipoLavado: 'A', // A=agua; S=seco
-          ubicacion: 'L', // L=lavanderia; P=planta; A=almacen
-          estadoTrabajo: 'P', // P: Pendiente, E: En Proceso, F: Finalizado
+          tipoLavado: 'A',            // A=agua; S=seco
+          ubicacion: 'L',             // L=lavanderia; P=planta; A=almacen
+          estadoTrabajo: 'P',         // P: Pendiente, E: En Proceso, F: Finalizado
           productId: parseInt(item.codProd),
-          estadoRegistro: 'A', // A: Activo, I: Inactivo    
-          estadoSituacion: 'P', // P: Pendiente, E: Entregado; D: Devuelto
-          estadoPago: 'PE', // PE: Pendiente, PA: Pagado, AN: Anulado
+          estadoRegistro: 'A',        // A: Activo, I: Inactivo    
+          estadoSituacion: 'P',       // P: Pendiente, E: Entregado; D: Devuelto
+          estadoPago: 'PE',           // PE: Pendiente, PA: Pagado, AN: Anulado
+          identificador: identifier
         }
-      })
+      })    
     };
 
 

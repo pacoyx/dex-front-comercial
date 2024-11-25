@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
   { path: 'emision', component: RecepcionEmisionComponent },
   { path: 'retiros', component: RecepcionRetirarComponent },
+  { path: 'retiros/:numGuia', component: RecepcionRetirarComponent },
   { path: 'caja', component: RecepcionCajaComponent },
   { path: 'consultas', component: RecepcionConsultasComponent },
   { path: 'gastos', component: RecepcionGastosComponent },

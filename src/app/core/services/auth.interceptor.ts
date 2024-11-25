@@ -1,16 +1,17 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { throwError, switchMap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { ILoginResponse, ILoginResponseData } from '../interfaces/ILoginResponse';
+import { ILoginResponseData } from '../interfaces/ILoginResponse';
+import { LoginService } from './login.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
-  console.log('authInterceptor go go go');
-  
+  // console.log('authInterceptor go go go');
+
   const router = inject(Router);
+  const authService = inject(LoginService);
   const authTokenString = localStorage.getItem('dex24Auth');
   const authDataLogin: ILoginResponseData | null = authTokenString ? JSON.parse(authTokenString) : null;
   let authReq = req;
@@ -23,17 +24,45 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
+  // return next(authReq).pipe(
+  //   catchError((error) => {
+  //     if (error.status === 401) {        
+  //       router.navigate(['/login']);
+  //     }
+  //     // console.log('error interceptor ==>', error.error);      
+  //     // return throwError(() => new Error(JSON.stringify(error.error)));
+
+  //     return throwError(() => new Error(error.error));
+  //   })
+  // );
+
+
   return next(authReq).pipe(
     catchError((error) => {
-      if (error.status === 401) {        
-        router.navigate(['/login']);
+      // console.log('error interceptor crudo ==>', error);
+      // console.log('error interceptor ==>', error.error);
+      // console.log('error interceptor status ==>', error.status);
+
+      if (error.status === 401) {
+        return authService.refreshToken().pipe(
+          switchMap((newAuthData) => {
+            // console.log( 'newAuthData ==>', newAuthData);
+
+            const newAuthReq = req.clone({
+              setHeaders: {
+                Authorization: `Bearer ${newAuthData.token}`
+              }
+            });
+            return next(newAuthReq);
+          }),
+          catchError((refreshError) => {
+            router.navigate(['/login']);
+            return throwError(() => new Error(refreshError.error));
+          })
+        );
       }
-      // console.log('error interceptor ==>', error.error);      
-      // return throwError(() => new Error(JSON.stringify(error.error)));
-      
       return throwError(() => new Error(error.error));
     })
   );
-
 
 };

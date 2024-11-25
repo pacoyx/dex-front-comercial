@@ -72,7 +72,8 @@ export class DialogPesokgComponent implements OnInit, AfterViewInit {
       Cant: this.pesoKg,
       Precio: this.precioKg,
       Subtotal: this.total,
-      Obs: this.obs
+      Obs: this.obs,
+      Identificador: ''
     })
   }
 

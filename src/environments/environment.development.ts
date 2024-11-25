@@ -1,6 +1,8 @@
 export const environment = {
     apiUrlBase: 'https://localhost:7253/',
     EPlogin: 'api/login',
+    EPRefreshToken: 'api/refresh-token',
+
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
@@ -44,9 +46,15 @@ export const environment = {
     EPEliminarCajaDetalle: 'api/cashBox/detail',
 
     EPObtenerIdsPesoLavado: 'api/prodService/getidservicepesolavado',
+  
+    // reportes
+    EPGuiasPorFecha: 'api/reports/workguides/bydate',
+    EPGuiasPorCliente: 'api/reports/workguides/bycustomer',
+
 
     
-    
-    
+    //falta implementar
     EPListarUsuarios: 'api/user',
+
+
 };

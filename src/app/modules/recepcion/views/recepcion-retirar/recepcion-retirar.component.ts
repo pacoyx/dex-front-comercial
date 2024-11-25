@@ -26,6 +26,7 @@ import { IRecogerItemRequest } from '../../interfaces/IDevoluciones';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 import { NotificationServiceService } from '../../services/notification-service.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -46,6 +47,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   readonly store = inject(EmisionStoreService);
   loginService = inject(LoginService);
   notificacionService = inject(NotificationServiceService);
+  route = inject(ActivatedRoute);
 
   guiaRetiroSubscription!: Subscription;
   estadoSituacionSubscription!: Subscription;
@@ -72,9 +74,19 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.validarExisteCajaPorUsuario();
+
+    this.route.params.subscribe(params => {
+      if (params['numGuia']) {
+        this.numeroGuia = parseInt(params['numGuia']);
+        this.buscarGuia();
+      }
+    });
+
+
+
   }
 
-  buscarGuia() {    
+  buscarGuia() {
     if (!this.numeroGuia) {
       return;
     }
@@ -87,7 +99,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
             this.dialog.open(DialogMsgComponent, {
               width: '250px',
               data: {
-                title: 'Buscar Guía '+ this.numeroGuia,
+                title: 'Buscar Guía ' + this.numeroGuia,
                 msg: 'No se encontró la guía de retiro.',
                 err: true
               }
@@ -107,7 +119,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           this.dialog.open(DialogMsgComponent, {
             width: '250px',
             data: {
-              title: 'Buscando guia '+ this.numeroGuia,
+              title: 'Buscando guia ' + this.numeroGuia,
               msg: 'No se encontró la guía de retiro.',
               err: true
             }
@@ -170,7 +182,8 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         Cant: item.cant,
         Precio: item.precio,
         Subtotal: item.total,
-        Obs: item.observaciones
+        Obs: item.observaciones,
+        Identificador: item.identificador
       });
     });
 

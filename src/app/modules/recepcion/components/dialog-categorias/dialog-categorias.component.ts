@@ -45,7 +45,7 @@ export class DialogCategoriasComponent implements OnInit {
 
   agregar(item: IListaItemsBusqueda) {
     console.log('enviando item a la grilla', item);
-    this.store.add({ codProd: item.id.toString(), nomProd: item.name, Cant: 1, Precio: item.price, Subtotal: item.price, Obs: '[sin comentarios]' })
+    this.store.add({ codProd: item.id.toString(), nomProd: item.name, Cant: 1, Precio: item.price, Subtotal: item.price, Obs: '[sin comentarios]', Identificador: '' });
   }
 
   aceptar() {
