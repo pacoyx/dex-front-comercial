@@ -54,9 +54,9 @@ export class LoginService {
       tap((response) => {
         objToken.token = response.token;
         objToken.refreshToken = response.refreshToken;
-        // localStorage.setItem('dex24Auth', JSON.stringify(objToken));
-        // console.log('Refresh token success');
-        // console.log('localStorage actualizado');        
+         localStorage.setItem('dex24Auth', JSON.stringify(objToken));
+         console.log('Refresh token success');
+         console.log('localStorage actualizado');        
         
       })
     );

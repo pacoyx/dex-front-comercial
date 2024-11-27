@@ -69,14 +69,17 @@ export class DialogEditItemComponent implements OnInit {
     { nombre: 'Cebra', estilo: 'repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px);' }
   ];
 
-  marcasRopas = ['ADIDAS', 'ARMANI', 'ASICS', 'BERSHKA', 'CALVIN KLEIN', 'CONVERSE',
-    'GUCCI', 'H&M', 'LACOSTE', 'LEVI\'S', 'LOUIS VUITTON', 'NEW BALANCE',
-    'NIKE', 'PUMA', 'PRADA', 'RALPH LAUREN', 'REEBOK', 'TOMMY HILFIGER',
-    'TOPITOP', 'TPT', 'UMBRO', 'UNDER ARMOUR', 'UNIQLO', 'VANS', 'ZARA', 'BILLABONG', 'COLUMBIA', 'DC SHOES', 'DIESEL', 'FILA', 'GUESS', 'HOLLISTER', 'HURLEY',
-    'MC GREGOR', 'OAKLEY', 'O´NEILL', 'QUIKSILVER', 'MARTINA', 'TIGRE', 'POWER', 'DIADORA', 'BARONET', 'CACHAREL', 'CHEROKEE', 'CAT'
+  marcasRopas = [
+    'ADIDAS', 'ARMANI', 'BARONET', 'BILLABONG', 'CACHAREL', 'CALVIN KLEIN', 'CAT',
+    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA', 'FILA',
+    'FILLIPO ALPI', 'GAP', 'GUCCI', 'GUESS', 'GZUCK', 'H&M', 'HANK', 'HOLLISTER', 'HURLEY', 'LA MARTINA',
+    'LACOSTE', 'LANCASTER', 'LEONISA', 'LEVI\'S', 'LOIS', 'LOUIS VUITTON', 'MARTINA', 'MC GREGOR', 'MOSSIMO',
+    'NEW BALANCE', 'NEW PORT', 'NIKE', 'O\'NEILL', 'OAKLEY', 'PIONIER', 'POWER', 'PRADA', 'PUMA', 'QUIKSILVER',
+    'RALPH LAUREN', 'REEBOK', 'RIP CURL', 'ROSE', 'SYBILLA', 'TIGRE', 'TOMMY HILFIGER', 'TOPITOP', 'TPT', 'UMBRO',
+    'UNDER ARMOR', 'UNDER ARMOUR', 'UNIQLO', 'UNIVERSITY CLUB', 'VANS', 'XIOMI', 'ZARA'
   ];
 
-  
+
   marcasControl = new FormControl();
 
   constructor(private fb: FormBuilder) {
@@ -143,12 +146,12 @@ export class DialogEditItemComponent implements OnInit {
   }
 
   onCheckboxChange(event: any, index: number) {
-    console.log(`Checkbox ${index + 1} changed to ${event.checked}`);
-    console.log('Color seleccionado:', this.colores[index].nombre);
+    // console.log(`Checkbox ${index + 1} changed to ${event.checked}`);
+    // console.log('Color seleccionado:', this.colores[index].nombre);
   }
 
   onSubmit() {
-    console.log(this.form.value);
+    // console.log(this.form.value);
   }
 
   calcularPrecio() {
@@ -182,13 +185,13 @@ export class DialogEditItemComponent implements OnInit {
       .map((checked: boolean, i: number) => checked ? this.colores[i].nombre : null)
       .filter((v: string | null) => v !== null);
 
-    console.log('Colores seleccionados:', selectedColores.toString());
+    // console.log('Colores seleccionados:', selectedColores.toString());
 
     const selectedTemas = this.formTemas.value.checkboxesTemas
       .map((checked: boolean, i: number) => checked ? this.temaStyles[i].nombre : null)
       .filter((v: string | null) => v !== null);
 
-    console.log('Temas seleccionados:', selectedTemas.toString());
+    // console.log('Temas seleccionados:', selectedTemas.toString());
 
     let obsControls = '';
     if (selectedColores.length > 0) {
@@ -227,7 +230,4 @@ export class DialogEditItemComponent implements OnInit {
     }
     this.dialogRef.close();
   }
-
-
-
 }

@@ -1,0 +1,25 @@
+table {
+    width: 100%;
+    font-size: 18px!important;
+}
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    /* background-color: #a2cadf; */
+    background-color: #7d9ad6;
+    color: white;
+    border: 1px solid #ccc !important;
+    border-radius: 5px;
+}
+
+
+table tr:hover {
+    background-color: #04fd63;
+    color: #333;
+    cursor: pointer;
+}
+
+.mat-table {
+    font-size: 25px!important;
+}

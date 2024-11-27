@@ -58,6 +58,12 @@
             <a [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">Consultas</a>
           </button>
 
+          <button mat-button>
+            <mat-icon>edit_location</mat-icon>
+            <a [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">Reg.Ubicaciones</a>
+          </button>
+
+
 
           <button mat-button [matMenuTriggerFor]="mntMenu">
             <mat-icon>tab_group</mat-icon>
@@ -72,6 +78,15 @@
             <button mat-menu-item [routerLink]="['/recepcion/servicios']" routerLinkActive="router-link-active">
               <mat-icon>inventory_2</mat-icon>
               Servicios
+            </button>
+            <mat-divider></mat-divider>
+
+
+
+
+            <button mat-menu-item [routerLink]="['/recepcion/ubicaciones']" routerLinkActive="router-link-active">
+              <mat-icon>pin_drop</mat-icon>
+              Ubicaciones
             </button>
           </mat-menu>
 

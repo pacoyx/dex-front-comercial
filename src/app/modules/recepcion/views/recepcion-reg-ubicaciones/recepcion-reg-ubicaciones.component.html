@@ -1,0 +1,54 @@
+<div class="container-mnt-regubicaciones">
+
+    <h2>
+        <mat-icon>pin_drop</mat-icon>
+        Registro de Ubicaciones
+    </h2>
+
+    <div class="section-controls-mnt-ubicaciones">
+        <button mat-fab extended>
+            <mat-icon>add_location</mat-icon>
+            Nueva Ubicación
+        </button>
+    </div>
+    <div class="container-form">
+        <form class="form" [formGroup]="frmUbicacion">
+            <mat-form-field>
+                <mat-label>Ubicaciones</mat-label>
+                <mat-select formControlName="ubicacionId">
+                    @for (ubicacion of ubicaciones; track ubicacion) {
+                    <mat-option [value]="ubicacion.id">{{ubicacion.name}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                <mat-label>Numero de Guia</mat-label>
+                <input matInput placeholder="num. guia + letra" formControlName="numeroGuia">
+            </mat-form-field>
+
+            <button mat-fab extended (click)="registrarUbicacion()">
+                <mat-icon>save</mat-icon>
+                Registrar
+            </button>
+        </form>
+
+        
+    </div>
+    @if(bolOk){
+        <div class="msg-ok">
+            <mat-icon>task_alt</mat-icon>
+                Correcto!
+        </div>
+    }
+
+    @if(bolError){
+        <div class="msg-err">
+            <mat-icon>task_alt</mat-icon>
+                Error!
+        </div>
+    }
+
+    
+
+</div>

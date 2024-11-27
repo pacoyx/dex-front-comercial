@@ -51,6 +51,10 @@ export const environment = {
     EPGuiasPorFecha: 'api/reports/workguides/bydate',
     EPGuiasPorCliente: 'api/reports/workguides/bycustomer',
 
+    EPListarUbicaciones:'api/locationclothes',
+    EPCrearUbicacion:'api/locationclothes',
+    EPActualizarUbicacion:'api/locationclothes',
+    EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
 
     
     //falta implementar

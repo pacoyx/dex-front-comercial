@@ -6,6 +6,7 @@ import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGetClientesPaginadoResponse } from '../interfaces/ICliente';
 import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
+import { IRegistrarUbicacionRequest, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
 
 @Injectable({
   providedIn: 'root'
@@ -46,13 +47,11 @@ export class MaestrosService {
     return this.http.put<IResponseGeneric<string>>(url, cliente, { headers });
   }
 
-  eliminarCliente(idCliente:number): Observable<IResponseGeneric<string>> {
+  eliminarCliente(idCliente: number): Observable<IResponseGeneric<string>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.apiUrl}${environment.EPActualizarCliente}/${idCliente}`;
+    const url = `${this.apiUrl}${environment.EPEliminarCliente}/${idCliente}`;
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
-
-
 
   obtenerProdServices(pagina: number, numFilas: number): Observable<IResponseGeneric<IGetProdServicesPaginadoResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -65,16 +64,51 @@ export class MaestrosService {
     return this.http.post<IResponseGeneric<string>>(url, prodService, { headers });
   }
 
-  actualizarProdService(prodService: IActuaizarProdServicesRequest, id:number): Observable<IResponseGeneric<string>> {
+  actualizarProdService(prodService: IActuaizarProdServicesRequest, id: number): Observable<IResponseGeneric<string>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPActualizarProdServices}/${id}`;
     return this.http.put<IResponseGeneric<string>>(url, prodService, { headers });
   }
 
-  eliminarProdService(idProdService:number): Observable<IResponseGeneric<string>> {
+  eliminarProdService(idProdService: number): Observable<IResponseGeneric<string>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPREliminarProdServices}/${idProdService}`;
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
+
+
+
+
+  obtenerUbicaciones() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IUbicacionesResponseDto[]>>(`${this.apiUrl}${environment.EPListarUbicaciones}`, { headers });
+  }
+
+  crearUbicacion(ubicacion: IUbicacionesCreateResponseDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IUbicacionesResponseDto>>(`${this.apiUrl}${environment.EPCrearUbicacion}`, ubicacion, { headers });
+  }
+
+  actualizarUbicacion(ubicacion: IUbicacionesEditDto) {
+    //TODO: Cambiar todo para actualizar
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<IUbicacionesResponseDto>>(`${this.apiUrl}${environment.EPActualizarUbicacion}/${ubicacion.id}`, ubicacion, { headers });
+  }
+
+  eliminarUbicacion(idUbicacin: number): Observable<IResponseGeneric<string>> {
+    //TODO: Cambiar todo para eliminar
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPActualizarUbicacion}/${idUbicacin}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+
+
+
+  registrarUbicacionPrenda(ubicacion: IRegistrarUbicacionRequest) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
+  }
+
 
 }

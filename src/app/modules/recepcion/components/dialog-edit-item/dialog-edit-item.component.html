@@ -64,16 +64,13 @@
             </mat-tab>
 
             <mat-tab label="Marcas">
-                <div style="height: 500px;">
+                <div style="height: 300px; overflow-x: scroll;">
                     <form [formGroup]="formMarcasx">
                         <mat-selection-list #shoesList [formControl]="marcasControl" name="marcasx" [multiple]="false">
                             @for (marca of marcasRopas; track marca) {
                             <mat-list-option [value]="marca">{{marca}}</mat-list-option>
                             }
-                        </mat-selection-list>
-                        <p>
-                            Option selected: {{marcasControl.value}}
-                        </p>
+                        </mat-selection-list>                        
                     </form>
                 </div>
             </mat-tab>

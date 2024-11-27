@@ -37,14 +37,17 @@ import { NotificationServiceService } from '../../services/notification-service.
 import { LoginService } from '../../../../core/services/login.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { MatDividerModule } from '@angular/material/divider';
+import { RecepcionGrillaBusquedaServiciosComponent } from './components/recepcion-grilla-busqueda-servicios/recepcion-grilla-busqueda-servicios.component';
 
 @Component({
   selector: 'app-recepcion-emision',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, DatePipe, MatButtonToggleModule,
+  imports: [
+    MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, DatePipe, MatButtonToggleModule,
     FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe,
     TicketVentaComponent, MatSlideToggleModule, LoadingComponent, MatAutocompleteModule,
-    ReactiveFormsModule, AsyncPipe, AlertDangerComponent, MatDividerModule, TitleCasePipe, NgFor
+    ReactiveFormsModule, AsyncPipe, AlertDangerComponent, MatDividerModule, TitleCasePipe, NgFor,
+    RecepcionGrillaBusquedaServiciosComponent
   ],
   templateUrl: './recepcion-emision.component.html',
   styleUrl: './recepcion-emision.component.css'
@@ -378,7 +381,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.actualizarPago()
   }
 
-  actualizarPago() {
+  actualizarPago(bolHack: any = false) {    
     this.montoPago = this.store.itemSumTotal();
     let objPago: IEmisionPago = { tipo: this.tipoPago, monto: this.tipoPago == 'SP' ? 0 : this.montoPago };
     this.store.addPago(objPago);
@@ -443,7 +446,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           estadoPago: 'PE',           // PE: Pendiente, PA: Pagado, AN: Anulado
           identificador: identifier
         }
-      })    
+      })
     };
 
 
