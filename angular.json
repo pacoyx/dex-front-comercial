@@ -13,7 +13,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/dex-front-comercial",
+            "outputPath": {
+              "base": "dist/dex-front-comercial",
+              "browser": ""
+            },
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -26,7 +29,7 @@
                 "input": "public"
               }
             ],
-            "styles": [              
+            "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.css"
             ],
