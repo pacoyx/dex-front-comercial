@@ -50,13 +50,11 @@
 
             <mat-tab label="Diseños">
                 <form [formGroup]="formTemas">
-                    <div formArrayName="checkboxesTemas">
-                        @for (tema of checkboxesTemasFormArray.controls; track $index) {
-                        <div class="chip-colores" [style.background]="temaStyles[$index].estilo">
-                            <mat-checkbox [formControlName]="$index">
+                    <div formArrayName="checkboxesTemas" >
+                        @for (tema of checkboxesTemasFormArray.controls; track $index) {                        
+                            <mat-checkbox [formControlName]="$index" class="chk-diseños">
                                 {{temaStyles[$index].nombre}}
-                            </mat-checkbox>
-                        </div>
+                            </mat-checkbox>                        
                         }
                     </div>
                 </form>

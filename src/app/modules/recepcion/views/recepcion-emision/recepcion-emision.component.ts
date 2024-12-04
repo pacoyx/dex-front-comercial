@@ -260,13 +260,18 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   onClienteSelected(event: any) {
     const cliente = event.option.value;
+
+
+console.log('watch cliente ==>',cliente);
+
+
     this.clienteTelefono = cliente.telefono;
     this.clienteNombre = cliente.nombres + ' ' + cliente.apellidos;
     this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
   }
 
   displayFn(cliente: any): string {
-    return cliente && cliente.nombres && cliente.apellidos ? `${cliente.nombres} ${cliente.apellidos}` : cliente;
+    return cliente && cliente.nombres ? `${cliente.nombres} ${cliente.apellidos}` : cliente;
   }
 
   onSearchInputChange() {

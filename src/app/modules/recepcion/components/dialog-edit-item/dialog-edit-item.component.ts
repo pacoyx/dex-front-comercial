@@ -63,21 +63,40 @@ export class DialogEditItemComponent implements OnInit {
   temas = ['Rayado', 'Circulos', 'Jaspeado', 'Cebra', 'Floreado', 'dibujos'];
 
   temaStyles = [
-    { nombre: 'Rayado', estilo: 'repeating-linear-gradient(45deg, #606dbc, #606dbc 10px, #465298 10px, #465298 20px);' },
-    { nombre: 'Circulos', estilo: 'radial-gradient(circle, #ffcc33, #ffcc33 10%, #ff9933 10%, #ff9933 20%);' },
-    { nombre: 'Jaspeado', estilo: 'linear-gradient(135deg, #f6d365 25%, #fda085 25%, #fda085 50%, #f6d365 50%, #f6d365 75%, #fda085 75%, #fda085 100%);' },
-    { nombre: 'Cebra', estilo: 'repeating-linear-gradient(45deg, #000000, #000000 10px, #ffffff 10px, #ffffff 20px);' }
+    { nombre: 'Rayado', estilo: '' },
+    { nombre: 'Circulos', estilo: '' },
+    { nombre: 'Jaspeado', estilo: '' },
+    { nombre: 'Cebra', estilo: '' },
+    { nombre: 'Princesa', estilo: '' },
+    { nombre: 'Ositos', estilo: '' },
+    { nombre: 'Corazones', estilo: '' },
+    { nombre: 'Marvel', estilo: '' },
+    { nombre: 'Tigres', estilo: '' },
+    { nombre: 'Franjas', estilo: '' },
+    { nombre: 'Banderas', estilo: '' },
+    { nombre: 'Floreado', estilo: '' },
   ];
 
   marcasRopas = [
     'ADIDAS', 'ARMANI', 'BARONET', 'BILLABONG', 'CACHAREL', 'CALVIN KLEIN', 'CAT',
-    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA', 'FILA',
+    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA', 
     'FILLIPO ALPI', 'GAP', 'GUCCI', 'GUESS', 'GZUCK', 'H&M', 'HANK', 'HOLLISTER', 'HURLEY', 'LA MARTINA',
     'LACOSTE', 'LANCASTER', 'LEONISA', 'LEVI\'S', 'LOIS', 'LOUIS VUITTON', 'MARTINA', 'MC GREGOR', 'MOSSIMO',
     'NEW BALANCE', 'NEW PORT', 'NIKE', 'O\'NEILL', 'OAKLEY', 'PIONIER', 'POWER', 'PRADA', 'PUMA', 'QUIKSILVER',
     'RALPH LAUREN', 'REEBOK', 'RIP CURL', 'ROSE', 'SYBILLA', 'TIGRE', 'TOMMY HILFIGER', 'TOPITOP', 'TPT', 'UMBRO',
-    'UNDER ARMOR', 'UNDER ARMOUR', 'UNIQLO', 'UNIVERSITY CLUB', 'VANS', 'XIOMI', 'ZARA'
+    'UNDER ARMOR', 'UNIQLO', 'UNIVERSITY CLUB', 'VANS', 'XIOMI', 'ZARA', 'NAVIGATA'
   ];
+
+  marcasZapatillas = [
+    'ADIDAS', 'CAT', 'CHEROKEE', 'CONVERSE', 'DC SHOES', 'DIADORA', 'FILA',
+    'NEW BALANCE', 'NIKE', 'O\'NEILL', 'POWER', 'PUMA', 'ASICS',
+    'REEBOK', 'TIGRE', 'UMBRO', 'UNDER ARMOUR', 'VANS', 'NEW ATLETIC', 'SKECHERS'
+  ];
+
+  marcasEdredones = ['RIPLEY HOME', 'DISNEY', 'ROSEN', 'CASATEX',
+    'DRIMER', 'ISATEX', 'COBITEX', 'KAZ-HOME', 'ROBERTA ALLEN', 'MICA', 'BENETTON',
+    'BASEMENT HOME', 'AMBIENTA', 'VIVA HOME', 'DECO HOME', 'DALIA'
+  ]
 
 
   marcasControl = new FormControl();
