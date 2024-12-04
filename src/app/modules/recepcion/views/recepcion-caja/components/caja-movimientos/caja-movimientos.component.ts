@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { EmisionService } from '../../../../services/emision.service';
-import { LoginService } from '../../../../../../core/services/login.service';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ICashBoxDetailResponseDto } from '../../../../interfaces/ICajaVentas';
@@ -13,12 +12,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormRegMovimientoComponent } from './components/dialog-form-reg-movimiento/dialog-form-reg-movimiento.component';
 import { DialogQuestionComponent } from '../../../../components/dialog-question/dialog-question.component';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-caja-movimientos',
   standalone: true,
-  imports: [MatTableModule, DecimalPipe, MatIconModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [
+    MatTableModule, DecimalPipe, MatIconModule, 
+    MatButtonModule, MatFormFieldModule, MatInputModule, 
+    MatSelectModule],
   templateUrl: './caja-movimientos.component.html',
   styleUrl: './caja-movimientos.component.css'
 })

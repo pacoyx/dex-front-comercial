@@ -80,7 +80,48 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
 
   items: IListaItemsBusqueda[] = [];
-  categories: IListaCategorias[] = [];
+  categories: IListaCategorias[] = [
+    {
+        "id": 1,
+        "name": "Peso",        
+        "icon": "scale"
+    },
+    {
+        "id": 2,
+        "name": "Vestir",        
+        "icon": "checkroom"
+    },
+    {
+        "id": 3,
+        "name": "Diario",        
+        "icon": "group"
+    },
+    {
+        "id": 4,
+        "name": "Cama",        
+        "icon": "bed"
+    },
+    {
+        "id": 5,
+        "name": "Hogar",        
+        "icon": "home"
+    },
+    {
+        "id": 6,
+        "name": "Calzado",        
+        "icon": "roller_skating"
+    },
+    {
+        "id": 7,
+        "name": "Teñidos",        
+        "icon": "palette"
+    },
+    {
+        "id": 8,
+        "name": "Otros",        
+        "icon": "cloud"
+    }
+];
   DataDemo: IEmisionPrevia[] = [];
   displayedColumns: string[] = ['item', 'nomProd', 'Cant', 'Precio', 'Subtotal', 'actions'];
   dataSource = new MatTableDataSource<IEmisionPrevia>(this.store.items());
@@ -233,18 +274,18 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   cargarCategorias() {
-    this.loading = true;
-    this.subscriptionCategorias = this.emisionService.listarCategoriasSevicios().subscribe({
-      next: (resp) => {
-        this.loading = false;
-        this.categories = resp;
-      },
-      error: (err) => {
-        this.notificacionService.showError(err);
-        this.loading = false;
-      },
-      complete: () => { console.log('complete listarCategoriasSevicios'); }
-    });
+    // this.loading = true;
+    // this.subscriptionCategorias = this.emisionService.listarCategoriasSevicios().subscribe({
+    //   next: (resp) => {
+    //     this.loading = false;
+    //     this.categories = resp;
+    //   },
+    //   error: (err) => {
+    //     this.notificacionService.showError(err);
+    //     this.loading = false;
+    //   },
+    //   complete: () => { console.log('complete listarCategoriasSevicios'); }
+    // });
   }
 
   cargarNumeracion() {

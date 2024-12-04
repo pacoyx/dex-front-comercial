@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -48,7 +48,7 @@ import { TableDetalleComponent } from './components/table-detalle/table-detalle.
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
   ],
 })
-export class RecepcionConsultasComponent implements OnInit, AfterViewInit {
+export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDestroy {
   reportsService = inject(ReportesEmisionService);
   emisionService = inject(EmisionService);
 
@@ -83,21 +83,22 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-
-
-
+  guiasCliente!: Subscription;
+  guiasFecha!: Subscription;
 
   constructor() { }
 
-  ngAfterViewInit(): void {
-    console.log('ngAfterViewInit');
+  ngOnDestroy(): void {
+    if (this.guiasCliente) this.guiasCliente.unsubscribe();
+    if (this.guiasFecha) this.guiasFecha.unsubscribe();
+  }
 
+  ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     // this.dataSource.paginator = this.paginator; 
     this.paginator.page.subscribe(() => {
       this.cargarGuiasPorCliente(this.paginator.pageIndex + 1, this.paginator.pageSize);
     });
-
   }
 
   ngOnInit(): void {
@@ -121,7 +122,7 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit {
 
 
     if (this.tipoReporte == 'C') {
-      this.reportsService.obtenerGuiasPorCliente(this.customerId, pageIndex, pageSize).subscribe({
+      this.guiasCliente = this.reportsService.obtenerGuiasPorCliente(this.customerId, pageIndex, pageSize).subscribe({
         next: (response) => {
           this.dataSource.data = response.data.guias;
           this.totalClientes = response.data.totalCount;
@@ -136,7 +137,7 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit {
     if (this.tipoReporte == 'F') {
       console.log('Fecha hoy', this.fechaHoy.toDateString());
 
-      this.reportsService.obtenerGuiasPorFecha(this.fechaHoy.toDateString(), pageIndex, pageSize).subscribe({
+      this.guiasFecha = this.reportsService.obtenerGuiasPorFecha(this.fechaHoy.toDateString(), pageIndex, pageSize).subscribe({
         next: (response) => {
           this.dataSource.data = response.data.guias;
           this.totalClientes = response.data.totalCount;

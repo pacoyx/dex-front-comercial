@@ -44,3 +44,10 @@ export interface IReportGuiasDetalleDetalleResponse {
   fechaRecojo: string;
   fechaDevolucion: string;
 }
+
+export interface IReportResumenCajaPorFechaResponse {
+  usuario: string;
+  tipoPago: string;
+  totalAdelanto: number;
+  totalImporte: number;
+}

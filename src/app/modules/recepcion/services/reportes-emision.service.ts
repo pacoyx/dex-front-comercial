@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
-import { IReportGetGuiasPaginadoResponse } from '../interfaces/IReports';
+import { IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +37,12 @@ export class ReportesEmisionService {
     return this.http.get<IResponseGeneric<IReportGetGuiasPaginadoResponse>>(`${this.apiUrl}${environment.EPGuiasPorCliente}/${customerId}/${pageIndex}/${pageSize}`, { headers });
   }
 
+
+  obtenerReprteResumenCajaPorFecha(fecha: string){
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const params = { fecha: fecha };
+    return this.http.get<IResponseGeneric<IReportResumenCajaPorFechaResponse[]>>(`${this.apiUrl}${environment.EPResumenCajaPorFecha}`, { headers, params });
+  }
 
 
 }

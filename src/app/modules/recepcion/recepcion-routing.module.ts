@@ -10,6 +10,7 @@ import { MntUsuariosComponent } from './views/maestros/mnt-usuarios/mnt-usuarios
 import { MntProdservicesComponent } from './views/maestros/mnt-prodservices/mnt-prodservices.component';
 import { MntUbicacionComponent } from './views/maestros/mnt-ubicacion/mnt-ubicacion.component';
 import { RecepcionRegUbicacionesComponent } from './views/recepcion-reg-ubicaciones/recepcion-reg-ubicaciones.component';
+import { ReporteResumenCajaComponent } from './views/reportes/reporte-resumen-caja/reporte-resumen-caja.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -23,7 +24,8 @@ const routes: Routes = [
   { path: 'usuarios', component: MntUsuariosComponent },
   { path: 'servicios', component: MntProdservicesComponent },
   { path: 'ubicaciones', component: MntUbicacionComponent },
-  { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent }
+  { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent },
+  { path: 'resumenCaja', component: ReporteResumenCajaComponent },  
 ];
 
 @NgModule({
