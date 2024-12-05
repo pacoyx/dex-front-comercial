@@ -48,13 +48,16 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions style="display: flex; justify-content: space-between;">
     <button mat-button (click)="onCancel()">Cancelar</button>
     @if(!loading){
-    <button mat-button color="primary" (click)="onSave()">Guardar</button>
+    <button mat-fab extended color="primary" (click)="onSave()">
+        <mat-icon>save</mat-icon>
+        Guardar
+    </button>
     }
     @if(loading){
-    <button mat-button color="primary">
+    <button mat-fab extended color="primary">
         <div style="display: flex; gap: 5px;">
             <app-loading></app-loading>
             Grabando...

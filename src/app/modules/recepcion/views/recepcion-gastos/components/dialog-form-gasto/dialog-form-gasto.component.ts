@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -10,13 +10,17 @@ import { IActualizarGastoRequest, ICreateGastoRequest } from '../../../../interf
 import { LoginService } from '../../../../../../core/services/login.service';
 import { EmisionService } from '../../../../services/emision.service';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-dialog-form-gasto',
   standalone: true,
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions,
-    MatDialogClose, MatButtonModule, MatIcon, FormsModule,
-    MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatSelectModule, LoadingComponent],
+  imports: [
+    MatDialogTitle, MatDialogContent, MatDialogActions,
+    MatButtonModule, MatIcon, FormsModule,
+    MatFormFieldModule, MatInputModule, ReactiveFormsModule,
+    MatSelectModule, LoadingComponent
+  ],
   templateUrl: './dialog-form-gasto.component.html',
   styleUrl: './dialog-form-gasto.component.css'
 })
@@ -27,7 +31,8 @@ export class DialogFormGastoComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<DialogFormGastoComponent>);
 
   frmGasto: FormGroup;
-  fechaHoy = new Date().toDateString();
+  // fechaHoy = new Date().toDateString();
+  fechaHoy = formatDate(new Date(), 'dd/MM/yyyy', 'en-US');
   loading = false;
   bolMensaje = false;
   errMensaje = '';

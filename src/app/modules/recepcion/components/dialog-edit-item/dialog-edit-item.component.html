@@ -62,7 +62,7 @@
             </mat-tab>
 
             <mat-tab label="Marcas">
-                <div style="height: 300px; overflow-x: scroll;">
+                <div style="height: 200px; overflow-x: scroll;">
                     <form [formGroup]="formMarcasx">
                         <mat-selection-list #shoesList [formControl]="marcasControl" name="marcasx" [multiple]="false">
                             @for (marca of marcasRopas; track marca) {
