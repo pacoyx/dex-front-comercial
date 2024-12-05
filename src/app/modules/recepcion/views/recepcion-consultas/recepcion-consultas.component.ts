@@ -58,11 +58,11 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
 
   displayedColumns: string[] = [
     'numeroGuia',
+    'nombreCliente',
     'fechaOperacion',
     'total',
     'acuenta',
     'saldo',
-    'nombreCliente',
     'estadoPago',
     'estadoRegistro',
     'estadoSituacion',

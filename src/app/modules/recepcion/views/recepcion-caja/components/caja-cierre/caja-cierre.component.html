@@ -210,11 +210,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <th>Inicial</th>
+                        <td>{{saldoInicial | number:'1.2-2'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Ingresos</th>
+                        <td>{{totalEF | number:'1.2-2'}}</td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th>Total</th>
-                        <td>{{totalEF | number:'1.2-2'}}</td>
+                        <th>Total </th>
+                        <td>{{saldoInicial + totalEF | number:'1.2-2'}}</td>
                     </tr>
                 </tfoot>
             </table>
