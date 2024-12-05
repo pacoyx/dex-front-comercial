@@ -57,9 +57,7 @@ export const environment = {
     EPActualizarUbicacion:'api/locationclothes',
     EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
 
-    
     //falta implementar
     EPListarUsuarios: 'api/user',
-
 
 };
