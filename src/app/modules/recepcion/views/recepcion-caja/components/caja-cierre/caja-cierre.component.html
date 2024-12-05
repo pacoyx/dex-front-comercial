@@ -218,11 +218,15 @@
                         <th>Ingresos</th>
                         <td>{{totalEF | number:'1.2-2'}}</td>
                     </tr>
+                    <tr>
+                        <th>Salidas</th>
+                        <td>{{( totalSal *-1) | number:'1.2-2'}}</td>
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr>
                         <th>Total </th>
-                        <td>{{saldoInicial + totalEF | number:'1.2-2'}}</td>
+                        <td>{{totalFinalEF | number:'1.2-2'}}</td>
                     </tr>
                 </tfoot>
             </table>

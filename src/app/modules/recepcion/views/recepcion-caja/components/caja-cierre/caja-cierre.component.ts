@@ -69,12 +69,14 @@ export class CajaCierreComponent implements OnInit, OnDestroy, OnChanges {
       this.totalTA = this.dataTotalizado.find(item => item.tipoPago === 'TA')?.total || 0;
       this.totalQR = this.dataTotalizado.find(item => item.tipoPago === 'QR')?.total || 0;
       this.totalIng = this.totalEF + this.totalTA + this.totalQR;
-      this.totalFinalEF = this.saldoInicial + this.totalEF - this.totalSal;
+      this.totalFinalEF = this.saldoInicial + this.totalEF - this.totalSal;      
+
     }
 
     if (changes['dataGastos'] && changes['dataGastos'].currentValue) {
       this.totalSal = this.dataGastos.reduce((acc, item) => acc + item.importe, 0);
       this.totalFinal = this.saldoInicial + this.totalIng - this.totalSal;
+      this.totalFinalEF = this.saldoInicial + this.totalEF - this.totalSal;
     }
   }
 
