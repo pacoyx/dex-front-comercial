@@ -1,0 +1,25 @@
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Comprobante</th>            
+            <th>Cliente</th>
+            <th>Adelanto</th>
+            <th>Importe</th>            
+        </tr>
+    </thead>
+    <tbody>
+        @for (item of dataSource; track item.customerId; let idx = $index) {
+        <tr>
+            <td>{{ idx + 1 }}</td>
+            <td>{{ item.serie }} - {{ item.numero }}</td>
+            <td>{{ item.cliente }}</td>
+            <td style="text-align: right;">{{ item.adelanto | number:'1.2-2'}}</td>
+            <td style="text-align: right;">{{ item.importe | number:'1.2-2'}}</td>            
+        </tr>
+
+        } @empty {
+        <li>No hay Datos.</li>
+        }
+    </tbody>
+</table>

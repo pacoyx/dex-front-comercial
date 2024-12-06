@@ -50,4 +50,15 @@ export interface IReportResumenCajaPorFechaResponse {
   tipoPago: string;
   totalAdelanto: number;
   totalImporte: number;
+  detalle: IResumenCajaDetalle[];
+}
+
+export interface IResumenCajaDetalle {
+  adelanto: number;
+  importe: number;
+  tipoPago: string;
+  customerId: number;
+  cliente: string;
+  serie: string;
+  numero: string;
 }

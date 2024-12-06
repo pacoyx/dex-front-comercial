@@ -31,12 +31,17 @@
                     }
                 </mat-select>
             </mat-form-field>
+
+            <button mat-fab color="primary" (click)="limpiarFiltros()">
+                <mat-icon>clear</mat-icon>
+            </button>
+
         </div>
     </div>
 
     <div>
 
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
 
             <ng-container matColumnDef="usuario">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
@@ -71,10 +76,41 @@
             </ng-container>
 
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
+            <ng-container matColumnDef="expand">
+                <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button aria-label="expand row"
+                        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+                        @if (expandedElement === element) {
+                        <mat-icon>keyboard_arrow_up</mat-icon>
+                        } @else {
+                        <mat-icon>keyboard_arrow_down</mat-icon>
+                        }
+                    </button>
+                </td>
+            </ng-container>
 
+
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsWithExpand.length">
+                    <div class="example-element-detail"
+                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <app-table-det-resumen-caja [dataSource]="element.detalle" ></app-table-det-resumen-caja>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr> -->
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsWithExpand" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumnsWithExpand;" class="example-element-row"
+                [class.example-expanded-row]="expandedElement === element"
+                (click)="expandedElement = expandedElement === element ? null : element"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
         </table>
 
     </div>

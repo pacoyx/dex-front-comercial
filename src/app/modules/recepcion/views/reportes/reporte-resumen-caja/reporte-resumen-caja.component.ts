@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DecimalPipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { TableDetResumenCajaComponent } from './components/table-det-resumen-caja/table-det-resumen-caja.component';
 
 @Component({
   selector: 'app-reporte-resumen-caja',
@@ -21,11 +23,18 @@ import { MatSelectModule } from '@angular/material/select';
   imports: [
     MatTableModule, MatButtonModule, MatIconModule,
     FormsModule, MatDatepickerModule, MatFormFieldModule, 
-    MatInputModule, DecimalPipe, MatSelectModule
+    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+  ],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed,void', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
   ],
   templateUrl: './reporte-resumen-caja.component.html',
   styleUrl: './reporte-resumen-caja.component.css'
@@ -43,6 +52,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     'totalImporte',
     'totalCobrado',
   ];
+  displayedColumnsWithExpand = [...this.displayedColumns, 'expand'];
+  expandedElement!: IReportResumenCajaPorFechaResponse | null;
 
   dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>([]);
   resumenSubscription!: Subscription;
@@ -112,6 +123,11 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
           console.error(error);
         }
       });
+  }
+
+  limpiarFiltros() {
+    this.dataSource.filter = '';
+    this.selectedTP = 'TO';
   }
 
 
