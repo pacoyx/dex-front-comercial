@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrlBase: 'https://localhost:7253/',
+    apiUrlBase: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
     EPlogin: 'api/login',
     EPRefreshToken: 'api/refresh-token',
 
