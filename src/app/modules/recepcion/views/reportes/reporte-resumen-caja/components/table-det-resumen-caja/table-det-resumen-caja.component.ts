@@ -11,4 +11,15 @@ import { DecimalPipe } from '@angular/common';
 })
 export class TableDetResumenCajaComponent {
   @Input() dataSource: IResumenCajaDetalle[] = [];
+  @Input() tipoPago: string = '';
+
+
+  getTotalAdelanto() {
+    return this.dataSource.map(t => t.adelanto).reduce((acc, value) => acc + value, 0);
+  }
+
+  getTotalImporte() {
+    return this.dataSource.map(t => t.importe).reduce((acc, value) => acc + value, 0);
+  }
+
 }

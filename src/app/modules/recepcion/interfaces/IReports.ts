@@ -46,6 +46,7 @@ export interface IReportGuiasDetalleDetalleResponse {
 }
 
 export interface IReportResumenCajaPorFechaResponse {
+  cajaId:number;
   usuario: string;
   tipoPago: string;
   totalAdelanto: number;

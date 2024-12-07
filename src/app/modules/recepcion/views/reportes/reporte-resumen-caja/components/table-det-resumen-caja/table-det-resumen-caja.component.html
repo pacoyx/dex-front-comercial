@@ -1,3 +1,8 @@
+<div style="display: flex;">
+    <div>
+        <h2>Detalle de : {{tipoPago}}</h2>
+    </div>
+</div>
 <table>
     <thead>
         <tr>
@@ -19,7 +24,17 @@
         </tr>
 
         } @empty {
-        <li>No hay Datos.</li>
+        <p>No hay Datos.</p>
         }
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" style="text-align: right;">Total</td>
+            <td style="text-align: right;font-weight: bold;">{{ getTotalAdelanto() | number:'1.2-2'}}</td>
+            <td style="text-align: right;font-weight: bold;">{{ getTotalImporte() | number:'1.2-2'}}</td>            
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: right;">Total General</td>            
+            <td style="text-align: right;font-weight: bold;">{{ getTotalAdelanto() + getTotalImporte() | number:'1.2-2'}}</td>            
+        </tr>
 </table>

@@ -33,86 +33,76 @@
             </mat-form-field>
 
             <button mat-fab color="primary" (click)="limpiarFiltros()">
-                <mat-icon>clear</mat-icon>
+                <mat-icon>filter_alt_off</mat-icon>
             </button>
 
         </div>
     </div>
 
-    <div>
+    <div style="display: flex; gap: 10px;">
 
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
-
-            <ng-container matColumnDef="usuario">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
-                <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
-                <td mat-footer-cell *matFooterCellDef> </td>
-            </ng-container>
-
-            <ng-container matColumnDef="tipoPago">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pago </th>
-                <td mat-cell *matCellDef="let element"> {{element.tipoPago}} </td>
-                <td mat-footer-cell *matFooterCellDef> Total </td>
-            </ng-container>
-
-            <ng-container matColumnDef="totalAdelanto">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Adelanto </th>
-                <td mat-cell *matCellDef="let element"> {{element.totalAdelanto | number:'1.2-2'}} </td>
-                <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() | number:'1.2-2'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="totalImporte">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Importe </th>
-                <td mat-cell *matCellDef="let element"> {{element.totalImporte | number:'1.2-2'}} </td>
-                <td mat-footer-cell *matFooterCellDef> {{ getTotalImporte() | number:'1.2-2'}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="totalCobrado">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cobrado </th>
-                <td mat-cell *matCellDef="let element"> {{element.totalAdelanto + element.totalImporte |
-                    number:'1.2-2'}} </td>
-                <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() + getTotalImporte() | number:'1.2-2'}}
-                </td>
-            </ng-container>
+        <div>
+            <div style="display: flex;">
+                <div>
+                    <h2>Resumen por Usuario</h2>
+                </div>
+            </div>
+            @if(loading) {
+                <app-loading></app-loading>
+            }
 
 
-            <ng-container matColumnDef="expand">
-                <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
-                <td mat-cell *matCellDef="let element">
-                    <button mat-icon-button aria-label="expand row"
-                        (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
-                        @if (expandedElement === element) {
-                        <mat-icon>keyboard_arrow_up</mat-icon>
-                        } @else {
-                        <mat-icon>keyboard_arrow_down</mat-icon>
-                        }
-                    </button>
-                </td>
-            </ng-container>
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+                <ng-container matColumnDef="usuario">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
+                    <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
+                    <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <ng-container matColumnDef="tipoPago">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pago </th>
+                    <td mat-cell *matCellDef="let element"> {{element.tipoPago}} </td>
+                    <td mat-footer-cell *matFooterCellDef> Total </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalAdelanto">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Adelanto </th>
+                    <td mat-cell *matCellDef="let element"> {{element.totalAdelanto | number:'1.2-2'}} </td>
+                    <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() | number:'1.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalImporte">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Importe </th>
+                    <td mat-cell *matCellDef="let element"> {{element.totalImporte | number:'1.2-2'}} </td>
+                    <td mat-footer-cell *matFooterCellDef> {{ getTotalImporte() | number:'1.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalCobrado">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cobrado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.totalAdelanto + element.totalImporte |
+                        number:'1.2-2'}} </td>
+                    <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() + getTotalImporte() | number:'1.2-2'}}
+                    </td>
+                </ng-container>
 
 
-            <ng-container matColumnDef="expandedDetail">
-                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsWithExpand.length">
-                    <div class="example-element-detail"
-                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                        <app-table-det-resumen-caja [dataSource]="element.detalle" ></app-table-det-resumen-caja>
-                    </div>
-                </td>
-            </ng-container>
 
-            <!-- <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr> -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    (click)="cargarDetallePorUsuarioyTipoPago(row)" class="example-element-row"
+                    >
+                </tr>
+                <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
 
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumnsWithExpand" class="cabecera"></tr>
-            <tr mat-row *matRowDef="let element; columns: displayedColumnsWithExpand;" class="example-element-row"
-                [class.example-expanded-row]="expandedElement === element"
-                (click)="expandedElement = expandedElement === element ? null : element"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
-            <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
-        </table>
 
+            </table>
+        </div>
+        <div>
+            <app-table-det-resumen-caja [dataSource]="dataDetalle" [tipoPago]="tipoPagoDetalle">
+            </app-table-det-resumen-caja>
+        </div>
     </div>
 
 </div>

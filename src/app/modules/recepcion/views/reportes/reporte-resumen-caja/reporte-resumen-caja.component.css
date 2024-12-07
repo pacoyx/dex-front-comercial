@@ -1,84 +1,85 @@
 .container-reporteResumen {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin: 10px;
-    /* background-color: pink; */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px;
+  /* background-color: pink; */
 }
 
 .section-options-resumen {
-    display: flex;
-    /* flex-direction: column; */
-    gap: 20px;
-    /* justify-content: space-between; */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+  display: flex;
+  /* flex-direction: column; */
+  gap: 20px;
+  /* justify-content: space-between; */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .cabecera {
-    text-align: center;
-    padding: 0px 0px !important;
-    background-color: #7d9ad6;
-    color: white;
-    border: 1px solid #ccc !important;
+  text-align: center;
+  padding: 0px 0px !important;
+  background-color: #7d9ad6;
+  color: white;
+  border: 1px solid #ccc !important;
 }
 
 .mat-column-totalAdelanto,
 .mat-column-totalImporte,
 .mat-column-totalCobrado {
-    /* width: 42px;     */
-    text-align: right;
+  /* width: 42px;     */
+  text-align: right;
 }
 
 .mat-footer-row {
-    text-align: right;
-    font-weight: bold;
+  text-align: right;
+  font-weight: bold;
 }
 
 
 
 
 tr.example-detail-row {
-    height: 0;
-  }
-  
-  tr.example-element-row:not(.example-expanded-row):hover {
-    background: whitesmoke;
-  }
-  
-  tr.example-element-row:not(.example-expanded-row):active {
-    background: #efefef;
-  }
-  
-  .example-element-row td {
-    border-bottom-width: 0;
-  }
-  
-  .example-element-detail {
-    overflow: hidden;
-    display: flex;
-  }
-  
-  .example-element-diagram {
-    min-width: 80px;
-    border: 2px solid black;
-    padding: 8px;
-    font-weight: lighter;
-    margin: 8px 0;
-    height: 104px;
-  }
-  
-  .example-element-symbol {
-    font-weight: bold;
-    font-size: 40px;
-    line-height: normal;
-  }
-  
-  .example-element-description {
-    padding: 16px;
-  }
-  
-  .example-element-description-attribution {
-    opacity: 0.5;
-  }
+  height: 0;
+  cursor: pointer;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.example-element-row:not(.example-expanded-row):active {
+  background: #efefef;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.example-element-diagram {
+  min-width: 80px;
+  border: 2px solid black;
+  padding: 8px;
+  font-weight: lighter;
+  margin: 8px 0;
+  height: 104px;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
+}

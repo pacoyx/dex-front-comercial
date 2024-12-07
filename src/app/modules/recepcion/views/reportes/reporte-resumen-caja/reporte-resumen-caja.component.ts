@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { ReportesEmisionService } from '../../../services/reportes-emision.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { IReportResumenCajaPorFechaResponse } from '../../../interfaces/IReports';
+import { IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../../../interfaces/IReports';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,7 @@ import { DecimalPipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TableDetResumenCajaComponent } from './components/table-det-resumen-caja/table-det-resumen-caja.component';
+import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 
 @Component({
   selector: 'app-reporte-resumen-caja',
@@ -23,7 +24,7 @@ import { TableDetResumenCajaComponent } from './components/table-det-resumen-caj
   imports: [
     MatTableModule, MatButtonModule, MatIconModule,
     FormsModule, MatDatepickerModule, MatFormFieldModule, 
-    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent
+    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent, LoadingComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -42,9 +43,7 @@ import { TableDetResumenCajaComponent } from './components/table-det-resumen-caj
 export class ReporteResumenCajaComponent implements AfterViewInit {
 
   reportsService = inject(ReportesEmisionService);
-
   fechaHoy: Date = new Date();
-
   displayedColumns: string[] = [
     'usuario',
     'tipoPago',
@@ -52,14 +51,13 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     'totalImporte',
     'totalCobrado',
   ];
-  displayedColumnsWithExpand = [...this.displayedColumns, 'expand'];
-  expandedElement!: IReportResumenCajaPorFechaResponse | null;
-
+  
   dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>([]);
   resumenSubscription!: Subscription;
-  selectedTP='';
   filterSubscription!: Subscription;
-
+  selectedTP='';
+  dataDetalle: IResumenCajaDetalle[] = [];
+  tipoPagoDetalle: string = '';
   tiposPago = [
     { id: 'TO', tipo: '[Todos]' },
     { id: 'EF', tipo: 'Efectivo' },
@@ -67,6 +65,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     { id: 'TA', tipo: 'Tarjeta' },
     { id: 'TR', tipo: 'Transferencia' },
   ];
+
+  loading = false;
 
 
   ngOnDestroy(): void {
@@ -110,16 +110,19 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
 
   cargarReporteResumenCaja() {
     this.selectedTP = 'TO';
+    this.loading = true;
     this.resumenSubscription = this.reportsService.obtenerReprteResumenCajaPorFecha(this.fechaHoy.toDateString())
-      .pipe(map(response => {
+      .pipe(map(response => {        
         return response.data;
       })
       )
       .subscribe({
         next: (response) => {
+          this.loading = false;
           this.dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>(response);
         },
         error: (error) => {
+          this.loading = false;
           console.error(error);
         }
       });
@@ -130,5 +133,21 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     this.selectedTP = 'TO';
   }
 
-
+  cargarDetallePorUsuarioyTipoPago(item: IReportResumenCajaPorFechaResponse) {
+    this.tipoPagoDetalle = item.tipoPago;
+    this.reportsService.obtenerDetalleResumenPorUsuarioYTipoPago(item.cajaId, item.tipoPago)
+      .pipe(map(response => {
+        return response.data;
+      })
+      )
+      .subscribe({
+        next: (response) => {
+          this.dataDetalle = response;
+        },
+        error: (error) => {
+          console.error(error);
+        }
+      });
+  }
+  
 }
