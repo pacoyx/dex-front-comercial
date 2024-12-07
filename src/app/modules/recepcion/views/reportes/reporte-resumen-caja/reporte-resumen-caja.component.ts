@@ -6,13 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MatRippleModule } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { map, Subscription } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TableDetResumenCajaComponent } from './components/table-det-resumen-caja/table-det-resumen-caja.component';
@@ -24,7 +24,7 @@ import { LoadingComponent } from '../../../../../core/components/loading/loading
   imports: [
     MatTableModule, MatButtonModule, MatIconModule,
     FormsModule, MatDatepickerModule, MatFormFieldModule, 
-    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent, LoadingComponent
+    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent, LoadingComponent,MatRippleModule, NgClass
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -100,6 +100,9 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
       this.dataSource.filter = '';
       return;
     }
+    this.dataDetalle=[];
+    this.tipoPagoDetalle = event;
+
 
     const filterValue = event.trim().toLowerCase();
     this.dataSource.filterPredicate = (data: IReportResumenCajaPorFechaResponse, filter: string) => {
@@ -111,8 +114,10 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
   cargarReporteResumenCaja() {
     this.selectedTP = 'TO';
     this.loading = true;
+    this.dataDetalle = [];
     this.resumenSubscription = this.reportsService.obtenerReprteResumenCajaPorFecha(this.fechaHoy.toDateString())
-      .pipe(map(response => {        
+      .pipe(map(response => {
+                response.data.forEach(item => item.flag = false);
         return response.data;
       })
       )
@@ -131,10 +136,14 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
   limpiarFiltros() {
     this.dataSource.filter = '';
     this.selectedTP = 'TO';
+    this.dataDetalle=[];
+    this.tipoPagoDetalle = '';
   }
 
   cargarDetallePorUsuarioyTipoPago(item: IReportResumenCajaPorFechaResponse) {
     this.tipoPagoDetalle = item.tipoPago;
+    this.dataSource.data.forEach(item => item.flag = false);
+    item.flag = true;
     this.reportsService.obtenerDetalleResumenPorUsuarioYTipoPago(item.cajaId, item.tipoPago)
       .pipe(map(response => {
         return response.data;

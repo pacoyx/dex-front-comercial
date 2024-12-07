@@ -44,11 +44,12 @@
         <div>
             <div style="display: flex;">
                 <div>
-                    <h2>Resumen por Usuario</h2>
+                    <h2>Resumen por Usuario / Tipo Pago</h2>
                 </div>
             </div>
             @if(loading) {
-                <app-loading></app-loading>
+            <app-loading></app-loading>
+            Buscando...
             }
 
 
@@ -89,9 +90,12 @@
 
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                    (click)="cargarDetallePorUsuarioyTipoPago(row)" class="example-element-row"
-                    >
+                <tr mat-row 
+                    matRipple 
+                    [matRippleUnbounded]="false"
+                    [matRippleRadius]="50"
+                    *matRowDef="let row; columns: displayedColumns;" (click)="cargarDetallePorUsuarioyTipoPago(row)"
+                    class="example-element-row" [ngClass]="{'resaltarFila': row.flag }">
                 </tr>
                 <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
 

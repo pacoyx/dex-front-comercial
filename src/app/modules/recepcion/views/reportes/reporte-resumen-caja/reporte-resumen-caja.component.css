@@ -24,6 +24,14 @@
   border: 1px solid #ccc !important;
 }
 
+
+.resaltarFila{
+  background-color: greenyellow;
+  border: 1px solid #ccc !important;
+  border-radius: 5px;
+}
+
+
 .mat-column-totalAdelanto,
 .mat-column-totalImporte,
 .mat-column-totalCobrado {

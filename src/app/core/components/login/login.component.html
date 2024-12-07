@@ -1,7 +1,12 @@
 <div class="container" [ngStyle]="{'height': screenHeight + 'px'}">
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container-login">
-        <h1>Login</h1>
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <h1>Login</h1>
+            <img src="logo.jpg" alt="logo" style="width: 150px; height: 100px;">
+        
+        </div>
 
         <mat-form-field class="cajaLogin" appearance="outline">
             <mat-label>Usuario</mat-label>
@@ -24,17 +29,22 @@
             </mat-error>
         </mat-form-field>
         
-        <button mat-fab extended type="submit" [disabled]="loginForm.invalid">
-            Iniciar Sesión
+        <button mat-fab extended type="submit" [disabled]="loginForm.invalid || this.loading() ">
+            @if(this.loading()){
+                <app-loading></app-loading>
+                procesando...
+            }@else {
+                Iniciar Sesión
+            }
         </button>
         <div style="margin-top: 20px;">
             <a href="http://www.google.com">Pedir ayuda</a>
         </div>
-        @if (this.loading()) {
+        <!-- @if (this.loading()) {
         <div style="width: 100%; display: flex; justify-content: center;">
             <app-loading></app-loading>
         </div>
-        }
+        } -->
         @if (this.showError()) {
         <div style="display: flex; justify-content: center; width: 100%;color: red;">
             <p>{{this.errorMessage}}</p>
