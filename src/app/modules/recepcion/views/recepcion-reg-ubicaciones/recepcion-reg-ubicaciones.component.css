@@ -57,6 +57,26 @@
     padding: 10px;
 }
 
+.mat-mdc-row:hover .mat-mdc-cell {
+    background: rgb(157, 235, 84);
+  }
+
+  .mat-mdc-row:active .mat-mdc-cell {
+    background: #fa621b;
+  }
+
+
+  .table-title-row {
+    background-color: #f5f5f5;
+  }
+  
+  .table-title {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: bold;
+    padding: 10px;
+  }
+
 @media screen and (max-width: 768px) {
     .container-mnt-regubicaciones {
         margin: 0px;

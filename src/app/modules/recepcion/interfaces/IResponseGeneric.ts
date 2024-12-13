@@ -2,6 +2,6 @@ export interface IResponseGeneric<T> {
     statusCode: string;
     message: string;
     data: T;
-    success: string;
+    success: boolean;
     errors: string[];
 }

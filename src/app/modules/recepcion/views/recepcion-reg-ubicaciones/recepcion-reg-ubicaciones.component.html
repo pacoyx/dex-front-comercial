@@ -5,12 +5,12 @@
         Registro de Ubicaciones
     </h2>
 
-    <div class="section-controls-mnt-ubicaciones">
+    <!-- <div class="section-controls-mnt-ubicaciones">
         <button mat-fab extended>
             <mat-icon>add_location</mat-icon>
             Nueva Ubicación
         </button>
-    </div>
+    </div> -->
     <div class="container-form">
         <form class="form" [formGroup]="frmUbicacion">
             <mat-form-field>
@@ -23,9 +23,91 @@
             </mat-form-field>
 
             <mat-form-field class="example-full-width">
-                <mat-label>Numero de Guia</mat-label>
-                <input matInput placeholder="num. guia + letra" formControlName="numeroGuia">
+                <mat-label>Número de Guía</mat-label>
+                <input id="numeroGuia" matInput placeholder="num. guia + letra" formControlName="numeroGuia"
+                    (keydown.enter)="agregarGuia($event)">
             </mat-form-field>
+
+            @if (bolNoExisteCliente) {
+                <mat-form-field class="example-full-width">
+                    <mat-label>Referencia</mat-label>
+                    <input id="referencia" matInput placeholder="nombre de cliente" formControlName="referencia"
+                        (keydown.enter)="agregarGuiaConreferencia($event)">
+                </mat-form-field>
+            }
+
+
+
+            @if(listGuideDetails.length > 0) {
+            <mat-card>                
+                <mat-card-header>
+                    <mat-card-title>Seleccione un item 
+                        <mat-icon>touch_app</mat-icon> 
+                        
+                    </mat-card-title>
+                </mat-card-header>
+
+                <table mat-table [dataSource]="listGuideDetails" class="mat-elevation-z8">
+                    <ng-container matColumnDef="guia">
+                        <th mat-header-cell *matHeaderCellDef> Guia </th>
+                        <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="descripcion">
+                        <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                        <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                        <td mat-cell *matCellDef="let element">
+                            <button mat-icon-button (click)="agregarGuiaDetalle(element.numero, element.descripcion)">
+                                <mat-icon>add</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsDetails"></tr>
+                    <tr mat-row (click)="agregarGuiaDetalle(row.numero,row.descripcion)"
+                        *matRowDef="let row; columns: displayedColumnsDetails;">
+                    </tr>
+                </table>
+            </mat-card>
+            }
+
+
+            <mat-card>
+                <!-- Título de la tabla -->
+                <mat-card-header>
+                    <mat-card-title>Guias agregadas</mat-card-title>
+                </mat-card-header>
+
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+                    <ng-container matColumnDef="mguia">
+                        <th mat-header-cell *matHeaderCellDef> Guia </th>
+                        <td mat-cell *matCellDef="let element"> {{element.numero}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="mnativo">
+                        <th mat-header-cell *matHeaderCellDef> Nativo </th>
+                        <td mat-cell *matCellDef="let element"> {{element.nativo}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="mdescripcion">
+                        <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+                        <td mat-cell *matCellDef="let element"> {{element.descripcion}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="macciones">
+                        <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                        <td mat-cell *matCellDef="let element; let i = index">
+                            <button mat-icon-button (click)="eliminarGuia(i)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                    </tr>
+                </table>
+            </mat-card>
 
             <button mat-fab extended (click)="registrarUbicacion()">
                 <mat-icon>save</mat-icon>
@@ -33,22 +115,22 @@
             </button>
         </form>
 
-        
+
     </div>
     @if(bolOk){
-        <div class="msg-ok">
-            <mat-icon>task_alt</mat-icon>
-                Correcto!
-        </div>
+    <div class="msg-ok">
+        <mat-icon>task_alt</mat-icon>
+        Correcto!
+    </div>
     }
 
     @if(bolError){
-        <div class="msg-err">
-            <mat-icon>task_alt</mat-icon>
-                Error!
-        </div>
+    <div class="msg-err">
+        <mat-icon>task_alt</mat-icon>
+        Error!
+    </div>
     }
 
-    
+
 
 </div>
