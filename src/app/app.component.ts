@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { environment } from '../environments/environment';
+// import { environment } from '../environments/environment';
 
 
 @Component({
@@ -15,7 +15,7 @@ export class AppComponent {
 
 
   constructor() {
-    console.log('environment.apiUrlBase', environment.apiUrlBase);
+    // console.log('environment.apiUrlBase', environment.apiUrlBase);
   }
 
 }

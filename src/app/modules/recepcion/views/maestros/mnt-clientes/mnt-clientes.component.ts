@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DialogFormRegClienteComponent } from './components/dialog-form-reg-cliente/dialog-form-reg-cliente.component';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @Component({
@@ -18,7 +19,7 @@ import { DialogQuestionComponent } from '../../../components/dialog-question/dia
   standalone: true,
   imports: [
     MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule,
-    MatPaginatorModule, MatSortModule, MatButtonModule
+    MatPaginatorModule, MatSortModule, MatButtonModule, FormsModule, ReactiveFormsModule
   ],
   templateUrl: './mnt-clientes.component.html',
   styleUrl: './mnt-clientes.component.css'
@@ -27,7 +28,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
   maestroSerivce = inject(MaestrosService);
 
   displayedColumns: string[] = [
-    'firstName',    
+    'firstName',
     'address',
     'phone',
     'email',
@@ -39,6 +40,9 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
   totalClientes = 0;
   pageSize = 10;
   dialog = inject(MatDialog);
+  bolFiltro = false;
+  filterValue = '';
+  filterControl = new FormControl();
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -54,16 +58,60 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
     // this.dataSource.paginator = this.paginator; 
     this.paginator.page.subscribe(() => {
-      this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+      if (this.bolFiltro) {
+        this.cargarClientesFiltro(this.paginator.pageIndex + 1, this.paginator.pageSize);
+      } else {
+        this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+      }      
     });
   }
 
   cargarClientes(pageIndex: number, pageSize: number) {
     this.maestroSerivce.obtenerClientes(pageIndex, pageSize).subscribe(
-      response => {        
+      response => {
         this.dataSource.data = response.data.customers;
         this.totalClientes = response.data.totalCount;
         this.paginator.length = this.totalClientes; // Asegúrate de actualizar la longitud del paginador
+      }
+    );
+  }
+
+  applyFilterV2(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    if (filterValue == '') {
+      this.limpiaFiltro();
+      return;
+    }
+    this.filterValue = filterValue.trim().toLowerCase();
+    this.bolFiltro = true;
+    this.debounce(() => {
+      this.cargarClientesFiltro(1, 10);
+      this.paginator.pageIndex = 0;
+    }, 300)();
+  }
+
+  debounce(func: Function, wait: number) {
+    let timeout: any;
+    return (...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+  
+
+  limpiaFiltro() {
+    this.filterValue = '';
+    this.bolFiltro = false;
+    this.cargarClientes(1, 10);
+    this.filterControl.setValue('');
+  }
+
+  cargarClientesFiltro(pageIndex: number, pageSize: number) {    
+    this.maestroSerivce.obtenerClientesFiltrarPaginator(pageIndex, pageSize, this.filterValue).subscribe(
+      response => {
+        this.dataSource.data = response.data.customers;
+        this.totalClientes = response.data.totalCount;
+        this.paginator.length = this.totalClientes; // Asegúrate de actualizar la longitud del paginador        
       }
     );
   }
@@ -73,15 +121,14 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-
-  editCliente(cliente: IResponseCustomers) {    
+  editCliente(cliente: IResponseCustomers) {
     const dialogRef = this.dialog.open(DialogFormRegClienteComponent, {
       width: '400px',
       data: { esNuevo: false, objCliente: cliente }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {        
+      if (result) {
         this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
       }
     });
@@ -94,23 +141,23 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {        
+      if (result) {
         this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
       }
     });
   }
 
-  deleteCliente(cliente: IResponseCustomers) {    
+  deleteCliente(cliente: IResponseCustomers) {
     const dialogRef = this.dialog.open(DialogQuestionComponent, {
       width: '400px',
       data: { title: 'Eliminar Cliente', message: `¿Está seguro de eliminar el cliente ${cliente.firstName} ${cliente.lastName}?`, msgButton: 'Eliminar' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result == 'OK') {        
+      if (result == 'OK') {
         this.maestroSerivce.eliminarCliente(cliente.id).subscribe({
           next: (resp) => {
-            if (resp.success) {              
+            if (resp.success) {
               this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
             }
           },

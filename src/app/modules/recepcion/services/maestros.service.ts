@@ -35,6 +35,12 @@ export class MaestrosService {
     return this.http.get<IResponseGeneric<IGetClientesPaginadoResponse>>(`${this.apiUrl}${environment.EPListarClientes}/${pagina}/${numFilas}`, { headers });
   }
 
+  obtenerClientesFiltrarPaginator(pagina: number, numFilas: number, nombreFiltro:string): Observable<IResponseGeneric<IGetClientesPaginadoResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const params = { name: nombreFiltro };
+    return this.http.get<IResponseGeneric<IGetClientesPaginadoResponse>>(`${this.apiUrl}${environment.EPListarClientesPaginator}/${pagina}/${numFilas}`, { headers, params });
+  }
+
   registrarCliente(cliente: IClienteCreate): Observable<IResponseGeneric<string>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPRegistrarCliente}`;

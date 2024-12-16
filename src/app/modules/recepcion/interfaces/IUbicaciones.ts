@@ -12,8 +12,9 @@ export interface IUbicacionesCreateResponseDto {
 
 export interface IRegistrarUbicacionRequest {
   locationClothesId: number;
-  numeroGuia: string;
+  numeroGuia: string[];
   comments: string;
+  nativo:boolean;
 }
 
 

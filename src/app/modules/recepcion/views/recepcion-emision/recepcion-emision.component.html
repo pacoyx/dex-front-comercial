@@ -303,7 +303,7 @@
           }
 
 
-          <button mat-fab extended (click)="imprimirTicket()">
+          <button mat-fab extended (click)="imprimirTicket()" [disabled]="!blockSave">
             <mat-icon style="color: goldenrod;">print</mat-icon>
             Imprimir
           </button>

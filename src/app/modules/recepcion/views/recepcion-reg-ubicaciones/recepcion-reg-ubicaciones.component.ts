@@ -147,7 +147,8 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
       const request: IRegistrarUbicacionRequest = {
         locationClothesId: this.frmUbicacion.get('ubicacionId')!.value,
         numeroGuia: this.frmUbicacion.get('numeroGuia')!.value,
-        comments: ''
+        comments: '',        
+        nativo: true
       }
       this.maestrosService.registrarUbicacionPrenda(request).subscribe({
         next: (resp) => {

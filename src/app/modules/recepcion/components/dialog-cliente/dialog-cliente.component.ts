@@ -121,16 +121,16 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
 
     if (this.formRegistrarCliente.invalid) {
       this.bolShowError = true;
-        this.msgError = 'Falta ingresar los campos obligatorios';
-        setTimeout(() => {
-          this.bolShowError = false;
-        }, 3000);
+      this.msgError = 'Falta ingresar los campos obligatorios';
+      setTimeout(() => {
+        this.bolShowError = false;
+      }, 3000);
       return;
     }
 
-    const nombres = this.formRegistrarCliente.get('nombres')?.value.toLowerCase().split(' ');
-    var firstName = nombres[0].charAt(0).toUpperCase() + nombres[0].slice(1);
-    var lastName = nombres.length > 1 ? nombres[1].charAt(0).toUpperCase() + nombres[1].slice(1) : '';
+    const nombres: string[] = this.formRegistrarCliente.get('nombres')?.value.toLowerCase().split(' ').filter((n: string) => n.trim() !== '') || [];
+    var firstName = nombres[0].charAt(0).toUpperCase() + nombres[0].slice(1);        
+    var lastName = nombres.slice(1).join(' ');
 
     let cliente: IClienteCreate = {
       firstName: firstName,

@@ -82,46 +82,46 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   items: IListaItemsBusqueda[] = [];
   categories: IListaCategorias[] = [
     {
-        "id": 1,
-        "name": "Peso",        
-        "icon": "scale"
+      "id": 1,
+      "name": "Peso",
+      "icon": "scale"
     },
     {
-        "id": 2,
-        "name": "Vestir",        
-        "icon": "checkroom"
+      "id": 2,
+      "name": "Vestir",
+      "icon": "checkroom"
     },
     {
-        "id": 3,
-        "name": "Diario",        
-        "icon": "group"
+      "id": 3,
+      "name": "Diario",
+      "icon": "group"
     },
     {
-        "id": 4,
-        "name": "Cama",        
-        "icon": "bed"
+      "id": 4,
+      "name": "Cama",
+      "icon": "bed"
     },
     {
-        "id": 5,
-        "name": "Hogar",        
-        "icon": "home"
+      "id": 5,
+      "name": "Hogar",
+      "icon": "home"
     },
     {
-        "id": 6,
-        "name": "Calzado",        
-        "icon": "roller_skating"
+      "id": 6,
+      "name": "Calzado",
+      "icon": "roller_skating"
     },
     {
-        "id": 7,
-        "name": "Teñidos",        
-        "icon": "palette"
+      "id": 7,
+      "name": "Teñidos",
+      "icon": "palette"
     },
     {
-        "id": 8,
-        "name": "Otros",        
-        "icon": "cloud"
+      "id": 8,
+      "name": "Otros",
+      "icon": "cloud"
     }
-];
+  ];
   DataDemo: IEmisionPrevia[] = [];
   displayedColumns: string[] = ['item', 'nomProd', 'Cant', 'Precio', 'Subtotal', 'actions'];
   dataSource = new MatTableDataSource<IEmisionPrevia>(this.store.items());
@@ -262,7 +262,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     const cliente = event.option.value;
 
 
-console.log('watch cliente ==>',cliente);
+    console.log('watch cliente ==>', cliente);
 
 
     this.clienteTelefono = cliente.telefono;
@@ -427,7 +427,7 @@ console.log('watch cliente ==>',cliente);
     this.actualizarPago()
   }
 
-  actualizarPago(bolHack: any = false) {    
+  actualizarPago(bolHack: any = false) {
     this.montoPago = this.store.itemSumTotal();
     let objPago: IEmisionPago = { tipo: this.tipoPago, monto: this.tipoPago == 'SP' ? 0 : this.montoPago };
     this.store.addPago(objPago);

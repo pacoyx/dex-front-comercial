@@ -6,10 +6,15 @@
     </h2>
 
     <div class="section-controls-mnt-cliente">
-        <mat-form-field appearance="outline">
-            <mat-label>Buscar Cliente</mat-label>
-            <input matInput (keyup)="applyFilter($event)" placeholder="Buscar">
-        </mat-form-field>
+        <div>
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar Cliente</mat-label>
+                <input matInput [formControl]="filterControl" (keyup)="applyFilterV2($event)" placeholder="Buscar">
+            </mat-form-field>
+            <button mat-fab extended (click)="limpiaFiltro()">
+                <mat-icon>filter</mat-icon>
+            </button>
+        </div>
 
         <button mat-fab extended (click)="nuevoCliente()">
             <mat-icon>person_add</mat-icon>
