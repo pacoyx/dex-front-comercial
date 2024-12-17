@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MaestrosService } from '../../services/maestros.service';
-import { IRegistrarUbicacionRequest, IUbicacionesResponseDto } from '../../interfaces/IUbicaciones';
+import { IRegistrarUbicacionRequest, IRequestRegistrarUbicacion, IUbicacionesResponseDto } from '../../interfaces/IUbicaciones';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmisionService } from '../../services/emision.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -49,7 +49,7 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
   constructor() {
     this.frmUbicacion = new FormGroup({
       ubicacionId: new FormControl('', [Validators.required]),
-      numeroGuia: new FormControl('', [Validators.required]),
+      numeroGuia: new FormControl(''),
       referencia: new FormControl(''),
     });
   }
@@ -126,10 +126,10 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
             const inputElement = document.getElementById('referencia');
             if (inputElement) {
               inputElement.focus();
-            }  
+            }
           }, 500);
-          
-          
+
+
         }
       });
     }
@@ -143,34 +143,47 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
 
 
   registrarUbicacion() {
-    if (this.frmUbicacion.valid) {
-      const request: IRegistrarUbicacionRequest = {
-        locationClothesId: this.frmUbicacion.get('ubicacionId')!.value,
-        numeroGuia: this.frmUbicacion.get('numeroGuia')!.value,
-        comments: '',        
-        nativo: true
-      }
-      this.maestrosService.registrarUbicacionPrenda(request).subscribe({
-        next: (resp) => {
-          console.log(resp);
-          if (resp.success) {
-            this.frmUbicacion.reset();
-            this.bolOk = true;
-            setTimeout(() => {
-              this.bolOk = false;
-            }, 3000);
-          }
-        },
-        error: (error) => {
-          console.log(error.message);
-          this.bolError = true;
+
+    if(this.frmUbicacion.invalid){
+      console.log('Formulario invalido');      
+      return;
+    }
+
+    const reqRegUbi: IRequestRegistrarUbicacion = {
+      locationClothesId: this.frmUbicacion.get('ubicacionId')!.value,
+      guias: [],
+      comments: ''
+    };
+    this.listGuides.forEach((item) => {
+      reqRegUbi.guias.push({ numeroGuia: item.numero, referencia: item.descripcion, isSystem: item.nativo });
+    });
+
+    this.maestrosService.registrarUbicacionPrenda(reqRegUbi).subscribe({
+      next: (resp) => {
+        console.log(resp);
+        if (resp.success) {
+          this.frmUbicacion.reset();
+          this.listGuides = [];
+          this.updateTable();
+          
+          this.bolOk = true;
           setTimeout(() => {
-            this.bolError = false;
+            this.bolOk = false;
           }, 3000);
         }
-      });
-    }
+      },
+      error: (error) => {
+        console.log(error.message);
+        this.bolError = true;
+        setTimeout(() => {
+          this.bolError = false;
+        }, 3000);
+      }
+    });
+
+
   }
+
 
 
 }

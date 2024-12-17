@@ -23,3 +23,16 @@ export interface IUbicacionesEditDto {
   nombre: string;
   descripcion: string;
 }
+
+
+export interface IRequestRegistrarUbicacion {
+  locationClothesId: number;
+  guias: Guia[];
+  comments: string;
+}
+
+interface Guia {
+  numeroGuia: string;
+  referencia: string;
+  isSystem: boolean;
+}

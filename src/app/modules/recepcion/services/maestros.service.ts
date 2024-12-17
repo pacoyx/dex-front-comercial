@@ -6,7 +6,7 @@ import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGetClientesPaginadoResponse } from '../interfaces/ICliente';
 import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
-import { IRegistrarUbicacionRequest, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
+import { IRegistrarUbicacionRequest, IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
 
 @Injectable({
   providedIn: 'root'
@@ -111,7 +111,7 @@ export class MaestrosService {
 
 
 
-  registrarUbicacionPrenda(ubicacion: IRegistrarUbicacionRequest) {
+  registrarUbicacionPrenda(ubicacion: IRequestRegistrarUbicacion) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
   }

@@ -59,13 +59,22 @@ export class DialogFormRegMovimientoComponent implements OnInit, OnDestroy {
     }
   }
   
+mostrarError(message:string): void {
+  this.bolMsj = true;
+  this.mensajeInfo = message;
+  setTimeout(() => {
+    this.bolMsj = false;
+  }, 3000);
+  }
+
   registrarMovimiento(): void {
     if (this.formRegistroMovimiento.invalid) {
-      this.bolMsj = true;
-      this.mensajeInfo = 'Debe completar los campos obligatorios';
-      setTimeout(() => {
-        this.bolMsj = false;
-      }, 3000);
+      this.mostrarError('Complete los campos requeridos');
+      return;
+    }
+
+    if(this.formRegistroMovimiento.get('importe')?.value! < 0){
+      this.mostrarError('El importe no puede ser menor a 0');
       return;
     }
 
