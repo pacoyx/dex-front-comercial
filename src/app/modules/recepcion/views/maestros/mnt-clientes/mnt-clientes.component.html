@@ -4,12 +4,14 @@
         <mat-icon>groups</mat-icon>
         Registro de Clientes
     </h2>
-
+    <!-- (keyup)="applyFilterV2($event)"  -->
     <div class="section-controls-mnt-cliente">
         <div>
             <mat-form-field appearance="outline">
                 <mat-label>Buscar Cliente</mat-label>
-                <input matInput [formControl]="filterControl" (keyup)="applyFilterV2($event)" placeholder="Buscar">
+                <input matInput [formControl]="filterControl" 
+                
+                placeholder="Buscar">
             </mat-form-field>
             <button mat-fab extended (click)="limpiaFiltro()">
                 <mat-icon>filter_alt_off</mat-icon>

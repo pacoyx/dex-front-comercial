@@ -12,6 +12,7 @@ import { DialogFormRegClienteComponent } from './components/dialog-form-reg-clie
 import { MatButtonModule } from '@angular/material/button';
 import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 
 
 @Component({
@@ -51,6 +52,32 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.cargarClientes(1, 10);
+    this.filterControl.valueChanges
+      .pipe(
+        startWith(''),
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(value => {
+          if (value === '') {
+            this.limpiaFiltro();
+            return of([]);
+          }
+          // Replace with actual observable logic if needed
+          return this.maestroSerivce.obtenerClientesFiltrarPaginator(1, 10, value).pipe(
+            map(response => response.data)
+          );
+        })
+      )
+      .subscribe((response) => {
+        this.bolFiltro = true;
+        if (response && 'customers' in response) {
+            this.dataSource.data = response.customers;
+            this.totalClientes = response.totalCount;
+            this.paginator.length = this.totalClientes; // Asegúrate de actualizar la longitud del paginador
+        }
+          
+        this.paginator.pageIndex = 0;
+      });
   }
 
 
@@ -62,7 +89,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
         this.cargarClientesFiltro(this.paginator.pageIndex + 1, this.paginator.pageSize);
       } else {
         this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
-      }      
+      }
     });
   }
 
@@ -97,7 +124,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
       timeout = setTimeout(() => func.apply(this, args), wait);
     };
   }
-  
+
 
   limpiaFiltro() {
     this.filterValue = '';
@@ -106,7 +133,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     this.filterControl.setValue('');
   }
 
-  cargarClientesFiltro(pageIndex: number, pageSize: number) {    
+  cargarClientesFiltro(pageIndex: number, pageSize: number) {
     this.maestroSerivce.obtenerClientesFiltrarPaginator(pageIndex, pageSize, this.filterValue).subscribe(
       response => {
         this.dataSource.data = response.data.customers;
