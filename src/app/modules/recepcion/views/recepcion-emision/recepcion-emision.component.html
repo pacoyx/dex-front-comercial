@@ -65,6 +65,12 @@
         }
         @if (showMenuItems) {
 
+          @if(loadingFilterServices){
+            <div style="display: flex;justify-content: center;">
+              <app-loading></app-loading>
+              Buscando...
+            </div>
+            }
           <app-recepcion-grilla-busqueda-servicios [itemsData]="items" (updatePayEvent)="actualizarPago($event)">
           </app-recepcion-grilla-busqueda-servicios>
 
@@ -250,7 +256,7 @@
           </div> -->
 
 
-          <mat-button-toggle-group name="pagos" [(ngModel)]="tipoPago">
+          <mat-button-toggle-group name="pagos" [(ngModel)]="tipoPago" [disabled]="blockSave">
             <mat-button-toggle value="SP" (change)="onValChangePago($event.value)">SP</mat-button-toggle>
             <mat-button-toggle value="EF" (change)="onValChangePago($event.value)">
               <mat-icon style="color: green;">payments</mat-icon>

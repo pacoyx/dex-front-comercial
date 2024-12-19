@@ -6,16 +6,16 @@
     </h2>
     <!-- (keyup)="applyFilterV2($event)"  -->
     <div class="section-controls-mnt-cliente">
-        <div>
+        <div style="display: flex; gap: 5px;">
             <mat-form-field appearance="outline">
                 <mat-label>Buscar Cliente</mat-label>
                 <input matInput [formControl]="filterControl" 
                 
                 placeholder="Buscar">
             </mat-form-field>
-            <button mat-fab extended (click)="limpiaFiltro()">
+            <button mat-fab (click)="limpiaFiltro()" [disabled]="!bolFiltro">
                 <mat-icon>filter_alt_off</mat-icon>
-            </button>
+            </button>            
         </div>
 
         <button mat-fab extended (click)="nuevoCliente()">

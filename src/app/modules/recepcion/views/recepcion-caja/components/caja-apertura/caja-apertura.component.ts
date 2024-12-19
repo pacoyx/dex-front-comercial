@@ -23,6 +23,7 @@ import { ILoginResponseData } from '../../../../../../core/interfaces/ILoginResp
 export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
   @Input() dataCaja!: IListarCajaPorUsuarioResponse;
   @Input() dataLogin!: ILoginResponseData;
+  @Input() dataEstadoCaja!: string;
 
   emisionService = inject(EmisionService);
   
@@ -57,7 +58,11 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
       this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
     }
 
-    if (changes['dataCaja'] && changes['dataCaja'].currentValue) {
+    // if (changes['dataCaja'] && changes['dataCaja'].currentValue) {
+    //   this.validarCajaPorUsuario();
+    // }
+
+    if (changes['dataEstadoCaja'] && changes['dataEstadoCaja'].currentValue) {
       this.validarCajaPorUsuario();
     }
   }
@@ -70,7 +75,7 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
   validarCajaPorUsuario(): void {
         
-    if (this.dataCaja) {
+    if (this.dataEstadoCaja === 'OPEN') {
       this.estadoCaja = 'CAJA ABIERTA';
       this.frmApertura.get('saldoInicial')?.setValue(this.dataCaja.saldoInicial);
       this.frmApertura.get('observaciones')?.setValue(this.dataCaja.observaciones);
@@ -78,6 +83,10 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
     } else {
       this.estadoCaja = 'PENDIENTE';
+      this.frmApertura.reset();
+      this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
+      this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
+      this.frmApertura.get('workShiftId')?.setValue('turno normal');      
       this.frmApertura.enable();
     }
   }

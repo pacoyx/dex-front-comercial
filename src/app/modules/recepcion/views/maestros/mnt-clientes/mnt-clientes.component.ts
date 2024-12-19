@@ -41,8 +41,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
   totalClientes = 0;
   pageSize = 10;
   dialog = inject(MatDialog);
-  bolFiltro = false;
-  filterValue = '';
+  bolFiltro = false;  
   filterControl = new FormControl();
 
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
@@ -54,13 +53,12 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     this.cargarClientes(1, 10);
     this.filterControl.valueChanges
       .pipe(
-        startWith(''),
+        // startWith(''),
         debounceTime(300),
         distinctUntilChanged(),
-        switchMap(value => {
+        switchMap(value => {    
           if (value === '') {
-            this.limpiaFiltro();
-            return of([]);
+            return of([]);            
           }
           // Replace with actual observable logic if needed
           return this.maestroSerivce.obtenerClientesFiltrarPaginator(1, 10, value).pipe(
@@ -69,6 +67,11 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
         })
       )
       .subscribe((response) => {
+        if(this.filterControl.value === '') {
+          this.limpiaFiltro();
+          return;
+        }
+        
         this.bolFiltro = true;
         if (response && 'customers' in response) {
             this.dataSource.data = response.customers;
@@ -83,10 +86,9 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator; 
     this.paginator.page.subscribe(() => {
       if (this.bolFiltro) {
-        this.cargarClientesFiltro(this.paginator.pageIndex + 1, this.paginator.pageSize);
+        this.cargarClientesFiltro(this.paginator.pageIndex + 1, this.paginator.pageSize,this.filterControl.value);
       } else {
         this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
       }
@@ -103,38 +105,16 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
     );
   }
 
-  applyFilterV2(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    if (filterValue == '') {
-      this.limpiaFiltro();
-      return;
-    }
-    this.filterValue = filterValue.trim().toLowerCase();
-    this.bolFiltro = true;
-    this.debounce(() => {
-      this.cargarClientesFiltro(1, 10);
-      this.paginator.pageIndex = 0;
-    }, 300)();
-  }
 
-  debounce(func: Function, wait: number) {
-    let timeout: any;
-    return (...args: any[]) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-  }
-
-
-  limpiaFiltro() {
-    this.filterValue = '';
+  limpiaFiltro() {    
+    console.log('limpiaFiltro');    
     this.bolFiltro = false;
-    this.cargarClientes(1, 10);
+    this.cargarClientes(1, 10);    
     this.filterControl.setValue('');
   }
 
-  cargarClientesFiltro(pageIndex: number, pageSize: number) {
-    this.maestroSerivce.obtenerClientesFiltrarPaginator(pageIndex, pageSize, this.filterValue).subscribe(
+  cargarClientesFiltro(pageIndex: number, pageSize: number, textoFiltro: string) {
+    this.maestroSerivce.obtenerClientesFiltrarPaginator(pageIndex, pageSize, textoFiltro).subscribe(
       response => {
         this.dataSource.data = response.data.customers;
         this.totalClientes = response.data.totalCount;

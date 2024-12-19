@@ -132,6 +132,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   loading = false;
   loadingSave = false;
   loadingUpdatePhone = false;
+  loadingFilterServices = false;
   bolExisteCaja = true;
   msgValidacion = '';
 
@@ -523,12 +524,14 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       this.showMenuItems = false;
       return;
     }
-
+    this.loadingFilterServices = true;
     this.subscriptionFiltrarServixpatron = this.emisionService.filtrarServiciosPorPatron(this.searchText).subscribe({
       next: (resp) => {
+        this.loadingFilterServices = false;
         this.items = resp;
       },
       error: (err) => {
+        this.loadingFilterServices = false;
         console.log(err);
       },
       complete: () => { console.log('complete filtrarServiciosPorPatron'); }

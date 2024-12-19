@@ -12,7 +12,11 @@
                     <mat-icon class="example-tab-icon">open_in_browser</mat-icon>
                     Apertura
                 </ng-template>
-                <app-caja-apertura [dataCaja]="cajaTmp" [dataLogin]="loginTmp"></app-caja-apertura>
+                <app-caja-apertura 
+                [dataCaja]="dataCajaUsuario" 
+                [dataLogin]="loginTmp"
+                [dataEstadoCaja]="estadoCaja"
+                ></app-caja-apertura>
             </mat-tab>
             <mat-tab>
                 <ng-template mat-tab-label>
@@ -28,7 +32,7 @@
                     Arqueo y Cierre
                 </ng-template>
                 <app-caja-cierre [dataCaja]="cajaTmp" [dataLogin]="loginTmp" [dataTotalizado]="totalizadoData"
-                    [dataGastos]="listGastosTmp">
+                    [dataGastos]="listGastosTmp" (cerrarCajaEvent)="handleCajaEvent($event)">
                 </app-caja-cierre>
             </mat-tab>
         </mat-tab-group>

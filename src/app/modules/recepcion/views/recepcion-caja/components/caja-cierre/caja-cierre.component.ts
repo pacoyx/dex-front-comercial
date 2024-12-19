@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ICerrarCajaRequest, IListarCajaPorUsuarioResponse, ITotalizadoPorTipoPago } from '../../../../interfaces/ICajaVentas';
@@ -27,6 +27,8 @@ export class CajaCierreComponent implements OnInit, OnDestroy, OnChanges {
   @Input() dataLogin!: ILoginResponseData;
   @Input() dataTotalizado!: ITotalizadoPorTipoPago[];
   @Input() dataGastos!: IListaGastosPorUserResponse[];
+
+  @Output() cerrarCajaEvent = new EventEmitter<string>();
 
   emisionService = inject(EmisionService);
 
@@ -101,6 +103,7 @@ export class CajaCierreComponent implements OnInit, OnDestroy, OnChanges {
           console.log('Caja cerrada correctamente');
           this.dataCaja.estadoCaja = 'C';
           this.dataCaja.fechaHoraCierre = new Date().toDateString();
+          this.cerrarCajaEvent.emit('cerrarCaja');
         }
       },
       error: (error) => {

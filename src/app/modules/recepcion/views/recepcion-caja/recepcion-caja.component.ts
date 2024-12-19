@@ -37,7 +37,9 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
   subscriptionListaGastos!: Subscription;
 
   cajaTmp: IListarCajaPorUsuarioResponse = null!;
+  dataCajaUsuario: IListarCajaPorUsuarioResponse = null!;
   loginTmp: ILoginResponseData = null!;
+  estadoCaja = 'CLOSE';
 
   listsItemsTmp: ICashBoxDetailResponseDto[] = [];
   totalizadoData: ITotalizadoPorTipoPago[] = [];
@@ -62,7 +64,15 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleCajaEvent(event: string): void {
+    if (event === 'cerrarCaja') {
+      this.estadoCaja = 'CLOSE';
+    }
+  }
+
   obtenerCajaPorUsuario(): void {
+    console.log('obtenerCajaPorUsuario() ========');
+    
     this.loadingCarga = true;
     this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginTmp.userId!).subscribe({
       next: (data) => {
@@ -71,13 +81,16 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
           if (data.data) {
             this.indexTabLocal = 1;
             this.cajaTmp = data.data;
+            this.dataCajaUsuario = data.data;
+            this.estadoCaja = 'OPEN';
           } else {
             this.indexTabLocal = 0;
+            this.estadoCaja = 'CLOSE';
           }
         }
       },
-      error: (err) => {      
-        this.notificacionService.showError(err);        
+      error: (err) => {
+        this.notificacionService.showError(err);
         this.loadingCarga = false;
       },
       complete: () => {
@@ -114,8 +127,8 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
         this.totalizadoData = totalizado;
 
       },
-      error: (err) => {        
-        this.notificacionService.showError(err.message);        
+      error: (err) => {
+        this.notificacionService.showError(err.message);
         this.loading = false;
       },
       complete: () => {
@@ -133,7 +146,7 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.log('error ListarGastosPorIdUser()', err);
-        this.notificacionService.showError(err);        
+        this.notificacionService.showError(err);
       },
       complete: () => {
         console.log('complete ListarGastosPorIdUser()');
