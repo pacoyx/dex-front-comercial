@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 import { ILoginResponse, ILoginResponseData } from '../interfaces/ILoginResponse';
 import { ILoginRequest } from '../interfaces/ILoginRequest';
 import { catchError, switchMap, tap } from 'rxjs/operators';
