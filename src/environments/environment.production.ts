@@ -13,7 +13,7 @@ export const environment = {
     EPEliminarCliente: 'api/customer',
     EPListarClientes: 'api/customer',
     EPActualizarClienteTelefono: 'api/customer/phone',
-    EPListarClientesFiltrar: 'api/customer/search/Paginator',
+    EPListarClientesPaginator: 'api/customer/search/Paginator',
 
     EPFiltrarServiciosPorPatron: 'api/prodService/search',
 
@@ -63,6 +63,7 @@ export const environment = {
     
     //falta implementar
     EPListarUsuarios: 'api/user',
+
 
 
 };
