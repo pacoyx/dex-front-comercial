@@ -1,12 +1,18 @@
-version: '3'
+version: '3.8'
 services:
-  web:
-    build: 
-      context: .
-      dockerfile: Dockerfile
+  frontend:
+    image: pacoyx2484/dex-front-comercial-web
+    container_name: angular-frontend
     ports:
-      - 4200:80
+      - "4200:80"
+    environment:
+      - apiUrlBase=http://backend:80/
+    depends_on:
+      - backend
 
+  backend:
+    image: pacoyx2484/24dex-backend-comercial
+    container_name: apinetcore-backend
+    ports:
+      - "8080:80"
 
-volumes:
-  angularngixvolume:
