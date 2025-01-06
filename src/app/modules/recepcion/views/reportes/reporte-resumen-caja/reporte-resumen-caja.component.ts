@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { ReportesEmisionService } from '../../../services/reportes-emision.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../../../interfaces/IReports';
+import { DataResumenCajaExpenseBox, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../../../interfaces/IReports';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
@@ -17,14 +17,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TableDetResumenCajaComponent } from './components/table-det-resumen-caja/table-det-resumen-caja.component';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
+import { TableResumenGastosComponent } from './components/table-resumen-gastos/table-resumen-gastos.component';
+import { TableResumenUsuarioComponent } from './components/table-resumen-usuario/table-resumen-usuario.component';
 
 @Component({
   selector: 'app-reporte-resumen-caja',
   standalone: true,
   imports: [
     MatTableModule, MatButtonModule, MatIconModule,
-    FormsModule, MatDatepickerModule, MatFormFieldModule, 
-    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent, LoadingComponent,MatRippleModule, NgClass
+    FormsModule, MatDatepickerModule, MatFormFieldModule,
+    MatInputModule, DecimalPipe, MatSelectModule, TableDetResumenCajaComponent,
+    LoadingComponent, MatRippleModule, NgClass, TableResumenGastosComponent, TableResumenUsuarioComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -51,12 +54,13 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     'totalImporte',
     'totalCobrado',
   ];
-  
+
   dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>([]);
   resumenSubscription!: Subscription;
   filterSubscription!: Subscription;
-  selectedTP='';
+  selectedTP = '';
   dataDetalle: IResumenCajaDetalle[] = [];
+  dataDetalleExpense: DataResumenCajaExpenseBox[] = [];
   tipoPagoDetalle: string = '';
   tiposPago = [
     { id: 'TO', tipo: '[Todos]' },
@@ -65,6 +69,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     { id: 'TA', tipo: 'Tarjeta' },
     { id: 'TR', tipo: 'Transferencia' },
   ];
+  dataResumenUsuario: { usuario: string, totalIngreso: number }[] = [];
+
 
   loading = false;
 
@@ -100,7 +106,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
       this.dataSource.filter = '';
       return;
     }
-    this.dataDetalle=[];
+    this.dataDetalle = [];
+    this.dataDetalleExpense = [];
     this.tipoPagoDetalle = event;
 
 
@@ -111,19 +118,51 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     this.dataSource.filter = filterValue;
   }
 
+  applyFilterByUser(event: string): void {
+  
+    this.dataDetalle = [];
+    this.dataDetalleExpense = [];
+    
+    const filterValue = event.trim().toLowerCase();
+    this.dataSource.filterPredicate = (data: IReportResumenCajaPorFechaResponse, filter: string) => {
+      return data.usuario.toLowerCase().includes(filter);
+    };
+    this.dataSource.filter = filterValue;
+  }
+
+
   cargarReporteResumenCaja() {
     this.selectedTP = 'TO';
     this.loading = true;
     this.dataDetalle = [];
+    this.dataDetalleExpense = [];
     this.resumenSubscription = this.reportsService.obtenerReprteResumenCajaPorFecha(this.fechaHoy.toDateString())
       .pipe(map(response => {
-                response.data.forEach(item => item.flag = false);
+        response.data.forEach(item => item.flag = false);
         return response.data;
       })
       )
       .subscribe({
         next: (response) => {
           this.loading = false;
+
+          console.log('watch response ==>', response);
+
+
+          const groupedResponse = response.reduce((acc: { [key: string]: { usuario: string, totalIngreso: number } }, item) => {
+            const key = item.cajaId;
+            if (!acc[key]) {
+              acc[key] = { usuario: item.usuario, totalIngreso: 0 };
+            }
+            acc[key].totalIngreso += item.totalImporte + item.totalAdelanto;
+            return acc;
+          }, {});
+
+
+
+          const groupedData = Object.values(groupedResponse) as { usuario: string, totalIngreso: number }[];
+          this.dataResumenUsuario = groupedData;
+        
           this.dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>(response);
         },
         error: (error) => {
@@ -136,7 +175,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
   limpiarFiltros() {
     this.dataSource.filter = '';
     this.selectedTP = 'TO';
-    this.dataDetalle=[];
+    this.dataDetalle = [];
+    this.dataDetalleExpense = [];
     this.tipoPagoDetalle = '';
   }
 
@@ -151,12 +191,13 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
       )
       .subscribe({
         next: (response) => {
-          this.dataDetalle = response;
+          this.dataDetalle = response.cashBoxDetail;
+          this.dataDetalleExpense = response.expenseBox;
         },
         error: (error) => {
           console.error(error);
         }
       });
   }
-  
+
 }

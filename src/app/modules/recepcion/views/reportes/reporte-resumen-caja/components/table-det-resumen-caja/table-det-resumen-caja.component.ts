@@ -25,12 +25,12 @@ export class TableDetResumenCajaComponent implements OnChanges {
 
   secondFooterColumns: string[] = [    
     'tituloFooter',
-    'totalFooter',];
+    'totalFooter',
+  ];
 
   tabledataSource = new MatTableDataSource<IResumenCajaDetalle>([]);
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['dataSource'] && changes['dataSource'].currentValue) {
       this.tabledataSource = new MatTableDataSource<IResumenCajaDetalle>(this.dataSource);
     }

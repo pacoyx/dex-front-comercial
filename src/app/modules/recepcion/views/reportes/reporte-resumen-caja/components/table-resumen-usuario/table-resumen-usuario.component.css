@@ -1,0 +1,15 @@
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #6b7c7b;
+    color: white;
+    border: 1px solid #ccc !important;
+  }
+
+  tr.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+  }
+  
+  tr.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  }

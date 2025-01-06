@@ -39,19 +39,24 @@
         </div>
     </div>
 
-    <div style="display: flex; gap: 10px;">
+    <div style="display: flex; gap: 10px; flex-direction: column;">
 
-        <div>
-            <div style="display: flex;">
-                <div>
-                    <h2>Resumen por Usuario / Tipo Pago</h2>
-                </div>
-            </div>
+        <div>            
             @if(loading) {
             <app-loading></app-loading>
             Buscando...
             }
 
+
+            <app-table-resumen-usuario [dataDetalleUsuario]="dataResumenUsuario"
+                (dataDetalleUsuarioClick)="applyFilterByUser($event)">
+            </app-table-resumen-usuario>
+
+            <div style="display: flex;">
+                <div>
+                    <h2>Resumen por Tipo Pago</h2>
+                </div>
+            </div>
 
             <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
@@ -90,10 +95,7 @@
 
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-                <tr mat-row 
-                    matRipple 
-                    [matRippleUnbounded]="false"
-                    [matRippleRadius]="50"
+                <tr mat-row matRipple [matRippleUnbounded]="false" [matRippleRadius]="50"
                     *matRowDef="let row; columns: displayedColumns;" (click)="cargarDetallePorUsuarioyTipoPago(row)"
                     class="example-element-row" [ngClass]="{'resaltarFila': row.flag }">
                 </tr>
@@ -106,6 +108,10 @@
         <div>
             <app-table-det-resumen-caja [dataSource]="dataDetalle" [tipoPago]="tipoPagoDetalle">
             </app-table-det-resumen-caja>
+        </div>
+        <div>
+            <app-table-resumen-gastos [dataDetalleExpense]="dataDetalleExpense">
+            </app-table-resumen-gastos>
         </div>
     </div>
 

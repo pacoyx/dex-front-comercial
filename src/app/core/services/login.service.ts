@@ -17,6 +17,11 @@ export class LoginService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<ILoginResponse> {
+
+    
+  console.log('this.apiUrl==>',this.apiUrl );
+  console.log('environment.EPlogin==>',environment.EPlogin);
+
     const body: ILoginRequest = { username, password };
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<ILoginResponse>(this.apiUrl + environment.EPlogin, body, { headers });

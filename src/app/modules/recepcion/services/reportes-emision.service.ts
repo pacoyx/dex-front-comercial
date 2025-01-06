@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
-import { IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
+import { DataResumenCaja, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,7 @@ export class ReportesEmisionService {
 
   obtenerDetalleResumenPorUsuarioYTipoPago(cajaId: number, tipoPago: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<IResponseGeneric<IResumenCajaDetalle[]>>(`${this.apiUrl}${environment.EPResumenCajaPorFechaDetallePorId}/${cajaId}/${tipoPago}`, { headers });
+    return this.http.get<IResponseGeneric<DataResumenCaja>>(`${this.apiUrl}${environment.EPResumenCajaPorFechaDetallePorId}/${cajaId}/${tipoPago}`, { headers });
   }
 
 

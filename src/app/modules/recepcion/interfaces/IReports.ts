@@ -63,3 +63,27 @@ export interface IResumenCajaDetalle {
   serie: string;
   numero: string;
 }
+
+
+
+export interface DataResumenCaja {
+  cashBoxDetail: DataResumenCajaCashBoxDetail[];
+  expenseBox: DataResumenCajaExpenseBox[];
+}
+
+export interface DataResumenCajaExpenseBox {
+  fechaGasto: string;
+  importe: number;
+  detallesEgreso: string;
+}
+
+export interface DataResumenCajaCashBoxDetail {
+  adelanto: number;
+  importe: number;
+  tipoPago: string;
+  customerId: number;
+  cliente: string;
+  serie: string;
+  numero: string;
+  fechaHora: string;
+}
