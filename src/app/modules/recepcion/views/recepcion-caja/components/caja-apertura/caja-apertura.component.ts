@@ -12,6 +12,7 @@ import { IAperturaCajaRequest, IListarCajaPorUsuarioResponse } from '../../../..
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMsgComponent } from '../../../../components/dialog-msg/dialog-msg.component';
 import { ILoginResponseData } from '../../../../../../core/interfaces/ILoginResponse';
+import { NotificationServiceService } from '../../../../services/notification-service.service';
 
 @Component({
   selector: 'app-caja-apertura',
@@ -26,14 +27,15 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
   @Input() dataEstadoCaja!: string;
 
   emisionService = inject(EmisionService);
-  
   readonly dialog = inject(MatDialog);
+  notificationService = inject(NotificationServiceService);
+
   frmApertura: FormGroup;
   loading = false;
   loadingCarga = false;
   estadoCaja = 'PENDIENTE';
 
-  subscriptionApertura!: Subscription;  
+  subscriptionApertura!: Subscription;
   fechaHoy = new Date().toLocaleDateString();
 
   constructor() {
@@ -45,11 +47,11 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
       userId: new FormControl({ value: '', disabled: true }, [Validators.required])
     });
   }
- 
+
   ngOnDestroy(): void {
     if (this.subscriptionApertura) {
       this.subscriptionApertura.unsubscribe();
-    }    
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -69,12 +71,13 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     // this.validarCajaPorUsuario();
-    this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);    
+    this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
     this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
+    this.frmApertura.get('observaciones')?.setValue('Sin observaciones');
   }
 
   validarCajaPorUsuario(): void {
-        
+
     if (this.dataEstadoCaja === 'OPEN') {
       this.estadoCaja = 'CAJA ABIERTA';
       this.frmApertura.get('saldoInicial')?.setValue(this.dataCaja.saldoInicial);
@@ -86,7 +89,7 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
       this.frmApertura.reset();
       this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
       this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
-      this.frmApertura.get('workShiftId')?.setValue('turno normal');      
+      this.frmApertura.get('workShiftId')?.setValue('turno normal');
       this.frmApertura.enable();
     }
   }
@@ -105,6 +108,11 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
         });
       return;
     }
+
+    if (this.frmApertura.get('observaciones')?.value === '') {
+      this.frmApertura.get('observaciones')?.setValue('Sin observaciones');
+    }
+
 
     if (this.estadoCaja === 'CAJA ABIERTA') {
       this.dialog.open(DialogMsgComponent,
@@ -130,16 +138,18 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
     this.loading = true;
     this.subscriptionApertura = this.emisionService.AperturarCaja(objApertura).subscribe({
-      next: (data) => {        
+      next: (data) => {
         this.loading = false;
         if (data.success) {
           this.estadoCaja = 'CAJA ABIERTA';
           this.frmApertura.disable();
+          this.notificationService.showSuccess('Caja abierta correctamente.');
         }
       },
       error: (err) => {
-        console.log(err);
+        console.log(err.error);
         this.loading = false;
+        this.notificationService.showError('Error al abrir caja.');
       },
       complete: () => {
         console.log('complete registrarAperturaCaja()');

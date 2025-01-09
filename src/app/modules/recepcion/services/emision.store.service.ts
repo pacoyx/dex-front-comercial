@@ -13,6 +13,8 @@ export type GuiaServicioState = {
   pago: IEmisionPago | null;
   documento: IEmisionDocumento | null;
   recepcion: string;
+  usuario: string,
+  bolsa: boolean
 };
 
 @Injectable({
@@ -26,7 +28,9 @@ export class EmisionStoreService {
     cliente: null,
     pago: null,
     documento: null,
-    recepcion: 'R'
+    recepcion: 'R',
+    usuario: 'robot',
+    bolsa: false
   });
 
   private idCounter = 1;
@@ -38,6 +42,8 @@ export class EmisionStoreService {
   public readonly selectedDocumento = this.guiaServicioState.documento;
   public readonly selectedPago = this.guiaServicioState.pago;
   public readonly selectedRecepcion = this.guiaServicioState.recepcion;
+  public readonly selectedUser = this.guiaServicioState.usuario;
+  public readonly selectedBolsa = this.guiaServicioState.bolsa;
   public readonly itemCounter = computed(() => this.items().length);
   public readonly itemSumTotal = computed(() => this.items().reduce((ant, act) => ant + act.Subtotal, 0));
 
@@ -51,7 +57,9 @@ export class EmisionStoreService {
       cliente: null,
       pago: null,
       documento: null,
-      recepcion: 'R'
+      recepcion: 'R',
+      usuario: 'robot',
+      bolsa: false
     });
   }
 
@@ -60,14 +68,21 @@ export class EmisionStoreService {
       recepcion: recepcion,
     });
   }
-  
+
+  public addBolsa(addBolsa: boolean): void {
+    patchState(this.guiaServicioState, {
+      bolsa: addBolsa,
+    });
+  }
+
+  public addUser(user: string): void {
+    patchState(this.guiaServicioState, {
+      usuario: user,
+    });
+  }
+
   public add(item: Omit<IEmisionItem, 'id'>): void {
- 
     const identifier = this.alphabet[(this.idCounter - 1) % this.alphabet.length];
-
-    console.log( 'identificador', identifier);
-
-
     patchState(this.guiaServicioState, {
       items: [...this.guiaServicioState.items(), { ...item, id: this.idCounter++, Identificador: identifier }],
     });
@@ -86,7 +101,6 @@ export class EmisionStoreService {
   public addPago(pago: IEmisionPago): void {
     patchState(this.guiaServicioState, { pago: pago });
   }
-
 
   public delete(id: number): void {
     const todos = this.items();

@@ -225,7 +225,8 @@
             <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
             Total: {{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}
           </div>
-          <div style="font-size: 20px; color: blue;">
+          <div style="font-size: 20px; color: blue; display: flex; justify-content: space-between; padding-top: 5px; padding-bottom: 5px;">
+            <mat-slide-toggle (change)="onChangueToggleBolsa($event)">Bolsa</mat-slide-toggle>
             A Cuenta: {{ store.selectedPago()?.monto| currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue; font-weight: bold;">

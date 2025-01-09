@@ -38,6 +38,17 @@
     font-size: 25px;
 }
 
+.section-nombre-cliente {    
+    display: flex;
+    gap: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: darkblue;
+}
+
 
 .win-proceso {
     display: block;
@@ -158,6 +169,41 @@ app-ticket-venta {
     display: none;
 }
 
+@media (max-width: 600px) {
+    .section-busqueda,
+    .seccion-detalle,
+    .seccion-detalle-check,
+    .section-totales,
+    .section-nombre-cliente {
+        flex-direction: column;
+        gap: 5px;
+        font-size: 18px;
+    }
+
+    .cant-column,
+    .producto-column,
+    .observaciones-column,
+    .precio-column,
+    .subtotal-column,
+    .estado-column,
+    .entrega-column,
+    .operaciones-column,
+    .ubicacion-column,
+    .estadoSituacion-column {
+        width: 100%;
+        text-align: left;
+    }
+
+    .btn-block {
+        font-size: 10px;
+    }
+
+    .cabecera {
+        font-size: 14px;
+    }
+}
+
+
 @media print {
     .win-proceso {
         display: none;
@@ -166,4 +212,6 @@ app-ticket-venta {
     app-ticket-venta {
         display: block;
     }
+
+    
 }

@@ -42,26 +42,20 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 
   return next(authReq).pipe(
-    catchError((error) => {
-       console.log('error interceptor crudo ==>', error);
+    catchError((error) => {       
+      console.log(req.url);
+      
        console.log('error interceptor ==>', error.error);
-       console.log('error interceptor status ==>', error.status);
-
-      if (error.status === 401) {
-
+      if (error.status === 401 && !req.url.includes('api/login')) {
         if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
-          console.log('***M*** Maximum refresh attempts exceeded');
-          
+          console.log('***M*** Maximum refresh attempts exceeded');          
           router.navigate(['/login']);
           return throwError(() => new Error('Maximum refresh attempts exceeded'));
         }
         refreshAttempts++;
 
-
         return authService.refreshToken().pipe(
           switchMap((newAuthData) => {
-             console.log( 'newAuthData ==>', newAuthData);
-
             const newAuthReq = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newAuthData.token}`
@@ -75,6 +69,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           })
         );
       }
+
       return throwError(() => new Error(error.error));
     })
   );

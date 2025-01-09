@@ -198,6 +198,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.cargarCategorias();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
+    this.store.addUser(this.dataLogin.getLoginData()?.userName!);
   }
 
   obtenerIdsServicioPesoLavado() {
@@ -503,12 +504,13 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       next: (resp) => {
         this.loadingSave = false;
         this.blockSave = true;
-        this.dialog.open(DialogMsgComponent, { data: { title: 'Mensaje', msg: 'Se grabó correctamente la guía de trabajo.', err: false } });
+        this.notificacionService.showSuccessDialog('Se grabó correctamente la guía de trabajo.', '# ' + this.numeracion.numberDoc.toString(), true);
       },
       error: (err) => {
         this.notificacionService.showError(err);
         this.loadingSave = false;
         this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: err, err: true } });
+        this.notificacionService.showErrorDialog('Ocurrio un error al intentar grabar la guia');
       },
       complete: () => { console.log('complete grabarRecibo'); }
     });
@@ -540,13 +542,17 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   onChangueToggle(event: any) {
-    console.log('event.checked:::', event.checked);
     this.store.addRecepcion(event.checked ? 'D' : 'R');
     this.isDelivery = event.checked;
   }
 
+  onChangueToggleBolsa(event: any) {
+    this.store.addBolsa(event.checked);
+  }
+
   nuevaGuia() {
     this.store.resetState();
+    this.store.addUser(this.dataLogin.getLoginData()?.userName!);
     this.cargarNumeracion();
     this.tipoPago = 'SP';
     this.showPago = false;

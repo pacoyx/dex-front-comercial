@@ -4,30 +4,85 @@
     </div>
 </div>
 
-  
+
 <table mat-table [dataSource]="tabledataSource" matSort class="mat-elevation-z8">
 
     <ng-container matColumnDef="item">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Item </th>
-        <td mat-cell *matCellDef="let element,let i = index "> {{i+1}} </td>        
-        <td mat-footer-cell *matFooterCellDef> </td>        
+        <td mat-cell *matCellDef="let element,let i = index "> {{i+1}} </td>
+        <td mat-footer-cell *matFooterCellDef> </td>
     </ng-container>
-  
+
+    <ng-container matColumnDef="cajaId">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Caja </th>
+        <td mat-cell *matCellDef="let element"> {{element.cajaId }}</td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
     <ng-container matColumnDef="usuario">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
         <td mat-cell *matCellDef="let element"> {{element.usuario }}</td>
-        <td mat-footer-cell *matFooterCellDef> </td>        
+        <td mat-footer-cell *matFooterCellDef> </td>
     </ng-container>
-    
+
+    <ng-container matColumnDef="fechaHoraApertura">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha Hora Apertura </th>
+        <td mat-cell *matCellDef="let element"> {{element.fechaHoraApertura | date :'dd/MM/yyyy' }}</td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="saldoInicial">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Saldo Inicial </th>
+        <td mat-cell *matCellDef="let element"> {{element.saldoInicial | number:'1.2-2'}}</td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="saldoFinal">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Saldo Final </th>
+        <td mat-cell *matCellDef="let element"> {{element.saldoFinal | number:'1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
     <ng-container matColumnDef="totalIngreso">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Ingreso </th>
+        <td mat-cell *matCellDef="let element"> {{element.totalIngreso | number:'1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef> {{ getTotalIngreso() | number:'1.2-2'}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="totalSalida">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Salida </th>
+        <td mat-cell *matCellDef="let element"> {{element.totalSalida | number:'1.2-2'}}</td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="estadoCaja">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Estado Caja </th>
+        <td mat-cell *matCellDef="let element">
+            @switch (element.estadoCaja) {
+            @case ('A') {
+            <span class="badge badge-success">Abierto</span>
+            }
+            @case ('C') {
+            <span class="badge badge-danger">Cerrado</span>
+            }
+            @default {
+            <span class="badge badge-warning">Indefinido</span>
+            }
+            }
+
+        </td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="total">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Ingreso </th>
         <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.totalIngreso | number:'1.2-2'}} </td>
         <td mat-footer-cell *matFooterCellDef style="text-align: right;font-weight: bold;"> {{ getTotalIngreso() | number:'1.2-2'}} </td>        
-    </ng-container>
-  
-  
+    </ng-container> -->
+
+
     <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-    <tr mat-row  *matRowDef="let row; columns: displayedColumns;" (click)="onClickUsuario(row.usuario)" ></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onClickUsuario(row.userId)"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
-  
-  </table>
+
+</table>

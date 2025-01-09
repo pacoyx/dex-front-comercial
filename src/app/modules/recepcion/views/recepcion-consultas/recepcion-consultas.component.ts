@@ -23,6 +23,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TableDetalleComponent } from './components/table-detalle/table-detalle.component';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 
 @Component({
   selector: 'app-recepcion-consultas',
@@ -32,7 +33,7 @@ import { TableDetalleComponent } from './components/table-detalle/table-detalle.
     MatPaginatorModule, MatButtonModule, FormsModule, MatDatepickerModule,
     MatTableModule, MatSortModule, MatAutocompleteModule,
     TitleCasePipe, AsyncPipe, NgFor, DatePipe, DecimalPipe,
-    MatRadioModule, RouterModule, TableDetalleComponent
+    MatRadioModule, RouterModule, TableDetalleComponent, LoadingComponent
   ],
   animations: [
     trigger('detailExpand', [
@@ -85,6 +86,7 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
 
   guiasCliente!: Subscription;
   guiasFecha!: Subscription;
+  loading = false;
 
   constructor() { }
 
@@ -120,31 +122,33 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
 
   cargarGuiasPorCliente(pageIndex: number, pageSize: number) {
 
-
+    this.loading = true;
     if (this.tipoReporte == 'C') {
       this.guiasCliente = this.reportsService.obtenerGuiasPorCliente(this.customerId, pageIndex, pageSize).subscribe({
         next: (response) => {
+          this.loading = false;
           this.dataSource.data = response.data.guias;
           this.totalClientes = response.data.totalCount;
           this.paginator.length = this.totalClientes;
         },
         error: (error) => {
+          this.loading = false;
           console.log('Error al cargar guias por cliente', error);
         }
       });
     }
 
     if (this.tipoReporte == 'F') {
-      console.log('Fecha hoy', this.fechaHoy.toDateString());
-
       this.guiasFecha = this.reportsService.obtenerGuiasPorFecha(this.fechaHoy.toDateString(), pageIndex, pageSize).subscribe({
         next: (response) => {
+          this.loading = false;
           this.dataSource.data = response.data.guias;
           this.totalClientes = response.data.totalCount;
           this.paginator.length = this.totalClientes;
         },
         error: (error) => {
-          console.log('Error al cargar guias por cliente', error);
+          this.loading = false;
+          console.log('Error al cargar guias por fecha', error);
         }
       });
     }

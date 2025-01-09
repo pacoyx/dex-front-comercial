@@ -15,7 +15,7 @@
 
   <ng-container matColumnDef="fechaGasto">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
-      <td mat-cell *matCellDef="let element"> {{element.fechaGasto | date }}</td>
+      <td mat-cell *matCellDef="let element"> {{element.fechaGasto | date :'dd/MM/yyyy' }}</td>
       <td mat-footer-cell *matFooterCellDef> </td>        
   </ng-container>
 

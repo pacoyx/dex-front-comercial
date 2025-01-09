@@ -14,13 +14,18 @@
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
 
-            <button mat-fab extended (click)="cargarReporteResumenCaja()">
+            <button mat-fab extended (click)="cargarCajasPorFecha()">
                 <mat-icon>search</mat-icon>
                 Buscar
             </button>
+
+            @if(loading) {
+                <app-loading></app-loading>
+                Buscando...
+                }
         </div>
 
-        <div style="display: flex; gap: 10px;">
+        <!-- <div style="display: flex; gap: 10px;">
             Filtrar:
             <mat-form-field appearance="outline" style="width: 150px;">
                 <mat-label>Tipo Pago</mat-label>
@@ -36,26 +41,31 @@
                 <mat-icon>filter_alt_off</mat-icon>
             </button>
 
-        </div>
+        </div> -->
     </div>
 
     <div style="display: flex; gap: 10px; flex-direction: column;">
 
         <div>            
-            @if(loading) {
-            <app-loading></app-loading>
-            Buscando...
-            }
+           
 
 
-            <app-table-resumen-usuario [dataDetalleUsuario]="dataResumenUsuario"
-                (dataDetalleUsuarioClick)="applyFilterByUser($event)">
+            <app-table-resumen-usuario [dataDetalleUsuario]="dataCajaXfecha"
+                (dataDetalleUsuarioClick)="cargarReporteResumenCaja($event)">
             </app-table-resumen-usuario>
 
             <div style="display: flex;">
                 <div>
-                    <h2>Resumen por Tipo Pago</h2>
+                    <h2>Resumen por Tipo Pago</h2>                    
                 </div>
+                @if(loadingDetalle) {
+                    <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
+                        <app-loading></app-loading>
+                        <span>
+                            Buscando...
+                        </span>
+                    </div>
+                    }
             </div>
 
             <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">

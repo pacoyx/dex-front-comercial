@@ -87,3 +87,15 @@ export interface DataResumenCajaCashBoxDetail {
   numero: string;
   fechaHora: string;
 }
+
+export interface ICajasPorFecha {
+  cajaId: number;
+  usuario: string;
+  fechaHoraApertura: string;
+  saldoInicial: number;
+  saldoFinal: number;
+  totalIngreso: number;
+  totalSalida: number;
+  estadoCaja: string;
+  userId: number;
+}

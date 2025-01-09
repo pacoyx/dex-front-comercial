@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
-import { DataResumenCaja, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
+import { DataResumenCaja, ICajasPorFecha, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -37,18 +37,21 @@ export class ReportesEmisionService {
     return this.http.get<IResponseGeneric<IReportGetGuiasPaginadoResponse>>(`${this.apiUrl}${environment.EPGuiasPorCliente}/${customerId}/${pageIndex}/${pageSize}`, { headers });
   }
 
-
-  obtenerReprteResumenCajaPorFecha(fecha: string) {
+  obtenerReprteResumenCajaPorFecha(fecha: string, userId:number) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const params = { fecha: fecha };
+    const params = { fecha: fecha , userId};
     return this.http.get<IResponseGeneric<IReportResumenCajaPorFechaResponse[]>>(`${this.apiUrl}${environment.EPResumenCajaPorFecha}`, { headers, params });
   }
-
 
   obtenerDetalleResumenPorUsuarioYTipoPago(cajaId: number, tipoPago: string) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<IResponseGeneric<DataResumenCaja>>(`${this.apiUrl}${environment.EPResumenCajaPorFechaDetallePorId}/${cajaId}/${tipoPago}`, { headers });
   }
 
+  obtenerCajasPorFecha(fecha: string) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const params = { fecha: fecha };
+    return this.http.get<IResponseGeneric<ICajasPorFecha[]>>(`${this.apiUrl}${environment.EPObtenerCajasPorFecha}`, { headers, params });
+  }
 
 }

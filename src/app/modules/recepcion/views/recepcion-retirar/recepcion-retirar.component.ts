@@ -16,7 +16,6 @@ import { EmisionService } from '../../services/emision.service';
 import { Subscription } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogQuestionComponent } from '../../components/dialog-question/dialog-question.component';
-import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
 import { DialogDevolucionComponent } from '../../components/dialog-devolucion/dialog-devolucion.component';
 import { TicketVentaComponent } from '../../components/ticket-venta/ticket-venta.component';
 import { EmisionStoreService } from '../../services/emision.store.service';
@@ -74,16 +73,12 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.validarExisteCajaPorUsuario();
-
     this.route.params.subscribe(params => {
       if (params['numGuia']) {
         this.numeroGuia = parseInt(params['numGuia']);
         this.buscarGuia();
       }
     });
-
-
-
   }
 
   buscarGuia() {
@@ -95,15 +90,8 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (resp) => {
           this.bolBuscandoGuia = false;
-          if (!resp.success) {
-            this.dialog.open(DialogMsgComponent, {
-              width: '250px',
-              data: {
-                title: 'Buscar Guía ' + this.numeroGuia,
-                msg: 'No se encontró la guía de retiro.',
-                err: true
-              }
-            });
+          if (!resp.success) {          
+            this.notificacionService.showErrorDialog('No se encontró la guía de retiro.', this.numeroGuia?.toString());
             return;
           }
           this.guiaRetiroData = resp.data;
@@ -116,14 +104,9 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.log(err);
           this.bolBuscandoGuia = false;
-          this.dialog.open(DialogMsgComponent, {
-            width: '250px',
-            data: {
-              title: 'Buscando guia ' + this.numeroGuia,
-              msg: 'No se encontró la guía de retiro.',
-              err: true
-            }
-          });
+          this.notificacionService.showErrorDialog('No se encontró la guía de retiro.', this.numeroGuia?.toString());       
+          this.store.resetState();
+          this.guiaRetiroData = null;
         }, complete: () => {
           console.log('complete() ObtenerGuiaPorDocumento');
         },
@@ -131,7 +114,6 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   }
 
   validarExisteCajaPorUsuario(): void {
-
     this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginService.getLoginData()?.userId || 0).subscribe({
       next: (data) => {
         if (data.success) {
@@ -204,16 +186,8 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           }
         }
 
-        this.dialog.open(DialogMsgComponent, {
-          width: '250px',
-          data: {
-            title: 'Devolución',
-            msg: respuesta.descontar ? 'Se descontó el monto de la devolución y se registro como salida en GASTOS.' : 'Se registro la devolución.',
-            err: false
-          }
-        });
-
-
+        this.notificacionService.showSuccessDialog(respuesta.descontar ? 'Se descontó el monto de la devolución y se registro como salida en GASTOS.' : 'Se registro la devolución.');
+     
       }
     });
   }
@@ -299,28 +273,12 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.guiaRetiroData.estadoPago === 'PA') {
-      // this.dialog.open(DialogQuestionComponent, {
-      //   width: '250px',
-      //   data: { title: 'Anular Guía', message: 'No se puede anular la guía porque ya se realizó el pago.', msgButton: 'Cerrar' }
-      // });
-
-
-      this.dialog.open(DialogMsgComponent, {
-        width: '250px',
-        data: {
-          title: 'Anular Guía',
-          msg: 'No se puede anular la guía porque ya se realizó el pago.',
-          err: true
-        }
-      });
-
+    if (this.guiaRetiroData.estadoPago === 'PA') {           
+      this.notificacionService.showErrorDialog('No se puede anular la guía porque ya se realizó el pago.');
       return;
     }
 
-
-    this.dialog.open(DialogQuestionComponent, {
-      width: '250px',
+    this.dialog.open(DialogQuestionComponent, {      
       data: { title: 'Anular Guía', message: '¿Está seguro de anular la guía de retiro?', msgButton: 'Anular' }
     }).afterClosed().subscribe((result) => {
       if (result === 'OK') {
@@ -366,8 +324,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     });
   }
 
-  imprimirGuia() {
-    console.log('imprimir guia:', this.guiaRetiroData);
+  imprimirGuia() {    
     if (!this.guiaRetiroData) {
       return;
     }

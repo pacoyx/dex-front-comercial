@@ -54,11 +54,14 @@ export const environment = {
     EPGuiasPorCliente: 'api/reports/workguides/bycustomer',
     EPResumenCajaPorFecha: 'api/cashBox/resume',
     EPResumenCajaPorFechaDetallePorId: 'api/cashBox/detail',
+    EPObtenerCajasPorFecha: 'api/cashBox/resumeAllUser',
 
     EPListarUbicaciones:'api/locationclothes',
     EPCrearUbicacion:'api/locationclothes',
     EPActualizarUbicacion:'api/locationclothes',
     EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
+
+
 
     
     //falta implementar

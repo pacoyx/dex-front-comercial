@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="col-8">
-                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy' }} {{hora}}
+                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy' }} {{getHour()}}
             </div>
 
         </div>
@@ -58,7 +58,7 @@
                 </div>
             </div>
             <div class="col-8">
-                {{ store.selectedCliente()?.nombre }}
+                {{ store.selectedCliente()?.nombre | uppercase }}
             </div>
         </div>
         <div class="detalle">
@@ -81,6 +81,19 @@
             <div class="col-8">
                 <div class="detalle">
                     {{ store.selectedDocumento()?.fechaEntrega | date :'dd/MM/yyyy hh:mm:ss'}}<br>
+                </div>
+            </div>
+        </div>
+
+        <div class="detalle">
+            <div class="col-4">
+                <div style="text-align: left;">
+                    CAJA:
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="detalle">
+                    {{ store.selectedUser() }}
                 </div>
             </div>
         </div>
@@ -183,6 +196,7 @@
         <div class="titulo" style="text-align: center;">
             GRACIAS POR SU PREFERENCIA
         </div>
+      
 
         <hr>
 
@@ -197,7 +211,8 @@
             <div style="text-align: left; width: 40%;">
                 <span class="numguia">{{ store.selectedDocumento()?.numeroDoc }}</span>
             </div>
-            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy'}} / {{hora}}</div>
+            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy'}} / {{getHour()}}
+            </div>
         </div>
 
         <div class="detalle">
@@ -275,11 +290,22 @@
                 ----- DELIVERY -----
             </div>
         </div>
+        <!-- <div>
+            {{ store.selectedUser() }}
+        </div> -->
         <div class="titulo" style="text-align: center; padding-top: 50px; height: 100px;">
+            {{ store.selectedUser() }}<br>
             --------------------------------------------<br>
             CONTROL ADMINISTRATIVO<br>
             --------------------------------------------
         </div>
+        
+
+        @if(store.selectedBolsa()){
+        <div class="titulo" style="text-align: center; padding-top: 50px; height: 80px; font-size: 30px; border: 1px solid black; border-radius: 5px;">            
+            {{ store.selectedCliente()?.nombre | uppercase }}<br>            
+        </div>
+        }
 
     </div>
 

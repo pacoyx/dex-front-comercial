@@ -55,13 +55,19 @@
             </mat-paginator>
         </div>
 
-
-
-
-
     </div>
 
     <div>
+
+        @if(loading) {
+            <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
+                <app-loading></app-loading>
+                <span>
+                    Buscando...
+                </span>
+            </div>
+            }
+
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
 
             <ng-container matColumnDef="numeroGuia">

@@ -59,7 +59,7 @@ export const environment = {
     EPCrearUbicacion:'api/locationclothes',
     EPActualizarUbicacion:'api/locationclothes',
     EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
-
+    EPObtenerCajasPorFecha: 'api/cashBox/resumeAllUser',
     
     //falta implementar
     EPListarUsuarios: 'api/user',

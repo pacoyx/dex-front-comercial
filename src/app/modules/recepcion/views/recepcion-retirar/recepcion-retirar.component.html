@@ -21,18 +21,18 @@
             <app-loading></app-loading>
             Buscando...
             }@else {
-                <div style="width: 100%; text-align: center;">
-                    @if (guiaRetiroData?.estadoRegistro == 'A') {
-                    <span style="color: darkblue;font-weight: bold;">ACTIVO</span>
-                    }
-    
-                    @if (guiaRetiroData?.estadoRegistro == 'I') {
-                    <span style="color: red; font-weight: bold;">ANULADO</span>
-                    }
-                </div>
+            <div style="width: 100%; text-align: center;">
+                @if (guiaRetiroData?.estadoRegistro == 'A') {
+                <span style="color: darkblue;font-weight: bold;">ACTIVO</span>
+                }
+
+                @if (guiaRetiroData?.estadoRegistro == 'I') {
+                <span style="color: red; font-weight: bold;">ANULADO</span>
+                }
+            </div>
             }
 
-           
+
         </div>
         <div class="seccion-detalle">
             <div><mat-icon style="padding-top: 5px;">calendar_month</mat-icon>
@@ -46,14 +46,14 @@
                 @case ('R') {
                 <mat-icon>account_box</mat-icon>
                 <span style="color: darkblue;">
-                    Recibido por:
+                    Atendido por:
                 </span>
                 Recepción
                 }
                 @case ('D') {
                 <mat-icon>local_shipping</mat-icon>
                 <span style="color: darkblue;">
-                    Recibido por:
+                    Atendido por:
                 </span>
                 Delivery
                 }
@@ -61,13 +61,6 @@
 
             </div>
         </div>
-
-        <div class="seccion-detalle">
-            <div><mat-icon>people</mat-icon>: {{guiaRetiroData?.customerName}}</div>
-            <div><mat-icon>phone</mat-icon>: {{guiaRetiroData?.customerPhone}}</div>
-        </div>
-
-
         <div class="seccion-detalle-check">
             <div style="display: flex; gap: 10px;">
                 <mat-checkbox (change)="cancelar($event)" [(ngModel)]="bolCancelado"
@@ -75,7 +68,7 @@
                 <mat-chip-set aria-label="tipo pago">
                     @if (guiaRetiroData?.tipoPagoCancelacion) {
                     <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion }} </small></mat-chip>
-                    }                    
+                    }
                     @if(guiaRetiroData?.fechaPago){
                     <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small></mat-chip>
                     }
@@ -101,7 +94,6 @@
             }
 
         </div>
-
         <div class="seccion-detalle">
             <div style="display: flex; gap: 10px;">
                 <button mat-fab extended (click)="anularGuia()" [disabled]="guiaRetiroData?.estadoRegistro == 'I'">
@@ -118,14 +110,17 @@
                 </button>
             </div>
         </div>
-
     </div>
 
+    <div class="section-nombre-cliente">
+        <div><mat-icon>people</mat-icon> {{guiaRetiroData?.customerName}}</div>
+        <div><mat-icon>phone</mat-icon> {{guiaRetiroData?.customerPhone}}</div>
+    </div>
 
     <div class="section-totales">
         <div>Total:<b> {{guiaRetiroData?.total | number:'1.2-2'}} </b></div>
         <div>Adelanto: <b>{{guiaRetiroData?.acuenta | number:'1.2-2'}}</b> ({{guiaRetiroData?.tipoPago}}) </div>
-        <div style="color: blue;">Saldo: <b>{{guiaRetiroData?.saldo | number:'1.2-2'}}</b></div>
+        <div style="color: darkblue;">Saldo: <b>{{guiaRetiroData?.saldo | number:'1.2-2'}}</b></div>
     </div>
 
     <!-- TABLA DETALLE -->

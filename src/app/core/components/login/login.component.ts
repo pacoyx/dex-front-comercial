@@ -85,8 +85,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           localStorage.setItem('dex24Auth', JSON.stringify(response.data));
           this.router.navigate(['recepcion']);
         },
-        error: (err) => {
-          var errMsg = 'Error en el inicio de sesión' + err;          
+        error: (err) => {          
+          var errMsg = 'Error en el inicio de sesión';
           if (err.status === 401) {
             errMsg = 'Usuario no autorizado, verifique sus credenciales';
           }
@@ -110,8 +110,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.router.navigate(['recepcion']);
   }
 
-  mostrarerror(msjErr: string) {
-    console.error(msjErr);
+  mostrarerror(msjErr: string) {    
     this.showError.set(true);
     this.errorMessage = msjErr;
     setTimeout(() => {

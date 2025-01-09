@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { ReportesEmisionService } from '../../../services/reportes-emision.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { DataResumenCajaExpenseBox, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../../../interfaces/IReports';
+import { DataResumenCajaExpenseBox, ICajasPorFecha, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../../../interfaces/IReports';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
@@ -58,6 +58,8 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
   dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>([]);
   resumenSubscription!: Subscription;
   filterSubscription!: Subscription;
+  cajasXFechaSubscription!: Subscription;
+
   selectedTP = '';
   dataDetalle: IResumenCajaDetalle[] = [];
   dataDetalleExpense: DataResumenCajaExpenseBox[] = [];
@@ -70,9 +72,10 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     { id: 'TR', tipo: 'Transferencia' },
   ];
   dataResumenUsuario: { usuario: string, totalIngreso: number }[] = [];
-
+  dataCajaXfecha: ICajasPorFecha[] = [];
 
   loading = false;
+  loadingDetalle = false;
 
 
   ngOnDestroy(): void {
@@ -119,10 +122,10 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
   }
 
   applyFilterByUser(event: string): void {
-  
+
     this.dataDetalle = [];
     this.dataDetalleExpense = [];
-    
+
     const filterValue = event.trim().toLowerCase();
     this.dataSource.filterPredicate = (data: IReportResumenCajaPorFechaResponse, filter: string) => {
       return data.usuario.toLowerCase().includes(filter);
@@ -130,13 +133,27 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
     this.dataSource.filter = filterValue;
   }
 
-
-  cargarReporteResumenCaja() {
-    this.selectedTP = 'TO';
+  cargarCajasPorFecha() {
     this.loading = true;
+    this.cajasXFechaSubscription = this.reportsService.obtenerCajasPorFecha(this.fechaHoy.toDateString())
+      .subscribe({
+        next: (response) => {
+          this.loading = false;
+          this.dataCajaXfecha = response.data;
+        },
+        error: (error) => {
+          this.loading = false;
+          console.error(error);
+        }
+      });
+  }
+
+  cargarReporteResumenCaja(userId: number) {
+    this.selectedTP = 'TO';
+    this.loadingDetalle = true;
     this.dataDetalle = [];
     this.dataDetalleExpense = [];
-    this.resumenSubscription = this.reportsService.obtenerReprteResumenCajaPorFecha(this.fechaHoy.toDateString())
+    this.resumenSubscription = this.reportsService.obtenerReprteResumenCajaPorFecha(this.fechaHoy.toDateString(), userId)
       .pipe(map(response => {
         response.data.forEach(item => item.flag = false);
         return response.data;
@@ -144,29 +161,29 @@ export class ReporteResumenCajaComponent implements AfterViewInit {
       )
       .subscribe({
         next: (response) => {
-          this.loading = false;
+          this.loadingDetalle = false;
 
           console.log('watch response ==>', response);
 
 
-          const groupedResponse = response.reduce((acc: { [key: string]: { usuario: string, totalIngreso: number } }, item) => {
-            const key = item.cajaId;
-            if (!acc[key]) {
-              acc[key] = { usuario: item.usuario, totalIngreso: 0 };
-            }
-            acc[key].totalIngreso += item.totalImporte + item.totalAdelanto;
-            return acc;
-          }, {});
+          // const groupedResponse = response.reduce((acc: { [key: string]: { usuario: string, totalIngreso: number } }, item) => {
+          //   const key = item.cajaId;
+          //   if (!acc[key]) {
+          //     acc[key] = { usuario: item.usuario, totalIngreso: 0 };
+          //   }
+          //   acc[key].totalIngreso += item.totalImporte + item.totalAdelanto;
+          //   return acc;
+          // }, {});
 
 
 
-          const groupedData = Object.values(groupedResponse) as { usuario: string, totalIngreso: number }[];
-          this.dataResumenUsuario = groupedData;
-        
+          // const groupedData = Object.values(groupedResponse) as { usuario: string, totalIngreso: number }[];
+          // this.dataResumenUsuario = groupedData;
+
           this.dataSource = new MatTableDataSource<IReportResumenCajaPorFechaResponse>(response);
         },
         error: (error) => {
-          this.loading = false;
+          this.loadingDetalle = false;
           console.error(error);
         }
       });
