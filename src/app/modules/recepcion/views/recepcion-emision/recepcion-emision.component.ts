@@ -128,6 +128,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   numeracion: INumeracionDoc = { id: 0, branchId: 0, typeDoc: '', serieDoc: '', numberDoc: '', status: '' };
 
   isDelivery = false;
+  isEtiqueta = false;
   blockSave = false;
   loading = false;
   loadingSave = false;
@@ -560,6 +561,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.clienteTelefono = '';
     this.blockSave = false;
     this.isDelivery = false;
+    this.isEtiqueta = false;
     this.actualizarPago();
     this.clienteControl.setValue('');
   }

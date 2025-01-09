@@ -226,7 +226,7 @@
             Total: {{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue; display: flex; justify-content: space-between; padding-top: 5px; padding-bottom: 5px;">
-            <mat-slide-toggle (change)="onChangueToggleBolsa($event)">Bolsa</mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="isEtiqueta" (change)="onChangueToggleBolsa($event)">Etiqueta</mat-slide-toggle>
             A Cuenta: {{ store.selectedPago()?.monto| currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue; font-weight: bold;">
