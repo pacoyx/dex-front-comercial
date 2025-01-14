@@ -19,6 +19,7 @@ const routes: Routes = [
   { path: 'retiros/:numGuia', component: RecepcionRetirarComponent },
   { path: 'caja', component: RecepcionCajaComponent },
   { path: 'consultas', component: RecepcionConsultasComponent },
+  { path: 'consultas/:clienteId', component: RecepcionConsultasComponent },
   { path: 'gastos', component: RecepcionGastosComponent },
   { path: 'clientes', component: MntClientesComponent },
   { path: 'usuarios', component: MntUsuariosComponent },

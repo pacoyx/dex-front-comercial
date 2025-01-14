@@ -25,15 +25,18 @@ import { IRecogerItemRequest } from '../../interfaces/IDevoluciones';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 import { NotificationServiceService } from '../../services/notification-service.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-recepcion-retirar',
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatButtonModule,
+  imports: [
+    MatFormFieldModule, MatInputModule, MatButtonModule,
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
     DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
-    TicketVentaComponent, LoadingComponent, AlertDangerComponent],
+    TicketVentaComponent, LoadingComponent, AlertDangerComponent, 
+    RouterModule
+  ],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
 })
@@ -53,9 +56,20 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   UpdateInfoPagoSubscription!: Subscription;
   subscriptionConsulta!: Subscription;
 
-  displayedColumns: string[] = ['cant', 'productName', 'observaciones', 'precio', 'total', 'estadoSituacion', 'estadoTrabajo', 'operaciones', 'ubicacion'];
+  displayedColumns: string[] = [
+    'cant',
+    'productName',
+    'observaciones',
+    'precio',
+    'total',
+    'estadoSituacion',
+    'estadoTrabajo',
+    'operaciones',
+    'ubicacion'
+  ];
   dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>([]);
   guiaRetiroData: IGuiaRetiro | null = null;
+  clienteId = 0;
 
   bolCancelado = false;
   bolEntregado = false;
@@ -90,11 +104,12 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (resp) => {
           this.bolBuscandoGuia = false;
-          if (!resp.success) {          
+          if (!resp.success) {
             this.notificacionService.showErrorDialog('No se encontró la guía de retiro.', this.numeroGuia?.toString());
             return;
           }
           this.guiaRetiroData = resp.data;
+          this.clienteId = resp.data.customerId;
           this.dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>(resp.data.workGuideDetailsDTO);
           this.bolCancelado = this.guiaRetiroData.estadoPago === 'PA';
           this.bolEntregado = this.guiaRetiroData.estadoSituacion === 'E';
@@ -104,7 +119,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         error: (err) => {
           console.log(err);
           this.bolBuscandoGuia = false;
-          this.notificacionService.showErrorDialog('No se encontró la guía de retiro.', this.numeroGuia?.toString());       
+          this.notificacionService.showErrorDialog('No se encontró la guía de retiro.', this.numeroGuia?.toString());
           this.store.resetState();
           this.guiaRetiroData = null;
         }, complete: () => {
@@ -187,7 +202,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
         }
 
         this.notificacionService.showSuccessDialog(respuesta.descontar ? 'Se descontó el monto de la devolución y se registro como salida en GASTOS.' : 'Se registro la devolución.');
-     
+
       }
     });
   }
@@ -273,12 +288,12 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.guiaRetiroData.estadoPago === 'PA') {           
+    if (this.guiaRetiroData.estadoPago === 'PA') {
       this.notificacionService.showErrorDialog('No se puede anular la guía porque ya se realizó el pago.');
       return;
     }
 
-    this.dialog.open(DialogQuestionComponent, {      
+    this.dialog.open(DialogQuestionComponent, {
       data: { title: 'Anular Guía', message: '¿Está seguro de anular la guía de retiro?', msgButton: 'Anular' }
     }).afterClosed().subscribe((result) => {
       if (result === 'OK') {
@@ -324,7 +339,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     });
   }
 
-  imprimirGuia() {    
+  imprimirGuia() {
     if (!this.guiaRetiroData) {
       return;
     }

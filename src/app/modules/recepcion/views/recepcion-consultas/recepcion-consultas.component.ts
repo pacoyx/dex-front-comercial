@@ -15,12 +15,12 @@ import { ReportesEmisionService } from '../../services/reportes-emision.service'
 import { IReportGuiasDetalleResponse } from '../../interfaces/IReports';
 import { AsyncPipe, DatePipe, DecimalPipe, NgFor, TitleCasePipe } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, of, Subject, Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { map, startWith, switchMap, debounceTime } from 'rxjs/operators';
 import { IClienteBusqueda } from '../../components/dialog-cliente/dialog-cliente.component';
 import { EmisionService } from '../../services/emision.service';
 import { MatRadioModule } from '@angular/material/radio';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { TableDetalleComponent } from './components/table-detalle/table-detalle.component';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
@@ -52,6 +52,7 @@ import { LoadingComponent } from '../../../../core/components/loading/loading.co
 export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDestroy {
   reportsService = inject(ReportesEmisionService);
   emisionService = inject(EmisionService);
+  route = inject(ActivatedRoute);
 
   fechaHoy: Date = new Date();
   customerId: number = 0;
@@ -105,6 +106,19 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
 
   ngOnInit(): void {
 
+
+    this.route.params.subscribe(params => {
+      if (params['clienteId']) {
+        var clienteId = parseInt(params['clienteId']);       
+        if (clienteId > 0) {
+          this.tipoReporte = 'C';
+          this.customerId = clienteId;
+          this.clienteControl.setValue('Cargando...');
+          this.cargarGuiasPorCliente(1, this.pageSize);
+        }
+      }
+    });
+
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
@@ -130,6 +144,11 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
           this.dataSource.data = response.data.guias;
           this.totalClientes = response.data.totalCount;
           this.paginator.length = this.totalClientes;
+          if (response.data.guias.length > 0) {
+            this.clienteControl.setValue(response.data.guias[0].nombreCliente);
+          }
+          
+          
         },
         error: (error) => {
           this.loading = false;

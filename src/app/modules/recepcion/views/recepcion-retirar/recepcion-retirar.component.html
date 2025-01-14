@@ -9,7 +9,7 @@
     <hr>
     <div class="section-busqueda">
         <div style="display: flex; gap: 10px; flex-direction: column;">
-            <mat-form-field appearance="outline" style="width: 110px; height: 75px;">
+            <mat-form-field appearance="outline" style="width: 120px; height: 75px; font-size: x-large;">
                 <mat-label>N° Guia</mat-label>
                 <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
             </mat-form-field>
@@ -115,6 +115,8 @@
     <div class="section-nombre-cliente">
         <div><mat-icon>people</mat-icon> {{guiaRetiroData?.customerName}}</div>
         <div><mat-icon>phone</mat-icon> {{guiaRetiroData?.customerPhone}}</div>
+        <!-- <button mat-stroked-button>Historial</button> -->
+        <a mat-button [routerLink]="['/recepcion/consultas', clienteId]">Historial de guias</a>
     </div>
 
     <div class="section-totales">
