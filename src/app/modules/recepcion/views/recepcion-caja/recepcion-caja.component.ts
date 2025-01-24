@@ -11,7 +11,6 @@ import { LoginService } from '../../../../core/services/login.service';
 import { ICashBoxDetailResponseDto, IListarCajaPorUsuarioResponse, ITotalizadoPorTipoPago } from '../../interfaces/ICajaVentas';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { IListaGastosPorUserResponse } from '../../interfaces/IGastos';
-import { HttpErrorResponse } from '@angular/common/http';
 import { NotificationServiceService } from '../../services/notification-service.service';
 
 @Component({
@@ -71,8 +70,7 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
   }
 
   obtenerCajaPorUsuario(): void {
-    console.log('obtenerCajaPorUsuario() ========');
-    
+       
     this.loadingCarga = true;
     this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.loginTmp.userId!).subscribe({
       next: (data) => {
@@ -92,9 +90,6 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.notificacionService.showError(err);
         this.loadingCarga = false;
-      },
-      complete: () => {
-        console.log('complete obtenerCajaPorUsuario()');
       }
     });
   }
@@ -130,9 +125,6 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.notificacionService.showError(err.message);
         this.loading = false;
-      },
-      complete: () => {
-        console.log('complete ListarCajaDetallesPorUser()');
       }
     });
   }
@@ -147,9 +139,6 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.log('error ListarGastosPorIdUser()', err);
         this.notificacionService.showError(err);
-      },
-      complete: () => {
-        console.log('complete ListarGastosPorIdUser()');
       }
     });
   }

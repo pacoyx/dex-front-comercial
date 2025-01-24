@@ -18,10 +18,15 @@
                 </mat-select>
             </mat-form-field>
         </div>
+        
 
         <div class="section-filters__buttons">
             <button mat-fab (click)="quitarFiltros()">
                 <mat-icon>filter_alt_off</mat-icon>                
+            </button>
+            <button mat-fab extended (click)="reprocesar()">
+                <mat-icon>published_with_changes</mat-icon>                
+                Re-Procesar
             </button>
             <button mat-fab extended (click)="addItem()">
                 <mat-icon>add</mat-icon>
@@ -63,7 +68,12 @@
 
             <ng-container matColumnDef="tipoPago">
                 <th mat-header-cell *matHeaderCellDef> Tipo Pago </th>
-                <td mat-cell *matCellDef="let element"> {{element.tipoPago}} {{element.descripcionPago}} </td>
+                <td mat-cell *matCellDef="let element"> 
+                    {{element.tipoPago}} 
+                    <small>
+                        {{element.descripcionPago}} 
+                    </small>
+                </td>
                 <td mat-footer-cell *matFooterCellDef style="font-weight: bold;"> TOTAL </td>
             </ng-container>
 

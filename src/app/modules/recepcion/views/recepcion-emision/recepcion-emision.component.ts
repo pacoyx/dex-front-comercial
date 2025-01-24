@@ -263,11 +263,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   onClienteSelected(event: any) {
     const cliente = event.option.value;
-
-
-    console.log('watch cliente ==>', cliente);
-
-
     this.clienteTelefono = cliente.telefono;
     this.clienteNombre = cliente.nombres + ' ' + cliente.apellidos;
     this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
@@ -367,9 +362,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   openDialogCategorias(categoria: IListaCategorias) {
     const dialogRef = this.dialog.open(DialogCategoriasComponent, { data: { id: categoria.id, name: categoria.name, icon: categoria.icon } });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+    dialogRef.afterClosed().subscribe(result => {      
     });
   }
 

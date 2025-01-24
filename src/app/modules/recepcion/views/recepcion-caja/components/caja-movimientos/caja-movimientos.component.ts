@@ -12,13 +12,14 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogFormRegMovimientoComponent } from './components/dialog-form-reg-movimiento/dialog-form-reg-movimiento.component';
 import { DialogQuestionComponent } from '../../../../components/dialog-question/dialog-question.component';
+import { DialogDividirPagoComponent } from './components/dialog-dividir-pago/dialog-dividir-pago.component';
 
 @Component({
   selector: 'app-caja-movimientos',
   standalone: true,
   imports: [
-    MatTableModule, DecimalPipe, MatIconModule, 
-    MatButtonModule, MatFormFieldModule, MatInputModule, 
+    MatTableModule, DecimalPipe, MatIconModule,
+    MatButtonModule, MatFormFieldModule, MatInputModule,
     MatSelectModule],
   templateUrl: './caja-movimientos.component.html',
   styleUrl: './caja-movimientos.component.css'
@@ -48,7 +49,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
   ];
   dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>([]);
   listsItems: ICashBoxDetailResponseDto[] = [];
-  selectedTP='';
+  selectedTP = '';
 
   tiposPago = [
     { id: 'TO', tipo: '[Todos]' },
@@ -118,13 +119,24 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
   }
 
   editItem(item: ICashBoxDetailResponseDto): void {
-    console.log('editItem', item);
+    
+    var dialogResponse = this.dialog.open(DialogDividirPagoComponent, {      
+      data: {        
+        item: item
+      }
+    });
+
+    dialogResponse.afterClosed().subscribe({
+      next: (result) => {
+        console.log('response dialog dividir:', result);
+        if (result) {
+          this.cargarData.emit(true);
+        }
+      }
+    });
   }
 
-  deleteItem(item: ICashBoxDetailResponseDto): void {
-    console.log('deleteItem', item);
-
-
+  deleteItem(item: ICashBoxDetailResponseDto): void {    
     var dialogResponse = this.dialog.open(DialogQuestionComponent, {
       width: '600px',
       data: {
@@ -204,8 +216,12 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
     this.dataSource.filter = filterValue;
   }
   quitarFiltros(): void {
-    this.dataSource.filter = '';    
+    this.dataSource.filter = '';
     this.selectedTP = 'TO';
+  }
+
+  reprocesar(): void {
+    this.cargarData.emit(true);
   }
 
 

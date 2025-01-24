@@ -62,7 +62,7 @@ export const environment = {
     EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
 
 
-
+    EPDividirPago: 'api/cashBox/splitPayCash',
     
     //falta implementar
     EPListarUsuarios: 'api/user',

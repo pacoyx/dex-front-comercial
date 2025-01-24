@@ -1,0 +1,76 @@
+<div style="padding: 10px;">
+
+    <h2 mat-dialog-title>Dividir Pago</h2>
+    <mat-dialog-content style="display: flex; flex-direction: column;">
+
+        <div style="display: flex; flex-direction: column; font-size: 20px; margin-bottom: 20px;">
+            <div> Guia # {{ data.item.numComprobante }}</div>
+            <div> Monto: S/ {{ importe | number: '1.2-2' }}</div>
+        </div>
+
+        <div style="width: 100%; display: flex; gap: 10px;">
+            <mat-icon style="color: green;">payments</mat-icon>
+            <mat-form-field floatLabel="always">
+                <mat-label>EFECTIVO</mat-label>
+                <input 
+                matInput 
+                type="number"                 
+                placeholder="0" 
+                [(ngModel)]="montoEfectivo"                 
+                />
+                <span matTextPrefix>S/&nbsp;</span>
+            </mat-form-field>
+        </div>
+
+        <div style="width: 100%; display: flex; gap: 10px;">
+            <mat-icon style="color: blueviolet;">qr_code</mat-icon>
+            <mat-form-field floatLabel="always">
+                <mat-label>YAPE</mat-label>
+                <input matInput type="number" class="example-right-align" placeholder="0" [(ngModel)]="montoYape" />
+                <span matTextPrefix>S/&nbsp;</span>
+            </mat-form-field>
+        </div>
+
+        <div style="width: 100%; display: flex; gap: 10px;">
+            <mat-icon style="color: gold;">credit_card</mat-icon>
+            <mat-form-field floatLabel="always">
+                <mat-label>TARJETA</mat-label>
+                <input matInput type="number" class="example-right-align" placeholder="0" [(ngModel)]="montoTarjeta" />
+                <span matTextPrefix>S/&nbsp;</span>
+            </mat-form-field>
+        </div>
+
+        <div style="text-align: right;">
+            <span> Suma Total: S/ {{ importeSuma | number: '1.2-2' }}</span>
+        </div>
+        @if(bolError){
+        <div style="display: block; max-width: 250px; text-align: center; color: red; font-size: 15px; margin-top: 10px;">
+            {{ msgError }}
+        </div>
+        }
+
+
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end" style="display: flex; justify-content: space-between;">
+        <button mat-button (click)="onNoClick()">Cancelar</button>
+
+        @if(bolLoading){
+            <button mat-fab extended>
+              <div style="display: flex; gap: 5px;">
+                <app-loading></app-loading>
+                Grabando...
+              </div>
+            </button>
+            }
+            @if(!bolLoading){
+                <button mat-fab extended (click)="onYesClick()">
+                    <mat-icon>check</mat-icon>
+                    Guardar
+                </button>
+            }
+        
+    </mat-dialog-actions>
+
+</div>

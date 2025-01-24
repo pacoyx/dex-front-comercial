@@ -91,3 +91,14 @@ export interface ITotalizadoPorTipoPago {
   totalAdelanto: number;
   total: number;
 }
+
+
+export interface IReqSpliPayCash {
+  cashBoxDetailId: number;
+  splitPayCashDetail: SplitPayCashDetail[];
+}
+
+export interface SplitPayCashDetail {
+  importe: number;
+  tipoPago: string;
+}

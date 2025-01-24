@@ -16,7 +16,7 @@ import { IReqGuiaInfoPay } from '../interfaces/IReqGuiaInfoPay';
 import { ICreateAlertaRequest, ICreateAlertaResponse, IListarAlertasResponse } from '../interfaces/IAlertas';
 import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDevoluciones';
 import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
-import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse } from '../interfaces/ICajaVentas';
+import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse, IReqSpliPayCash } from '../interfaces/ICajaVentas';
 import { IIdsPesoLavadoResponse } from '../interfaces/IProdServices';
 
 
@@ -226,5 +226,12 @@ export class EmisionService {
     const url = `${this.apiUrl}${environment.EPObtenerIdsPesoLavado}`;
     return this.http.get<IResponseGeneric<IIdsPesoLavadoResponse>>(url, { headers });
   }
+
+  DividirPago(item: IReqSpliPayCash) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPDividirPago}`;
+    return this.http.post<IResponseGeneric<number>>(url, item, { headers });
+  }
+
 
 }
