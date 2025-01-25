@@ -53,14 +53,33 @@
 
         @if (!showMenuItems) {
         <div class="container-categories">
-          @for (item of categories; track item.id; let idx = $index, e = $even) {
+          <!-- @for (item of categories; track item.id; let idx = $index, e = $even) {
           <div class="example-button-container">
             <button mat-fab extended (click)="mostrarMenuItems(item.id)">
               <mat-icon>{{item.icon}}</mat-icon>
               {{item.name}}
             </button>
           </div>
-          }
+          } -->
+
+          @if(loadingServicesQuick){
+            <div style="display: flex;justify-content: center;">
+              <app-loading></app-loading>
+              Cargando acceso rapido...
+            </div>
+            }
+
+          @for (item of dataServiciosAccesosRapido; track item.id; let idx = $index, e = $even) {
+            <div class="example-button-container">
+              <button class="btn primary" (click)="agregarItemQuickAccess(item)">        
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
+                  <img [src]="item.iconName" alt="icon" style="width: 50px; height: 50px;">                
+                  {{item.shortName}}
+                </div>        
+                
+              </button>
+            </div>
+            }
         </div>
         }
         @if (showMenuItems) {
@@ -106,16 +125,17 @@
             </div>
           </div>
 
-          <div style="display: flex;">
+          <!-- <div style="display: flex;">
             <label><strong>Entrega: </strong></label>
             <div>
               {{fechaHEntrega | date:'dd/MM/yyyy'}}
             </div>
-          </div>
+          </div> -->
 
           <div style="margin-left: 40px;">
             <label><strong>
-                {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}}
+                <!-- {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}} -->
+                #{{numeracion.numberDoc}}
               </strong></label>
           </div>
         </div>

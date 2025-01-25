@@ -63,7 +63,7 @@ export const environment = {
 
 
     EPDividirPago: 'api/cashBox/splitPayCash',
-    
+    EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
     //falta implementar
     EPListarUsuarios: 'api/user',
 

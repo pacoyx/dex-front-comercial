@@ -14,7 +14,7 @@
 .container-lado-izq {
     /* background-color: #19c3f767; */
     /* display: table-cell; */
-    width: 40%;
+    width: 50%;
     border: 1px solid #d0cccc;
     border-radius: 5px;
     margin-right: 5px;
@@ -31,7 +31,7 @@
 
 .container-lado-der {
     /* background-color: coral;     */
-    width: 60%;
+    width: 50%;
     /* border: 1px solid grey; */
 }
 
@@ -58,6 +58,7 @@
 table {
     width: 100%;
 }
+
 .cabecera {
     text-align: center;
     padding: 0px 0px !important;
@@ -100,7 +101,7 @@ table {
 .fila-detalle {
     display: flex;
     align-items: center;
-    gap: 5px;    
+    gap: 5px;
     padding: 5px;
     border: 1px solid #d0cccc;
     border-radius: 5px;
@@ -112,7 +113,7 @@ table {
     display: flex;
     /* flex-direction: column;     */
     align-items: center;
-    gap: 5px;    
+    gap: 5px;
     padding: 5px;
     border: 1px solid #d0cccc;
     border-radius: 5px;
@@ -120,7 +121,8 @@ table {
     margin-bottom: 2px;
     height: 88px;
 }
-.forma-pago-cuadro{
+
+.forma-pago-cuadro {
     border: 1px solid #d0cccc;
     border-radius: 5px;
     padding: 5px;
@@ -191,6 +193,39 @@ table {
     padding: 5px;
 
 }
+
+
+
+
+.btn {
+    border: none;
+    color: #001B3F;
+    padding: 14px 28px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: inline-flex;
+    height: 100px;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.primary:active {
+    transform: scale(0.9); /* Reduce ligeramente el tamaño del botón cuando se hace clic */
+  }
+
+.primary {
+    background-color: #d7e3ff;
+}
+
+.primary:hover {
+    background: #b7caf8;
+}
+
+
+
 
 
 .win-proceso {

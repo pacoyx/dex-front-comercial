@@ -17,7 +17,7 @@ import { ICreateAlertaRequest, ICreateAlertaResponse, IListarAlertasResponse } f
 import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDevoluciones';
 import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
 import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse, IReqSpliPayCash } from '../interfaces/ICajaVentas';
-import { IIdsPesoLavadoResponse } from '../interfaces/IProdServices';
+import { IIdsPesoLavadoResponse, IResponseServiceQuickAccess } from '../interfaces/IProdServices';
 
 
 @Injectable({
@@ -30,13 +30,13 @@ export class EmisionService {
   constructor(private http: HttpClient) { }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    
+
     if (error.error instanceof ErrorEvent) {
       // Error del lado del cliente
       console.error('An error occurred:', error.error.message);
     } else {
       // Error del lado del servidor
-      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);      
+      console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
     }
     return throwError(error);
   }
@@ -59,7 +59,7 @@ export class EmisionService {
     return this.http.get<IListaItemsBusqueda[]>(url, { headers });
   }
 
-  filtrarClientesPorPatron(patron: string): Observable<ResponseIClienteBusqueda> {    
+  filtrarClientesPorPatron(patron: string): Observable<ResponseIClienteBusqueda> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPFiltrarClientesPorPatron}/${patron}`;
     return this.http.get<ResponseIClienteBusqueda>(url, { headers });
@@ -204,9 +204,9 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPListarCajaPorUsuario}/${idUser}`;
     return this.http.get<IResponseGeneric<IListarCajaPorUsuarioResponse>>(url, { headers })
-    .pipe(
-      catchError(this.handleError)
-    );
+      .pipe(
+        catchError(this.handleError)
+      );
   }
 
   ListarCajaDetallesPorUser(idUser: number): Observable<IResponseGeneric<ICashBoxDetailResponseDto[]>> {
@@ -231,6 +231,12 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPDividirPago}`;
     return this.http.post<IResponseGeneric<number>>(url, item, { headers });
+  }
+
+  ListarServiciosAccesoRapido() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarServiciosAccesoRapido}`;
+    return this.http.get<IResponseGeneric<IResponseServiceQuickAccess[]>>(url, { headers });
   }
 
 

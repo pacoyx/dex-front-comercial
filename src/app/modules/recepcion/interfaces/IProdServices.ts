@@ -20,7 +20,7 @@ export interface IResponseProdServices {
     idLavado: number;
 }
 
-export interface IActuaizarProdServicesRequest { 
+export interface IActuaizarProdServicesRequest {
     name: string;
     description: string;
     category: string;
@@ -30,7 +30,7 @@ export interface IActuaizarProdServicesRequest {
     idLavado: number;
 }
 
-export interface ICrearProdServicesRequest { 
+export interface ICrearProdServicesRequest {
     name: string;
     description: string;
     category: string;
@@ -38,4 +38,14 @@ export interface ICrearProdServicesRequest {
     status: string;
     idPeso: number;
     idLavado: number;
+}
+
+
+export interface IResponseServiceQuickAccess {
+    id: number;
+    prodServiceID: number;
+    shortName: string;
+    iconName: string;
+    status: string;
+    price: number;
 }

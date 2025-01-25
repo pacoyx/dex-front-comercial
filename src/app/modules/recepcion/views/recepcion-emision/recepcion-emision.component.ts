@@ -38,6 +38,7 @@ import { LoginService } from '../../../../core/services/login.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { RecepcionGrillaBusquedaServiciosComponent } from './components/recepcion-grilla-busqueda-servicios/recepcion-grilla-busqueda-servicios.component';
+import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
 
 @Component({
   selector: 'app-recepcion-emision',
@@ -122,8 +123,9 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       "icon": "cloud"
     }
   ];
+  dataServiciosAccesosRapido: IResponseServiceQuickAccess[] = [];
   DataDemo: IEmisionPrevia[] = [];
-  displayedColumns: string[] = ['item', 'nomProd', 'Cant', 'Precio', 'Subtotal', 'actions'];
+  displayedColumns: string[] = ['item', 'nomProd', 'Subtotal', 'actions'];
   dataSource = new MatTableDataSource<IEmisionPrevia>(this.store.items());
   numeracion: INumeracionDoc = { id: 0, branchId: 0, typeDoc: '', serieDoc: '', numberDoc: '', status: '' };
 
@@ -134,6 +136,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   loadingSave = false;
   loadingUpdatePhone = false;
   loadingFilterServices = false;
+  loadingServicesQuick = false;
   bolExisteCaja = true;
   msgValidacion = '';
 
@@ -145,6 +148,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   subscriptionFiltrarServixpatron!: Subscription;
   subscriptionConsulta!: Subscription;
   subscriptionIdsPesoLavado!: Subscription;
+  subscriptionQuickAccess!: Subscription;
 
   clienteControl = new FormControl();
   filteredClientes!: Observable<IClienteBusqueda[]>;
@@ -174,6 +178,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     if (this.subscriptionFiltrarServixpatron) this.subscriptionFiltrarServixpatron.unsubscribe();
     if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
     if (this.subscriptionIdsPesoLavado) this.subscriptionIdsPesoLavado.unsubscribe();
+    if (this.subscriptionQuickAccess) this.subscriptionQuickAccess.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -197,10 +202,53 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.store.resetState();
     this.cargarNumeracion();
     this.cargarCategorias();
+    this.cargarServiciosAccesosRapido();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
   }
+
+  cargarServiciosAccesosRapido() {
+    this.loadingServicesQuick = true;
+    this.emisionService.ListarServiciosAccesoRapido().subscribe({
+      next: (resp) => {
+        console.log(resp);
+        this.loadingServicesQuick = false;
+        this.dataServiciosAccesosRapido = resp.data;
+      },
+      error: (err) => {
+        console.log(err);
+        this.loadingServicesQuick = false;
+      }
+    });
+  }
+
+
+  agregarItemQuickAccess(item: IResponseServiceQuickAccess): void {
+
+    if (item.shortName == 'Peso KG.') {
+      this.openDialogPeso();
+      return;
+    }
+
+    if (item.shortName == 'Lavado ...') {
+      this.openDialogLavado();
+      return;
+    }
+
+
+    let itemBusqueda: IListaItemsBusqueda = {
+      id: item.id,
+      name: item.shortName,
+      price: item.price,
+    }
+
+    this.store.select(item.id);
+    this.subscriptionQuickAccess = this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: itemBusqueda } })
+      .afterClosed()
+      .subscribe((_) => this.actualizarPago());
+  }
+
 
   obtenerIdsServicioPesoLavado() {
     this.emisionService.ObtenerIdsPesoLavado().subscribe({
@@ -362,7 +410,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   openDialogCategorias(categoria: IListaCategorias) {
     const dialogRef = this.dialog.open(DialogCategoriasComponent, { data: { id: categoria.id, name: categoria.name, icon: categoria.icon } });
-    dialogRef.afterClosed().subscribe(result => {      
+    dialogRef.afterClosed().subscribe(result => {
     });
   }
 

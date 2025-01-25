@@ -7,7 +7,7 @@ export const environment = {
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
-    
+
     EPRegistrarCliente: 'api/customer',
     EPActualizarCliente: 'api/customer',
     EPEliminarCliente: 'api/customer',
@@ -33,7 +33,7 @@ export const environment = {
     EPListarAlertas: 'api/workGuideMain/getAlertsByWorkGuide',
     EPDevolverPrendas: 'api/workGuideMain/returnUnwashedClothes',
     EPRecogerItem: 'api/workGuideMain/pickUpItem',
-    
+
     EPListarGastosPorUsuario: 'api/expenseBox/byUser',
     EPCrearGasto: 'api/expenseBox',
     EPActualizarGasto: 'api/expenseBox',
@@ -48,20 +48,21 @@ export const environment = {
     EPEliminarCajaDetalle: 'api/cashBox/detail',
 
     EPObtenerIdsPesoLavado: 'api/prodService/getidservicepesolavado',
-  
+
     // reportes
     EPGuiasPorFecha: 'api/reports/workguides/bydate',
     EPGuiasPorCliente: 'api/reports/workguides/bycustomer',
     EPResumenCajaPorFecha: 'api/cashBox/resume',
     EPResumenCajaPorFechaDetallePorId: 'api/cashBox/detail',
 
-    EPListarUbicaciones:'api/locationclothes',
-    EPCrearUbicacion:'api/locationclothes',
-    EPActualizarUbicacion:'api/locationclothes',
-    EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
+    EPListarUbicaciones: 'api/locationclothes',
+    EPCrearUbicacion: 'api/locationclothes',
+    EPActualizarUbicacion: 'api/locationclothes',
+    EPRegistrarUbicacion: 'api/locationclothes/RegisterWorkGuide',
     EPObtenerCajasPorFecha: 'api/cashBox/resumeAllUser',
-    
+
     EPDividirPago: 'api/cashBox/splitPayCash',
+    EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
 
     //falta implementar
     EPListarUsuarios: 'api/user',
