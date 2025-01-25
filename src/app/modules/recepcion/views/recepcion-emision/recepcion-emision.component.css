@@ -14,7 +14,7 @@
 .container-lado-izq {
     /* background-color: #19c3f767; */
     /* display: table-cell; */
-    width: 50%;
+    width: 60%;
     border: 1px solid #d0cccc;
     border-radius: 5px;
     margin-right: 5px;
@@ -31,7 +31,7 @@
 
 .container-lado-der {
     /* background-color: coral;     */
-    width: 50%;
+    width: 40%;
     /* border: 1px solid grey; */
 }
 
