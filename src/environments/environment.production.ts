@@ -1,9 +1,9 @@
 export const environment = {
-    apiUrlBase: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
+    apiUrlBase: 'http://64.23.253.167:8080/',
     apiUrlBaseAzure: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
     EPlogin: 'api/login',
     EPRefreshToken: 'api/refresh-token',
-
+    // apiUrlBase: 'http://64.23.253.167:8080/', // produccion docker DigOcean
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
