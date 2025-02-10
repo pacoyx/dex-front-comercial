@@ -1,0 +1,75 @@
+<h2 mat-dialog-title>
+    <mat-icon>edit_note</mat-icon> {{titulo}}
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="userForm">
+        <div style="padding: 5px; display: flex; flex-direction: column;">
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>User Name</mat-label>
+                <input matInput formControlName="userName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password">
+            </mat-form-field>
+            <!-- <mat-form-field appearance="outline">
+                <mat-label>role</mat-label>
+                <input matInput formControlName="role">
+            </mat-form-field> -->
+            <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email">
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <mat-select formControlName="role">
+                    <mat-option value="admin">Admin</mat-option>
+                    <mat-option value="user">User</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A">Activo</mat-option>
+                    <mat-option value="I">Inactivo</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
+
+    <!-- 
+    <button mat-button (click)="onSubmit()" [disabled]="clienteForm.invalid">Guardar</button> -->
+
+    @if(loadingSave){
+    <button mat-fab extended>
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+
+</mat-dialog-actions>

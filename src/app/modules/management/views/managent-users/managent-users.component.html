@@ -1,0 +1,33 @@
+<div class="container-mntuser">
+
+    <a [routerLink]="['/recepcion']">Volver a la pagina principal</a>
+    <h2>
+        <mat-icon>groups</mat-icon>
+        Registro de Usuarios
+    </h2>
+    <!-- (keyup)="applyFilterV2($event)"  -->
+    <div class="section-controls-mnt-users">
+        <div style="display: flex; gap: 5px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar Usuario</mat-label>
+                <input matInput placeholder="Buscar">
+            </mat-form-field>
+            <button mat-fab (click)="limpiaFiltro()" [disabled]="!bolFiltro">
+                <mat-icon>filter_alt_off</mat-icon>
+            </button>
+        </div>
+
+        <button mat-fab extended (click)="newUser()">
+            <mat-icon>person_add</mat-icon>
+            Nuevo Usuario
+        </button>
+
+    </div>
+    @if(loading){
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    }
+    <app-table-listado-mnt-user [dataUser]="listaUsuarios"  (reLoadUser)="cargarUsuarios($event)"/>
+</div>

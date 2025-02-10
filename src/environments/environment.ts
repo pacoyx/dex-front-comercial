@@ -65,6 +65,18 @@ export const environment = {
     EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
 
     //falta implementar
-    EPListarUsuarios: 'api/user',
+    EPGetUsers: 'api/user',
+    EPGetUser: 'api/user',
+    EPPostUsers: 'api/user',
+    EPPutUsers: 'api/user',
+    EPDeleteUsers: 'api/user',
+
+    EPGetCompanies:'api/company',
+    EPGetCompany:'api/company',
+    EPGetCompanyByUser:'api/company/user',
+    EPCreateCompany:'api/company',
+    EPUpdateCompany:'api/company',
+    EPDeleteCompany:'api/company',
+
 
 };

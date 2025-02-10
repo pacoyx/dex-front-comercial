@@ -109,9 +109,14 @@
           <span class="flexExpand"></span>
           <span class="example-spacer"></span>
           <mat-menu #userMenu="matMenu">            
-            <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+            <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
               <mat-icon>settings</mat-icon>              
               Administrar
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+              <mat-icon>settings</mat-icon>              
+              Profile
             </button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="cerrarSesion()">

@@ -6,7 +6,7 @@ import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGetClientesPaginadoResponse } from '../interfaces/ICliente';
 import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
-import { IRegistrarUbicacionRequest, IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
+import { IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +35,7 @@ export class MaestrosService {
     return this.http.get<IResponseGeneric<IGetClientesPaginadoResponse>>(`${this.apiUrl}${environment.EPListarClientes}/${pagina}/${numFilas}`, { headers });
   }
 
-  obtenerClientesFiltrarPaginator(pagina: number, numFilas: number, nombreFiltro:string): Observable<IResponseGeneric<IGetClientesPaginadoResponse>> {
+  obtenerClientesFiltrarPaginator(pagina: number, numFilas: number, nombreFiltro: string): Observable<IResponseGeneric<IGetClientesPaginadoResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = { name: nombreFiltro };
     return this.http.get<IResponseGeneric<IGetClientesPaginadoResponse>>(`${this.apiUrl}${environment.EPListarClientesPaginator}/${pagina}/${numFilas}`, { headers, params });
@@ -108,13 +108,9 @@ export class MaestrosService {
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
-
-
-
   registrarUbicacionPrenda(ubicacion: IRequestRegistrarUbicacion) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
   }
-
 
 }

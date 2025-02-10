@@ -1,0 +1,66 @@
+<table mat-table [dataSource]="dataUser()" matSort class="mat-elevation-z8">
+
+    <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> UserName </th>
+        <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Correo </th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+        <td mat-cell *matCellDef="let element"> {{element.role}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Estado </th>
+        <td mat-cell *matCellDef="let element">
+
+            @switch (element.status) {
+            @case ('A') {
+            <span style="color: green;">Activo</span>
+            }
+            @case ('I') {
+            <span style="color: red;">Inactivo</span>
+            }
+            @default {
+            <span style="color: red;">Inactivo</span>
+            }
+            }
+
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="operaciones">
+        <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+        <td mat-cell *matCellDef="let element">
+            <div style="display: flex; justify-content: space-evenly;">
+
+
+                <button mat-mini-fab (click)="editUser(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-mini-fab (click)="eliminarUser(element)">
+                    <mat-icon style="color: red;">delete</mat-icon>
+                </button>
+            </div>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

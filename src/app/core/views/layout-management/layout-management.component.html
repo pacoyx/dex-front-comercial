@@ -1,0 +1,36 @@
+<mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>Administracion de Sistema</span>
+
+    <button mat-button>
+        <mat-icon>dashboard</mat-icon>
+        <a [routerLink]="['/management/dashboard']" routerLinkActive="router-link-active">Dashboard</a>
+    </button>
+    <button mat-button>
+        <mat-icon>apartment</mat-icon>
+        <a [routerLink]="['/management/empresa']" routerLinkActive="router-link-active">Empresa</a>
+    </button>
+    <button mat-button>
+        <mat-icon>person</mat-icon>
+        <a [routerLink]="['/management/usuarios']" routerLinkActive="router-link-active">Usuarios</a>
+    </button>
+    <button mat-button>
+        <mat-icon>settings</mat-icon>
+        <a [routerLink]="['/management/configuraciones']" routerLinkActive="router-link-active">Configuraciones</a>
+    </button>
+
+
+    <span class="example-spacer"></span>
+    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <mat-icon>favorite</mat-icon>
+    </button>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+        <mat-icon>share</mat-icon>
+    </button>
+</mat-toolbar>
+
+
+
+<router-outlet></router-outlet>

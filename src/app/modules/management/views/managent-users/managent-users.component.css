@@ -1,0 +1,15 @@
+.container-mntuser{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+}
+
+.section-controls-mnt-users{
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
