@@ -1,0 +1,86 @@
+.container-obs-btn {    
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;    
+    gap: 10px;
+    background-color: aqua;
+    width: 80px;
+}
+
+.example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
+
+.activeBtn {    
+    background-color: #02224d!important;
+    color: white!important;
+    /* background-color: #001B3F!important; */
+}
+
+.activeSection {    
+    background-color: #4d024171!important;    
+}
+
+.btn {
+    border: none;
+    color: #001B3F;
+    padding: 5px 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: inline-flex;
+    height: 80px;
+    width: 80px;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.btn i {
+    margin-right: 5px;
+}
+
+.primary:active {
+    transform: scale(0.9); /* Reduce ligeramente el tamaño del botón cuando se hace clic */
+  }
+
+.primary {
+    background-color: #d7e3ff;
+}
+
+.primary:hover {
+    background: #b7caf8;
+}
+
+.img-btn {
+    width: 30px;
+    height: 30px;
+}
+
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    border: 1px solid #000;
+    background-image: url('/uniforme2lados.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.grid-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f09a;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 24px;
+    /* background-color: transparent; */
+}

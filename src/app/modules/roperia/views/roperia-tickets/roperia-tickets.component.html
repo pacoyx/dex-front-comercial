@@ -1,0 +1,50 @@
+<div class="container-ticket win-proceso">
+    <h2>
+        <mat-icon>point_of_sale</mat-icon>
+        Emisión de Ticket
+    </h2>
+
+    <div class="container-formulario">
+
+        <div class="container-formulario-left">
+            <div>
+                <app-input-trabajador (workerEvent)="idWorker = $event">
+                </app-input-trabajador>
+            </div>
+            <div>
+                <app-menu-ropa (prendaEvent)="objPrenda = $event"></app-menu-ropa>
+            </div>
+            <div>
+                <hr>
+            </div>
+            <div>
+                <app-obs-ropa (obsEvent)="arrObs = $event"></app-obs-ropa>
+            </div>
+        </div>
+
+        <!-- <div class="container-formulario-center">
+            <button mat-fab>
+                <mat-icon aria-hidden="false" fontIcon="arrow_forward_ios"></mat-icon>                
+              </button>
+        </div> -->
+        <div class="container-formulario-right">
+            <button mat-fab extended style="width: 100%;" (click)="addPrenda()">
+                Agregar prenda
+                <mat-icon aria-hidden="false" fontIcon="arrow_downward"></mat-icon>
+            </button>
+
+            <div>
+                <app-table-detalle-ticket></app-table-detalle-ticket>
+            </div>
+            <div>
+                <button mat-fab extended style="width: 100%;" (click)="registrarTicket()">
+                    <mat-icon aria-hidden="false" fontIcon="save"></mat-icon>
+                    Registrar
+                </button>
+            </div>
+        </div>
+
+
+
+
+    </div>

@@ -1,0 +1,13 @@
+<div class="container-categories">
+    @for (item of dataServiciosAccesosRapido; track item.id; let idx = $index, e = $even) {
+    <div class="example-button-container">
+        <button class="btn primary" (click)="onItemClick(item.id)" [ngClass]="{'activeBtn': selectedItemId == item.id}"  >
+            <div class="imgTextBtn">
+                <img [src]="item.iconName" alt="icon" class="imgBtn">
+                {{item.shortName}}
+            </div>
+
+        </button>
+    </div>
+    }
+</div>

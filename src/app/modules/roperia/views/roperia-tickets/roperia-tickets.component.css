@@ -1,0 +1,66 @@
+.container-ticket {
+    /* width: 100%;      */
+    border: 1px solid grey ;
+    padding: 10px;
+    margin: 10px;
+}
+
+.container-formulario{
+    display: flex;    
+}
+
+
+
+.container-formulario-left{
+    display: flex;    
+    flex-direction: column;
+    width: 50%;
+    border: 1px solid grey ;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.container-formulario-center{
+    display: flex;    
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    border: 1px solid grey ;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.container-formulario-right{
+    display: flex;    
+    flex-direction: column;
+    /* justify-content: space-between; */
+    width: 40%;
+    border: 1px solid grey ;
+    border-radius: 5px;
+    padding: 10px;
+    gap: 20px;
+}
+
+
+
+
+
+
+.win-proceso {
+    display: block;
+}
+
+app-ticket-venta {
+    display: none;
+}
+
+@media print {
+    .win-proceso {
+        display: none;
+    }
+
+    app-ticket-venta {
+        display: block;
+    }
+}

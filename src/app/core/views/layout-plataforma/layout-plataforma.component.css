@@ -20,6 +20,23 @@ a{
 }
 
 
+/* Estilos para los enlaces */
+a.mat-button {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+/* Estilo para el enlace activo */
+a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #007bff;
+}
+
+
+
+
 @media print {
   .win-proceso {
     display: none;

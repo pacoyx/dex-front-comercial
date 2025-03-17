@@ -51,7 +51,7 @@ import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
     RecepcionGrillaBusquedaServiciosComponent
   ],
   templateUrl: './recepcion-emision.component.html',
-  styleUrl: './recepcion-emision.component.css'
+  styleUrl: './recepcion-emision.component.css',  
 })
 export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
@@ -244,7 +244,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     }
 
     this.store.select(item.id);
-    this.subscriptionQuickAccess = this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: itemBusqueda } })
+    this.subscriptionQuickAccess = this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: itemBusqueda }, width: '100%', height: '100%' })
       .afterClosed()
       .subscribe((_) => this.actualizarPago());
   }

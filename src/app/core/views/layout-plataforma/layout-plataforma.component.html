@@ -13,9 +13,9 @@
             <mat-icon>point_of_sale</mat-icon>
             Compras
           </a>
-          <a mat-list-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
+          <a mat-list-item [routerLink]="['/roperia']" routerLinkActive="router-link-active">
             <mat-icon>person_search</mat-icon>
-            Operaciones
+            Roperia
           </a>
           <a mat-list-item (click)="cerrarSesion()">
             <mat-icon>logout</mat-icon>
@@ -26,13 +26,76 @@
 
       <mat-sidenav-content>
         <mat-toolbar class="win-proceso">
+
           <button mat-icon-button (click)="sidenav.toggle()">
             <mat-icon>menu</mat-icon>
           </button>
 
           <span>Lavanderia Kyo</span>
+          
+          <nav>
+            <a mat-button routerLink="/recepcion/emision" routerLinkActive="active"><mat-icon>description</mat-icon>Emision</a>
+            <a mat-button routerLink="/recepcion/retiros" routerLinkActive="active"><mat-icon>exit_to_app</mat-icon>Retiros</a>
+            <a mat-button routerLink="/recepcion/gastos" routerLinkActive="active"><mat-icon>local_atm</mat-icon>Gastos</a>
+            <a mat-button routerLink="/recepcion/caja" routerLinkActive="active"><mat-icon>point_of_sale</mat-icon>Caja</a>
+        
 
-          <button mat-button>
+
+
+          <button mat-button [matMenuTriggerFor]="consMenu">
+            <mat-icon>person_search</mat-icon>
+            Consultas
+          </button>
+          <mat-menu #consMenu="matMenu">
+            <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
+              <mat-icon>manage_accounts</mat-icon>
+              Guias
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/recepcion/resumenCaja']" routerLinkActive="router-link-active">
+              <mat-icon>summarize</mat-icon>
+              Resumen Caja
+            </button>
+          </mat-menu>
+
+
+          <button mat-button [matMenuTriggerFor]="operacionesMenu">
+            <mat-icon>rebase_edit</mat-icon>
+            Operaciones
+          </button>
+          <mat-menu #operacionesMenu="matMenu">
+            <button mat-button>
+              <mat-icon>edit_location</mat-icon>
+              <a [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">Reg.Ubicaciones</a>
+            </button>
+          </mat-menu>
+
+
+          <button mat-button [matMenuTriggerFor]="mntMenu">
+            <mat-icon>tab_group</mat-icon>
+            Maestros
+          </button>
+          <mat-menu #mntMenu="matMenu">
+            <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
+              <mat-icon>manage_accounts</mat-icon>
+              Clientes
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/recepcion/servicios']" routerLinkActive="router-link-active">
+              <mat-icon>inventory_2</mat-icon>
+              Servicios
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item [routerLink]="['/recepcion/ubicaciones']" routerLinkActive="router-link-active">
+              <mat-icon>pin_drop</mat-icon>
+              Ubicaciones
+            </button>
+          </mat-menu> 
+
+          
+        </nav>
+
+          <!-- <button mat-button>
             <mat-icon>description</mat-icon>
             <a [routerLink]="['/recepcion/emision']" routerLinkActive="router-link-active">Emisión</a>
           </button>
@@ -101,7 +164,7 @@
               <mat-icon>pin_drop</mat-icon>
               Ubicaciones
             </button>
-          </mat-menu>
+          </mat-menu> -->
 
 
 

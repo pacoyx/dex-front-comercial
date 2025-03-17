@@ -22,3 +22,13 @@
     width: 120px;
     text-align: center;
 }
+
+
+.mat-mdc-dialog-content {
+    display: block;
+    flex-grow: 1;
+    box-sizing: border-box;
+    margin: 0;
+    overflow: auto;
+    max-height: none;
+}

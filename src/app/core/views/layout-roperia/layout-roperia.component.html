@@ -1,0 +1,51 @@
+<mat-toolbar>
+    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <span>Roperia</span>
+
+    <button mat-button>
+        <mat-icon>dashboard</mat-icon>
+        <a [routerLink]="['/roperia/dashboard']" routerLinkActive="router-link-active">Dashboard</a>
+    </button>
+    <button mat-button>
+        <mat-icon>apartment</mat-icon>
+        <a [routerLink]="['/roperia/tickets']" routerLinkActive="router-link-active">Tickets</a>
+    </button>
+    <button mat-button>
+        <mat-icon>person</mat-icon>
+        <a [routerLink]="['/roperia/guia-recojo']" routerLinkActive="router-link-active">Guia Recojo</a>
+    </button>
+    <button mat-button>
+        <mat-icon>settings</mat-icon>
+        <a [routerLink]="['/roperia/consultas']" routerLinkActive="router-link-active">Consultas</a>
+    </button>
+
+   
+
+    <span class="flexExpand"></span>
+    <span class="example-spacer"></span>
+    <mat-menu #userMenu="matMenu">            
+      <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>              
+        Administrar
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>              
+        Profile
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ loginService.getLoginData()?.userName }}
+    </button>
+
+</mat-toolbar>
+<router-outlet></router-outlet>

@@ -83,6 +83,10 @@ export class DialogPesokgComponent implements OnInit, AfterViewInit {
     this.cerrar();
   }
 
+  calcularPesoBlur() {
+    this.pesoKg = this.roundTo(this.total / this.precioKg, 2);    
+  }
+
   calcularPrecio() {
     this.total = this.roundTo(this.pesoKg * this.precioKg, 2);
   }

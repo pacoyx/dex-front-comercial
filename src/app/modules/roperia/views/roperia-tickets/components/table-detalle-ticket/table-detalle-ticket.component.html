@@ -1,0 +1,34 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+  
+    <!-- Position Column -->
+    <ng-container matColumnDef="item">
+      <th mat-header-cell *matHeaderCellDef> No. </th>
+      <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="prenda">
+        <th mat-header-cell *matHeaderCellDef> Prenda </th>
+        <td mat-cell *matCellDef="let element"> {{element.prenda}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="observaciones">
+        <th mat-header-cell *matHeaderCellDef> Observaciones </th>
+        <td mat-cell *matCellDef="let element"> {{element.observaciones}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element"> 
+        <button mat-mini-fab color="warn" (click)="deleteItem(element.item)">
+            <mat-icon>delete</mat-icon>
+        </button>    
+        </td>
+      </ng-container>
+    
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

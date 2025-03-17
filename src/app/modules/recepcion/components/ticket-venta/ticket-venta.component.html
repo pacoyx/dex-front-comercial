@@ -189,7 +189,7 @@
         <hr>
 
         <div class="glosa1">
-            Despues de 90 dias vence el plazo de entrega,
+            <b>Despues de 90 dias </b>vence el plazo de entrega,
             si el cliente no retira sus prendas la lavanderia podra disponer de estas.
         </div>
         <hr>
@@ -300,6 +300,9 @@
             --------------------------------------------
         </div>
         
+        <div style="text-align: center; padding-top: 10px; font-size: 18pt;">
+            {{ store.selectedCliente()?.nombre | uppercase }}
+        </div>
 
         @if(store.selectedBolsa()){
         <div class="titulo" style="text-align: center; padding-top: 50px; height: 80px; font-size: 30px; border: 1px solid black; border-radius: 5px;">            

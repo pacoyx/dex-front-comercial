@@ -13,7 +13,7 @@ import { LoginService } from '../../services/login.service';
   selector: 'app-layout-plataforma',
   standalone: true,
   imports: [
-    RouterOutlet, MatToolbarModule, MatIconModule, 
+    RouterOutlet, MatToolbarModule, MatIconModule,
     MatButtonModule, RouterModule, MatSidenavModule,
     MatListModule, MatMenuModule
   ],
@@ -23,8 +23,6 @@ import { LoginService } from '../../services/login.service';
 export class LayoutPlataformaComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   loginService = inject(LoginService);
-
-
   constructor(private router: Router) { }
 
   cerrarSesion() {

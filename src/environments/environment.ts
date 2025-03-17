@@ -71,12 +71,17 @@ export const environment = {
     EPPutUsers: 'api/user',
     EPDeleteUsers: 'api/user',
 
-    EPGetCompanies:'api/company',
-    EPGetCompany:'api/company',
-    EPGetCompanyByUser:'api/company/user',
-    EPCreateCompany:'api/company',
-    EPUpdateCompany:'api/company',
-    EPDeleteCompany:'api/company',
+    EPGetCompanies: 'api/company',
+    EPGetCompany: 'api/company',
+    EPGetCompanyByUser: 'api/company/user',
+    EPCreateCompany: 'api/company',
+    EPUpdateCompany: 'api/company',
+    EPDeleteCompany: 'api/company',
+
+    //Tickets
+    EPGetClothingWorkerById: 'api/clothingWorker/findById',
+    EPCreateTicket: 'api/ticket',
+
 
 
 };

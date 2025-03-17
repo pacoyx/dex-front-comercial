@@ -78,4 +78,9 @@ export const environment = {
     EPCreateCompany:'api/company',
     EPUpdateCompany:'api/company',
     EPDeleteCompany:'api/company',
+
+    //Tickets
+    EPGetClothingWorkerById:'api/clothingWorker/findById',
+    EPCreateTicket: 'api/ticket',
+
 };

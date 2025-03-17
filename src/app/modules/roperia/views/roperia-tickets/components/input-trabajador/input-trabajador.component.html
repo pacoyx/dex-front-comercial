@@ -1,0 +1,11 @@
+<div style="display: flex;">
+
+    <mat-form-field appearance="outline" style="width: 45%;padding: 0;">
+        <mat-label>ID/DNI</mat-label>
+        <input matInput type="text" [(ngModel)]="idText" (keydown.enter)="searchTrabajador()" type="number">
+    </mat-form-field>
+    <mat-form-field appearance="outline" style="width: 100%;padding: 0;">
+        <mat-label>Nombres</mat-label>
+        <input matInput type="text" [(ngModel)]="nameText">
+    </mat-form-field>
+</div>

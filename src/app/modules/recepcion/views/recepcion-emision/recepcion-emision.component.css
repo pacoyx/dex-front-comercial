@@ -213,8 +213,9 @@ table {
 }
 
 .primary:active {
-    transform: scale(0.9); /* Reduce ligeramente el tamaño del botón cuando se hace clic */
-  }
+    transform: scale(0.9);
+    /* Reduce ligeramente el tamaño del botón cuando se hace clic */
+}
 
 .primary {
     background-color: #d7e3ff;
@@ -226,6 +227,11 @@ table {
 
 
 
+
+/* ============================= autocomplete */
+
+
+/* ============================= */
 
 
 .win-proceso {

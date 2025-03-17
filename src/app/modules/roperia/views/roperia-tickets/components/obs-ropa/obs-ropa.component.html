@@ -1,0 +1,60 @@
+<div style="display: flex;gap: 10px;">
+
+
+    <div class="container-obs-btn">
+
+        <div class="example-button-container">
+            <button class="btn primary" [ngClass]="{'activeBtn': isNoButtonActive}" (click)="toggleNoButton()">
+                <div
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
+                    <img src="lavado.png" alt="icon" class="img-btn">
+                    SIN OBS.
+                </div>
+            </button>
+        </div>
+
+        <div class="example-button-container">
+            <button class="btn primary" [ngClass]="{'activeBtn': isManchasButtonActive}"
+                (click)="toggleManchasButton()">
+                <div
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
+                    <img src="lavado.png" alt="icon" class="img-btn">
+                    MANCHAS
+                </div>
+            </button>
+        </div>
+
+        <div class="example-button-container">
+            <button class="btn primary" [ngClass]="{'activeBtn': isRoturaButtonActive}" (click)="toggleRoturaButton()">
+                <div
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
+                    <img src="lavado.png" alt="icon" class="img-btn">
+                    ROTURAS
+                </div>
+            </button>
+        </div>
+
+    </div>
+
+    <div class="grid-container">
+        @for (item of items; track $index) {
+        <div class="grid-item" (click)="toggleItemState(item.id)" [ngClass]="getClassSection(item.id)"></div>
+        }
+        <!-- <div class="grid-item" data-id="2"></div>
+    <div class="grid-item" data-id="3"></div>
+    <div class="grid-item" data-id="4"></div>
+    <div class="grid-item" data-id="5"></div>
+    <div class="grid-item" data-id="6"></div>
+    <div class="grid-item" data-id="7"></div>
+    <div class="grid-item" data-id="8"></div>
+    <div class="grid-item" data-id="9"></div>
+    <div class="grid-item" data-id="10"></div>
+    <div class="grid-item" data-id="11"></div>
+    <div class="grid-item" data-id="12"></div>
+    <div class="grid-item" data-id="13"></div>
+    <div class="grid-item" data-id="14"></div>
+    <div class="grid-item" data-id="15"></div>
+    <div class="grid-item" data-id="16"></div> -->
+    </div>
+
+</div>
