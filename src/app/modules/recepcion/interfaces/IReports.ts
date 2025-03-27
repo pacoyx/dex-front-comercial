@@ -46,7 +46,7 @@ export interface IReportGuiasDetalleDetalleResponse {
 }
 
 export interface IReportResumenCajaPorFechaResponse {
-  cajaId:number;
+  cajaId: number;
   usuario: string;
   tipoPago: string;
   totalAdelanto: number;
@@ -98,4 +98,24 @@ export interface ICajasPorFecha {
   totalSalida: number;
   estadoCaja: string;
   userId: number;
+}
+
+
+export interface ISucursalesCombo {
+  id: number;
+  description: string;
+}
+
+
+
+
+export interface IDashboardCashResponseDto {
+  branchSalesId: number;
+  descripcion: string;
+  detalles: IDashboardCashDetailDto[];
+}
+
+export interface IDashboardCashDetailDto {
+  tipoPago: string;
+  montoTotal: number;
 }

@@ -7,6 +7,7 @@ import { IGetClientesPaginadoResponse } from '../interfaces/ICliente';
 import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
 import { IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
+import { ISucursalesCombo } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -112,5 +113,11 @@ export class MaestrosService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
   }
+
+  obtenerSucursalesCombo() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<ISucursalesCombo[]>>(`${this.apiUrl}${environment.EPListarSucursales}`, { headers });
+  }
+
 
 }

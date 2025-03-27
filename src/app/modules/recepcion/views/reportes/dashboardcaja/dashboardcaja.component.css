@@ -1,0 +1,17 @@
+.container-reportedashboardcaja {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+    /* background-color: pink; */
+  }
+  
+  .section-options-dashboardcaja {
+    display: flex;
+    /* flex-direction: column; */
+    gap: 20px;
+    /* justify-content: space-between; */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+  }

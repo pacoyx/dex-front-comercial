@@ -1,0 +1,42 @@
+<div class="container-reportedashboardcaja">
+
+    <h2>
+        <mat-icon>summarize</mat-icon>
+        Dashboard Caja
+    </h2>
+
+    <div class="section-options-dashboardcaja">
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            
+
+            @if(loading) {
+            <app-loading></app-loading>
+            Buscando...
+            }
+        </div>
+
+        <div style="display: flex; gap: 10px;">            
+            <mat-form-field appearance="outline">
+                <mat-label>Sucursales</mat-label>
+                <mat-select placeholder="Selecciona sucursal..." 
+                    (selectionChange)="applyFilterSucursal($event.value)" 
+                    [(value)]="selectedSucursal">                    
+                    @for (tipo of sucursales; track $index) {
+                    <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>                
+            <button mat-fab extended (click)="cargarDashboard()">
+                <mat-icon>search</mat-icon>
+                Buscar
+            </button>   
+        </div>
+    </div>
+
+</div>

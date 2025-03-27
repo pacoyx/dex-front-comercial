@@ -64,6 +64,7 @@ export const environment = {
 
     EPDividirPago: 'api/cashBox/splitPayCash',
     EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
+    EPdashboardcash: 'api/reports/dashboardcash',
     
     //falta implementar
     EPGetUsers: 'api/user',
@@ -83,4 +84,6 @@ export const environment = {
     EPGetClothingWorkerById:'api/clothingWorker/findById',
     EPCreateTicket: 'api/ticket',
 
+    //sucursales
+    EPListarSucursales: 'api/branchSales',
 };

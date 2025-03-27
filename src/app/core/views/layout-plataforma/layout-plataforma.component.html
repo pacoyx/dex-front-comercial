@@ -47,6 +47,11 @@
             Consultas
           </button>
           <mat-menu #consMenu="matMenu">
+            <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
+              <mat-icon>dashboard</mat-icon>
+              Dashboard
+            </button>
+            <mat-divider></mat-divider>
             <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
               <mat-icon>manage_accounts</mat-icon>
               Guias

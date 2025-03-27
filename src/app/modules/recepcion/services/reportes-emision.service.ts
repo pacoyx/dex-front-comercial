@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
-import { DataResumenCaja, ICajasPorFecha, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
+import { DataResumenCaja, ICajasPorFecha, IDashboardCashResponseDto, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -37,9 +37,9 @@ export class ReportesEmisionService {
     return this.http.get<IResponseGeneric<IReportGetGuiasPaginadoResponse>>(`${this.apiUrl}${environment.EPGuiasPorCliente}/${customerId}/${pageIndex}/${pageSize}`, { headers });
   }
 
-  obtenerReprteResumenCajaPorFecha(fecha: string, userId:number) {
+  obtenerReprteResumenCajaPorFecha(fecha: string, userId: number) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const params = { fecha: fecha , userId};
+    const params = { fecha: fecha, userId };
     return this.http.get<IResponseGeneric<IReportResumenCajaPorFechaResponse[]>>(`${this.apiUrl}${environment.EPResumenCajaPorFecha}`, { headers, params });
   }
 
@@ -52,6 +52,12 @@ export class ReportesEmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = { fecha: fecha };
     return this.http.get<IResponseGeneric<ICajasPorFecha[]>>(`${this.apiUrl}${environment.EPObtenerCajasPorFecha}`, { headers, params });
+  }
+
+  obtenerCajaDashboard(fecha: string, sucursal: number) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const params = { date: fecha, sucursal: sucursal };
+    return this.http.get<IResponseGeneric<IDashboardCashResponseDto[]>>(`${this.apiUrl}${environment.EPdashboardcash}`, { headers, params });
   }
 
 }

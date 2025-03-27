@@ -272,7 +272,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (gasto of dataGastos; track gasto.detallesEgreso) {
+                    @for (gasto of dataGastos; track gasto.id; ) {
                     <tr>
                         <td>{{gasto.personalAutoriza}}</td>
                         <td>{{gasto.detallesEgreso}}</td>
