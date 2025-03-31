@@ -35,3 +35,13 @@ interface WorkGuideDetailsDTO {
   estadoPago: string;
   identificador: string;
 }
+
+
+export interface ICreateGuiaWorkResponse {
+  idWorkGuide: number;
+  tipoDocumento: string;
+  serieDocumento: string;
+  numeroDocumento: string;
+  fechaOperacion: string;
+  fechaHoraEntrega: string;
+}

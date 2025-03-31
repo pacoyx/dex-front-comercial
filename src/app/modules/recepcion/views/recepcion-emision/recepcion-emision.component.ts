@@ -39,6 +39,7 @@ import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-d
 import { MatDividerModule } from '@angular/material/divider';
 import { RecepcionGrillaBusquedaServiciosComponent } from './components/recepcion-grilla-busqueda-servicios/recepcion-grilla-busqueda-servicios.component';
 import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-recepcion-emision',
@@ -48,10 +49,10 @@ import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
     FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe,
     TicketVentaComponent, MatSlideToggleModule, LoadingComponent, MatAutocompleteModule,
     ReactiveFormsModule, AsyncPipe, AlertDangerComponent, MatDividerModule, TitleCasePipe, NgFor,
-    RecepcionGrillaBusquedaServiciosComponent
+    RecepcionGrillaBusquedaServiciosComponent, MatSelectModule
   ],
   templateUrl: './recepcion-emision.component.html',
-  styleUrl: './recepcion-emision.component.css',  
+  styleUrl: './recepcion-emision.component.css',
 })
 export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   readonly dialog = inject(MatDialog);
@@ -60,9 +61,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   notificacionService = inject(NotificationServiceService);
   dataLogin = inject(LoginService);
 
-  sucursalId = 1;
-  tipoDocUsuario = 'GS';
-  serieDocUsuario = '001';
+  sucursalId = 1;  
+  sucursalNombre = '[Seleccione Sucursal]';
   idServicioPeso = 0;
   idServicioLavado = 0;
 
@@ -153,7 +153,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   clienteControl = new FormControl();
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
-
+  sucursales: any[] = [];
+  
 
   constructor() {
     effect(() => {
@@ -184,6 +185,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     this.validarExisteCajaPorUsuario();
+    // this.cargarSucursalesLocalStorage();
+    this.obtenerSucursalCajaAbierta();
 
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
       startWith(''),
@@ -200,13 +203,53 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
     this.obtenerIdsServicioPesoLavado();
     this.store.resetState();
-    this.cargarNumeracion();
+    // this.cargarNumeracion();
     this.cargarCategorias();
     this.cargarServiciosAccesosRapido();
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
   }
+
+  obtenerSucursalCajaAbierta() {
+    const storedData = localStorage.getItem('dex24Auth');
+    if (storedData == null) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      return;
+    }
+    const parsedData: ILoginResponseData = JSON.parse(storedData);
+    this.sucursalId = parsedData.branchSalesCashId;
+    // this.sucursalNombre = parsedData.branchSales.map((sucursal: any) => sucursal.branchSalesName).join(', ');
+    const foundSucursal = parsedData.branchSales.find((sucursal: any) => sucursal.branchSalesId == this.sucursalId);
+    this.sucursalNombre = foundSucursal ? foundSucursal.branchSalesName : '[Sucursal no encontrada]';
+
+
+
+  }
+
+  cargarSucursalesLocalStorage() {
+    // no se usa
+    const storedData = localStorage.getItem('dex24Auth');
+    if (storedData == null) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      return;
+    }
+    const parsedData: ILoginResponseData = JSON.parse(storedData);
+
+    this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...parsedData.branchSales];
+    if(parsedData.branchSales.length == 1) {
+      this.sucursalId = parsedData.branchSales[0].branchSalesId;      
+    }else{
+      this.sucursalId = 0;
+    }
+
+  }
+
+  applyFilterSucursal(event: any) {
+  //no se usa
+    console.log(event);
+  }
+
 
   cargarServiciosAccesosRapido() {
     this.loadingServicesQuick = true;
@@ -222,7 +265,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       }
     });
   }
-
 
   agregarItemQuickAccess(item: IResponseServiceQuickAccess): void {
 
@@ -340,7 +382,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   cargarNumeracion() {
-    this.subscriptionNumeracion = this.emisionService.obtenerNumeracion(this.sucursalId, this.tipoDocUsuario, this.serieDocUsuario)
+    this.subscriptionNumeracion = this.emisionService.obtenerNumeracion(this.sucursalId, "GS", "001")
       .subscribe({
         next: (resp) => {
           this.numeracion = resp.data;
@@ -479,6 +521,11 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   grabarRecibo() {
 
+    if(this.sucursalId == 0) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe seleccionar una sucursal antes de grabar el recibo.', err: true } });
+      return;
+    }
+
     if (!this.store.selectedCliente()) {
       this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe seleccionar un cliente antes de grabar el recibo.', err: true } });
       return;
@@ -498,8 +545,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
     let objGuia: ICreateGuideWork = {
-      serieGuia: this.numeracion.serieDoc,
-      numeroGuia: this.numeracion.numberDoc.toString(),
+      serieGuia: "",
+      numeroGuia: "",
       mensajeAlertas: '',
       observaciones: '',
       tipoPago: this.tipoPago,
@@ -512,8 +559,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       saldo: this.store.itemSumTotal() - (this.store.selectedPago()?.monto ?? 0),
       customerId: this.store.selectedCliente()?.codigo ?? 0,
 
-      branchStoreId: parsedData.branchSales[0].branchSalesId,
-      typeDocument: this.tipoDocUsuario,
+      branchStoreId: this.sucursalId,
+      typeDocument: "",
       userId: parsedData.userId,
       estadoPago: this.store.itemSumTotal() === this.store.selectedPago()?.monto ? 'PA' : 'PE', // PE: Pendiente, PA: Pagado, AN: Anulado      
       estadoRegistro: "A",
@@ -546,7 +593,17 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       next: (resp) => {
         this.loadingSave = false;
         this.blockSave = true;
-        this.notificacionService.showSuccessDialog('Se grabó correctamente la guía de trabajo.', '# ' + this.numeracion.numberDoc.toString(), true);
+
+        let objDoc: IEmisionDocumento = {
+          tipoDoc: resp.data.tipoDocumento,
+          serieDoc: resp.data.serieDocumento,
+          numeroDoc: resp.data.numeroDocumento,
+          fechaEmision: resp.data.fechaOperacion,
+          fechaEntrega: resp.data.fechaHoraEntrega
+        };
+        this.store.addDocumento(objDoc);
+
+        this.notificacionService.showSuccessDialog('Se grabó correctamente la guía de trabajo.', '# ' + resp.data.numeroDocumento, true);
       },
       error: (err) => {
         this.notificacionService.showError(err);
@@ -595,7 +652,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   nuevaGuia() {
     this.store.resetState();
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
-    this.cargarNumeracion();
+    // this.cargarNumeracion();
     this.tipoPago = 'SP';
     this.showPago = false;
     this.clienteNombre = '';

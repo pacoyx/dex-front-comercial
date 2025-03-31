@@ -11,12 +11,11 @@ import { environment } from '../environments/environment';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'dex-front-comercial';
-
+  title = 'Dexfront-Comercial';
 
   constructor() {
-    console.log('version docker digital ocean');    
-    console.log('environment.apiUrlBase', environment.apiUrlBase);
+    // console.log('version docker digital ocean');    
+    console.log('backend.Base', environment.apiUrlBase);
   }
 
 }

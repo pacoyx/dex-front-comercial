@@ -15,7 +15,9 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { MaestrosService } from '../../../services/maestros.service';
-import { ISucursalesCombo } from '../../../interfaces/IReports';
+import { IDashboardCashResponseDto, ISucursalesCombo } from '../../../interfaces/IReports';
+import { ChartdashcajaComponent } from '../../../components/chartdashcaja/chartdashcaja.component';
+
 
 
 @Component({
@@ -23,7 +25,7 @@ import { ISucursalesCombo } from '../../../interfaces/IReports';
   standalone: true,
   imports: [
     MatButtonModule, MatIconModule, FormsModule, MatDatepickerModule, MatFormFieldModule,
-    MatInputModule, DecimalPipe, MatSelectModule, LoadingComponent
+    MatInputModule, DecimalPipe, MatSelectModule, LoadingComponent, ChartdashcajaComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -40,6 +42,8 @@ export class DashboardcajaComponent implements OnInit {
   fechaHoy: Date = new Date();
   selectedSucursal = 0;
   sucursales: ISucursalesCombo[] = [];
+  
+   dataGrafico: { sucursal: string, tipoPagos: string[], importes: number[] }[] = [];
 
 
   ngOnInit(): void {
@@ -61,12 +65,20 @@ export class DashboardcajaComponent implements OnInit {
   }
 
   cargarDashboard() {
+    this.dataGrafico = []; // Reiniciar el array de datos del gráfico    
     this.loading = true;
     this.reportsService.obtenerCajaDashboard(this.fechaHoy.toDateString(), this.selectedSucursal).subscribe({
       next: (response) => {
-        if (response.success) {
-          // Procesar los datos de la respuesta
-          console.log('Datos del dashboard:', response.data);
+        if (response.success) {                    
+          response.data.forEach((item) => {
+            this.dataGrafico.push({
+              sucursal: "Sucursal " + item.descripcion,
+              tipoPagos: item.detalles.map((detalle) => detalle.tipoPago),
+              importes: item.detalles.map((detalle) => detalle.montoTotal)
+            });
+          });
+
+
         } else {
           console.error('Error al cargar el dashboard', response.message);
         }
@@ -82,4 +94,8 @@ export class DashboardcajaComponent implements OnInit {
 
   applyFilterSucursal(event: any) {
   }
+
+  getTotal(importes: number[]): number {
+    return importes.reduce((sum, current) => sum + current, 0);
+}
 }

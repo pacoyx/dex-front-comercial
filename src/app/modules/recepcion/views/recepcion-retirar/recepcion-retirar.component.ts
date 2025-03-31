@@ -34,7 +34,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     MatFormFieldModule, MatInputModule, MatButtonModule,
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
     DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
-    TicketVentaComponent, LoadingComponent, AlertDangerComponent, 
+    TicketVentaComponent, LoadingComponent, AlertDangerComponent,
     RouterModule
   ],
   templateUrl: './recepcion-retirar.component.html',
@@ -43,6 +43,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   numeroGuia: number | null = null;
+  numeroSerie: string = '';
   private _bottomSheet = inject(MatBottomSheet);
   emisionService = inject(EmisionService);
   readonly dialog = inject(MatDialog);
@@ -89,7 +90,13 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     this.validarExisteCajaPorUsuario();
     this.route.params.subscribe(params => {
       if (params['numGuia']) {
+
+        this.numeroSerie = params['serie'];
         this.numeroGuia = parseInt(params['numGuia']);
+
+        console.log('params: antes de buscarGuia ==>', this.numeroGuia, this.numeroSerie);
+
+
         this.buscarGuia();
       }
     });
@@ -99,8 +106,17 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     if (!this.numeroGuia) {
       return;
     }
+
+    console.log('valor de serie guia:', this.numeroSerie);
+    
+
+    if (this.numeroSerie == '') {
+      this.numeroSerie = "001";
+    }
+
+
     this.bolBuscandoGuia = true;
-    this.guiaRetiroSubscription = this.emisionService.ObtenerGuiaPorDocumento("001", this.numeroGuia.toString())
+    this.guiaRetiroSubscription = this.emisionService.ObtenerGuiaPorDocumento(this.numeroSerie, this.numeroGuia.toString())
       .subscribe({
         next: (resp) => {
           this.bolBuscandoGuia = false;
@@ -115,6 +131,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           this.bolEntregado = this.guiaRetiroData.estadoSituacion === 'E';
 
           this.cargarStore();
+
         },
         error: (err) => {
           console.log(err);

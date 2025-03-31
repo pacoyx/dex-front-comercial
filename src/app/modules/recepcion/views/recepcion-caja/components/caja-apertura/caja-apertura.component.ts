@@ -7,17 +7,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
-import { LoginService } from '../../../../../../core/services/login.service';
 import { IAperturaCajaRequest, IListarCajaPorUsuarioResponse } from '../../../../interfaces/ICajaVentas';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogMsgComponent } from '../../../../components/dialog-msg/dialog-msg.component';
 import { ILoginResponseData } from '../../../../../../core/interfaces/ILoginResponse';
 import { NotificationServiceService } from '../../../../services/notification-service.service';
+import { MatSelectModule } from '@angular/material/select';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-caja-apertura',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, LoadingComponent],
+  imports: [
+    FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
+    MatButtonModule, MatIconModule, LoadingComponent, MatSelectModule
+  ],
   templateUrl: './caja-apertura.component.html',
   styleUrl: './caja-apertura.component.css'
 })
@@ -38,6 +42,9 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
   subscriptionApertura!: Subscription;
   fechaHoy = new Date().toLocaleDateString();
 
+  sucursales: any[] = [];
+  sucursalId = 1;
+
   constructor() {
     this.frmApertura = new FormGroup({
       saldoInicial: new FormControl('', [Validators.required]),
@@ -56,7 +63,7 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['dataLogin'] && changes['dataLogin'].currentValue) {
-      this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
+      // this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
       this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
     }
 
@@ -70,24 +77,54 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
+    this.cargarSucursalesLocalStorage();
     // this.validarCajaPorUsuario();
-    this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
+    // this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
     this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
     this.frmApertura.get('observaciones')?.setValue('Sin observaciones');
   }
 
+  cargarSucursalesLocalStorage() {
+
+    const storedData = localStorage.getItem('dex24Auth');
+    if (storedData == null) {
+      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      return;
+    }
+    const parsedData: ILoginResponseData = JSON.parse(storedData);
+
+    this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...parsedData.branchSales];
+    if (parsedData.branchSales.length == 1) {
+      this.sucursalId = parsedData.branchSales[0].branchSalesId;
+      this.frmApertura.get('branchSalesId')?.setValue(this.sucursalId);
+    } else {
+      this.sucursalId = 0;
+    }
+
+  }
+
+  applyFilterSucursal(event: any) {
+    console.log(event);
+    this.frmApertura.get('branchSalesId')?.setValue(event);
+  }
+
   validarCajaPorUsuario(): void {
+    console.log('***********validarCajaPorUsuario() => ', this.dataCaja);
+
 
     if (this.dataEstadoCaja === 'OPEN') {
       this.estadoCaja = 'CAJA ABIERTA';
       this.frmApertura.get('saldoInicial')?.setValue(this.dataCaja.saldoInicial);
       this.frmApertura.get('observaciones')?.setValue(this.dataCaja.observaciones);
+      this.frmApertura.get('branchSalesId')?.setValue(this.dataCaja.branchSalesId);
       this.frmApertura.disable();
+      this.sucursalId = this.dataCaja.branchSalesId;
+
 
     } else {
       this.estadoCaja = 'PENDIENTE';
       this.frmApertura.reset();
-      this.frmApertura.get('branchSalesId')?.setValue(this.dataLogin.branchSales[0].branchSalesName!);
+      this.frmApertura.get('branchSalesId')?.setValue(0);
       this.frmApertura.get('userId')?.setValue(this.dataLogin.userName);
       this.frmApertura.get('workShiftId')?.setValue('turno normal');
       this.frmApertura.enable();
@@ -129,7 +166,7 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
 
 
     let objApertura: IAperturaCajaRequest = {
-      branchSalesId: this.dataLogin.branchSales[0].branchSalesId!,
+      branchSalesId: this.frmApertura.get('branchSalesId')?.value,
       userId: this.dataLogin.userId!,
       workShiftId: 1,
       saldoInicial: this.frmApertura.get('saldoInicial')?.value,
@@ -144,6 +181,16 @@ export class CajaAperturaComponent implements OnInit, OnDestroy, OnChanges {
           this.estadoCaja = 'CAJA ABIERTA';
           this.frmApertura.disable();
           this.notificationService.showSuccess('Caja abierta correctamente.');
+
+
+          const storedData = localStorage.getItem('dex24Auth');
+          if (storedData) {
+            let parsedData: ILoginResponseData = JSON.parse(storedData);
+            parsedData.branchSalesCashId = objApertura.branchSalesId;
+            localStorage.setItem('dex24Auth', JSON.stringify(parsedData));
+          }
+
+
         }
       },
       error: (err) => {

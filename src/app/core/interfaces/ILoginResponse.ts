@@ -14,6 +14,7 @@ export interface ILoginResponseData {
     status: string;
     userId: number;
     branchSales: BranchSale[];
+    branchSalesCashId: number;
 }
 
 interface BranchSale {

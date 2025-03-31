@@ -1,11 +1,11 @@
 <div class="container" [ngStyle]="{'height': screenHeight + 'px'}">
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="container-login">
-        
+
         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
             <h1>Login</h1>
             <img src="logo.jpg" alt="logo" style="width: 150px; height: 100px;">
-        
+
         </div>
 
         <mat-form-field class="cajaLogin" appearance="outline">
@@ -28,13 +28,26 @@
                 El campo de contraseña es obligatorio.
             </mat-error>
         </mat-form-field>
-        
+
+        <!-- @if (sucursales.length>0) {
+        <mat-form-field appearance="outline">
+            <mat-label>Sucursales</mat-label>
+            <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
+                [(value)]="selectedSucursal">
+                @for (sucursal of sucursales; track $index) {
+                <mat-option [value]="sucursal.branchSalesId">{{sucursal.branchSalesName}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        } -->
+
+
         <button mat-fab extended type="submit" [disabled]="loginForm.invalid || this.loading() ">
             @if(this.loading()){
-                <app-loading></app-loading>
-                procesando...
+            <app-loading></app-loading>
+            procesando...
             }@else {
-                Iniciar Sesión
+            Iniciar Sesión
             }
         </button>
         <div style="margin-top: 20px;">

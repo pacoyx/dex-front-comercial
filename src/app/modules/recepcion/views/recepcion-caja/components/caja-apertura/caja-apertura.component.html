@@ -26,10 +26,22 @@
             </mat-form-field>
 
             <div style="display: flex; justify-content: space-between;">
-                <mat-form-field appearance="outline">
+                <!-- <mat-form-field appearance="outline">
                     <mat-label>Sucursal</mat-label>
                     <input matInput formControlName="branchSalesId" style="width: 100%;">
-                </mat-form-field>
+                </mat-form-field> -->
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sucursal</mat-label>
+                    <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
+                      [(value)]="sucursalId">
+                      @for (sucursal of sucursales; track $index) {
+                      <mat-option [value]="sucursal.branchSalesId">{{sucursal.branchSalesName}}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+
+
 
                 <mat-form-field appearance="outline">
                     <mat-label>Horario</mat-label>
@@ -63,6 +75,7 @@
 
     </div>
 
+<!-- {{this.frmApertura.value | json}} -->
 
 
 

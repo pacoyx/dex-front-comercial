@@ -60,22 +60,21 @@
     <div>
 
         @if(loading) {
-            <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
-                <app-loading></app-loading>
-                <span>
-                    Buscando...
-                </span>
-            </div>
-            }
+        <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
+            <app-loading></app-loading>
+            <span>
+                Buscando...
+            </span>
+        </div>
+        }
 
         <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
 
             <ng-container matColumnDef="numeroGuia">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Numero </th>
                 <td mat-cell *matCellDef="let element">
-                    <a [routerLink]="['/recepcion/retiros', element.numeroGuia]">
-                        <!-- {{element.serieGuia}}- -->
-                        {{element.numeroGuia}}
+                    <a [routerLink]="['/recepcion/retiros', element.serieGuia, element.numeroGuia]">
+                        {{element.serieGuia}}-{{element.numeroGuia}}
                     </a>
                 </td>
             </ng-container>
@@ -209,16 +208,15 @@
                 <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsWithExpand.length">
                     <div class="example-element-detail"
                         [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                        <app-table-detalle [dataSource]="element.detalles" ></app-table-detalle>
+                        <app-table-detalle [dataSource]="element.detalles"></app-table-detalle>
                     </div>
                 </td>
             </ng-container>
- 
+
 
 
             <tr mat-header-row *matHeaderRowDef="displayedColumnsWithExpand" class="cabecera"></tr>
-            <tr mat-row *matRowDef="let element; columns: displayedColumnsWithExpand;" 
-                class="example-element-row"                
+            <tr mat-row *matRowDef="let element; columns: displayedColumnsWithExpand;" class="example-element-row"
                 [class.example-element-row-pagado]="element.estadoPago === 'PA'"
                 [class.example-expanded-row]="expandedElement === element"
                 (click)="expandedElement = expandedElement === element ? null : element"></tr>

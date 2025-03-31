@@ -47,7 +47,8 @@
                 </div>
             </div>
             <div class="col-8">
-                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy' }} {{getHour()}}
+                {{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy  hh:mm:ss' }} 
+                <!-- {{getHour()}} -->
             </div>
 
         </div>
@@ -211,7 +212,7 @@
             <div style="text-align: left; width: 40%;">
                 <span class="numguia">{{ store.selectedDocumento()?.numeroDoc }}</span>
             </div>
-            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy'}} / {{getHour()}}
+            <div style="width: 60%;">{{ store.selectedDocumento()?.fechaEmision | date :'dd/MM/yyyy hh:mm:ss'}}
             </div>
         </div>
 
@@ -300,12 +301,12 @@
             --------------------------------------------
         </div>
         
-        <div style="text-align: center; padding-top: 10px; font-size: 18pt;">
+        <div style="width: 100%; text-align: center; padding-top: 10px; font-size: 18pt;">
             {{ store.selectedCliente()?.nombre | uppercase }}
         </div>
 
         @if(store.selectedBolsa()){
-        <div class="titulo" style="text-align: center; padding-top: 50px; height: 80px; font-size: 30px; border: 1px solid black; border-radius: 5px;">            
+        <div class="titulo" style="width: 100%; text-align: center; padding-top: 40px; height: 60px; font-size: 30px; border: 1px solid black; border-radius: 5px;">            
             {{ store.selectedCliente()?.nombre | uppercase }}<br>            
         </div>
         }

@@ -17,10 +17,8 @@ export class LoginService {
   constructor(private http: HttpClient) { }
 
   login(username: string, password: string): Observable<ILoginResponse> {
-
-    
-  console.log('this.apiUrl==>',this.apiUrl );
-  console.log('environment.EPlogin==>',environment.EPlogin);
+    console.log('this.apiUrl==>', this.apiUrl);
+    console.log('environment.EPlogin==>', environment.EPlogin);
 
     const body: ILoginRequest = { username, password };
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -59,10 +57,10 @@ export class LoginService {
       tap((response) => {
         objToken.token = response.token;
         objToken.refreshToken = response.refreshToken;
-         localStorage.setItem('dex24Auth', JSON.stringify(objToken));
-         console.log('Refresh token success');
-         console.log('localStorage actualizado');        
-        
+        localStorage.setItem('dex24Auth', JSON.stringify(objToken));
+        console.log('Refresh token success');
+        console.log('localStorage actualizado');
+
       })
     );
   }

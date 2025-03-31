@@ -9,17 +9,15 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { LoadingComponent } from "../loading/loading.component";
 import { Subscription } from 'rxjs';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatIcon,
-    ReactiveFormsModule, NgStyle, NgIf, LoadingComponent],
+  imports: [
+    MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule,
+    MatIcon, ReactiveFormsModule, NgStyle, NgIf, LoadingComponent, MatSelectModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -36,6 +34,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   showError = signal(false);
   errorMessage = '';
   subscriptionLogin!: Subscription;
+  // sucursales: any[] = [];
+  // selectedSucursal = 0;
 
   constructor(private fb: FormBuilder) {
     this.loginForm = this.fb.group({
@@ -77,15 +77,17 @@ export class LoginComponent implements OnInit, OnDestroy {
             return;
           }
 
-          if (response.data.branchSales.length > 1) {
-            this.mostrarerror('seleccione una sucursal');
-            return;
-          }
+          // if (response.data.branchSales.length > 1) {
+          //   this.mostrarerror('seleccione una sucursal');
+          //   // this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...response.data.branchSales];
+          //   // this.loading.set(false);
+          //   return;
+          // }
 
           localStorage.setItem('dex24Auth', JSON.stringify(response.data));
           this.router.navigate(['recepcion']);
         },
-        error: (err) => {          
+        error: (err) => {
           var errMsg = 'Error en el inicio de sesión';
           if (err.status === 401) {
             errMsg = 'Usuario no autorizado, verifique sus credenciales';
@@ -110,12 +112,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.router.navigate(['recepcion']);
   }
 
-  mostrarerror(msjErr: string) {    
+  mostrarerror(msjErr: string) {
     this.showError.set(true);
     this.errorMessage = msjErr;
     setTimeout(() => {
       this.showError.set(false);
     }, 3000);
+  }
+
+  applyFilterSucursal(event: any) {
+
   }
 
 }

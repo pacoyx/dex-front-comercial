@@ -104,6 +104,13 @@ export class CajaCierreComponent implements OnInit, OnDestroy, OnChanges {
           this.dataCaja.estadoCaja = 'C';
           this.dataCaja.fechaHoraCierre = new Date().toDateString();
           this.cerrarCajaEvent.emit('cerrarCaja');
+
+          const storedData = localStorage.getItem('dex24Auth');
+          if (storedData) {
+            let parsedData: ILoginResponseData = JSON.parse(storedData);
+            parsedData.branchSalesCashId = 0;
+            localStorage.setItem('dex24Auth', JSON.stringify(parsedData));
+          }
         }
       },
       error: (error) => {

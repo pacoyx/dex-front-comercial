@@ -13,7 +13,7 @@
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
-            
+
 
             @if(loading) {
             <app-loading></app-loading>
@@ -21,22 +21,60 @@
             }
         </div>
 
-        <div style="display: flex; gap: 10px;">            
+        <div style="display: flex; gap: 10px;">
             <mat-form-field appearance="outline">
                 <mat-label>Sucursales</mat-label>
-                <mat-select placeholder="Selecciona sucursal..." 
-                    (selectionChange)="applyFilterSucursal($event.value)" 
-                    [(value)]="selectedSucursal">                    
+                <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
+                    [(value)]="selectedSucursal">
                     @for (tipo of sucursales; track $index) {
                     <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
                     }
                 </mat-select>
-            </mat-form-field>                
+            </mat-form-field>
             <button mat-fab extended (click)="cargarDashboard()">
                 <mat-icon>search</mat-icon>
-                Buscar
-            </button>   
+                Procesar
+            </button>
         </div>
     </div>
+
+
+    <div style="display: flex;gap: 10px;">
+
+        @for (item of dataGrafico; track $index) {
+        <div style="display: flex; flex-direction: column; border: 1px solid gainsboro; border-radius: 5px;">
+
+            <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
+                [inputLabels]="item.tipoPagos"></app-chartdashcaja>
+
+            <table class="table-elegant" style="width: 100%; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th>Tipo de Pago</th>
+                        <th>Importe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (tipo of item.tipoPagos; track $index) {
+                    <tr>
+                        <td>{{tipo}}</td>
+                        <td>{{item.importes[$index] | number:'1.2-2' }}</td>
+                    </tr>
+                    }
+
+                </tbody>
+                <tfoot style="font-weight: bold;">
+                    <tr>
+                        <td>Total</td>
+                        <td>{{ getTotal(item.importes) | number:'1.2-2' }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+        }
+
+    </div>
+
 
 </div>

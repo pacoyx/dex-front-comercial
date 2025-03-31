@@ -1,13 +1,42 @@
 <div class="container-emision win-proceso">
-  <h2>
-    <mat-icon>point_of_sale</mat-icon>
-    Emision de Recibo
-  </h2>
+
+  <div style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;" >
+
+    <div>
+      <!-- <mat-icon>point_of_sale</mat-icon> -->
+      <label><strong>Emisión de Recibo </strong></label>
+      
+    </div>
+
+    <div style="display: flex; gap: 5px;">
+      <label><strong>Fecha: </strong></label>
+      <div>
+        {{fechaHoy | date:'dd/MM/yyyy'}}
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 5px;">
+      <label><strong>Sucursal: </strong></label>
+      <div>
+        {{sucursalNombre}}
+      </div>
+    </div>
+
+    <!-- <mat-form-field appearance="outline">
+      <mat-label>Sucursal</mat-label>
+      <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
+        [(value)]="sucursalId">
+        @for (sucursal of sucursales; track $index) {
+        <mat-option [value]="sucursal.branchSalesId">{{sucursal.branchSalesName}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field> -->
+  </div>
+
   @if(!bolExisteCaja){
   <app-alert-danger [message]="msgValidacion" [timeShow]="3000"></app-alert-danger>
   }
-
-  <hr>
+  <!-- <hr> -->
 
   <div class="container-area-trabajo">
 
@@ -118,7 +147,7 @@
 
       <div class="section-detalles">
         <!-- FECHA -->
-        <div class="fila-detalle">
+        <!-- <div class="fila-detalle">
           <div style="display: flex;">
             <label><strong>Recepción: </strong></label>
             <div>
@@ -126,20 +155,20 @@
             </div>
           </div>
 
-          <!-- <div style="display: flex;">
+           <div style="display: flex;">
             <label><strong>Entrega: </strong></label>
             <div>
               {{fechaHEntrega | date:'dd/MM/yyyy'}}
             </div>
-          </div> -->
+          </div> 
 
           <div style="margin-left: 40px;">
             <label><strong>
-                <!-- {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}} -->
-                #{{numeracion.numberDoc}}
+                {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}} 
+                 #{{numeracion.numberDoc}} 
               </strong></label>
           </div>
-        </div>
+        </div> -->
 
         <!-- CLIENTE -->
         <div class="fila-detalle">

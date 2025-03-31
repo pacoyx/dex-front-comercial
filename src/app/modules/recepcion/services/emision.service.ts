@@ -9,7 +9,7 @@ import { ResponseIClienteBusqueda } from '../components/dialog-cliente/dialog-cl
 import { IClienteCreate } from '../interfaces/IClienteCreate';
 import { ICliente, IUpdatePhoneRequest } from '../interfaces/ICliente';
 import { INumeracionDoc } from '../interfaces/INumeracionDoc';
-import { ICreateGuideWork } from '../interfaces/ICreateGuideWork';
+import { ICreateGuiaWorkResponse, ICreateGuideWork } from '../interfaces/ICreateGuideWork';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGuiaRetiro } from '../interfaces/IDetalleGuiaRetiro';
 import { IReqGuiaInfoPay } from '../interfaces/IReqGuiaInfoPay';
@@ -83,10 +83,10 @@ export class EmisionService {
     return this.http.get<IListaItemsBusqueda[]>(url, { headers });
   }
 
-  grabarGuiaTrabajo(guia: ICreateGuideWork): Observable<any> {
+  grabarGuiaTrabajo(guia: ICreateGuideWork): Observable<IResponseGeneric<ICreateGuiaWorkResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPGrabarGuiaTrabajo}`;
-    return this.http.post<any>(url, guia, { headers });
+    return this.http.post<IResponseGeneric<ICreateGuiaWorkResponse>>(url, guia, { headers });
   }
 
   ObtenerGuiaPorId(numGuia: number): Observable<IResponseGeneric<IGuiaRetiro>> {
