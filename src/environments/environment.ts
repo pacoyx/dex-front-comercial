@@ -85,6 +85,40 @@ export const environment = {
 
     //sucursales
     EPListarSucursales: 'api/branchSales',
+    
+    // PURCHASE
+
+    // proveedores
+    EPListarProveedores: 'api/supplier',
+    EPCrearProveedor: 'api/supplier',
+    EPListarProveedoresPaginator: 'api/supplier/search/paginator',
+    EPActualizarProveedor: 'api/supplier',
+    // EPEliminarProveedor: 'api/supplier',
+    // EPListarProveedoresPorPatron: 'api/supplier/search',
+    // EPListarProveedoresPorId: 'api/supplier/searchById',
+
+    // productos
+    EPListarProductos: 'api/product',
+    EPCrearProducto: 'api/product',
+    EPListarProductosPaginator: 'api/product/search/paginator',
+    EPActualizarProducto: 'api/product',
+    // EPEliminarProducto: 'api/product',
+    // EPListarProductosPorPatron: 'api/product/search',
+    // EPListarProductosPorId: 'api/product/searchById',
+    // EPListarProductosPorIdProveedor: 'api/product/searchBySupplierId',
+    // EPListarProductosPorIdCategoria: 'api/product/searchByCategoryId',
+    
+    // compras
+    EPCrearCompra: 'api/purchase',
+    // EPListarCompras: 'api/purchase',
+    // EPActualizarCompra: 'api/purchase',
+    // EPEliminarCompra: 'api/purchase',
+    // EPListarComprasPaginator: 'api/purchase/search/Paginator',
+    // EPListarComprasPorPatron: 'api/purchase/search',
+    // EPListarComprasPorId: 'api/purchase/searchById',
+    // EPListarComprasPorIdProveedor: 'api/purchase/searchBySupplierId',
+    // EPListarComprasPorIdProducto: 'api/purchase/searchByProductId',
+    // EPListarComprasPorIdCategoria: 'api/purchase/searchByCategoryId',
 
 
 };

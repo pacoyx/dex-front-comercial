@@ -1,3 +1,28 @@
-<div>
-  <router-outlet />
-</div>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #sidenav mode="over">
+    <mat-nav-list>
+      <a mat-list-item [routerLink]="['/recepcion']" routerLinkActive="router-link-active" (click)="toggle()">
+        <mat-icon>exit_to_app</mat-icon>
+        Recepcion
+      </a>
+      <a mat-list-item [routerLink]="['/purchase']" routerLinkActive="router-link-active" (click)="toggle()">
+        <mat-icon>point_of_sale</mat-icon>
+        Compras
+      </a>
+      <a mat-list-item [routerLink]="['/roperia']" routerLinkActive="router-link-active" (click)="toggle()">
+        <mat-icon>person_search</mat-icon>
+        Roperia
+      </a>
+      <a mat-list-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+   
+    <router-outlet />
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

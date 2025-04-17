@@ -78,7 +78,7 @@ export class MntClientesComponent implements OnInit, AfterViewInit {
             this.totalClientes = response.totalCount;
             this.paginator.length = this.totalClientes; // Asegúrate de actualizar la longitud del paginador
         }
-          
+           
         this.paginator.pageIndex = 0;
       });
   }

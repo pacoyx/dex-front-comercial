@@ -1,0 +1,19 @@
+.win-proceso {
+    display: flex;
+}
+
+mat-sidenav {
+    width: 200px;
+  }
+  
+.example-container{
+    width: 100%;
+    
+}
+
+@media print {
+    .win-proceso {
+        display: none;
+    }
+
+}

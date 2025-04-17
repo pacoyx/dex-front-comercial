@@ -1,0 +1,91 @@
+<div style="height: 100vh; display: flex; flex-direction: column; margin: 20px; margin-top: 0;">
+    <mat-toolbar class="win-proceso">
+
+        <button mat-icon-button (click)="toggleSidenav()">
+            <mat-icon>menu</mat-icon>
+        </button>
+
+        <span>Compras</span>
+
+        <nav>
+            <a mat-button routerLink="/purchase/invoices"
+                routerLinkActive="active"><mat-icon>description</mat-icon>Facturas</a>
+            <a mat-button routerLink="/purchase/suppliers"
+                routerLinkActive="active"><mat-icon>exit_to_app</mat-icon>Proveedores</a>
+            <a mat-button routerLink="/purchase/products"
+                routerLinkActive="active"><mat-icon>exit_to_app</mat-icon>Productos</a>
+
+
+            <button mat-button [matMenuTriggerFor]="consMenu">
+                <mat-icon>person_search</mat-icon>
+                Consultas
+            </button>
+            <mat-menu #consMenu="matMenu">
+                <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
+                    <mat-icon>dashboard</mat-icon>
+                    Dashboard
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
+                    <mat-icon>manage_accounts</mat-icon>
+                    Guias
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item [routerLink]="['/recepcion/resumenCaja']" routerLinkActive="router-link-active">
+                    <mat-icon>summarize</mat-icon>
+                    Resumen Caja
+                </button>
+            </mat-menu>
+
+
+
+            <button mat-button [matMenuTriggerFor]="mntMenu">
+                <mat-icon>tab_group</mat-icon>
+                Configuraciones
+            </button>
+            <mat-menu #mntMenu="matMenu">
+                <button mat-menu-item [routerLink]="['/purchase/unitmeasure']" routerLinkActive="router-link-active">
+                    <mat-icon>manage_accounts</mat-icon>
+                    Unidad de Medida
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item [routerLink]="['/purchase/categoriesProduct']"
+                    routerLinkActive="router-link-active">
+                    <mat-icon>inventory_2</mat-icon>
+                    Categorias de Productos
+                </button>
+            </mat-menu>
+
+
+        </nav>
+
+
+        <span class="flexExpand"></span>
+        <span class="example-spacer"></span>
+        <mat-menu #userMenu="matMenu">
+            <!-- <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
+            <mat-icon>settings</mat-icon>
+            Administrar
+          </button>
+          <mat-divider></mat-divider> -->
+            <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+                <mat-icon>settings</mat-icon>
+                Profile
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="cerrarSesion()">
+                <mat-icon>logout</mat-icon>
+                Cerrar Sesion
+            </button>
+        </mat-menu>
+
+        <button mat-button [matMenuTriggerFor]="userMenu">
+            <mat-icon>account_circle</mat-icon>
+            {{ loginService.getLoginData()?.userName }}
+        </button>
+
+
+    </mat-toolbar>
+
+    <router-outlet></router-outlet>
+</div>

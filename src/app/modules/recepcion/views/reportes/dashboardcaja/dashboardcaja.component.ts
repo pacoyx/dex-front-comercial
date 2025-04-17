@@ -15,7 +15,7 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { MaestrosService } from '../../../services/maestros.service';
-import { IDashboardCashResponseDto, ISucursalesCombo } from '../../../interfaces/IReports';
+import { ISucursalesCombo } from '../../../interfaces/IReports';
 import { ChartdashcajaComponent } from '../../../components/chartdashcaja/chartdashcaja.component';
 
 

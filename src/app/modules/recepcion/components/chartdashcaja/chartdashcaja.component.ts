@@ -1,15 +1,6 @@
 import { Component, effect, input, ViewChild } from '@angular/core';
-import {
-  ChartComponent,
-  ApexAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexTitleSubtitle,
-  NgApexchartsModule
-} from "ng-apexcharts";
-
+import { ChartComponent, NgApexchartsModule } from "ng-apexcharts";
 import { ChartType } from 'ng-apexcharts';
-
 
 @Component({
   selector: 'app-chartdashcaja',
@@ -25,8 +16,6 @@ export class ChartdashcajaComponent {
   inputValoresSeries = input<number[]>([1, 2, 3, 4, 5]);
   inputLabels = input<string[]>(["A", "B", "C", "D", "E"]);
 
-
-
   _title = {
     text: "titulo de prueba ",
   };
@@ -38,7 +27,7 @@ export class ChartdashcajaComponent {
   };
 
   _labels = ["Team A", "Team B", "Team C", "Team D", "Team E"];
-  
+
   _dataLabels = {
     enabled: true,
     formatter: (val: number, opts: any) => {

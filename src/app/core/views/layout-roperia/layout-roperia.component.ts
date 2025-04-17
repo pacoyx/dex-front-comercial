@@ -10,7 +10,9 @@ import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-layout-roperia',
   standalone: true,
-  imports: [RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule],
+  imports: [
+    RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule
+  ],
   templateUrl: './layout-roperia.component.html',
   styleUrl: './layout-roperia.component.css'
 })

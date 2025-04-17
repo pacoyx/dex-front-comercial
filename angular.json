@@ -37,6 +37,10 @@
           },
           "configurations": {
             "production": {
+              "optimization": true,
+              "sourceMap": false,              
+              "namedChunks": false,
+              "aot": true,              
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -47,7 +51,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "2MB"
                 },
                 {
                   "type": "anyComponentStyle",

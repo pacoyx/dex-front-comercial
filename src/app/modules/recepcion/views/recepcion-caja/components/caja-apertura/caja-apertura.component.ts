@@ -13,7 +13,7 @@ import { DialogMsgComponent } from '../../../../components/dialog-msg/dialog-msg
 import { ILoginResponseData } from '../../../../../../core/interfaces/ILoginResponse';
 import { NotificationServiceService } from '../../../../services/notification-service.service';
 import { MatSelectModule } from '@angular/material/select';
-import { JsonPipe } from '@angular/common';
+
 
 @Component({
   selector: 'app-caja-apertura',

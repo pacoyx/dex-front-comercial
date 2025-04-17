@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ILoginResponse, ILoginResponseData } from '../interfaces/ILoginResponse';
 import { ILoginRequest } from '../interfaces/ILoginRequest';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { IRefreshTokenRequest } from '../interfaces/IRefreshTokenRequest';
 
 @Injectable({
@@ -26,8 +26,8 @@ export class LoginService {
   }
 
   getLoginData(): ILoginResponseData | null {
-    const storedData = localStorage.getItem('dex24Auth');
-    if (storedData == null) {
+    const storedData = localStorage.getItem('dex24Auth');      
+    if (storedData == null || storedData === '') {
       console.log('No se encontraron datos de inicio de sesion.');
       return null;
     }

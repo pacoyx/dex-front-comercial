@@ -86,4 +86,17 @@ export const environment = {
 
     //sucursales
     EPListarSucursales: 'api/branchSales',
+
+     // proveedores
+     EPListarProveedores: 'api/supplier',
+     EPCrearProveedor: 'api/supplier',
+     EPListarProveedoresPaginator: 'api/supplier/search/paginator',
+     EPActualizarProveedor: 'api/supplier',
+
+     // productos
+    EPListarProductos: 'api/product',
+    EPCrearProducto: 'api/product',
+    EPListarProductosPaginator: 'api/product/search/paginator',
+    EPActualizarProducto: 'api/product',
+    
 };

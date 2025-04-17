@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { ICreateUserRequest, ICreateUserResponse, IGetUserResponse, IUpdateUserRequest } from '../interfaces/IUsers';
+import { ICreateUserRequest, IGetUserResponse, IUpdateUserRequest } from '../interfaces/IUsers';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../../../core/interfaces/IShared';
 import { ICreateCompanyRequest, IGetCompaniesResponse, IGetCompanyByUserResponse, IGetCompanyResponse, IUpdateCompanyRequest } from '../interfaces/ICompany';

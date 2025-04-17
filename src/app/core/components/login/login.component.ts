@@ -10,6 +10,8 @@ import { LoginService } from '../../services/login.service';
 import { LoadingComponent } from "../loading/loading.component";
 import { Subscription } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
+import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
+import { ILoginResponseData } from '../../interfaces/ILoginResponse';
 
 
 @Component({
@@ -77,15 +79,19 @@ export class LoginComponent implements OnInit, OnDestroy {
             return;
           }
 
-          // if (response.data.branchSales.length > 1) {
-          //   this.mostrarerror('seleccione una sucursal');
-          //   // this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...response.data.branchSales];
-          //   // this.loading.set(false);
-          //   return;
-          // }
+          let parsedData: ILoginResponseData = response.data;
+          if (response.data.branchSales.length == 1) {
+            parsedData.branchSalesCashId = response.data.branchSales[0].branchSalesId;
 
-          localStorage.setItem('dex24Auth', JSON.stringify(response.data));
+            // this.mostrarerror('seleccione una sucursal');
+            // this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...response.data.branchSales];
+            // this.loading.set(false);
+          }
+
+          localStorage.setItem('dex24Auth', JSON.stringify(parsedData));
           this.router.navigate(['recepcion']);
+
+
         },
         error: (err) => {
           var errMsg = 'Error en el inicio de sesión';

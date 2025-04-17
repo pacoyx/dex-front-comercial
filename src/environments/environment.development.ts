@@ -7,7 +7,7 @@ export const environment = {
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
-    
+
     EPRegistrarCliente: 'api/customer',
     EPActualizarCliente: 'api/customer',
     EPEliminarCliente: 'api/customer',
@@ -33,7 +33,7 @@ export const environment = {
     EPListarAlertas: 'api/workGuideMain/getAlertsByWorkGuide',
     EPDevolverPrendas: 'api/workGuideMain/returnUnwashedClothes',
     EPRecogerItem: 'api/workGuideMain/pickUpItem',
-    
+
     EPListarGastosPorUsuario: 'api/expenseBox/byUser',
     EPCrearGasto: 'api/expenseBox',
     EPActualizarGasto: 'api/expenseBox',
@@ -48,7 +48,7 @@ export const environment = {
     EPEliminarCajaDetalle: 'api/cashBox/detail',
 
     EPObtenerIdsPesoLavado: 'api/prodService/getidservicepesolavado',
-  
+
     // reportes
     EPGuiasPorFecha: 'api/reports/workguides/bydate',
     EPGuiasPorCliente: 'api/reports/workguides/bycustomer',
@@ -56,16 +56,16 @@ export const environment = {
     EPResumenCajaPorFechaDetallePorId: 'api/cashBox/detail',
     EPObtenerCajasPorFecha: 'api/cashBox/resumeAllUser',
 
-    EPListarUbicaciones:'api/locationclothes',
-    EPCrearUbicacion:'api/locationclothes',
-    EPActualizarUbicacion:'api/locationclothes',
-    EPRegistrarUbicacion:'api/locationclothes/RegisterWorkGuide',
+    EPListarUbicaciones: 'api/locationclothes',
+    EPCrearUbicacion: 'api/locationclothes',
+    EPActualizarUbicacion: 'api/locationclothes',
+    EPRegistrarUbicacion: 'api/locationclothes/RegisterWorkGuide',
 
 
     EPDividirPago: 'api/cashBox/splitPayCash',
     EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
     EPdashboardcash: 'api/reports/dashboardcash',
-    
+
     //falta implementar
     EPGetUsers: 'api/user',
     EPGetUser: 'api/user',
@@ -73,17 +73,31 @@ export const environment = {
     EPPutUsers: 'api/user',
     EPDeleteUsers: 'api/user',
 
-    EPGetCompanies:'api/company',
-    EPGetCompany:'api/company',
-    EPGetCompanyByUser:'api/company/user',
-    EPCreateCompany:'api/company',
-    EPUpdateCompany:'api/company',
-    EPDeleteCompany:'api/company',
+    EPGetCompanies: 'api/company',
+    EPGetCompany: 'api/company',
+    EPGetCompanyByUser: 'api/company/user',
+    EPCreateCompany: 'api/company',
+    EPUpdateCompany: 'api/company',
+    EPDeleteCompany: 'api/company',
 
     //Tickets
-    EPGetClothingWorkerById:'api/clothingWorker/findById',
+    EPGetClothingWorkerById: 'api/clothingWorker/findById',
     EPCreateTicket: 'api/ticket',
 
     //sucursales
     EPListarSucursales: 'api/branchSales',
+
+
+    // proveedores
+    EPListarProveedores: 'api/supplier',
+    EPCrearProveedor: 'api/supplier',
+    EPListarProveedoresPaginator: 'api/supplier/search/paginator',
+    EPActualizarProveedor: 'api/supplier',
+
+    // productos
+    EPListarProductos: 'api/product',
+    EPCrearProducto: 'api/product',
+    EPListarProductosPaginator: 'api/product/search/paginator',
+    EPActualizarProducto: 'api/product',
+
 };

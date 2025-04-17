@@ -8,6 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
 import { LoginService } from '../../services/login.service';
+import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
 
 @Component({
   selector: 'app-layout-plataforma',
@@ -21,13 +22,24 @@ import { LoginService } from '../../services/login.service';
   styleUrl: './layout-plataforma.component.css'
 })
 export class LayoutPlataformaComponent {
-  @ViewChild('sidenav') sidenav!: MatSidenav;
+
   loginService = inject(LoginService);
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private toggleStore: ToggleStoreServiceService
+  ) { }
 
   cerrarSesion() {
     localStorage.setItem('dex24Auth', '');
     this.router.navigate(['/login']);
+    this.toggleStore.setToggleState(false);
   }
+
+
+  toggleSidenav() {
+    this.toggleStore.setToggleState(true);
+  }
+
+
 
 }
