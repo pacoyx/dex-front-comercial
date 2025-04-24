@@ -59,6 +59,12 @@ export interface ISupplierListarResponse {
   contactPhone: string;
 }
 
+export interface ISupplierListarPorPatronResponse {
+  id: number;
+  name: string;
+}
+
+
 export interface IProductCreateRequest {
   name: string;
   description: string;
@@ -69,7 +75,8 @@ export interface IProductCreateRequest {
   status: string;
 }
 
-export interface IProductCreateResponse {  
+export interface IProductCreateResponse {
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -106,4 +113,23 @@ export interface IProductListarResponse {
   unitMeasurementId: number;
   categoryProdId: number;
   status: string;
+}
+
+export interface IGetUniMedidaShortResponse {
+  id: number;
+  codeUm: string;
+  name:string;
+}
+
+export interface IGetCategoriaProductoShortResponse {
+  id: number;
+  name: string;
+}
+
+export interface IProductListarPatronResponse {
+  id: number;
+  name: string;
+  price: number;
+  unitMeasurementId: number;
+  unitMeasurementDescription: string;
 }

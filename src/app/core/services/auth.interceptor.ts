@@ -10,9 +10,25 @@ import { LoginService } from './login.service';
 const MAX_REFRESH_ATTEMPTS = 5;
 let refreshAttempts = 0;
 
+
+const whitelistUrls = [
+  '/api/prodService/getServicesQuickAccess',  
+];
+
+function isWhitelisted(url: string): boolean {
+  return whitelistUrls.some(whitelistedUrl => url.includes(whitelistedUrl));
+}
+
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
-  // console.log('authInterceptor go go go');
+
+  if (isWhitelisted(req.url)) {
+    return next(req);
+  }
+  // console.log('authInterceptor', req.url);
+  
+
+  
 
   const router = inject(Router);
   const authService = inject(LoginService);
@@ -42,13 +58,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 
   return next(authReq).pipe(
-    catchError((error) => {       
+    catchError((error) => {
       console.log(req.url);
-      
-       console.log('error interceptor ==>', error.error);
+
+      console.log('error interceptor ==>', error.error);
       if (error.status === 401 && !req.url.includes('api/login')) {
         if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
-          console.log('***M*** Maximum refresh attempts exceeded');          
+          console.log('***M*** Maximum refresh attempts exceeded');
           router.navigate(['/login']);
           return throwError(() => new Error('Maximum refresh attempts exceeded'));
         }

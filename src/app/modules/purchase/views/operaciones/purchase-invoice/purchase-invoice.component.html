@@ -1,1 +1,149 @@
-<p>purchase-invoice works!</p>
+<div class="container-invoice">
+    <div
+        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-icon>dataset</mat-icon>
+            <label><strong>Registro de Facturas de Compras</strong></label>
+        </div>
+    </div>
+
+    <div class="section-controls-header" [formGroup]="frmInvoice">
+
+        <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
+
+            <mat-form-field appearance="outline" style="flex: 2;">
+                <mat-label>Proveedor</mat-label>
+                <input type="text" matInput [formControl]="supplierControl" [matAutocomplete]="auto"
+                    placeholder="escribir razon social">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event)"
+                    [displayWith]="displayFn">
+                    <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+                        {{ supplier.name | titlecase }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline" style="width: 160px;">
+                <mat-label>Emision</mat-label>
+                <input matInput [matDatepicker]="picker" placeholder="selecciona una fecha" formControlName="invoiceIssueDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+        </div>
+
+        <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
+
+            <div style="display: flex; gap: 3px; align-items: center;">
+                <mat-form-field appearance="outline" style="width: 100px;" >
+                    <mat-label>Doc</mat-label>
+                    <mat-select formControlName="invoiceType">
+                        <mat-option value="FT"> FT </mat-option>
+                        <mat-option value="BV"> BV </mat-option>
+                        <mat-option value="NC"> NC </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline" style="width: 100px;">
+                    <mat-label>Serie</mat-label>
+                    <input type="text" matInput placeholder="serie" formControlName="invoiceSerie">
+                </mat-form-field>
+                <mat-form-field appearance="outline" style="width: 120px;">
+                    <mat-label>Numero</mat-label>
+                    <input type="text" matInput placeholder="numero" formControlName="invoiceNumber">
+                </mat-form-field>
+            </div>
+
+            <div style="display: flex; gap: 3px; align-items: center;">
+
+                <mat-form-field appearance="outline" style="width: 100px;">
+                    <mat-label>Moneda</mat-label>
+                    <mat-select formControlName="invoiceCurrency">
+                        <mat-option value="PEN"> Soles </mat-option>
+                        <mat-option value="DO"> Dolares </mat-option>
+                        <mat-option value="OT"> Otros </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" style="width: 80px;">
+                    <mat-label>TC</mat-label>
+                    <input type="text" matInput placeholder="numero" formControlName="exchangeRate">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" style="width: 160px;">
+                    <mat-label>Vencimiento</mat-label>
+                    <input matInput [matDatepicker]="pickerv" placeholder="selecciona una fecha" formControlName="invoiceExpirationDate">
+                    <mat-datepicker-toggle matSuffix [for]="pickerv"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerv></mat-datepicker>
+                </mat-form-field>
+
+            </div>
+
+
+        </div>
+
+        <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
+
+            <div style="display: flex; gap: 3px; align-items: center; width: 100%;">
+
+                <mat-form-field appearance="outline" style="width: 200px;">
+                    <mat-label>Forma Pago</mat-label>
+                    <mat-select formControlName="typePayment">
+                        <mat-option value="CO"> CONTADO </mat-option>
+                        <mat-option value="CR"> CREDITO </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" style="width: 80px;">
+                    <mat-label>Dias Credito</mat-label>
+                    <input type="text" matInput placeholder="numero" formControlName="creditDays">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" style="width: 200px;">
+                    <mat-label>Medio Pago</mat-label>
+                    <mat-select formControlName="paymentMethod">
+                        <mat-option value="EF"> EFECTIVO </mat-option>
+                        <mat-option value="TR"> TRANSFERENCIA </mat-option>
+                        <mat-option value="QR"> QR </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" style="width: 100%">
+                    <mat-label>Glosa / Comentarios</mat-label>
+                    <input type="text" matInput placeholder="Comentarios / observaciones" formControlName="invoiceComments">
+                </mat-form-field>
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="section-controls-botones">
+        <button mat-fab extended (click)="addItem()" [disabled]="frmInvoice.disabled">
+            <mat-icon>post_add</mat-icon>
+            Agregar Producto
+        </button>
+        <button mat-fab extended (click)="limpiar()">
+            <mat-icon>restart_alt</mat-icon>
+            Nuevo
+        </button>
+        <button mat-fab extended (click)="saveInvoice()" [disabled]="frmInvoice.disabled">
+            <mat-icon>save</mat-icon>
+            Registrar Factura
+        </button>
+    </div>
+
+    <div class="section-detalles">
+
+        <app-table-detail-invoice-purchase></app-table-detail-invoice-purchase>
+
+    </div>
+
+    <!-- {{
+       frmInvoice.value| json
+    }} -->
+
+</div>

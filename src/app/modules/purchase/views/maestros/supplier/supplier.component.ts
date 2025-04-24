@@ -29,6 +29,7 @@ export class SupplierComponent implements OnInit, AfterViewInit {
   dialog = inject(MatDialog);
   displayedColumns: string[] = [
     // 'id',
+    'actions',
     'name',
     'ruc',
     // 'address',

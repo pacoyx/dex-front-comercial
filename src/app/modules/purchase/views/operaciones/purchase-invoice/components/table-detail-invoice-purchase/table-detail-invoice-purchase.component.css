@@ -1,0 +1,47 @@
+table {
+    width: 100%;
+}
+
+tr.mat-mdc-footer-row td {
+    font-weight: bold;
+}
+
+.mat-column-actions {
+    width: 10%
+}
+
+.mat-column-item {
+    width: 50px;
+}
+
+.mat-column-unitMeasure {
+    width: 70px;
+}
+
+.mat-column-productName {
+    width: 100%;
+}
+
+.mat-column-price,
+.mat-column-quantity,
+.mat-column-total {
+    width: 100px;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+
+    .mat-column-actions {
+        width: 20%;
+    }
+
+    .mat-column-productName {
+        width: 80%;
+    }
+
+    .mat-column-price,
+    .mat-column-quantity,
+    .mat-column-total {
+        width: 120px;
+    }
+}

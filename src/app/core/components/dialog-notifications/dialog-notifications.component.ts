@@ -3,17 +3,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 
-
 @Component({
-  selector: 'app-dialog-msg',
+  selector: 'app-dialog-notifications',
   standalone: true,
   imports: [MatDialogContent, MatDialogClose, MatButtonModule],
-  templateUrl: './dialog-msg.component.html',
-  styleUrl: './dialog-msg.component.css'
+  templateUrl: './dialog-notifications.component.html',
+  styleUrl: './dialog-notifications.component.css'
 })
-export class DialogMsgComponent {
+export class DialogNotificationsComponent {
   readonly data = inject<{ title: string, msg: string, err: boolean, wordKey: string, imprimir: boolean }>(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<DialogMsgComponent>);
+  readonly dialogRef = inject(MatDialogRef<DialogNotificationsComponent>);
 
 
   constructor() {
@@ -25,5 +24,4 @@ export class DialogMsgComponent {
   imprimirTicket() {
     this.dialogRef.close('Imprimir');
   }
-
 }

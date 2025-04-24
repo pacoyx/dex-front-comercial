@@ -93,8 +93,8 @@ export const environment = {
     EPCrearProveedor: 'api/supplier',
     EPListarProveedoresPaginator: 'api/supplier/search/paginator',
     EPActualizarProveedor: 'api/supplier',
+    EPListarProveedoresPorPatron: 'api/supplier/search/byPatron',
     // EPEliminarProveedor: 'api/supplier',
-    // EPListarProveedoresPorPatron: 'api/supplier/search',
     // EPListarProveedoresPorId: 'api/supplier/searchById',
 
     // productos
@@ -102,8 +102,8 @@ export const environment = {
     EPCrearProducto: 'api/product',
     EPListarProductosPaginator: 'api/product/search/paginator',
     EPActualizarProducto: 'api/product',
+    EPListarProductosPorPatron: 'api/product/search/byPatron',
     // EPEliminarProducto: 'api/product',
-    // EPListarProductosPorPatron: 'api/product/search',
     // EPListarProductosPorId: 'api/product/searchById',
     // EPListarProductosPorIdProveedor: 'api/product/searchBySupplierId',
     // EPListarProductosPorIdCategoria: 'api/product/searchByCategoryId',
@@ -120,5 +120,15 @@ export const environment = {
     // EPListarComprasPorIdProducto: 'api/purchase/searchByProductId',
     // EPListarComprasPorIdCategoria: 'api/purchase/searchByCategoryId',
 
+    //unidad de medida    
+    EPListarUnidadMedidaShort: 'api/unitMeasurement/short',
+    
+
+    //cateogoria producto
+    EPListarCategoriaProductoShort: 'api/categoryProd/short',
+    
+    // Invoice
+    EPListarInvoice: 'api/purchase-invoice',
+    EPCrearInvoice: 'api/purchase-invoice',
 
 };

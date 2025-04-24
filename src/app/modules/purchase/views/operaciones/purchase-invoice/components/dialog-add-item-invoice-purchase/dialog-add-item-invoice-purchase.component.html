@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>
+    {{titulo}}
+</h2>
+<mat-dialog-content style="display: flex; flex-direction: column; padding: 5px;">
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Producto / Servicio</mat-label>
+        <input type="text" matInput [formControl]="productControl" [matAutocomplete]="auto"
+            placeholder="escribir nombre producto">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onProductSelected($event)"
+            [displayWith]="displayFn">
+            <mat-option *ngFor="let product of filteredProducts | async" [value]="product">
+                {{ product.name | titlecase }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <div style="display: flex; gap: 10px;">
+        <mat-form-field appearance="outline" >
+            <mat-label>Precio</mat-label>
+            <input matInput type="number" min="0" step="1" [(ngModel)]="precioUnitario">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Unid.Medida</mat-label>
+            <input matInput type="text" [(ngModel)]="unidadMedida" disabled>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Cantidad</mat-label>
+            <input matInput type="number" min="0" step="1" [(ngModel)]="cantidad">
+        </mat-form-field>
+    </div>
+
+
+
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
+   
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Agregar
+    </button>
+    }
+
+</mat-dialog-actions>

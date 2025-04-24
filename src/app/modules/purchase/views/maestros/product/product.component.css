@@ -17,9 +17,25 @@
 
 .cabecera {
     text-align: center;
-    padding: 0px 0px !important;    
+    padding: 0px 0px !important;
     background-color: #7d9ad6;
     color: white;
     border: 1px solid #ccc !important;
     border-radius: 5px;
+}
+
+
+.mat-column-actions {
+    width: 70px;
+    /* Ancho fijo para la columna de acciones */
+}
+
+.mat-column-name {
+    flex: 2;
+    /* La columna "name" ocupará más espacio */
+}
+
+.mat-column-price {
+    flex: 1;
+    /* La columna "price" ocupará menos espacio */
 }

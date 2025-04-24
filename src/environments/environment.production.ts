@@ -92,11 +92,23 @@ export const environment = {
      EPCrearProveedor: 'api/supplier',
      EPListarProveedoresPaginator: 'api/supplier/search/paginator',
      EPActualizarProveedor: 'api/supplier',
+     EPListarProveedoresPorPatron: 'api/supplier/search/byPatron',
 
      // productos
     EPListarProductos: 'api/product',
     EPCrearProducto: 'api/product',
     EPListarProductosPaginator: 'api/product/search/paginator',
     EPActualizarProducto: 'api/product',
+    EPListarProductosPorPatron: 'api/product/search/byPatron',
+
+    //unidad de medida    
+    EPListarUnidadMedidaShort: 'api/unitMeasurement/short',
     
+
+    //cateogoria producto
+    EPListarCategoriaProductoShort: 'api/categoryProd/short',
+
+    // Invoice
+    EPListarInvoice: 'api/purchase-invoice',
+    EPCrearInvoice: 'api/purchase-invoice',
 };

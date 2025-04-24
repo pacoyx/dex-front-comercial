@@ -192,9 +192,15 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       startWith(''),
       debounceTime(300),
       switchMap(value => {
-        if (value === '') {
+        if (value === '') {          
           return of([]);
         }
+
+        if (typeof value === 'object') {
+          console.log('es objeto', value);
+          return of([value]);
+        }
+
         return this.emisionService.filtrarClientesPorPatron(value).pipe(
           map(response => response.data)
         );

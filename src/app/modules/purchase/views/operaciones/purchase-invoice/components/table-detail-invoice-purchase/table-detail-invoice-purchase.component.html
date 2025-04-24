@@ -1,0 +1,98 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+            <div style="display: flex; gap: 5px; justify-content: center;">
+                <button mat-mini-fab (click)="editItem(element)" matTooltip="Edit" aria-label="Edit" [disabled]="statusButton">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-mini-fab (click)="deleteItem(element)" matTooltip="Delete" aria-label="Delete"
+                    style="color: red;" [disabled]="statusButton">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+        </td>
+
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="item">
+        <th mat-header-cell *matHeaderCellDef> N° </th>
+        <td mat-cell *matCellDef="let element; let i = index" [attr.data-index]="i">
+            {{i + 1}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="productId">
+        <th mat-header-cell *matHeaderCellDef> productId </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.productId}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="productName">
+        <th mat-header-cell *matHeaderCellDef> Producto </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.productName}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+            <div style="display: flex; gap: 20px; justify-content: end">
+                <div>
+                    SubTotal: <span style="color: darkblue; font-size: large;"> {{subTotal | currency:'
+                        ':'symbol':'0.2-2'}} </span>
+                </div>
+                <div>
+                    Igv: <span style="color: darkblue; font-size: large;">{{igv | currency:' ':'symbol':'0.2-2'}}</span>
+                </div>
+            </div>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="unitMeasure">
+        <th mat-header-cell *matHeaderCellDef> UM </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.unitMeasurement}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef>
+            Total:            
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef> Cant </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.quantity | currency:' ':'symbol':'0.2-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef> Precio </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.price | currency:' ':'symbol':'0.2-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef>            
+            <span style="color: darkblue; font-size: large;">
+                {{getTotalCost() | currency:' ':'symbol':'0.2-2'}}
+            </span>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element">
+            {{element.total | currency:' ':'symbol':'0.2-2'}}
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+</table>

@@ -1,1 +1,90 @@
-<p>dialogform-reg-product works!</p>
+<h2 mat-dialog-title>
+    <mat-icon>edit_note</mat-icon> {{titulo}}
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="productForm" style="padding: 5px; display: flex; flex-direction: column;">
+
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Descripcion</mat-label>
+            <input matInput formControlName="description">
+        </mat-form-field>
+
+
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Unidad de Medida</mat-label>
+                <mat-select formControlName="unitMeasurementId">
+                    @for (item of data.objUM; track $index) {
+                    <mat-option [value]="item.id"> {{item.codeUm +' - '+ item.name}} </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Categoria</mat-label>
+                <mat-select formControlName="categoryProdId">
+                    @for (item of data.objCP; track $index) {
+                    <mat-option [value]="item.id"> {{item.name}} </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Precio</mat-label>
+                <input matInput formControlName="price" type="number" min="0" step="1">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Stock</mat-label>
+                <input matInput formControlName="stock" type="number" min="0" step="1">
+            </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A"> Activo </mat-option>
+                    <mat-option value="I"> Inactivo </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+
+
+
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
+
+
+    @if(loadingSave){
+    <button mat-fab extended>
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+
+</mat-dialog-actions>
