@@ -286,7 +286,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
 
     let itemBusqueda: IListaItemsBusqueda = {
-      id: item.id,
+      id: item.prodServiceID,
       name: item.shortName,
       price: item.price,
     }

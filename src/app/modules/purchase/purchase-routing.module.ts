@@ -6,8 +6,9 @@ import { ProductComponent } from './views/maestros/product/product.component';
 import { UnitMeasurementComponent } from './views/maestros/unit-measurement/unit-measurement.component';
 import { CategoryProdComponent } from './views/maestros/category-prod/category-prod.component';
 import { PurchaseInvoiceComponent } from './views/operaciones/purchase-invoice/purchase-invoice.component';
-import { PurchaseReportesFacturasxfechayxproveeComponent } from './views/reports/purchase-reportes-facturasxfechayxprovee/purchase-reportes-facturasxfechayxprovee.component';
-import { PurchaseReportesFacturasxproductosComponent } from './views/reports/purchase-reportes-facturasxproductos/purchase-reportes-facturasxproductos.component';
+import { PurchaseReportesFacturasxparamsComponent } from './views/reports/purchase-reportes-facturasxparams/purchase-reportes-facturasxparams.component';
+import { PurchaseInvoiceDetailViewComponent } from './views/operaciones/purchase-invoice-detail-view/purchase-invoice-detail-view.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -17,8 +18,9 @@ const routes: Routes = [
   { path: 'products', component: ProductComponent },
   { path: 'unitmeasure', component: UnitMeasurementComponent },
   { path: 'categoriesProduct', component: CategoryProdComponent },
-  { path: 'consultas/facturas', component: PurchaseReportesFacturasxfechayxproveeComponent },
-  { path: 'consultas/facturas/xprod', component: PurchaseReportesFacturasxproductosComponent },
+  { path: 'consultas/facturas', component:  PurchaseReportesFacturasxparamsComponent},
+  { path: 'consultas/facturas/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
+  
 ];
 
 @NgModule({

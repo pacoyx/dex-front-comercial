@@ -1,0 +1,194 @@
+<div class="container-report">
+
+    <div
+        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-icon>dataset</mat-icon>
+            <label><strong>Consulta de Facturas</strong></label>
+        </div>
+    </div>
+
+    <div class="section-controls-report">
+
+        <mat-form-field>
+            <mat-label>Tipo Consulta</mat-label>
+            <mat-select [(ngModel)]="selectedOptionReporte" (selectionChange)="onOptionSelected($event)">
+                @for (opt of optionsReportes; track opt) {
+                <mat-option [value]="opt.value">{{opt.viewValue}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        @if(selectedOptionReporte == 1) {
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-form-field>
+                <mat-label>Mes</mat-label>
+                <mat-select [(ngModel)]="selectedMonth">
+                    @for (mes of meses; track mes) {
+                    <mat-option [value]="mes.value">{{mes.viewValue}}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Año</mat-label>
+                <input matInput placeholder="Buscar" type="number" min="2025" value="2025" [(ngModel)]="selectedYear">
+            </mat-form-field>
+        </div>
+        }
+
+        @if(selectedOptionReporte == 2) {
+        <div>
+            <mat-form-field>
+                <mat-label>Seleccione Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Start date">
+                    <input matEndDate formControlName="end" placeholder="End date">
+                </mat-date-range-input>
+                <!-- <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint> -->
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+
+                @if (rangeFrm.controls.start.hasError('matStartDateInvalid')) {
+                <mat-error>Fecha inicio invalida</mat-error>
+                }
+                @if (rangeFrm.controls.end.hasError('matEndDateInvalid')) {
+                <mat-error>Fecha final invalida</mat-error>
+                }
+            </mat-form-field>
+
+            <!-- <p>Selected range: {{range.value | json}}</p> -->
+        </div>
+        }
+
+        @if(selectedOptionReporte == 3) {
+
+        <mat-form-field appearance="outline" style="flex: 2;">
+            <mat-label>Proveedor</mat-label>
+            <input type="text" matInput [formControl]="supplierControl" [matAutocomplete]="autoSupplier"
+                placeholder="escribir razon social">
+            <mat-autocomplete #autoSupplier="matAutocomplete" (optionSelected)="onSupllierSelected($event)"
+                [displayWith]="displayFnSupplier">
+                <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+                    {{ supplier.name | titlecase }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        }
+        @if(selectedOptionReporte == 4) {
+
+        <mat-form-field appearance="outline" style="flex: 2;">
+            <mat-label>Producto / Servicio</mat-label>
+            <input type="text" matInput [formControl]="productControl" [matAutocomplete]="auto"
+                placeholder="escribir nombre producto">
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onProductSelected($event)"
+                [displayWith]="displayFn">
+                <mat-option *ngFor="let product of filteredProducts | async" [value]="product">
+                    {{ product.name | titlecase }}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        }
+
+        <button mat-fab extended (click)="listarFacturas(1,10)">
+            <mat-icon>search</mat-icon>
+            Buscar
+        </button>
+
+    </div>
+
+
+    <mat-paginator [length]="totalProducts" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+    </mat-paginator>
+
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> View </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-mini-fab (click)="viewDetails(element)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+
+        <ng-container matColumnDef="proveedor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Proveedor </th>
+            <td mat-cell *matCellDef="let element">
+
+                {{element.supplierRuc}} /
+                {{element.supplierName}}
+
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="factura">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Factura </th>
+            <td mat-cell *matCellDef="let element">
+                <a [routerLink]="['view', element.id]" routerLinkActive="router-link-active">
+                    {{element.invoiceType}} -
+                    {{element.invoiceSerie}} -
+                    {{element.invoiceNumber}}
+                </a>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaemision">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Emision </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.invoiceIssueDate | date:'dd/MM/yyyy'}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechavencimiento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Vencimiento </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.invoiceExpirationDate | date:'dd/MM/yyyy'}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.total | currency:' ':'symbol':'0.2-2'}}
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="moneda">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Moneda </th>
+            <td mat-cell *matCellDef="let element"> {{element.currencyId}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="comentarios">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Comentarios </th>
+            <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let element" style="text-align: center;">
+
+                @switch (element.status) {
+                @case ('A') {
+                <span style="color: green;">A</span>
+                }
+                @case ('I') {
+                <span style="color: red;">I</span>
+                }
+                @default {
+                <span style="color: red;">I</span>
+                }
+                }
+
+            </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+
+</div>

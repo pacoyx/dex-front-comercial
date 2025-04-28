@@ -32,8 +32,8 @@ export class DialogAddItemInvoicePurchaseComponent implements OnInit {
   loadingSave = false;
   titulo = this.data.isAdd ? 'Agregar Item' : 'Editar Item';
 
-  productControl = new FormControl();
-  filteredProducts!: Observable<IProductListarPatronResponse[]>;
+    productControl = new FormControl();
+    filteredProducts!: Observable<IProductListarPatronResponse[]>;
 
   productoId = 0;
   productoNombre = '';

@@ -1,0 +1,34 @@
+
+.container-factura{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* justify-content: space-between; */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #7d9ad6;
+    color: white;
+    border: 1px solid #ccc !important;
+    border-radius: 5px;
+}
+
+.mat-column-precio {    
+    text-align: right;    
+}
+
+.mat-column-total { 
+    text-align: right;    
+}

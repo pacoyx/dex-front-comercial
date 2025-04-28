@@ -111,4 +111,10 @@ export const environment = {
     // Invoice
     EPListarInvoice: 'api/purchase-invoice',
     EPCrearInvoice: 'api/purchase-invoice',
+
+    // reportes
+    EPFacturasPorMes: 'api/purchase/reports/byMonth',
+    EPFacturasPorFechas: 'api/purchase/reports/byDate',
+    EPFacturasPorProveedor: 'api/purchase/reports/bySupplier',
+    EPFacturasPorProducto: 'api/purchase/reports/byProduct',
 };
