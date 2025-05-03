@@ -91,4 +91,13 @@ export class DialogformRegProductComponent {
   onCancel(): void {
     this.dialogRef.close();
   }
+
+  onBlurName(){
+    console.log(this.productForm.get('name')?.value);
+    let nombre =  this.productForm.get('name')?.value 
+    let descripcion =  this.productForm.get('description')?.value 
+    if(descripcion == null || descripcion == ''){
+      this.productForm.get('description')?.setValue(nombre);
+    }
+  }
 }
