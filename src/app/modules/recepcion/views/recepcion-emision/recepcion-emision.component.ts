@@ -314,6 +314,16 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   actualizarTelefonoCliente(event: any) {
     this.clienteTelefono = event.target.value;
+
+
+    // TODO: hay que obtener el numero de digitos de una tabla de configuracion
+    // Validar que el número de teléfono tenga 9 dígitos
+    const telefono = this.clienteTelefono.replace(/\D/g, '');
+    if (telefono.length !== 9) {
+      this.notificacionService.showError('El número de teléfono debe tener 9 dígitos.');
+      return;
+    }
+
     this.store.addCliente({ codigo: this.store.selectedCliente()?.codigo ?? 0, nombre: this.clienteNombre, telefono: this.clienteTelefono });
     this.loadingUpdatePhone = true;
     this.emisionService.ActualizarTelefonoCliente({ id: this.store.selectedCliente()?.codigo ?? 0, phone: this.clienteTelefono }).subscribe({
@@ -550,6 +560,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
+    let estadoPagoInicial = this.store.itemSumTotal() === this.store.selectedPago()?.monto ? 'PA' : 'PE'; // PE: Pendiente, PA: Pagado, AN: Anulado
+
     let objGuia: ICreateGuideWork = {
       serieGuia: "",
       numeroGuia: "",
@@ -568,7 +580,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       branchStoreId: this.sucursalId,
       typeDocument: "",
       userId: parsedData.userId,
-      estadoPago: this.store.itemSumTotal() === this.store.selectedPago()?.monto ? 'PA' : 'PE', // PE: Pendiente, PA: Pagado, AN: Anulado      
+      estadoPago: estadoPagoInicial, // PE: Pendiente, PA: Pagado, AN: Anulado      
       estadoRegistro: "A",
       estadoSituacion: "P",
 
@@ -586,7 +598,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           productId: parseInt(item.codProd),
           estadoRegistro: 'A',        // A: Activo, I: Inactivo    
           estadoSituacion: 'P',       // P: Pendiente, E: Entregado; D: Devuelto
-          estadoPago: 'PE',           // PE: Pendiente, PA: Pagado, AN: Anulado
+          estadoPago: estadoPagoInicial,           // PE: Pendiente, PA: Pagado, AN: Anulado
           identificador: identifier
         }
       })

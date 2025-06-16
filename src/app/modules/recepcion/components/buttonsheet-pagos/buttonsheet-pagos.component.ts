@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnDestroy } from '@angular/core';
+import { Component, Inject, inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './buttonsheet-pagos.component.html',
   styleUrl: './buttonsheet-pagos.component.css'
 })
-export class ButtonsheetPagosComponent implements OnDestroy {
+export class ButtonsheetPagosComponent implements OnDestroy, OnInit {
   private _bottomSheetRef = inject<MatBottomSheetRef<ButtonsheetPagosComponent>>(MatBottomSheetRef);
   pagos = [
     { id: 'EF', tipo: 'Efectivo', detalle: 'Pago en efectivo', icon: 'attach_money' },
@@ -32,6 +32,10 @@ export class ButtonsheetPagosComponent implements OnDestroy {
 
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {
     this.montoCobrar = data.montoCobrar;
+    
+  }
+  ngOnInit(): void {
+    this.checkCobrarEfectivo = this.data.soloRetiro;
   }
 
   ngOnDestroy(): void { }

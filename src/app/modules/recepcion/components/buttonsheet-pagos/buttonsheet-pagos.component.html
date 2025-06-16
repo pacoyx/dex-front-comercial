@@ -15,7 +15,7 @@
 @if(data.verTipoPago && !checkCobrarEfectivo){
 <mat-nav-list>
     <div mat-subheader>Retiro sin Pago</div>
-    
+
     <mat-list-item (click)="aceptar()">
         <mat-icon matListItemIcon style="color: darkblue;">check</mat-icon>
         <div matListItemTitle style="color: darkblue;">Aceptar</div>
@@ -27,7 +27,7 @@
         <div matListItemTitle style="color: red;">Cancelar</div>
         <div matListItemLine style="color: red;">Se cancelara la operación</div>
     </mat-list-item>
-    
+
 </mat-nav-list>
 }
 @else {

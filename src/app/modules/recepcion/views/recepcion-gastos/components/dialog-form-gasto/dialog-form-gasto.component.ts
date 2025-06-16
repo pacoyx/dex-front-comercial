@@ -47,6 +47,7 @@ export class DialogFormGastoComponent implements OnInit {
 
   constructor() {
     this.frmGasto = new FormGroup({
+      fechaGasto: new FormControl(this.fechaHoy, [Validators.required]),
       categoria: new FormControl('COMPRAS', [Validators.required]),
       personalAutoriza: new FormControl('', [Validators.required]),
       importe: new FormControl(null, [Validators.required]),

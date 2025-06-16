@@ -24,11 +24,12 @@ export class NotificationServiceService {
   }
 
   showError(message: string): void {
-    this.snackBar.open(message, 'Close', {
+    this.snackBar.open(message, 'OK', {
       duration: 4000,
       horizontalPosition: 'right',
       verticalPosition: 'top',
-      politeness: 'polite'
+      politeness: 'polite',
+      panelClass: ['error-snackbar']
     });
   }
 

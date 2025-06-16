@@ -124,13 +124,7 @@
 
 @media print {
 
-  /* @page {
-      margin-top: 3mm !important;
-      margin-left: 3mm !important;
-      size: portrait;
-    } */
 
-  /* All your print styles go here */
   #header,
   #footer,
   #nav {

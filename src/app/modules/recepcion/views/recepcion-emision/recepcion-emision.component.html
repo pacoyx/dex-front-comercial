@@ -58,19 +58,7 @@
       </div>
       }
 
-      <!-- @if (!showMenuItems) {
-      <div style="display: flex; justify-content: space-evenly; margin-bottom: 15px;">
-        <button mat-fab extended (click)="openDialogPeso()" style="height: 70px;" color="warn">
-          <mat-icon>scale</mat-icon>
-          Peso KG.
-        </button>
-        <button mat-fab extended (click)="openDialogLavado()" style="height: 70px;" color="warn">
-          <mat-icon>wash</mat-icon>
-          Lavado ...
-        </button>
-      </div>
-      <mat-divider></mat-divider>
-      } -->
+     
       <div class="container-scroll">
         @if(loading){
         <div style="display: flex;justify-content: center;">
@@ -82,15 +70,7 @@
 
         @if (!showMenuItems) {
         <div class="container-categories">
-          <!-- @for (item of categories; track item.id; let idx = $index, e = $even) {
-          <div class="example-button-container">
-            <button mat-fab extended (click)="mostrarMenuItems(item.id)">
-              <mat-icon>{{item.icon}}</mat-icon>
-              {{item.name}}
-            </button>
-          </div>
-          } -->
-
+     
           @if(loadingServicesQuick){
           <div style="display: flex;justify-content: center;">
             <app-loading></app-loading>
@@ -100,7 +80,7 @@
 
           @for (item of dataServiciosAccesosRapido; track item.id; let idx = $index, e = $even) {
           <div class="example-button-container">
-            <button class="btn primary" (click)="agregarItemQuickAccess(item)">
+            <button class="btn primary" (click)="agregarItemQuickAccess(item)" [disabled]="blockSave">
               <div
                 style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
                 <img [src]="item.iconName" alt="icon" style="width: 50px; height: 50px;">
@@ -146,30 +126,7 @@
     <div class="container-lado-der">
 
       <div class="section-detalles">
-        <!-- FECHA -->
-        <!-- <div class="fila-detalle">
-          <div style="display: flex;">
-            <label><strong>Recepción: </strong></label>
-            <div>
-              {{fechaHoy | date:'dd/MM/yyyy'}}
-            </div>
-          </div>
-
-           <div style="display: flex;">
-            <label><strong>Entrega: </strong></label>
-            <div>
-              {{fechaHEntrega | date:'dd/MM/yyyy'}}
-            </div>
-          </div> 
-
-          <div style="margin-left: 40px;">
-            <label><strong>
-                {{numeracion.typeDoc}}-{{numeracion.serieDoc}}-{{numeracion.numberDoc}} 
-                 #{{numeracion.numberDoc}} 
-              </strong></label>
-          </div>
-        </div> -->
-
+   
         <!-- CLIENTE -->
         <div class="fila-detalle">
           <div style="width: 100%; display: flex;gap: 5px;">
@@ -178,7 +135,7 @@
               <!-- <input matInput type="text" [(ngModel)]="clienteNombre"> -->
 
               <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
-                placeholder="Buscar cliente">
+                placeholder="Buscar cliente" [readonly]="blockSave">
 
 
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event)"
@@ -202,7 +159,7 @@
               </div>
               }
             </div>
-            <button mat-mini-fab (click)="openDialogClientes()">
+            <button mat-mini-fab (click)="openDialogClientes()" [disabled]="blockSave">
               <mat-icon>person_add</mat-icon>
             </button>
 
@@ -254,10 +211,10 @@
             <th mat-header-cell *matHeaderCellDef> Operaciones </th>
             <td mat-cell *matCellDef="let element">
               <div style="display: flex; gap: 5px;">
-                <button mat-mini-fab (click)="editData(element)">
+                <button mat-mini-fab (click)="editData(element)" [disabled]="blockSave">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-mini-fab (click)="deleteData(element)">
+                <button mat-mini-fab (click)="deleteData(element)" [disabled]="blockSave">
                   <mat-icon style="color: red;">delete</mat-icon>
                 </button>
               </div>

@@ -193,13 +193,21 @@
                 <td mat-cell *matCellDef="let element">
                     @switch (element.estadoSituacion) {
                     @case ('P') {
+
+                    @if(element.estadoPago == 'PA'){
                     <button mat-stroked-button (click)="recogerPrendaxItem(element)" class="btn-block">
-                        @if(element.estadoPago == 'PA'){
                         <mat-icon style="color: green;" aria-hidden="false" aria-label="pagado" fontIcon="credit_score">
                         </mat-icon>
-                        }
+                        <span> Pagado / </span>
                         Por Recoger
                     </button>
+                    }@else {
+                    <button mat-stroked-button (click)="recogerPrendaxItem(element)" class="btn-block">
+                        Por Recoger
+                    </button>
+                    }
+
+
 
                     }
                     @case ('E') {
@@ -207,12 +215,16 @@
                         <div style="display: flex; width: 100%; gap: 5px; justify-content: center;">
                             <mat-icon style="color: blue;" aria-hidden="false" aria-label="entregado"
                                 fontIcon="check"></mat-icon>
+
                             @if(element.estadoPago == 'PA'){
                             <mat-icon style="color: green;" aria-hidden="false" aria-label="pagado"
                                 fontIcon="credit_score">
                             </mat-icon>
-                            }
+                            <span style="color: darkblue;">Entregado y Pagado</span>
+                            }@else{
                             <span style="color: darkblue;">Entregado</span>
+                            }
+
                         </div>
                         <div style="width: 100%; text-align: center;">
                             {{element.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}}

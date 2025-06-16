@@ -243,6 +243,15 @@ app-ticket-venta {
 }
 
 @media print {
+
+  .container-emision {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+
     .win-proceso {
         display: none;
     }

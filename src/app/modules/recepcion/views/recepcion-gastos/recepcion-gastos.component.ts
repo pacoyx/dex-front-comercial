@@ -3,7 +3,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { DateAdapter, MAT_DATE_FORMATS, provideNativeDateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { EmisionService } from '../../services/emision.service';
 import { LoginService } from '../../../../core/services/login.service';
@@ -126,7 +126,7 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogFormGastoComponent, {
-      width: '300px',
+      // width: '300px',
       data: { title: 'Registrar Gasto', edicion: false }
     });
 

@@ -64,7 +64,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     'precio',
     'total',
     'estadoSituacion',
-    'estadoTrabajo',
+    // 'estadoTrabajo',
     'operaciones',
     'ubicacion'
   ];
@@ -108,7 +108,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     }
 
     console.log('valor de serie guia:', this.numeroSerie);
-    
+
 
     if (this.numeroSerie == '') {
       this.numeroSerie = "001";
@@ -365,7 +365,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   recogerPrendaxItem(item: IGuiaRetiroWgdDTO) {
     var dialogCancelar = this._bottomSheet.open(ButtonsheetPagosComponent,
-      { data: { idGuia: this.guiaRetiroData?.id, verTipoPago: true, montoCobrar: item.total } });
+      { data: { idGuia: this.guiaRetiroData?.id, verTipoPago: true, montoCobrar: item.total, soloRetiro: item.estadoPago == 'PA' ? false : true } });
 
     dialogCancelar.afterDismissed().subscribe((respuesta) => {
 

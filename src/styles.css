@@ -32,3 +32,8 @@ body {
     color: white !important;
     border: none;
 }
+
+.error-snackbar{
+    background: #F44336!important;
+    color: white !important;
+}

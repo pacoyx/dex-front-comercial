@@ -2,40 +2,47 @@
 
 <mat-dialog-content>
     <hr>
-    <mat-form-field appearance="outline">
-        <mat-label>Fecha</mat-label>
-        <input matInput type="text" [(ngModel)]="fechaHoy" disabled=true>
-    </mat-form-field>
 
     <form [formGroup]="frmGasto" style="width: 100%;">
 
-        <mat-form-field appearance="outline">
-            <mat-label>Categoría de Gasto</mat-label>
-            <mat-select formControlName="categoria">
-                @for (categoria of categoriasGastos; track $index) {
-                <mat-option [value]="categoria.id">
-                    {{ categoria.id }}
-                </mat-option>
-                }
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Fecha</mat-label>
+                <input matInput type="text" formControlName="fechaGasto" readonly="true">
+            </mat-form-field>
 
-            </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Categoría de Gasto</mat-label>
+                <mat-select formControlName="categoria">
+                    @for (categoria of categoriasGastos; track $index) {
+                    <mat-option [value]="categoria.id">
+                        {{ categoria.id }}
+                    </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Personal Autoriza</mat-label>
-            <input matInput formControlName="personalAutoriza" style="width: 100%;">
-        </mat-form-field>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Importe</mat-label>
-            <input matInput formControlName="importe" type="number" style="width: 100%;">
-        </mat-form-field>
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline">
+                <mat-label>Personal Autoriza</mat-label>
+                <input matInput formControlName="personalAutoriza" style="width: 100%;">
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Detalles Egreso</mat-label>
-            <input matInput formControlName="detallesEgreso" style="width: 100%;">
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Importe</mat-label>
+                <input matInput formControlName="importe" type="number" style="width: 100%;">
+            </mat-form-field>
+        </div>
 
+        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline" style="width: 100%;">
+                <mat-label>Detalles Egreso</mat-label>
+                <input matInput formControlName="detallesEgreso">
+            </mat-form-field>
+
+        </div>
     </form>
     @if(bolMensaje){
     <div style="border: 1px solid rgb(11, 71, 236); border-radius: 5px; text-align: center;">
