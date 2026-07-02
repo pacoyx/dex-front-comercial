@@ -139,6 +139,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   loadingServicesQuick = false;
   bolExisteCaja = true;
   msgValidacion = '';
+  isSinCopia = false;
 
 
   subscriptionCategorias!: Subscription;
@@ -665,6 +666,10 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   onChangueToggleBolsa(event: any) {
     this.store.addBolsa(event.checked);
+  }
+
+  onChangueToggleSinCopia(event: any) {
+    this.store.addSinCopia(event.checked);
   }
 
   nuevaGuia() {

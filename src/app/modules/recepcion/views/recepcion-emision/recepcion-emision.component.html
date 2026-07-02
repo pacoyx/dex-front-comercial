@@ -239,8 +239,9 @@
             A Cuenta: {{ store.selectedPago()?.monto| currency:' ':'symbol':'0.2-2' }}
           </div>
           <div style="font-size: 20px; color: blue; font-weight: bold;">
+            <mat-slide-toggle [(ngModel)]="isSinCopia" (change)="onChangueToggleSinCopia($event)">Sin Copia</mat-slide-toggle>
             Saldo: {{ store.itemSumTotal() - (store.selectedPago()?.monto ?? 0) | currency:' ':'symbol':'0.2-2' }}
-          </div>
+          </div>          
         </div>
 
         <!-- {{store.items() | json}} -->

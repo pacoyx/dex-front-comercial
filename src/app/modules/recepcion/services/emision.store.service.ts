@@ -14,7 +14,8 @@ export type GuiaServicioState = {
   documento: IEmisionDocumento | null;
   recepcion: string;
   usuario: string,
-  bolsa: boolean
+  bolsa: boolean,
+  sinCopia: boolean
 };
 
 @Injectable({
@@ -30,7 +31,8 @@ export class EmisionStoreService {
     documento: null,
     recepcion: 'R',
     usuario: 'robot',
-    bolsa: false
+    bolsa: false,
+    sinCopia:false
   });
 
   private idCounter = 1;
@@ -44,6 +46,7 @@ export class EmisionStoreService {
   public readonly selectedRecepcion = this.guiaServicioState.recepcion;
   public readonly selectedUser = this.guiaServicioState.usuario;
   public readonly selectedBolsa = this.guiaServicioState.bolsa;
+  public readonly selectedSinCopia = this.guiaServicioState.sinCopia;
   public readonly itemCounter = computed(() => this.items().length);
   public readonly itemSumTotal = computed(() => this.items().reduce((ant, act) => ant + act.Subtotal, 0));
 
@@ -59,7 +62,8 @@ export class EmisionStoreService {
       documento: null,
       recepcion: 'R',
       usuario: 'robot',
-      bolsa: false
+      bolsa: false,
+      sinCopia : false
     });
   }
 
@@ -123,6 +127,12 @@ export class EmisionStoreService {
     const todos = this.items();
     patchState(this.guiaServicioState, {
       selectedItem: todos.find((item) => item.id === id) || null,
+    });
+  }
+
+   public addSinCopia(addBolsa: boolean): void {
+    patchState(this.guiaServicioState, {
+      sinCopia: addBolsa,
     });
   }
 
