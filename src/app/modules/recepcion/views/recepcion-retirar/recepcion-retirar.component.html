@@ -104,10 +104,17 @@
                     <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="warning"></mat-icon>
                     Alertas
                 </button>
-                <button mat-fab extended (click)="imprimirGuia()">
-                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="print"></mat-icon>
-                    Imprimir
-                </button>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <button mat-fab extended (click)="imprimirGuia()">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="print"></mat-icon>
+                        Imprimir
+                    </button>
+                    <mat-slide-toggle 
+                    [(ngModel)]="isSinCopia"     
+                    (change)="onChangueToggleSinCopia($event)"                
+                    >
+                    Sin Copia</mat-slide-toggle>
+                </div>
             </div>
         </div>
     </div>

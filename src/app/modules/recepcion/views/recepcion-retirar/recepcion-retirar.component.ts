@@ -26,6 +26,7 @@ import { LoadingComponent } from '../../../../core/components/loading/loading.co
 import { NotificationServiceService } from '../../services/notification-service.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -35,7 +36,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
     DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
     TicketVentaComponent, LoadingComponent, AlertDangerComponent,
-    RouterModule
+    RouterModule, MatSlideToggleModule
   ],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
@@ -79,6 +80,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   bolExisteCaja = true;
   msgValidacion = '';
+  isSinCopia = false;
 
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
@@ -176,6 +178,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     this.store.resetState();
     this.store.addRecepcion(this.guiaRetiroData.tipoRecepcion);
     this.store.addPago({ tipo: this.guiaRetiroData.tipoPago, monto: this.guiaRetiroData.acuenta });
+    this.store.addSinCopia(this.isSinCopia);
     this.store.addDocumento({
       tipoDoc: 'GS',
       serieDoc: this.guiaRetiroData.serieGuia,
@@ -410,5 +413,9 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           }
         });
     });
+  }
+
+  onChangueToggleSinCopia(event: any) {
+    this.store.addSinCopia(event.checked);
   }
 }

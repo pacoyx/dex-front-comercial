@@ -130,9 +130,9 @@ export class EmisionStoreService {
     });
   }
 
-   public addSinCopia(addBolsa: boolean): void {
+   public addSinCopia(bolSinCopia: boolean): void {
     patchState(this.guiaServicioState, {
-      sinCopia: addBolsa,
+      sinCopia: bolSinCopia,
     });
   }
 
