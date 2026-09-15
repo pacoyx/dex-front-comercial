@@ -9,9 +9,15 @@ import { MntClientesComponent } from './views/maestros/mnt-clientes/mnt-clientes
 import { MntUsuariosComponent } from './views/maestros/mnt-usuarios/mnt-usuarios.component';
 import { MntProdservicesComponent } from './views/maestros/mnt-prodservices/mnt-prodservices.component';
 import { MntUbicacionComponent } from './views/maestros/mnt-ubicacion/mnt-ubicacion.component';
+import { MntSucursalesComponent } from './views/maestros/mnt-sucursales/mnt-sucursales.component';
+import { MntSucursalUsuariosComponent } from './views/maestros/mnt-sucursal-usuarios/mnt-sucursal-usuarios.component';
+import { MntImpresorasComponent } from './views/maestros/mnt-impresoras/mnt-impresoras.component';
+import { MntWorkerNodesComponent } from './views/maestros/mnt-worker-nodes/mnt-worker-nodes.component';
+import { MntImpresionesPendientesComponent } from './views/administracion/mnt-impresiones-pendientes/mnt-impresiones-pendientes.component';
 import { RecepcionRegUbicacionesComponent } from './views/recepcion-reg-ubicaciones/recepcion-reg-ubicaciones.component';
 import { ReporteResumenCajaComponent } from './views/reportes/reporte-resumen-caja/reporte-resumen-caja.component';
 import { DashboardcajaComponent } from './views/reportes/dashboardcaja/dashboardcaja.component';
+import { DashboardprintersComponent } from './views/reportes/dashboardprinters/dashboardprinters.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -26,9 +32,15 @@ const routes: Routes = [
   { path: 'usuarios', component: MntUsuariosComponent },
   { path: 'servicios', component: MntProdservicesComponent },
   { path: 'ubicaciones', component: MntUbicacionComponent },
+  { path: 'sucursales', component: MntSucursalesComponent },
+  { path: 'sucursales/:branchId/usuarios', component: MntSucursalUsuariosComponent },
+  { path: 'impresoras', component: MntImpresorasComponent },
+  { path: 'workerNodes', component: MntWorkerNodesComponent },
+  { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent },
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent },
   { path: 'resumenCaja', component: ReporteResumenCajaComponent },  
   { path: 'dashboardcash', component: DashboardcajaComponent },
+  { path: 'dashboardprinters', component: DashboardprintersComponent },
 ];
 
 @NgModule({

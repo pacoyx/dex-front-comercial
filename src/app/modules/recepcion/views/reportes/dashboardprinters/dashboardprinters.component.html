@@ -1,0 +1,98 @@
+<div class="container-dashboardprinters">
+
+    <h2>
+        <mat-icon>print</mat-icon>
+        Dashboard Printers
+    </h2>
+
+    <div class="section-options-dashboardprinters">
+        <button mat-fab extended (click)="cargarEstadoImpresion()">
+            <mat-icon>refresh</mat-icon>
+            Actualizar
+        </button>
+
+        @if(loading) {
+        <div class="indicador-carga">
+            <app-loading></app-loading>
+            Buscando...
+        </div>
+        }
+    </div>
+
+    @if(status) {
+
+    <!-- ============ RESUMEN ============ -->
+    <div class="resumen-cards">
+        <div class="tarjeta-resumen">
+            <mat-icon>print</mat-icon>
+            <div class="tarjeta-resumen-valor">{{status.totalPrinters}}</div>
+            <div class="tarjeta-resumen-label">Total Impresoras</div>
+        </div>
+
+        <div class="tarjeta-resumen tarjeta-ok">
+            <mat-icon>wifi</mat-icon>
+            <div class="tarjeta-resumen-valor">{{status.totalConnectedWorkers}}</div>
+            <div class="tarjeta-resumen-label">Conectadas</div>
+        </div>
+
+        <div class="tarjeta-resumen tarjeta-error">
+            <mat-icon>wifi_off</mat-icon>
+            <div class="tarjeta-resumen-valor">{{status.offlinePrinters}}</div>
+            <div class="tarjeta-resumen-label">Offline</div>
+        </div>
+
+        <div class="tarjeta-resumen tarjeta-warn">
+            <mat-icon>pending_actions</mat-icon>
+            <div class="tarjeta-resumen-valor">{{status.totalPendingJobs}}</div>
+            <div class="tarjeta-resumen-label">Trabajos Pendientes</div>
+        </div>
+
+        <div class="tarjeta-resumen tarjeta-error">
+            <mat-icon>error</mat-icon>
+            <div class="tarjeta-resumen-valor">{{status.errorJobs}}</div>
+            <div class="tarjeta-resumen-label">Trabajos con Error</div>
+        </div>
+    </div>
+
+    <!-- ============ IMPRESORAS POR SUCURSAL ============ -->
+    <div class="dashboard-secciones">
+        @for (grupo of sucursales; track grupo.branchName) {
+        <div class="seccion-dashboard">
+            <h3 class="titulo-seccion">
+                <mat-icon>storefront</mat-icon>
+                {{grupo.branchName}}
+            </h3>
+
+            @for (printer of grupo.printers; track printer.printerId) {
+            <div class="tarjeta-impresora" [class.tarjeta-impresora-offline]="!printer.isOnline">
+                <div class="tarjeta-impresora-header">
+                    <mat-icon>{{printer.isOnline ? 'print' : 'print_disabled'}}</mat-icon>
+                    <span class="tarjeta-impresora-nombre">{{obtenerNombreImpresora(printer)}}</span>
+                    <span class="badge-estado" [class.badge-online]="printer.isOnline"
+                        [class.badge-offline]="!printer.isOnline">
+                        {{printer.isOnline ? 'Online' : 'Offline'}}
+                    </span>
+                </div>
+                <div class="tarjeta-impresora-body">
+                    <div>
+                        <span class="dato-label">Trabajos pendientes:</span>
+                        <span [class.dato-alerta]="printer.pendingJobs > 0">{{printer.pendingJobs}}</span>
+                    </div>
+                    <div>
+                        <span class="dato-label">Conectado desde:</span>
+                        <span>{{printer.connectedAt ? (printer.connectedAt | date:'dd/MM/yyyy HH:mm') : '-'}}</span>
+                    </div>
+                    <div>
+                        <span class="dato-label">Último latido:</span>
+                        <span>{{printer.lastHeartbeat ? (printer.lastHeartbeat | date:'dd/MM/yyyy HH:mm') : '-'}}</span>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+
+    }
+
+</div>

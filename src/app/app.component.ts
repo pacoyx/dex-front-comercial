@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,18 +20,24 @@ import { ToggleStoreServiceService } from './core/services/toggle-store-service.
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   title = 'Dexfront-Comercial';
-  
+
   constructor(
-    private router: Router,  
+    private router: Router,
     private toggleStore: ToggleStoreServiceService
   ) {
-    toggleStore.toggleState$.subscribe(state => {      
-      this.sidenav.toggle(state);
+    console.log('backend.Base', environment.apiUrlBase);
+  }
+
+  ngAfterViewInit(): void {
+    // El ViewChild recien esta disponible aca; suscribirse en el constructor
+    // fallaba porque BehaviorSubject emite su valor actual de forma sincrona
+    // al suscribirse, antes de que la vista (y por ende el sidenav) exista.
+    this.toggleStore.toggleState$.subscribe(state => {
+      this.sidenav?.toggle(state);
     });
-    console.log('backend.Base', environment.apiUrlBase);    
   }
 
   cerrarSesion() {

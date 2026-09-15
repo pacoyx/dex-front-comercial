@@ -12,6 +12,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 
 interface Marcas {
@@ -25,7 +26,7 @@ interface Marcas {
   imports: [
     MatFormFieldModule, FormsModule, ReactiveFormsModule,
     MatDialogModule, MatIconModule, MatInputModule, MatButtonModule,
-    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule
+    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule, MatCardModule
   ],
   templateUrl: './dialog-edit-item.component.html',
   styleUrl: './dialog-edit-item.component.css'

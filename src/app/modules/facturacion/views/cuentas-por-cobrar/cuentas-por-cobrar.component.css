@@ -1,0 +1,12 @@
+.container-report {
+    padding: 10px;
+}
+
+table {
+    width: 100%;
+}
+
+.overdue-row {
+    background-color: #ffebee;
+    color: #c62828;
+}

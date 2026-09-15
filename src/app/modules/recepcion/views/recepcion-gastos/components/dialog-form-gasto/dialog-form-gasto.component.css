@@ -1,0 +1,74 @@
+.dialog-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dialog-content {
+    display: block;
+    padding-top: 18px;
+}
+
+.gasto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+}
+
+.field-fecha {
+    flex: 0 0 160px;
+}
+
+.field-grow {
+    flex: 1 1 auto;
+}
+
+.field-full {
+    width: 100%;
+}
+
+.prefix-moneda {
+    font-weight: 600;
+    color: rgba(0, 0, 0, .6);
+    padding-right: 2px;
+}
+
+.feedback-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.feedback-banner mat-icon {
+    flex-shrink: 0;
+}
+
+.feedback-success {
+    background: #e6f4ea;
+    color: #1e7e34;
+    border: 1px solid #b7dfc0;
+}
+
+.feedback-error {
+    background: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c2c0;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 14px;
+}

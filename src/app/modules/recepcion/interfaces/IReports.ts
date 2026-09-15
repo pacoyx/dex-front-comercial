@@ -119,3 +119,24 @@ export interface IDashboardCashDetailDto {
   tipoPago: string;
   montoTotal: number;
 }
+
+
+export interface IPrintingStatusResponse {
+  totalPrinters: number;
+  totalConnectedWorkers: number;
+  offlinePrinters: number;
+  totalPendingJobs: number;
+  errorJobs: number;
+  printers: IPrintingStatusPrinter[];
+}
+
+export interface IPrintingStatusPrinter {
+  printerId: number;
+  printerName: string;
+  branchId: number;
+  branchName: string;
+  isOnline: boolean;
+  connectedAt: string | null;
+  lastHeartbeat: string | null;
+  pendingJobs: number;
+}

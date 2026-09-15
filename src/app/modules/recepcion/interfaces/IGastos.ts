@@ -6,6 +6,7 @@ export interface IListaGastosPorUserResponse {
   importe: number;
   detallesEgreso: string;
   estadoRegistro: string;
+  usuarioRegistro: string;
 }
 
 

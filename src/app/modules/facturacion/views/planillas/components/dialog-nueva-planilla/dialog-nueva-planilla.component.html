@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Nueva Planilla de Cobranza</h2>
+
+<mat-dialog-content [formGroup]="frmPlanilla">
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Sucursal</mat-label>
+        <mat-select formControlName="branchId">
+            @for (branch of branches; track branch.id) {
+            <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Número</mat-label>
+        <input type="text" matInput formControlName="number">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Observaciones</mat-label>
+        <input type="text" matInput formControlName="remarks">
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving">Guardar</button>
+</mat-dialog-actions>

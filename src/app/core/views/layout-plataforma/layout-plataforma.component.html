@@ -161,11 +161,6 @@
         Consultas
       </button>
       <mat-menu #consMenu="matMenu">
-        <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
-          <mat-icon>dashboard</mat-icon>
-          Dashboard
-        </button>
-        <mat-divider></mat-divider>
         <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
           <mat-icon>manage_accounts</mat-icon>
           Guias
@@ -208,6 +203,43 @@
         <button mat-menu-item [routerLink]="['/recepcion/ubicaciones']" routerLinkActive="router-link-active">
           <mat-icon>pin_drop</mat-icon>
           Ubicaciones
+        </button>
+      </mat-menu>
+
+
+      <button mat-button [matMenuTriggerFor]="adminMenu">
+        <mat-icon>admin_panel_settings</mat-icon>
+        Administracion
+      </button>
+      <mat-menu #adminMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
+          <mat-icon>dashboard</mat-icon>
+          Dashboard Caja
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/dashboardprinters']" routerLinkActive="router-link-active">
+          <mat-icon>print</mat-icon>
+          Dashboard Printers
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/impresionesPendientes']" routerLinkActive="router-link-active">
+          <mat-icon>print</mat-icon>
+          Impresiones Pendientes
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/sucursales']" routerLinkActive="router-link-active">
+          <mat-icon>storefront</mat-icon>
+          Sucursales
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/impresoras']" routerLinkActive="router-link-active">
+          <mat-icon>print</mat-icon>
+          Impresoras
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/workerNodes']" routerLinkActive="router-link-active">
+          <mat-icon>dns</mat-icon>
+          Estaciones de Trabajo
         </button>
       </mat-menu>
 

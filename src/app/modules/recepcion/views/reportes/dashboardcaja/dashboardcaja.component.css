@@ -6,14 +6,68 @@
     /* background-color: pink; */
   }
   
+  .dashboard-secciones {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .seccion-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 320px;
+    min-width: 0;
+  }
+
   .section-options-dashboardcaja {
     display: flex;
-    /* flex-direction: column; */
-    gap: 20px;
-    /* justify-content: space-between; */
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
+  }
+
+  .section-options-dashboardcaja mat-form-field {
+    flex: 1 1 160px;
+    min-width: 140px;
+  }
+
+  .section-options-dashboardcaja mat-form-field.campo-anio {
+    flex: 0 1 90px;
+    min-width: 80px;
+  }
+
+  .indicador-carga {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .titulo-seccion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #7d9ad6;
+    color: #3a4f7d;
+  }
+
+  .graficos-seccion {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tarjeta-grafico {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
   }
 
   .table-elegant {

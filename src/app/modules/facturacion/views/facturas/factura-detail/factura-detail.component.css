@@ -1,0 +1,14 @@
+.container-factura {
+    padding: 10px;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 15px;
+}

@@ -1,256 +1,242 @@
-<div class="container-emision win-proceso">
+<div class="emision-page win-proceso">
 
-  <div style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;" >
+  <!-- ENCABEZADO -->
+  <mat-card class="header-card" appearance="outlined">
+    <div class="header-card__row">
+      <div class="header-card__title">
+        <div class="header-card__icon">
+          <mat-icon>point_of_sale</mat-icon>
+        </div>
+        <div>
+          <h1>Emisión de Recibo</h1>
+          <span class="header-card__subtitle">Punto de venta · Recepción</span>
+        </div>
+      </div>
 
-    <div>
-      <!-- <mat-icon>point_of_sale</mat-icon> -->
-      <label><strong>Emisión de Recibo </strong></label>
-      
-    </div>
-
-    <div style="display: flex; gap: 5px;">
-      <label><strong>Fecha: </strong></label>
-      <div>
-        {{fechaHoy | date:'dd/MM/yyyy'}}
+      <div class="header-card__meta">
+        <div class="meta-chip">
+          <mat-icon>event</mat-icon>
+          <span>{{fechaHoy | date:'dd/MM/yyyy'}}</span>
+        </div>
+        <div class="meta-chip">
+          <mat-icon>storefront</mat-icon>
+          <span>{{sucursalNombre}}</span>
+        </div>
       </div>
     </div>
-
-    <div style="display: flex; gap: 5px;">
-      <label><strong>Sucursal: </strong></label>
-      <div>
-        {{sucursalNombre}}
-      </div>
-    </div>
-
-    <!-- <mat-form-field appearance="outline">
-      <mat-label>Sucursal</mat-label>
-      <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
-        [(value)]="sucursalId">
-        @for (sucursal of sucursales; track $index) {
-        <mat-option [value]="sucursal.branchSalesId">{{sucursal.branchSalesName}}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field> -->
-  </div>
+  </mat-card>
 
   @if(!bolExisteCaja){
   <app-alert-danger [message]="msgValidacion" [timeShow]="3000"></app-alert-danger>
   }
-  <!-- <hr> -->
 
-  <div class="container-area-trabajo">
+  <div class="emision-grid">
 
-    <div class="container-lado-izq">
+    <!-- COLUMNA IZQUIERDA: CATALOGO -->
+    <mat-card class="panel panel-catalogo" appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>Catálogo de servicios</mat-card-title>
+      </mat-card-header>
 
-      <div style="padding-left: 5px; padding-right: 5px;">
-        <mat-form-field appearance="outline" style="width: 100%;padding: 0;">
+      <mat-card-content class="panel-catalogo__content">
+        <mat-form-field appearance="outline" class="search-field">
           <mat-label>Buscar</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
           <input matInput type="text" [(ngModel)]="searchText" (keyup)="onSearchInputChange()">
         </mat-form-field>
-      </div>
 
-      @if (showMenuItems) {
-      <div style="padding: 5px;">
-        <button mat-fab extended (click)="ocultarMenuItems()" style="width: 100%;">
+        @if (showMenuItems) {
+        <button mat-stroked-button color="primary" class="btn-back" (click)="ocultarMenuItems()">
           <mat-icon>arrow_back</mat-icon>
           Regresar
         </button>
-      </div>
-      }
-
-     
-      <div class="container-scroll">
-        @if(loading){
-        <div style="display: flex;justify-content: center;">
-          <app-loading></app-loading>
-          Cargando...
-        </div>
         }
 
+        <div class="container-scroll">
 
-        @if (!showMenuItems) {
-        <div class="container-categories">
-     
-          @if(loadingServicesQuick){
-          <div style="display: flex;justify-content: center;">
+          @if(loading){
+          <div class="loading-row">
             <app-loading></app-loading>
-            Cargando acceso rapido...
+            <span>Cargando...</span>
           </div>
           }
 
-          @for (item of dataServiciosAccesosRapido; track item.id; let idx = $index, e = $even) {
-          <div class="example-button-container">
-            <button class="btn primary" (click)="agregarItemQuickAccess(item)" [disabled]="blockSave">
-              <div
-                style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 5px;">
-                <img [src]="item.iconName" alt="icon" style="width: 50px; height: 50px;">
-                {{item.shortName}}
-              </div>
+          @if (!showMenuItems) {
+          <div class="quick-access-grid">
 
+            @if(loadingServicesQuick){
+            <div class="loading-row loading-row--full">
+              <app-loading></app-loading>
+              <span>Cargando acceso rápido...</span>
+            </div>
+            }
+
+            @for (item of dataServiciosAccesosRapido; track item.id) {
+            <button class="service-tile" (click)="agregarItemQuickAccess(item)" [disabled]="blockSave">
+              <img [src]="item.iconName" alt="icon" class="service-tile__icon">
+              <span class="service-tile__label">{{item.shortName}}</span>
             </button>
+            }
           </div>
           }
-        </div>
-        }
-        @if (showMenuItems) {
 
-        @if(loadingFilterServices){
-        <div style="display: flex;justify-content: center;">
-          <app-loading></app-loading>
-          Buscando...
-        </div>
-        }
-        <app-recepcion-grilla-busqueda-servicios [itemsData]="items" (updatePayEvent)="actualizarPago($event)">
-        </app-recepcion-grilla-busqueda-servicios>
+          @if (showMenuItems) {
 
-        <!-- <div class="container-items-prod">
-          @for (item of items; track item.id; let idx = $index, e = $even) {
-          <div class="items-prods">
-            <div class="titulo-nombre">
-              {{ item.name }}
-            </div>
-            <div class="titulo-precio">
-              {{ item.price | currency:' ':'symbol':'0.2-2'}}
-            </div>
-            <button mat-raised-button (click)="openDialogAddItem(item)">Agregar</button>
+          @if(loadingFilterServices){
+          <div class="loading-row">
+            <app-loading></app-loading>
+            <span>Buscando...</span>
           </div>
           }
-        </div> -->
-        }
+          <app-recepcion-grilla-busqueda-servicios [itemsData]="items" (updatePayEvent)="actualizarPago($event)">
+          </app-recepcion-grilla-busqueda-servicios>
+          }
 
-      </div>
-
-    </div>
-
-
-    <div class="container-lado-der">
-
-      <div class="section-detalles">
-   
-        <!-- CLIENTE -->
-        <div class="fila-detalle">
-          <div style="width: 100%; display: flex;gap: 5px;">
-            <mat-form-field appearance="outline" style="width: 100%;">
-              <mat-label>Cliente</mat-label>
-              <!-- <input matInput type="text" [(ngModel)]="clienteNombre"> -->
-
-              <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
-                placeholder="Buscar cliente" [readonly]="blockSave">
-
-
-              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event)"
-                [displayWith]="displayFn">
-                <mat-option *ngFor="let cliente of filteredClientes | async" [value]="cliente">
-                  {{ cliente.nombres | titlecase }} {{ cliente.apellidos | titlecase }}
-                </mat-option>
-              </mat-autocomplete>
-
-            </mat-form-field>
-            <div>
-              <mat-form-field appearance="outline" style="width: 140px;">
-                <mat-label>Telefono</mat-label>
-                <input matInput type="text" [(ngModel)]="clienteTelefono"
-                  (keydown.enter)="actualizarTelefonoCliente($event)">
-              </mat-form-field>
-              @if(loadingUpdatePhone){
-              <div style="display: flex;">
-                <app-loading></app-loading>
-                <span><small> Actualizando...</small></span>
-              </div>
-              }
-            </div>
-            <button mat-mini-fab (click)="openDialogClientes()" [disabled]="blockSave">
-              <mat-icon>person_add</mat-icon>
-            </button>
-
-          </div>
         </div>
-      </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- COLUMNA DERECHA: DETALLE DEL RECIBO -->
+    <div class="panel-detalle">
+
+      <!-- CLIENTE -->
+      <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="cliente-row">
+          <mat-form-field appearance="outline" class="cliente-field">
+            <mat-label>Cliente</mat-label>
+            <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="auto"
+              placeholder="Buscar cliente" [readonly]="blockSave">
+
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event)"
+              [displayWith]="displayFn">
+              <mat-option *ngFor="let cliente of filteredClientes | async" [value]="cliente">
+                {{ cliente.nombres | titlecase }} {{ cliente.apellidos | titlecase }}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="telefono-field">
+            <mat-label>Teléfono</mat-label>
+            <input matInput type="text" [(ngModel)]="clienteTelefono"
+              (keydown.enter)="actualizarTelefonoCliente($event)">
+          </mat-form-field>
+
+          <button mat-mini-fab color="primary" class="cliente-add-btn" (click)="openDialogClientes()"
+            [disabled]="blockSave" matTooltip="Nuevo cliente">
+            <mat-icon>person_add</mat-icon>
+          </button>
+
+          @if(loadingUpdatePhone){
+          <div class="loading-row loading-row--full">
+            <app-loading></app-loading>
+            <small>Actualizando teléfono...</small>
+          </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
       <!-- TABLA DETALLE -->
-      <div style="padding: 5px;">
-        <table mat-table [dataSource]="dataSource" class="custom-table">
+      <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Detalle del pedido</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="panel-tabla__content">
+          <div class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="custom-table">
 
-          <ng-container matColumnDef="item">
-            <th mat-header-cell *matHeaderCellDef>#</th>
-            <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} {{element.Identificador}} </td>
-          </ng-container>
+              <ng-container matColumnDef="item">
+                <th mat-header-cell *matHeaderCellDef>#</th>
+                <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} {{element.Identificador}} </td>
+              </ng-container>
 
+              <ng-container matColumnDef="nomProd">
+                <th mat-header-cell *matHeaderCellDef> Servicio</th>
+                <td mat-cell *matCellDef="let element"> {{element.nomProd}} {{element.Obs}} </td>
+              </ng-container>
 
-          <ng-container matColumnDef="nomProd">
-            <th mat-header-cell *matHeaderCellDef> Servicio</th>
-            <td mat-cell *matCellDef="let element"> {{element.nomProd}} {{element.Obs}} </td>
-          </ng-container>
+              <ng-container matColumnDef="Cant">
+                <th mat-header-cell *matHeaderCellDef> Cant </th>
+                <td mat-cell *matCellDef="let element" class="col-numeric">
+                  {{element.Cant | currency:' ':'symbol':'0.2-2'}} </td>
+              </ng-container>
 
+              <ng-container matColumnDef="Precio">
+                <th mat-header-cell *matHeaderCellDef> Precio </th>
+                <td mat-cell *matCellDef="let element" class="col-numeric">
+                  {{element.Precio | currency:' ':'symbol':'0.2-2'}} </td>
+              </ng-container>
 
-          <ng-container matColumnDef="Cant">
-            <th mat-header-cell *matHeaderCellDef> Cant </th>
-            <td mat-cell *matCellDef="let element" style="text-align: right;">
-              {{element.Cant | currency:' ':'symbol':'0.2-2'}} </td>
-          </ng-container>
+              <ng-container matColumnDef="Subtotal">
+                <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+                <td mat-cell *matCellDef="let element" class="col-numeric">
+                  {{element.Subtotal | currency:' ':'symbol':'0.2-2'}}
+                </td>
+              </ng-container>
 
+              <ng-container matColumnDef="Obs">
+                <th mat-header-cell *matHeaderCellDef> Obs </th>
+                <td mat-cell *matCellDef="let element"> {{element.Obs}} </td>
+              </ng-container>
 
-          <ng-container matColumnDef="Precio">
-            <th mat-header-cell *matHeaderCellDef> Precio </th>
-            <td mat-cell *matCellDef="let element" style="text-align: right;">
-              {{element.Precio | currency:' ':'symbol':'0.2-2'}} </td>
-          </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+                <td mat-cell *matCellDef="let element">
+                  <div class="row-actions">
+                    <button mat-icon-button (click)="editData(element)" [disabled]="blockSave"
+                      matTooltip="Editar">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button color="warn" (click)="deleteData(element)" [disabled]="blockSave"
+                      matTooltip="Eliminar">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </td>
+              </ng-container>
 
-          <ng-container matColumnDef="Subtotal">
-            <th mat-header-cell *matHeaderCellDef> Subtotal </th>
-            <td mat-cell *matCellDef="let element" style="text-align: right;">
-              {{element.Subtotal | currency:' ':'symbol':'0.2-2'}}
-            </td>
-          </ng-container>
-
-          <ng-container matColumnDef="Obs">
-            <th mat-header-cell *matHeaderCellDef> Obs </th>
-            <td mat-cell *matCellDef="let element"> {{element.Obs}} </td>
-          </ng-container>
-
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Operaciones </th>
-            <td mat-cell *matCellDef="let element">
-              <div style="display: flex; gap: 5px;">
-                <button mat-mini-fab (click)="editData(element)" [disabled]="blockSave">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-mini-fab (click)="deleteData(element)" [disabled]="blockSave">
-                  <mat-icon style="color: red;">delete</mat-icon>
-                </button>
-              </div>
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </div>
-      <!-- TOTALES -->
-      <div class="fila-detalle">
-        <div style="width: 100%; text-align: right; padding-right: 10px;">
-          <div style="font-size: 20px; color: blue; display: flex; justify-content: space-between;">
-            <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
-            Total: {{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}
+              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
           </div>
-          <div
-            style="font-size: 20px; color: blue; display: flex; justify-content: space-between; padding-top: 5px; padding-bottom: 5px;">
+        </mat-card-content>
+      </mat-card>
+
+      <!-- OPCIONES Y TOTALES -->
+      <mat-card class="panel panel-resumen" appearance="outlined">
+        <mat-card-content>
+          <div class="opciones-row">
+            <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
             <mat-slide-toggle [(ngModel)]="isEtiqueta"
               (change)="onChangueToggleBolsa($event)">Etiqueta</mat-slide-toggle>
-            A Cuenta: {{ store.selectedPago()?.monto| currency:' ':'symbol':'0.2-2' }}
+            <mat-slide-toggle [(ngModel)]="isSinCopia"
+              (change)="onChangueToggleSinCopia($event)">Sin Copia</mat-slide-toggle>
           </div>
-          <div style="font-size: 20px; color: blue; font-weight: bold;display: flex; justify-content: space-between; padding-top: 5px; padding-bottom: 5px;">
-            <mat-slide-toggle [(ngModel)]="isSinCopia" (change)="onChangueToggleSinCopia($event)">Sin Copia</mat-slide-toggle>
-            Saldo: {{ store.itemSumTotal() - (store.selectedPago()?.monto ?? 0) | currency:' ':'symbol':'0.2-2' }}
-          </div>          
-        </div>
 
-        <!-- {{store.items() | json}} -->
-      </div>
-      <!-- FORMA PAGO -->
-      <div class="fila-detalle-pago">
+          <mat-divider></mat-divider>
 
-        <div style="display: flex;">
+          <div class="totales">
+            <div class="totales__row">
+              <span class="totales__label">Total</span>
+              <span class="totales__value">{{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+            <div class="totales__row">
+              <span class="totales__label">A Cuenta</span>
+              <span class="totales__value">{{ store.selectedPago()?.monto| currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+            <div class="totales__row totales__row--saldo">
+              <span class="totales__label">Saldo</span>
+              <span class="totales__value">{{ store.itemSumTotal() - (store.selectedPago()?.monto ?? 0) | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
 
+      <!-- FORMA DE PAGO -->
+      <mat-card class="panel panel-pago" appearance="outlined">
+        <mat-card-header>
+          <mat-card-title>Forma de pago</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="pago-row">
           <mat-button-toggle-group name="pagos" [(ngModel)]="tipoPago" [disabled]="blockSave">
             <mat-button-toggle value="SP" (change)="onValChangePago($event.value)">SP</mat-button-toggle>
             <mat-button-toggle value="EF" (change)="onValChangePago($event.value)">
@@ -267,45 +253,43 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-        </div>
-        @if (showPago) {
-        <div>
-          <mat-form-field appearance="outline" style="width: 100px;">
+          @if (showPago) {
+          <mat-form-field appearance="outline" class="monto-field">
             <mat-label>Monto</mat-label>
             <input matInput placeholder="0.00" type="number" [(ngModel)]="montoPago"
               (focusout)="onFocusOutEvent($event)">
           </mat-form-field>
-          <!-- <mat-checkbox [(ngModel)]="canceladoPago" (change)="updateCancelado($event.checked)">Cancelado</mat-checkbox> -->
-        </div>
-        }
-      </div>
+          }
+        </mat-card-content>
+      </mat-card>
+
       <!-- BOTONERA -->
-      <div class="botonera" style="display: flex; justify-content: space-between;">
-        <button mat-fab extended (click)="nuevaGuia()">
-          <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="post_add"></mat-icon>
+      <div class="actions-bar">
+        <button mat-stroked-button color="primary" (click)="nuevaGuia()">
+          <mat-icon>post_add</mat-icon>
           Nuevo
         </button>
-        <div style="display: flex; gap: 10px;">
+
+        <div class="actions-bar__right">
 
           @if(loadingSave){
-          <button mat-fab extended>
-            <div style="display: flex; gap: 5px;">
+          <button mat-flat-button color="primary" disabled>
+            <span class="loading-row">
               <app-loading></app-loading>
               Grabando...
-            </div>
+            </span>
           </button>
           }
 
           @if(!loadingSave){
-          <button mat-fab extended (click)="grabarRecibo()" [disabled]="blockSave">
+          <button mat-flat-button color="primary" (click)="grabarRecibo()" [disabled]="blockSave">
             <mat-icon>save</mat-icon>
             Grabar
           </button>
           }
 
-
-          <button mat-fab extended (click)="imprimirTicket()" [disabled]="!blockSave">
-            <mat-icon style="color: goldenrod;">print</mat-icon>
+          <button mat-flat-button color="accent" (click)="imprimirTicket()" [disabled]="!blockSave">
+            <mat-icon>print</mat-icon>
             Imprimir
           </button>
         </div>
@@ -313,9 +297,6 @@
 
     </div>
   </div>
-
-
 </div>
-
 
 <app-ticket-venta></app-ticket-venta>

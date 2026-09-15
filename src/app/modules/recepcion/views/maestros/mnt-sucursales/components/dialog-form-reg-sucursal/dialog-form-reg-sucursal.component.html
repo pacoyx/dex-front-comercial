@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>
+    <mat-icon>edit_note</mat-icon> {{titulo}}
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="sucursalForm">
+        <div style="padding: 5px; display: flex; flex-direction: column;">
+            <mat-form-field appearance="outline">
+                <mat-label>Descripción</mat-label>
+                <input matInput formControlName="description">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Dirección</mat-label>
+                <input matInput formControlName="address">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Código</mat-label>
+                <input matInput formControlName="code">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A"> Activo </mat-option>
+                    <mat-option value="I"> Inactivo </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Impresora por defecto</mat-label>
+                <mat-select formControlName="defaultPrinterId">
+                    @for (impresora of impresoras; track impresora.id) {
+                    <mat-option [value]="impresora.id"> {{impresora.windowsPrinterName}} </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
+
+    @if(loadingSave){
+    <button mat-fab extended>
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+
+</mat-dialog-actions>

@@ -19,14 +19,15 @@ import { DialogQuestionComponent } from '../../components/dialog-question/dialog
 import { Subscription } from 'rxjs';
 import { NotificationServiceService } from '../../services/notification-service.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 
 @Component({
   selector: 'app-recepcion-gastos',
   standalone: true,
   imports: [
-    FormsModule, MatIconModule, MatFormFieldModule, MatInputModule, 
-    MatDatepickerModule, MatButtonModule, MatTableModule, DatePipe, 
-    DecimalPipe, AlertDangerComponent],
+    FormsModule, MatIconModule, MatFormFieldModule, MatInputModule,
+    MatDatepickerModule, MatButtonModule, MatTableModule, DatePipe,
+    DecimalPipe, AlertDangerComponent, LoadingComponent],
   providers: [
 
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -44,7 +45,7 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
 
   listGastos: IListaGastosPorUserResponse[] = [];
 
-  displayedColumns: string[] = ['categoryGasto', 'personalAutoriza', 'fechaGasto', 'importe', 'detallesEgreso', 'operaciones'];
+  displayedColumns: string[] = ['usuarioRegistro', 'categoryGasto', 'personalAutoriza', 'fechaGasto', 'importe', 'detallesEgreso', 'operaciones'];
   dataSource = new MatTableDataSource<IListaGastosPorUserResponse>([]);
 
   loadingGastos = false;
@@ -95,13 +96,8 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
   }
 
   cargarGastos() {
-    let idIser = this.loginService.getLoginData()?.userId;
-    if (idIser == null) {
-      return;
-    }
-
     this.loadingGastos = true;
-    this.subscriptionListaGastos = this.emisionService.ListarGastosPorIdUser(idIser).subscribe({
+    this.subscriptionListaGastos = this.emisionService.ListarGastosPorFecha(this.fechaHoy.toDateString()).subscribe({
       next: (res) => {
         console.log(res);
         this.loadingGastos = false;
@@ -116,17 +112,14 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
         this.loadingGastos = false;
       },
       complete: () => {
-        console.log('complete ListarGastosPorIdUser()');
+        console.log('complete ListarGastosPorFecha()');
       }
     });
-
-
-
   }
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogFormGastoComponent, {
-      // width: '300px',
+      width: '560px',
       data: { title: 'Registrar Gasto', edicion: false }
     });
 
@@ -180,7 +173,7 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
 
 
     const dialogRef = this.dialog.open(DialogFormGastoComponent, {
-      width: '300px',
+      width: '560px',
       data: { title: 'Editar Gasto', edicion: true, itemGasto }
     });
 

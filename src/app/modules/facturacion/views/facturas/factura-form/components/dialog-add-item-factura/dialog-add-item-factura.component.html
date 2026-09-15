@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>{{ titulo }}</h2>
+
+<mat-dialog-content>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Producto / Servicio</mat-label>
+        <input type="text" matInput [formControl]="productControl" [matAutocomplete]="auto"
+            placeholder="escribir nombre del servicio">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onProductSelected($event)"
+            [displayWith]="displayFn">
+            <mat-option *ngFor="let product of filteredProducts | async" [value]="product">
+                {{ product.name | titlecase }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <div style="display: flex; gap: 5px;">
+        <mat-form-field appearance="outline" style="width: 100px;">
+            <mat-label>Cantidad</mat-label>
+            <input type="number" matInput [(ngModel)]="cantidad" min="0.01" step="0.01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 140px;">
+            <mat-label>Precio Unit.</mat-label>
+            <input type="number" matInput [(ngModel)]="precioUnitario" min="0" step="0.01">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 140px;">
+            <mat-label>Descuento</mat-label>
+            <input type="number" matInput [(ngModel)]="descuento" min="0" step="0.01">
+        </mat-form-field>
+    </div>
+
+    <div style="text-align: right; font-size: large;">
+        Total línea: <strong>{{ lineTotalPreview | number:'0.2-2' }}</strong>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!productoId">Guardar</button>
+</mat-dialog-actions>

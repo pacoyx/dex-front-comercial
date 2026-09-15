@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>
+    <mat-icon>edit_note</mat-icon> {{titulo}}
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="impresoraForm">
+        <div style="padding: 5px; display: flex; flex-direction: column;">
+            <mat-form-field appearance="outline">
+                <mat-label>Impresora (Windows)</mat-label>
+                <input matInput formControlName="windowsPrinterName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Worker Node</mat-label>
+                <mat-select formControlName="workerNodeId">
+                    @for (workerNode of workerNodes; track workerNode.id) {
+                    <mat-option [value]="workerNode.id"> {{workerNode.computerName}} ({{workerNode.workerKey}}) </mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
+
+    @if(loadingSave){
+    <button mat-fab extended>
+        <div style="display: flex; gap: 5px;">
+            <app-loading></app-loading>
+            Grabando...
+        </div>
+    </button>
+    }
+
+    @if(!loadingSave){
+    <button mat-fab extended (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+
+</mat-dialog-actions>

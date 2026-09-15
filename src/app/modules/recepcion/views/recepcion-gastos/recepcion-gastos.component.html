@@ -12,7 +12,8 @@
         <div>
             <mat-form-field appearance="outline">
                 <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy">
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy"
+                    (dateChange)="cargarGastos()">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -28,9 +29,24 @@
 
     </div>
 
+    @if(loadingGastos) {
+    <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
+        <app-loading></app-loading>
+        <span>
+            Cargando gastos...
+        </span>
+    </div>
+    }
+
     <div>
-        
+
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="usuarioRegistro">
+                <th mat-header-cell *matHeaderCellDef> Usuario </th>
+                <td mat-cell *matCellDef="let element"> {{element.usuarioRegistro}} </td>
+                <td mat-footer-cell *matFooterCellDef>  </td>
+            </ng-container>
 
             <ng-container matColumnDef="categoryGasto">
                 <th mat-header-cell *matHeaderCellDef> Categoria </th>

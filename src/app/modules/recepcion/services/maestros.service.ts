@@ -8,6 +8,10 @@ import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
 import { IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
 import { ISucursalesCombo } from '../interfaces/IReports';
+import { IBranchSalesCreateDto, IBranchSalesEditDto, IBranchSalesResponseDto, IBranchSalesUserCreateDto, IBranchSalesUserEditDto, IBranchSalesUserResponseDto, IUsuarioSistema } from '../interfaces/IBranchSales';
+import { IPrinterCreateDto, IPrinterEditDto, IPrinterResponseDto } from '../interfaces/IPrinter';
+import { IWorkerNodeCreateDto, IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../interfaces/IWorkerNode';
+import { IPrintQueueResponseDto } from '../interfaces/IPrintQueue';
 
 @Injectable({
   providedIn: 'root'
@@ -109,6 +113,27 @@ export class MaestrosService {
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
+  obtenerSucursales() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IBranchSalesResponseDto[]>>(`${this.apiUrl}${environment.EPListarSucursales}`, { headers });
+  }
+
+  crearSucursal(sucursal: IBranchSalesCreateDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPCrearSucursal}`, sucursal, { headers });
+  }
+
+  actualizarSucursal(sucursal: IBranchSalesEditDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarSucursal}/${sucursal.id}`, sucursal, { headers });
+  }
+
+  eliminarSucursal(idSucursal: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarSucursal}/${idSucursal}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
   registrarUbicacionPrenda(ubicacion: IRequestRegistrarUbicacion) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
@@ -119,5 +144,89 @@ export class MaestrosService {
     return this.http.get<IResponseGeneric<ISucursalesCombo[]>>(`${this.apiUrl}${environment.EPListarSucursales}`, { headers });
   }
 
+  obtenerSucursalUsuariosPorSucursal(branchId: number) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IBranchSalesUserResponseDto[]>>(`${this.apiUrl}${environment.EPListarSucursalUsuariosPorSucursal}/${branchId}`, { headers });
+  }
+
+  crearSucursalUsuario(sucursalUsuario: IBranchSalesUserCreateDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPCrearSucursalUsuario}`, sucursalUsuario, { headers });
+  }
+
+  actualizarSucursalUsuario(sucursalUsuario: IBranchSalesUserEditDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarSucursalUsuario}/${sucursalUsuario.id}`, sucursalUsuario, { headers });
+  }
+
+  eliminarSucursalUsuario(idSucursalUsuario: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarSucursalUsuario}/${idSucursalUsuario}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  obtenerUsuariosSistema() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IUsuarioSistema[]>>(`${this.apiUrl}${environment.EPGetUsers}`, { headers });
+  }
+
+  obtenerImpresoras() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IPrinterResponseDto[]>>(`${this.apiUrl}${environment.EPListarImpresoras}`, { headers });
+  }
+
+  crearImpresora(impresora: IPrinterCreateDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPCrearImpresora}`, impresora, { headers });
+  }
+
+  actualizarImpresora(impresora: IPrinterEditDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarImpresora}/${impresora.id}`, impresora, { headers });
+  }
+
+  eliminarImpresora(idImpresora: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarImpresora}/${idImpresora}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  obtenerWorkerNodes() {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IWorkerNodeResponseDto[]>>(`${this.apiUrl}${environment.EPListarWorkerNodes}`, { headers });
+  }
+
+  crearWorkerNode(workerNode: IWorkerNodeCreateDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPCrearWorkerNode}`, workerNode, { headers });
+  }
+
+  actualizarWorkerNode(workerNode: IWorkerNodeEditDto) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarWorkerNode}/${workerNode.id}`, workerNode, { headers });
+  }
+
+  eliminarWorkerNode(idWorkerNode: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPEliminarWorkerNode}/${idWorkerNode}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  obtenerImpresionesPendientes(): Observable<IPrintQueueResponseDto[]> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IPrintQueueResponseDto[]>(`${this.apiUrl}${environment.EPListarImpresionesPendientes}`, { headers });
+  }
+
+  cancelarImpresionPendiente(idImpresionPendiente: number) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCancelarImpresionPendiente}/${idImpresionPendiente}/cancel`;
+    return this.http.post<IResponseGeneric<string>>(url, {}, { headers });
+  }
+
+  reimprimirImpresionPendiente(idImpresionPendiente: number) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPReimprimirImpresionPendiente}/${idImpresionPendiente}/reprint`;
+    return this.http.post<IResponseGeneric<string>>(url, {}, { headers });
+  }
 
 }

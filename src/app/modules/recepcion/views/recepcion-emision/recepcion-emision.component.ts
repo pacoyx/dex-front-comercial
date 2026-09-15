@@ -16,7 +16,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { IListaItemsBusqueda } from '../../interfaces/IListaItemsBusqueda';
 import { CurrencyPipe } from '@angular/common';
-import { DialogClienteComponent, IClienteBusqueda } from '../../components/dialog-cliente/dialog-cliente.component';
+import {
+  DialogClienteComponent,
+  IClienteBusqueda,
+} from '../../components/dialog-cliente/dialog-cliente.component';
 import { DialogPesokgComponent } from '../../components/dialog-pesokg/dialog-pesokg.component';
 import { TicketVentaComponent } from '../../components/ticket-venta/ticket-venta.component';
 import { IEmisionDocumento } from '../../models/IEmisionDocumento';
@@ -24,7 +27,12 @@ import { IEmisionPago } from '../../models/IEmisionPago';
 import { DialogEditItemComponent } from '../../components/dialog-edit-item/dialog-edit-item.component';
 import { EmisionService } from '../../services/emision.service';
 import { Observable, of, Subject, Subscription } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { INumeracionDoc } from '../../interfaces/INumeracionDoc';
 import { ICreateGuideWork } from '../../interfaces/ICreateGuideWork';
@@ -40,16 +48,38 @@ import { MatDividerModule } from '@angular/material/divider';
 import { RecepcionGrillaBusquedaServiciosComponent } from './components/recepcion-grilla-busqueda-servicios/recepcion-grilla-busqueda-servicios.component';
 import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-recepcion-emision',
   standalone: true,
   imports: [
-    MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, DatePipe, MatButtonToggleModule,
-    FormsModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, CurrencyPipe,
-    TicketVentaComponent, MatSlideToggleModule, LoadingComponent, MatAutocompleteModule,
-    ReactiveFormsModule, AsyncPipe, AlertDangerComponent, MatDividerModule, TitleCasePipe, NgFor,
-    RecepcionGrillaBusquedaServiciosComponent, MatSelectModule
+    MatButtonModule,
+    MatIconModule,
+    MatTableModule,
+    MatDialogModule,
+    DatePipe,
+    MatButtonToggleModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule,
+    CurrencyPipe,
+    TicketVentaComponent,
+    MatSlideToggleModule,
+    LoadingComponent,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    AsyncPipe,
+    AlertDangerComponent,
+    MatDividerModule,
+    TitleCasePipe,
+    NgFor,
+    RecepcionGrillaBusquedaServiciosComponent,
+    MatSelectModule,
+    MatCardModule,
+    MatTooltipModule,
   ],
   templateUrl: './recepcion-emision.component.html',
   styleUrl: './recepcion-emision.component.css',
@@ -61,7 +91,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   notificacionService = inject(NotificationServiceService);
   dataLogin = inject(LoginService);
 
-  sucursalId = 1;  
+  sucursalId = 1;
   sucursalNombre = '[Seleccione Sucursal]';
   idServicioPeso = 0;
   idServicioLavado = 0;
@@ -79,55 +109,61 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   searchText = '';
   searchInput = new Subject<string>();
 
-
   items: IListaItemsBusqueda[] = [];
   categories: IListaCategorias[] = [
     {
-      "id": 1,
-      "name": "Peso",
-      "icon": "scale"
+      id: 1,
+      name: 'Peso',
+      icon: 'scale',
     },
     {
-      "id": 2,
-      "name": "Vestir",
-      "icon": "checkroom"
+      id: 2,
+      name: 'Vestir',
+      icon: 'checkroom',
     },
     {
-      "id": 3,
-      "name": "Diario",
-      "icon": "group"
+      id: 3,
+      name: 'Diario',
+      icon: 'group',
     },
     {
-      "id": 4,
-      "name": "Cama",
-      "icon": "bed"
+      id: 4,
+      name: 'Cama',
+      icon: 'bed',
     },
     {
-      "id": 5,
-      "name": "Hogar",
-      "icon": "home"
+      id: 5,
+      name: 'Hogar',
+      icon: 'home',
     },
     {
-      "id": 6,
-      "name": "Calzado",
-      "icon": "roller_skating"
+      id: 6,
+      name: 'Calzado',
+      icon: 'roller_skating',
     },
     {
-      "id": 7,
-      "name": "Teñidos",
-      "icon": "palette"
+      id: 7,
+      name: 'Teñidos',
+      icon: 'palette',
     },
     {
-      "id": 8,
-      "name": "Otros",
-      "icon": "cloud"
-    }
+      id: 8,
+      name: 'Otros',
+      icon: 'cloud',
+    },
   ];
   dataServiciosAccesosRapido: IResponseServiceQuickAccess[] = [];
   DataDemo: IEmisionPrevia[] = [];
   displayedColumns: string[] = ['item', 'nomProd', 'Subtotal', 'actions'];
   dataSource = new MatTableDataSource<IEmisionPrevia>(this.store.items());
-  numeracion: INumeracionDoc = { id: 0, branchId: 0, typeDoc: '', serieDoc: '', numberDoc: '', status: '' };
+  numeracion: INumeracionDoc = {
+    id: 0,
+    branchId: 0,
+    typeDoc: '',
+    serieDoc: '',
+    numberDoc: '',
+    status: '',
+  };
 
   isDelivery = false;
   isEtiqueta = false;
@@ -140,7 +176,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   bolExisteCaja = true;
   msgValidacion = '';
   isSinCopia = false;
-
 
   subscriptionCategorias!: Subscription;
   subscriptionNumeracion!: Subscription;
@@ -155,7 +190,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
   sucursales: any[] = [];
-  
 
   constructor() {
     effect(() => {
@@ -164,11 +198,9 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       this.total = this.store.itemSumTotal();
     });
 
-    this.searchInput
-      .pipe(debounceTime(300))
-      .subscribe((searchTerm: string) => {
-        this.searchItems();
-      });
+    this.searchInput.pipe(debounceTime(300)).subscribe((searchTerm: string) => {
+      this.searchItems();
+    });
   }
 
   ngOnDestroy() {
@@ -177,14 +209,16 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     if (this.subscriptionNumeracion) this.subscriptionNumeracion.unsubscribe();
     if (this.subscriptionServixcat) this.subscriptionServixcat.unsubscribe();
     if (this.subscriptionGrabarGuia) this.subscriptionGrabarGuia.unsubscribe();
-    if (this.subscriptionFiltrarServixpatron) this.subscriptionFiltrarServixpatron.unsubscribe();
+    if (this.subscriptionFiltrarServixpatron)
+      this.subscriptionFiltrarServixpatron.unsubscribe();
     if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
-    if (this.subscriptionIdsPesoLavado) this.subscriptionIdsPesoLavado.unsubscribe();
-    if (this.subscriptionQuickAccess) this.subscriptionQuickAccess.unsubscribe();
+    if (this.subscriptionIdsPesoLavado)
+      this.subscriptionIdsPesoLavado.unsubscribe();
+    if (this.subscriptionQuickAccess)
+      this.subscriptionQuickAccess.unsubscribe();
   }
 
   ngOnInit(): void {
-
     this.validarExisteCajaPorUsuario();
     // this.cargarSucursalesLocalStorage();
     this.obtenerSucursalCajaAbierta();
@@ -192,8 +226,12 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
-      switchMap(value => {
-        if (value === '') {          
+      distinctUntilChanged(),
+      switchMap((value) => {
+        if (!value || typeof value !== 'string' || value.trim().length < 3) {
+          return of([]);
+        }
+        if (value === '') {
           return of([]);
         }
 
@@ -202,10 +240,10 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           return of([value]);
         }
 
-        return this.emisionService.filtrarClientesPorPatron(value).pipe(
-          map(response => response.data)
-        );
-      })
+        return this.emisionService
+          .filtrarClientesPorPatron(value)
+          .pipe(map((response) => response.data));
+      }),
     );
 
     this.obtenerIdsServicioPesoLavado();
@@ -221,42 +259,56 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   obtenerSucursalCajaAbierta() {
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'No se encontraron datos de autenticación en el sistema.',
+          err: true,
+        },
+      });
       return;
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
     this.sucursalId = parsedData.branchSalesCashId;
     // this.sucursalNombre = parsedData.branchSales.map((sucursal: any) => sucursal.branchSalesName).join(', ');
-    const foundSucursal = parsedData.branchSales.find((sucursal: any) => sucursal.branchSalesId == this.sucursalId);
-    this.sucursalNombre = foundSucursal ? foundSucursal.branchSalesName : '[Sucursal no encontrada]';
-
-
-
+    const foundSucursal = parsedData.branchSales.find(
+      (sucursal: any) => sucursal.branchSalesId == this.sucursalId,
+    );
+    this.sucursalNombre = foundSucursal
+      ? foundSucursal.branchSalesName
+      : '[Sucursal no encontrada]';
   }
 
   cargarSucursalesLocalStorage() {
     // no se usa
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'No se encontraron datos de autenticación en el sistema.',
+          err: true,
+        },
+      });
       return;
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
-    this.sucursales = [{ id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' }, ...parsedData.branchSales];
-    if(parsedData.branchSales.length == 1) {
-      this.sucursalId = parsedData.branchSales[0].branchSalesId;      
-    }else{
+    this.sucursales = [
+      { id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' },
+      ...parsedData.branchSales,
+    ];
+    if (parsedData.branchSales.length == 1) {
+      this.sucursalId = parsedData.branchSales[0].branchSalesId;
+    } else {
       this.sucursalId = 0;
     }
-
   }
 
   applyFilterSucursal(event: any) {
-  //no se usa
+    //no se usa
     console.log(event);
   }
-
 
   cargarServiciosAccesosRapido() {
     this.loadingServicesQuick = true;
@@ -269,12 +321,11 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.log(err);
         this.loadingServicesQuick = false;
-      }
+      },
     });
   }
 
   agregarItemQuickAccess(item: IResponseServiceQuickAccess): void {
-
     if (item.shortName == 'Peso KG.') {
       this.openDialogPeso();
       return;
@@ -285,19 +336,22 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       return;
     }
 
-
     let itemBusqueda: IListaItemsBusqueda = {
       id: item.prodServiceID,
       name: item.shortName,
       price: item.price,
-    }
+    };
 
     this.store.select(item.id);
-    this.subscriptionQuickAccess = this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: itemBusqueda }, width: '100%', height: '100%' })
+    this.subscriptionQuickAccess = this.dialog
+      .open(DialogEditItemComponent, {
+        data: { edicion: false, item: itemBusqueda },
+        width: '100%',
+        height: '100%',
+      })
       .afterClosed()
       .subscribe((_) => this.actualizarPago());
   }
-
 
   obtenerIdsServicioPesoLavado() {
     this.emisionService.ObtenerIdsPesoLavado().subscribe({
@@ -309,74 +363,95 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       error: (err) => {
         console.log(err);
       },
-      complete: () => { console.log('complete ObtenerIdsPesoLavado()'); }
+      complete: () => {
+        console.log('complete ObtenerIdsPesoLavado()');
+      },
     });
   }
 
   actualizarTelefonoCliente(event: any) {
     this.clienteTelefono = event.target.value;
 
-
     // TODO: hay que obtener el numero de digitos de una tabla de configuracion
     // Validar que el número de teléfono tenga 9 dígitos
     const telefono = this.clienteTelefono.replace(/\D/g, '');
     if (telefono.length !== 9) {
-      this.notificacionService.showError('El número de teléfono debe tener 9 dígitos.');
+      this.notificacionService.showError(
+        'El número de teléfono debe tener 9 dígitos.',
+      );
       return;
     }
 
-    this.store.addCliente({ codigo: this.store.selectedCliente()?.codigo ?? 0, nombre: this.clienteNombre, telefono: this.clienteTelefono });
-    this.loadingUpdatePhone = true;
-    this.emisionService.ActualizarTelefonoCliente({ id: this.store.selectedCliente()?.codigo ?? 0, phone: this.clienteTelefono }).subscribe({
-      next: (resp) => {
-        console.log(resp);
-        if (resp.success) {
-          this.notificacionService.showSuccess('Se actualizó correctamente el teléfono del cliente.');
-        }
-        this.loadingUpdatePhone = false;
-      },
-      error: (err) => {
-        console.log(err);
-        this.loadingUpdatePhone = false;
-      },
-      complete: () => { console.log('complete ActualizarTelefonoCliente()'); }
+    this.store.addCliente({
+      codigo: this.store.selectedCliente()?.codigo ?? 0,
+      nombre: this.clienteNombre,
+      telefono: this.clienteTelefono,
     });
-
-
+    this.loadingUpdatePhone = true;
+    this.emisionService
+      .ActualizarTelefonoCliente({
+        id: this.store.selectedCliente()?.codigo ?? 0,
+        phone: this.clienteTelefono,
+      })
+      .subscribe({
+        next: (resp) => {
+          console.log(resp);
+          if (resp.success) {
+            this.notificacionService.showSuccess(
+              'Se actualizó correctamente el teléfono del cliente.',
+            );
+          }
+          this.loadingUpdatePhone = false;
+        },
+        error: (err) => {
+          console.log(err);
+          this.loadingUpdatePhone = false;
+        },
+        complete: () => {
+          console.log('complete ActualizarTelefonoCliente()');
+        },
+      });
   }
 
   validarExisteCajaPorUsuario(): void {
-
-    this.subscriptionConsulta = this.emisionService.ListarCajaPorIdUser(this.dataLogin.getLoginData()?.userId!).subscribe({
-      next: (data) => {
-        if (data.success) {
-          if (!data.data) {
+    this.subscriptionConsulta = this.emisionService
+      .ListarCajaPorIdUser(this.dataLogin.getLoginData()?.userId!)
+      .subscribe({
+        next: (data) => {
+          if (data.success) {
+            if (!data.data) {
+              this.bolExisteCaja = false;
+            }
+          } else {
             this.bolExisteCaja = false;
           }
-        } else {
+        },
+        error: (err) => {
+          this.notificacionService.showError(err);
           this.bolExisteCaja = false;
-        }
-      },
-      error: (err) => {
-        this.notificacionService.showError(err);
-        this.bolExisteCaja = false;
-        this.msgValidacion = err;
-      },
-      complete: () => {
-        console.log('complete obtenerCajaPorUsuario()');
-      }
-    });
+          this.msgValidacion = err;
+        },
+        complete: () => {
+          console.log('complete obtenerCajaPorUsuario()');
+        },
+      });
   }
 
   onClienteSelected(event: any) {
     const cliente = event.option.value;
     this.clienteTelefono = cliente.telefono;
     this.clienteNombre = cliente.nombres + ' ' + cliente.apellidos;
-    this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
+    this.store.addCliente({
+      codigo: cliente.id,
+      nombre: cliente.nombres + ' ' + cliente.apellidos,
+      telefono: cliente.telefono,
+    });
   }
 
   displayFn(cliente: any): string {
-    return cliente && cliente.nombres ? `${cliente.nombres} ${cliente.apellidos}` : cliente;
+    return cliente && cliente.nombres
+      ? `${cliente.nombres} ${cliente.apellidos}`
+      : cliente;
   }
 
   onSearchInputChange() {
@@ -399,7 +474,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   cargarNumeracion() {
-    this.subscriptionNumeracion = this.emisionService.obtenerNumeracion(this.sucursalId, "GS", "001")
+    this.subscriptionNumeracion = this.emisionService
+      .obtenerNumeracion(this.sucursalId, 'GS', '001')
       .subscribe({
         next: (resp) => {
           this.numeracion = resp.data;
@@ -408,7 +484,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
             serieDoc: this.numeracion.serieDoc,
             numeroDoc: this.numeracion.numberDoc,
             fechaEmision: new Date().toDateString(),
-            fechaEntrega: new Date().toDateString()
+            fechaEntrega: new Date().toDateString(),
           };
           this.store.addDocumento(objDoc);
         },
@@ -417,20 +493,24 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
         },
         complete: () => {
           console.log('complete obtenerNumeracion');
-        }
+        },
       });
   }
 
   mostrarMenuItems(idCat: number) {
-    this.subscriptionServixcat = this.emisionService.listarSeviciosXCategorias(idCat).subscribe({
-      next: (resp) => {
-        this.items = resp;
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => { console.log('complete listarSeviciosXCategorias'); }
-    });
+    this.subscriptionServixcat = this.emisionService
+      .listarSeviciosXCategorias(idCat)
+      .subscribe({
+        next: (resp) => {
+          this.items = resp;
+        },
+        error: (err) => {
+          console.log(err);
+        },
+        complete: () => {
+          console.log('complete listarSeviciosXCategorias');
+        },
+      });
     this.showMenuItems = true;
   }
 
@@ -440,7 +520,15 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   agregarItem(item: IListaItemsBusqueda) {
-    this.store.add({ codProd: item.id.toString(), nomProd: item.name, Cant: 1, Precio: item.price, Subtotal: item.price, Obs: '[sin comentarios]', Identificador: 'A' });
+    this.store.add({
+      codProd: item.id.toString(),
+      nomProd: item.name,
+      Cant: 1,
+      Precio: item.price,
+      Subtotal: item.price,
+      Obs: '[sin comentarios]',
+      Identificador: 'A',
+    });
   }
 
   onValChangePago(value: any) {
@@ -459,25 +547,34 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   onFocusOutEvent(event: any) {
-    let objPago: IEmisionPago = { tipo: this.tipoPago, monto: Number.parseFloat(event.target.value) };
+    let objPago: IEmisionPago = {
+      tipo: this.tipoPago,
+      monto: Number.parseFloat(event.target.value),
+    };
     this.store.addPago(objPago);
     if (event.target.value < this.store.itemSumTotal()) {
       this.canceladoPago = false;
     }
-
   }
 
   openDialogCategorias(categoria: IListaCategorias) {
-    const dialogRef = this.dialog.open(DialogCategoriasComponent, { data: { id: categoria.id, name: categoria.name, icon: categoria.icon } });
-    dialogRef.afterClosed().subscribe(result => {
+    const dialogRef = this.dialog.open(DialogCategoriasComponent, {
+      data: { id: categoria.id, name: categoria.name, icon: categoria.icon },
     });
+    dialogRef.afterClosed().subscribe((result) => {});
   }
 
   openDialogClientes() {
-    const dialogRef = this.dialog.open(DialogClienteComponent, { data: { filtro: '' } });
+    const dialogRef = this.dialog.open(DialogClienteComponent, {
+      data: { filtro: '' },
+    });
     dialogRef.afterClosed().subscribe((result: IClienteBusqueda) => {
       if (result.id == undefined) return;
-      this.store.addCliente({ codigo: result.id, nombre: result.nombres + ' ' + result.apellidos, telefono: result.telefono });
+      this.store.addCliente({
+        codigo: result.id,
+        nombre: result.nombres + ' ' + result.apellidos,
+        telefono: result.telefono,
+      });
       this.clienteNombre = result.nombres + ' ' + result.apellidos;
       this.clienteTelefono = result.telefono;
       this.clienteControl.setValue(result.nombres, { emitEvent: false });
@@ -485,36 +582,33 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   openDialogPeso() {
-    this.dialog.open(DialogPesokgComponent,
-      {
-        data:
-        {
-          inTitulo: 'Lavado por Peso Kg.',
-          inIdServicio: this.idServicioPeso,
-          inDesServicio: 'Peso',
-          inEsPeso: true,
-          inPrecio: 3
-        }
-      });
+    this.dialog.open(DialogPesokgComponent, {
+      data: {
+        inTitulo: 'Lavado por Peso Kg.',
+        inIdServicio: this.idServicioPeso,
+        inDesServicio: 'Peso',
+        inEsPeso: true,
+        inPrecio: 3,
+      },
+    });
   }
 
   openDialogLavado() {
-    this.dialog.open(DialogPesokgComponent,
-      {
-        data:
-        {
-          inTitulo: 'Lavado',
-          inIdServicio: this.idServicioLavado,
-          inDesServicio: 'Lavado',
-          inEsPeso: false,
-          inPrecio: 1
-        }
-      });
+    this.dialog.open(DialogPesokgComponent, {
+      data: {
+        inTitulo: 'Lavado',
+        inIdServicio: this.idServicioLavado,
+        inDesServicio: 'Lavado',
+        inEsPeso: false,
+        inPrecio: 1,
+      },
+    });
   }
 
   openDialogAddItem(ele: IListaItemsBusqueda) {
     this.store.select(ele.id);
-    this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: ele } })
+    this.dialog
+      .open(DialogEditItemComponent, { data: { edicion: false, item: ele } })
       .afterClosed()
       .subscribe((_) => this.actualizarPago());
   }
@@ -527,45 +621,74 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   deleteData(ele: any) {
     this.store.delete(ele.id);
-    this.actualizarPago()
+    this.actualizarPago();
   }
 
   actualizarPago(bolHack: any = false) {
     this.montoPago = this.store.itemSumTotal();
-    let objPago: IEmisionPago = { tipo: this.tipoPago, monto: this.tipoPago == 'SP' ? 0 : this.montoPago };
+    let objPago: IEmisionPago = {
+      tipo: this.tipoPago,
+      monto: this.tipoPago == 'SP' ? 0 : this.montoPago,
+    };
     this.store.addPago(objPago);
   }
 
   grabarRecibo() {
-
-    if(this.sucursalId == 0) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe seleccionar una sucursal antes de grabar el recibo.', err: true } });
+    if (this.sucursalId == 0) {
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'Debe seleccionar una sucursal antes de grabar el recibo.',
+          err: true,
+        },
+      });
       return;
     }
 
     if (!this.store.selectedCliente()) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe seleccionar un cliente antes de grabar el recibo.', err: true } });
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'Debe seleccionar un cliente antes de grabar el recibo.',
+          err: true,
+        },
+      });
       return;
     }
 
     if (this.store.items().length === 0) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'Debe agregar al menos un item antes de grabar el recibo.', err: true } });
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'Debe agregar al menos un item antes de grabar el recibo.',
+          err: true,
+        },
+      });
       return;
     }
 
     // Leer los datos del localStorage
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
-      this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: 'No se encontraron datos de autenticación en el sistema.', err: true } });
+      this.dialog.open(DialogMsgComponent, {
+        data: {
+          title: 'Error',
+          msg: 'No se encontraron datos de autenticación en el sistema.',
+          err: true,
+        },
+      });
       return;
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
-    let estadoPagoInicial = this.store.itemSumTotal() === this.store.selectedPago()?.monto ? 'PA' : 'PE'; // PE: Pendiente, PA: Pagado, AN: Anulado
+    let estadoPagoInicial =
+      this.store.itemSumTotal() === this.store.selectedPago()?.monto
+        ? 'PA'
+        : 'PE'; // PE: Pendiente, PA: Pagado, AN: Anulado
 
     let objGuia: ICreateGuideWork = {
-      serieGuia: "",
-      numeroGuia: "",
+      serieGuia: '',
+      numeroGuia: '',
       mensajeAlertas: '',
       observaciones: '',
       tipoPago: this.tipoPago,
@@ -575,15 +698,16 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       telefonoContacto: '',
       total: this.store.itemSumTotal(),
       acuenta: this.store.selectedPago()?.monto ?? 0,
-      saldo: this.store.itemSumTotal() - (this.store.selectedPago()?.monto ?? 0),
+      saldo:
+        this.store.itemSumTotal() - (this.store.selectedPago()?.monto ?? 0),
       customerId: this.store.selectedCliente()?.codigo ?? 0,
 
       branchStoreId: this.sucursalId,
-      typeDocument: "",
+      typeDocument: '',
       userId: parsedData.userId,
-      estadoPago: estadoPagoInicial, // PE: Pendiente, PA: Pagado, AN: Anulado      
-      estadoRegistro: "A",
-      estadoSituacion: "P",
+      estadoPago: estadoPagoInicial, // PE: Pendiente, PA: Pagado, AN: Anulado
+      estadoRegistro: 'A',
+      estadoSituacion: 'P',
 
       workGuideDetailsDTO: this.store.items().map((item, index) => {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -593,46 +717,55 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           precio: item.Precio,
           total: item.Subtotal,
           observaciones: item.Obs,
-          tipoLavado: 'A',            // A=agua; S=seco
-          ubicacion: 'L',             // L=lavanderia; P=planta; A=almacen
-          estadoTrabajo: 'P',         // P: Pendiente, E: En Proceso, F: Finalizado
+          tipoLavado: 'A', // A=agua; S=seco
+          ubicacion: 'L', // L=lavanderia; P=planta; A=almacen
+          estadoTrabajo: 'P', // P: Pendiente, E: En Proceso, F: Finalizado
           productId: parseInt(item.codProd),
-          estadoRegistro: 'A',        // A: Activo, I: Inactivo    
-          estadoSituacion: 'P',       // P: Pendiente, E: Entregado; D: Devuelto
-          estadoPago: estadoPagoInicial,           // PE: Pendiente, PA: Pagado, AN: Anulado
-          identificador: identifier
-        }
-      })
+          estadoRegistro: 'A', // A: Activo, I: Inactivo
+          estadoSituacion: 'P', // P: Pendiente, E: Entregado; D: Devuelto
+          estadoPago: estadoPagoInicial, // PE: Pendiente, PA: Pagado, AN: Anulado
+          identificador: identifier,
+        };
+      }),
     };
 
-
-
     this.loadingSave = true;
-    this.subscriptionGrabarGuia = this.emisionService.grabarGuiaTrabajo(objGuia).subscribe({
-      next: (resp) => {
-        this.loadingSave = false;
-        this.blockSave = true;
+    this.subscriptionGrabarGuia = this.emisionService
+      .grabarGuiaTrabajo(objGuia)
+      .subscribe({
+        next: (resp) => {
+          this.loadingSave = false;
+          this.blockSave = true;
 
-        let objDoc: IEmisionDocumento = {
-          tipoDoc: resp.data.tipoDocumento,
-          serieDoc: resp.data.serieDocumento,
-          numeroDoc: resp.data.numeroDocumento,
-          fechaEmision: resp.data.fechaOperacion,
-          fechaEntrega: resp.data.fechaHoraEntrega
-        };
-        this.store.addDocumento(objDoc);
+          let objDoc: IEmisionDocumento = {
+            tipoDoc: resp.data.tipoDocumento,
+            serieDoc: resp.data.serieDocumento,
+            numeroDoc: resp.data.numeroDocumento,
+            fechaEmision: resp.data.fechaOperacion,
+            fechaEntrega: resp.data.fechaHoraEntrega,
+          };
+          this.store.addDocumento(objDoc);
 
-        this.notificacionService.showSuccessDialog('Se grabó correctamente la guía de trabajo.', '# ' + resp.data.numeroDocumento, true);
-      },
-      error: (err) => {
-        this.notificacionService.showError(err);
-        this.loadingSave = false;
-        this.dialog.open(DialogMsgComponent, { data: { title: 'Error', msg: err, err: true } });
-        this.notificacionService.showErrorDialog('Ocurrio un error al intentar grabar la guia');
-      },
-      complete: () => { console.log('complete grabarRecibo'); }
-    });
-
+          this.notificacionService.showSuccessDialog(
+            'Se grabó correctamente la guía de trabajo.',
+            '# ' + resp.data.numeroDocumento,
+            true,
+          );
+        },
+        error: (err) => {
+          this.notificacionService.showError(err);
+          this.loadingSave = false;
+          this.dialog.open(DialogMsgComponent, {
+            data: { title: 'Error', msg: err, err: true },
+          });
+          this.notificacionService.showErrorDialog(
+            'Ocurrio un error al intentar grabar la guia',
+          );
+        },
+        complete: () => {
+          console.log('complete grabarRecibo');
+        },
+      });
   }
 
   imprimirTicket() {
@@ -645,17 +778,21 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       return;
     }
     this.loadingFilterServices = true;
-    this.subscriptionFiltrarServixpatron = this.emisionService.filtrarServiciosPorPatron(this.searchText).subscribe({
-      next: (resp) => {
-        this.loadingFilterServices = false;
-        this.items = resp;
-      },
-      error: (err) => {
-        this.loadingFilterServices = false;
-        console.log(err);
-      },
-      complete: () => { console.log('complete filtrarServiciosPorPatron'); }
-    });
+    this.subscriptionFiltrarServixpatron = this.emisionService
+      .filtrarServiciosPorPatron(this.searchText)
+      .subscribe({
+        next: (resp) => {
+          this.loadingFilterServices = false;
+          this.items = resp;
+        },
+        error: (err) => {
+          this.loadingFilterServices = false;
+          console.log(err);
+        },
+        complete: () => {
+          console.log('complete filtrarServiciosPorPatron');
+        },
+      });
     this.showMenuItems = true;
   }
 

@@ -36,6 +36,7 @@ export class DialogFormGastoComponent implements OnInit {
   loading = false;
   bolMensaje = false;
   errMensaje = '';
+  esError = false;
 
   categoriasGastos = [
     { id: 'COMPRAS', name: 'Gastos de compras' },
@@ -69,6 +70,7 @@ export class DialogFormGastoComponent implements OnInit {
   onSave() {
     if (!this.frmGasto.valid) {
       this.bolMensaje = true;
+      this.esError = true;
       this.errMensaje = 'Debe ingresar todos los datos';
       setTimeout(() => {
         this.bolMensaje = false;
@@ -102,6 +104,7 @@ export class DialogFormGastoComponent implements OnInit {
         this.loading = false;
         if (res.success) {
           this.bolMensaje = true;
+          this.esError = false;
           this.errMensaje = 'Gasto registrado correctamente';
           setTimeout(() => {
             this.dialogRef.close(true);
@@ -112,6 +115,7 @@ export class DialogFormGastoComponent implements OnInit {
         console.log(err);
         this.loading = false;
         this.bolMensaje = true;
+        this.esError = true;
         this.errMensaje = 'Error al registrar el gasto';
         setTimeout(() => {
           this.bolMensaje = false;
@@ -138,6 +142,7 @@ export class DialogFormGastoComponent implements OnInit {
         this.loading = false;
         if (res.success) {
           this.bolMensaje = true;
+          this.esError = false;
           this.errMensaje = 'Gasto actualizado correctamente';
           setTimeout(() => {
             this.dialogRef.close(true);
@@ -149,6 +154,7 @@ export class DialogFormGastoComponent implements OnInit {
         this.loading = false;
 
         this.bolMensaje = true;
+        this.esError = true;
         this.errMensaje = 'Error al actualizar el gasto';
         setTimeout(() => {
           this.bolMensaje = false;

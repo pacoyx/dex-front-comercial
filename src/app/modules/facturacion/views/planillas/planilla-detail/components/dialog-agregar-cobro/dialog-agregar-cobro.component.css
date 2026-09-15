@@ -1,0 +1,25 @@
+mat-dialog-content {
+    min-width: 400px;
+    max-height: 70vh;
+}
+
+.invoices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.invoice-row {
+    padding: 6px 10px;
+    border: 1px solid gainsboro;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.invoice-row.selected {
+    background-color: #e3f2fd;
+    border-color: #1565c0;
+}

@@ -1,0 +1,14 @@
+.container-planilla {
+    padding: 10px;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+}

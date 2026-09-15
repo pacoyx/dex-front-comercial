@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrlBase: 'https://localhost:7253/',
+    apiUrlBase: 'http://localhost:5239/',
     apiUrlBaseAzure: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
     EPlogin: 'api/login',
     EPRefreshToken: 'api/refresh-token',
@@ -35,6 +35,7 @@ export const environment = {
     EPRecogerItem: 'api/workGuideMain/pickUpItem',
 
     EPListarGastosPorUsuario: 'api/expenseBox/byUser',
+    EPListarGastosPorFecha: 'api/expenseBox/byDate',
     EPCrearGasto: 'api/expenseBox',
     EPActualizarGasto: 'api/expenseBox',
     EPEliminarGasto: 'api/expenseBox',
@@ -65,6 +66,8 @@ export const environment = {
     EPDividirPago: 'api/cashBox/splitPayCash',
     EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
     EPdashboardcash: 'api/reports/dashboardcash',
+    EPdashboardcashSemana: 'api/reports/dashboardcash/week',
+    EPdashboardcashMes: 'api/reports/dashboardcash/month',
 
     //falta implementar
     EPGetUsers: 'api/user',
@@ -86,7 +89,35 @@ export const environment = {
 
     //sucursales
     EPListarSucursales: 'api/branchSales',
+    EPCrearSucursal: 'api/branchSales',
+    EPActualizarSucursal: 'api/branchSales',
+    EPEliminarSucursal: 'api/branchSales',
 
+    //usuarios por sucursal
+    EPListarSucursalUsuariosPorSucursal: 'api/brachSalesUser/byBranch',
+    EPCrearSucursalUsuario: 'api/brachSalesUser',
+    EPActualizarSucursalUsuario: 'api/brachSalesUser',
+    EPEliminarSucursalUsuario: 'api/brachSalesUser',
+
+    //impresoras
+    EPListarImpresoras: 'api/printer',
+    EPCrearImpresora: 'api/printer',
+    EPActualizarImpresora: 'api/printer',
+    EPEliminarImpresora: 'api/printer',
+
+    //worker nodes
+    EPListarWorkerNodes: 'api/workerNode',
+    EPCrearWorkerNode: 'api/workerNode',
+    EPActualizarWorkerNode: 'api/workerNode',
+    EPEliminarWorkerNode: 'api/workerNode',
+
+    //dashboard printers
+    EPPrintingStatus: 'api/admin/printing/status',
+
+    //impresiones pendientes
+    EPListarImpresionesPendientes: 'api/admin/print-queues/pending',
+    EPCancelarImpresionPendiente: 'api/admin/print-queues',
+    EPReimprimirImpresionPendiente: 'api/admin/print-queues',
 
     // proveedores
     EPListarProveedores: 'api/supplier',
@@ -117,5 +148,18 @@ export const environment = {
     EPFacturasPorFechas: 'api/purchase/reports/byDate',
     EPFacturasPorProveedor: 'api/purchase/reports/bySupplier',
     EPFacturasPorProducto: 'api/purchase/reports/byProduct',
+
+    // FACTURACION
+
+    EPTypeDocuments: 'api/type-documents',
+    EPPaymentMethods: 'api/payment-methods',
+    EPSalesInvoices: 'api/invoices',
+    EPAccountsReceivable: 'api/accounts-receivable',
+    EPCollectionSheets: 'api/collection-sheets',
+
+    // reportes facturacion
+    EPSalesRegisterReport: 'api/reports/sales-register',
+    EPSalesRegisterReportPdf: 'api/reports/sales-register/pdf',
+    EPSalesRegisterReportExcel: 'api/reports/sales-register/excel',
 
 };

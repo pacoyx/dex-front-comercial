@@ -1,0 +1,166 @@
+<div class="container-factura">
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-icon>dataset</mat-icon>
+            <label><strong>Detalle de Factura</strong></label>
+        </div>
+        @if (invoice) {
+        <span [style.color]="invoice.status | invoiceStatusColor" style="font-weight: 700; font-size: large;">
+            {{ invoice.status | invoiceStatusLabel }}
+        </span>
+        }
+    </div>
+
+    @if (invoice) {
+    <div class="section-header" [formGroup]="formInvoice">
+
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-form-field style="flex: 2;">
+                <mat-label>Cliente</mat-label>
+                <input matInput formControlName="customerName">
+            </mat-form-field>
+
+            <mat-form-field style="width: 90px;">
+                <mat-label>Serie</mat-label>
+                <input matInput formControlName="serie">
+            </mat-form-field>
+
+            <mat-form-field style="width: 110px;">
+                <mat-label>Número</mat-label>
+                <input matInput formControlName="numero">
+            </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-form-field style="width: 160px;">
+                <mat-label>Emisión</mat-label>
+                <input matInput formControlName="issueDate">
+            </mat-form-field>
+
+            <mat-form-field style="width: 160px;">
+                <mat-label>Vencimiento</mat-label>
+                <input matInput formControlName="dueDate">
+            </mat-form-field>
+
+            <mat-form-field style="width: 100px;">
+                <mat-label>SubTotal</mat-label>
+                <input matInput formControlName="subTotal">
+            </mat-form-field>
+
+            <mat-form-field style="width: 100px;">
+                <mat-label>IGV</mat-label>
+                <input matInput formControlName="igv">
+            </mat-form-field>
+
+            <mat-form-field style="width: 100px;">
+                <mat-label>Total</mat-label>
+                <input matInput formControlName="total">
+            </mat-form-field>
+
+            <mat-form-field style="width: 90px;">
+                <mat-label>Moneda</mat-label>
+                <input matInput formControlName="currencyId">
+            </mat-form-field>
+
+            <mat-form-field style="width: 110px;">
+                <mat-label>T.C.</mat-label>
+                <input matInput formControlName="exchangeRate">
+            </mat-form-field>
+        </div>
+
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-form-field style="width: 120px;">
+                <mat-label>Pagado</mat-label>
+                <input matInput formControlName="amountPaid">
+            </mat-form-field>
+
+            <mat-form-field style="width: 120px;">
+                <mat-label>Saldo</mat-label>
+                <input matInput formControlName="balance">
+            </mat-form-field>
+
+            <mat-form-field style="flex: 2;">
+                <mat-label>Notas</mat-label>
+                <input matInput formControlName="notes">
+            </mat-form-field>
+        </div>
+
+    </div>
+
+    <div style="display: flex; gap: 10px; margin: 10px 0;">
+        <button mat-fab extended (click)="registrarPago()" [disabled]="!canRegisterPayment">
+            <mat-icon>payments</mat-icon>
+            Registrar Pago
+        </button>
+        <button mat-fab extended color="warn" (click)="anularFactura()" [disabled]="!canCancel">
+            <mat-icon>block</mat-icon>
+            Anular
+        </button>
+    </div>
+
+    <h3>Detalle</h3>
+    <table mat-table [dataSource]="detailDataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef> Producto / Servicio </th>
+            <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quantity">
+            <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+            <td mat-cell *matCellDef="let element"> {{ element.quantity | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitPrice">
+            <th mat-header-cell *matHeaderCellDef> Precio </th>
+            <td mat-cell *matCellDef="let element"> {{ element.unitPrice | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="discount">
+            <th mat-header-cell *matHeaderCellDef> Descuento </th>
+            <td mat-cell *matCellDef="let element"> {{ element.discount | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef> Total </th>
+            <td mat-cell *matCellDef="let element"> {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="detailColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: detailColumns;"></tr>
+    </table>
+
+    <h3>Pagos</h3>
+    <table mat-table [dataSource]="paymentsDataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="paymentDate">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let element"> {{ element.paymentDate | date:'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentMethodName">
+            <th mat-header-cell *matHeaderCellDef> Método </th>
+            <td mat-cell *matCellDef="let element"> {{ element.paymentMethodName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef> Monto </th>
+            <td mat-cell *matCellDef="let element"> {{ element.amount | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="operationNumber">
+            <th mat-header-cell *matHeaderCellDef> N° Operación </th>
+            <td mat-cell *matCellDef="let element"> {{ element.operationNumber }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="observation">
+            <th mat-header-cell *matHeaderCellDef> Observación </th>
+            <td mat-cell *matCellDef="let element"> {{ element.observation }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="paymentColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: paymentColumns;"></tr>
+    </table>
+    }
+</div>

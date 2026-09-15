@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Agregar Cobro</h2>
+
+<mat-dialog-content>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Cliente</mat-label>
+        <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+            placeholder="escribir nombre del cliente">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
+            [displayWith]="displayFn">
+            <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
+                {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+
+    @if (invoicesForCustomer.length > 0) {
+    <div class="invoices-list">
+        @for (invoice of invoicesForCustomer; track invoice.id) {
+        <div class="invoice-row" [class.selected]="selectedInvoice?.id === invoice.id"
+            (click)="selectInvoice(invoice)">
+            {{ invoice.serie }}-{{ invoice.numero }} — Saldo: {{ invoice.balance | currency:' ':'symbol':'0.2-2' }}
+        </div>
+        }
+    </div>
+    }
+
+    @if (selectedInvoice) {
+    <div [formGroup]="frmCobro" style="display: flex; flex-direction: column; gap: 5px;">
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Método de Pago</mat-label>
+            <mat-select formControlName="paymentMethodId">
+                @for (method of paymentMethods; track method.id) {
+                <mat-option [value]="method.id">{{ method.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Monto</mat-label>
+            <input type="number" matInput formControlName="amount" step="0.01">
+            @if (frmCobro.get('amount')?.hasError('max')) {
+            <mat-error>El monto no puede exceder el saldo pendiente</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>N° Operación</mat-label>
+            <input type="text" matInput formControlName="operationNumber">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Observación</mat-label>
+            <input type="text" matInput formControlName="observation">
+        </mat-form-field>
+
+    </div>
+    }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving || !selectedInvoice">Agregar</button>
+</mat-dialog-actions>

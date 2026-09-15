@@ -151,6 +151,12 @@ export class EmisionService {
     return this.http.get<IResponseGeneric<IListaGastosPorUserResponse[]>>(url, { headers });
   }
 
+  ListarGastosPorFecha(fecha: string): Observable<IResponseGeneric<IListaGastosPorUserResponse[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarGastosPorFecha}/${fecha}`;
+    return this.http.get<IResponseGeneric<IListaGastosPorUserResponse[]>>(url, { headers });
+  }
+
   RegistrarGasto(gasto: ICreateGastoRequest): Observable<IResponseGeneric<ICreateGastoResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPCrearGasto}`;

@@ -13,6 +13,10 @@
         <mat-icon>person_search</mat-icon>
         Roperia
       </a>
+      <a mat-list-item [routerLink]="['/facturacion']" routerLinkActive="router-link-active" (click)="toggle()">
+        <mat-icon>receipt_long</mat-icon>
+        Facturacion
+      </a>
       <a mat-list-item (click)="cerrarSesion()">
         <mat-icon>logout</mat-icon>
         Cerrar Sesion

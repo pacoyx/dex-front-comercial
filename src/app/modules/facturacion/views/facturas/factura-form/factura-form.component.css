@@ -1,0 +1,15 @@
+.container-invoice {
+    padding: 10px;
+}
+
+.section-controls-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.section-controls-botones {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}

@@ -1,34 +1,122 @@
-.example-full-width{
+:host {
+    --ds-border: #e2e5ea;
+    --ds-surface-muted: #f6f7f9;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 24px 0;
+}
+
+.dialog-header__icon {
+    color: var(--mdc-theme-primary, #3f51b5);
+}
+
+.dialog-header__title {
+    margin: 0 !important;
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Contenido
+   ========================================================================== */
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 12px;
+    min-width: 320px;
+    max-height: none;
+}
+
+.panel {
+    border-radius: 12px !important;
+}
+
+.full-width {
     width: 100%;
 }
-.chip-colores{
-    width: 100px;
-    text-align: center;
-    border: 1px solid #000;
-    border-radius: 5px;
-    margin: 5px;
+
+/* ==========================================================================
+   Cálculo del servicio
+   ========================================================================== */
+.calculo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
 }
 
-
-.chk-diseños{    
-    width: 110px;
-    text-align: center;
-    border: 1px solid #000;
-    border-radius: 5px;
-    margin: 5px;
+/* ==========================================================================
+   Personalización (tabs)
+   ========================================================================== */
+.tabs-content {
+    margin-top: 4px;
 }
 
-.chip-temas{
-    width: 120px;
-    text-align: center;
+.chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 4px 4px;
 }
 
+.chip-color {
+    display: flex;
+    align-items: center;
+    padding: 6px 14px;
+    border: 1px solid var(--ds-border);
+    border-radius: 999px;
+    background: #fff;
+}
 
-.mat-mdc-dialog-content {
-    display: block;
-    flex-grow: 1;
-    box-sizing: border-box;
-    margin: 0;
-    overflow: auto;
-    max-height: none;
+.chip-color__swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 1px solid rgba(0, 0, 0, .25);
+    vertical-align: middle;
+}
+
+.chip-diseno {
+    padding: 6px 14px;
+    border: 1px solid var(--ds-border);
+    border-radius: 999px;
+    background: #fff;
+}
+
+.marcas-list {
+    max-height: 220px;
+    overflow-y: auto;
+    border: 1px solid var(--ds-border);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* ==========================================================================
+   Acciones
+   ========================================================================== */
+.dialog-actions {
+    padding: 12px 24px;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 600px) {
+    .calculo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dialog-content {
+        min-width: 0;
+    }
 }

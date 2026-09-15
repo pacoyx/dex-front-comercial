@@ -1,0 +1,39 @@
+<h2 mat-dialog-title>Registrar Pago</h2>
+
+<mat-dialog-content [formGroup]="frmPago">
+
+    <div style="margin-bottom: 10px;">Saldo pendiente: <strong>{{ data.balance }}</strong></div>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Método de Pago</mat-label>
+        <mat-select formControlName="paymentMethodId">
+            @for (method of paymentMethods; track method.id) {
+            <mat-option [value]="method.id">{{ method.name }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Monto</mat-label>
+        <input type="number" matInput formControlName="amount" step="0.01">
+        @if (frmPago.get('amount')?.hasError('max')) {
+        <mat-error>El monto no puede exceder el saldo pendiente</mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>N° Operación</mat-label>
+        <input type="text" matInput formControlName="operationNumber">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Observación</mat-label>
+        <input type="text" matInput formControlName="observation">
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving">Registrar</button>
+</mat-dialog-actions>

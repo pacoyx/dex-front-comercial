@@ -27,3 +27,15 @@
 .cajaLogin {
     width: 100%;
 }
+
+/* El navegador superpone su propio ojo nativo de "mostrar contraseña" sobre
+   inputs type="password" con contenido. Como ya tenemos nuestro propio botón
+   de mostrar/ocultar, lo desactivamos para que no se vean dos a la vez. */
+.cajaLogin input[type="password"]::-ms-reveal,
+.cajaLogin input[type="password"]::-ms-clear {
+    display: none;
+}
+
+.cajaLogin input[type="password"]::-webkit-textfield-decoration-container {
+    visibility: hidden;
+}

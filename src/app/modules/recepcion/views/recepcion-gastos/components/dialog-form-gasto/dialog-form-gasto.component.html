@@ -1,62 +1,67 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
+<h2 mat-dialog-title class="dialog-title">
+    <mat-icon color="primary">receipt_long</mat-icon>
+    {{data.title}}
+</h2>
 
-<mat-dialog-content>
-    <hr>
+<mat-dialog-content class="dialog-content">
 
-    <form [formGroup]="frmGasto" style="width: 100%;">
+    <form [formGroup]="frmGasto" class="gasto-form">
 
-        <div style="display: flex; gap: 10px;">
-            <mat-form-field appearance="outline">
+        <div class="form-row">
+            <mat-form-field appearance="outline" class="field-fecha">
                 <mat-label>Fecha</mat-label>
+                <mat-icon matPrefix>event</mat-icon>
                 <input matInput type="text" formControlName="fechaGasto" readonly="true">
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="field-grow">
                 <mat-label>Categoría de Gasto</mat-label>
+                <mat-icon matPrefix>category</mat-icon>
                 <mat-select formControlName="categoria">
                     @for (categoria of categoriasGastos; track $index) {
                     <mat-option [value]="categoria.id">
-                        {{ categoria.id }}
+                        {{ categoria.name }}
                     </mat-option>
                     }
                 </mat-select>
             </mat-form-field>
         </div>
 
-
-        <div style="display: flex; gap: 10px;">
-            <mat-form-field appearance="outline">
-                <mat-label>Personal Autoriza</mat-label>
-                <input matInput formControlName="personalAutoriza" style="width: 100%;">
+        <div class="form-row">
+            <mat-form-field appearance="outline" class="field-grow">
+                <mat-label>Personal que Autoriza</mat-label>
+                <mat-icon matPrefix>badge</mat-icon>
+                <input matInput formControlName="personalAutoriza">
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="field-fecha">
                 <mat-label>Importe</mat-label>
-                <input matInput formControlName="importe" type="number" style="width: 100%;">
+                <span matPrefix class="prefix-moneda">S/&nbsp;</span>
+                <input matInput formControlName="importe" type="number" min="0" step="0.01">
             </mat-form-field>
         </div>
 
-        <div style="display: flex; gap: 10px;">
-            <mat-form-field appearance="outline" style="width: 100%;">
-                <mat-label>Detalles Egreso</mat-label>
-                <input matInput formControlName="detallesEgreso">
-            </mat-form-field>
+        <mat-form-field appearance="outline" class="field-full">
+            <mat-label>Detalles del Egreso</mat-label>
+            <textarea matInput formControlName="detallesEgreso" rows="2"></textarea>
+        </mat-form-field>
 
-        </div>
     </form>
+
     @if(bolMensaje){
-    <div style="border: 1px solid rgb(11, 71, 236); border-radius: 5px; text-align: center;">
-        <p>
-            <mat-icon>done</mat-icon>
-            {{errMensaje}}
-        </p>
+    <div class="feedback-banner" [class.feedback-error]="esError" [class.feedback-success]="!esError">
+        <mat-icon>{{ esError ? 'error_outline' : 'check_circle' }}</mat-icon>
+        <span>{{errMensaje}}</span>
     </div>
     }
 
 </mat-dialog-content>
 
-<mat-dialog-actions style="display: flex; justify-content: space-between;">
-    <button mat-button (click)="onCancel()">Cancelar</button>
+<mat-dialog-actions class="dialog-actions">
+    <button mat-fab extended (click)="onCancel()">
+        <mat-icon style="color: red;">cancel</mat-icon>
+        Cancelar
+    </button>
     @if(!loading){
     <button mat-fab extended color="primary" (click)="onSave()">
         <mat-icon>save</mat-icon>
@@ -64,8 +69,8 @@
     </button>
     }
     @if(loading){
-    <button mat-fab extended color="primary">
-        <div style="display: flex; gap: 5px;">
+    <button mat-fab extended color="primary" disabled>
+        <div style="display: flex; gap: 5px; align-items: center;">
             <app-loading></app-loading>
             Grabando...
         </div>

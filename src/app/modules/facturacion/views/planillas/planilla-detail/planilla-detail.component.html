@@ -1,0 +1,76 @@
+<div class="container-planilla">
+
+    <div
+        style="display: flex; justify-content: space-between; align-items: center; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <mat-icon>assignment</mat-icon>
+            <label><strong>Detalle de Planilla</strong></label>
+        </div>
+        @if (planilla) {
+        <span [style.color]="planilla.status | collectionSheetStatusColor" style="font-weight: 700; font-size: large;">
+            {{ planilla.status | collectionSheetStatusLabel }}
+        </span>
+        }
+    </div>
+
+    @if (planilla) {
+    <div class="section-header">
+        <div><strong>Número:</strong> {{ planilla.number }}</div>
+        <div><strong>Apertura:</strong> {{ planilla.openDate | date:'dd/MM/yyyy HH:mm' }}</div>
+        <div><strong>Cierre:</strong> {{ planilla.closeDate ? (planilla.closeDate | date:'dd/MM/yyyy HH:mm') : '-' }}</div>
+        <div><strong>Total:</strong> {{ planilla.totalAmount | currency:' ':'symbol':'0.2-2' }}</div>
+        <div><strong>Observaciones:</strong> {{ planilla.remarks }}</div>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin: 10px 0;">
+        <button mat-fab extended (click)="agregarCobro()" [disabled]="!isOpen">
+            <mat-icon>payments</mat-icon>
+            Agregar Cobro
+        </button>
+        <button mat-fab extended color="warn" (click)="cerrarPlanilla()" [disabled]="!isOpen">
+            <mat-icon>lock</mat-icon>
+            Cerrar Planilla
+        </button>
+    </div>
+
+    <h3>Cobros Capturados</h3>
+    <table mat-table [dataSource]="paymentsDataSource" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="paymentDate">
+            <th mat-header-cell *matHeaderCellDef> Fecha </th>
+            <td mat-cell *matCellDef="let element"> {{ element.paymentDate | date:'dd/MM/yyyy HH:mm' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="invoiceId">
+            <th mat-header-cell *matHeaderCellDef> Factura </th>
+            <td mat-cell *matCellDef="let element">
+                <a [routerLink]="['/facturacion/facturas', element.invoiceId]">#{{ element.invoiceId }}</a>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentMethodName">
+            <th mat-header-cell *matHeaderCellDef> Método </th>
+            <td mat-cell *matCellDef="let element"> {{ element.paymentMethodName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef> Monto </th>
+            <td mat-cell *matCellDef="let element"> {{ element.amount | currency:' ':'symbol':'0.2-2' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="operationNumber">
+            <th mat-header-cell *matHeaderCellDef> N° Operación </th>
+            <td mat-cell *matCellDef="let element"> {{ element.operationNumber }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="observation">
+            <th mat-header-cell *matHeaderCellDef> Observación </th>
+            <td mat-cell *matCellDef="let element"> {{ element.observation }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="paymentColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: paymentColumns;"></tr>
+    </table>
+    }
+
+</div>

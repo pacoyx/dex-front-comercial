@@ -1,0 +1,166 @@
+.container-registro-ventas {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid gainsboro;
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+
+.panel {
+    border-radius: 12px !important;
+}
+
+.alert-validacion {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #f44336;
+    border-radius: 8px;
+    background: #fdecea;
+    color: #c62828;
+}
+
+.alert-validacion ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-sucursal {
+    min-width: 180px;
+}
+
+.campo-cliente {
+    flex: 1 1 240px;
+    min-width: 220px;
+}
+
+.campo-estado {
+    min-width: 160px;
+}
+
+.filtros-acciones {
+    display: flex;
+    gap: 8px;
+    padding-top: 8px;
+}
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    color: #6b7280;
+}
+
+.panel-tabla__content,
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.custom-table {
+    width: 100%;
+}
+
+.cabecera {
+    text-align: center;
+    background-color: #7d9ad6;
+}
+
+.cabecera th {
+    color: white;
+}
+
+.col-numeric {
+    text-align: right;
+}
+
+.estado-label {
+    font-weight: 600;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+}
+
+.resumen-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.resumen-totales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.resumen-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.resumen-label {
+    font-size: .8rem;
+    color: #6b7280;
+}
+
+.resumen-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.resumen-item--pendiente .resumen-value {
+    color: #c62828;
+}
+
+.resumen-acciones {
+    display: flex;
+    gap: 10px;
+}
+
+.resumen-acciones app-loading {
+    display: inline-flex;
+    margin-right: 6px;
+}
+
+@media (max-width: 900px) {
+    .filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .resumen-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .resumen-acciones {
+        justify-content: stretch;
+    }
+
+    .resumen-acciones button {
+        flex: 1;
+    }
+}

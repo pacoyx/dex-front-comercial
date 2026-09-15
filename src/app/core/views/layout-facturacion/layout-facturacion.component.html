@@ -1,0 +1,46 @@
+<div class="contenedor-plataforma">
+
+  <mat-toolbar class="win-proceso">
+
+    <button mat-icon-button (click)="toggleSidenav()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span>Facturación</span>
+
+    <nav>
+      <a mat-button routerLink="/facturacion/facturas"
+        routerLinkActive="active"><mat-icon>description</mat-icon>Facturas</a>
+      <a mat-button routerLink="/facturacion/cuentas-cobrar"
+        routerLinkActive="active"><mat-icon>account_balance_wallet</mat-icon>Cuentas por Cobrar</a>
+      <a mat-button routerLink="/facturacion/planillas"
+        routerLinkActive="active"><mat-icon>assignment</mat-icon>Planillas de Cobranza</a>
+      <a mat-button routerLink="/facturacion/reportes/registro-ventas"
+        routerLinkActive="active"><mat-icon>receipt_long</mat-icon>Registro de Ventas</a>
+    </nav>
+
+
+    <span class="flexExpand"></span>
+    <span class="example-spacer"></span>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>
+        Profile
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      {{ loginService.getLoginData()?.userName }}
+    </button>
+
+  </mat-toolbar>
+
+  <router-outlet></router-outlet>
+
+</div>
