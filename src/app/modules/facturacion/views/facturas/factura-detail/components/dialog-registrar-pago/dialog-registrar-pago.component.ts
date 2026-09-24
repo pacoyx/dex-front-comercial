@@ -1,5 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,8 +17,8 @@ import { NotificationsSystemService } from '../../../../../../../core/services/n
   selector: 'app-dialog-registrar-pago',
   standalone: true,
   imports: [
-    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, ReactiveFormsModule,
-    MatFormFieldModule, MatInputModule, MatSelectModule
+    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, MatIconModule, CurrencyPipe,
+    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule
   ],
   templateUrl: './dialog-registrar-pago.component.html',
   styleUrl: './dialog-registrar-pago.component.css'

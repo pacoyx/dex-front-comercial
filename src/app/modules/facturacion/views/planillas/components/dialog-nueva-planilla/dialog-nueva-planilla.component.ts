@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,7 +16,7 @@ import { NotificationsSystemService } from '../../../../../../core/services/noti
   selector: 'app-dialog-nueva-planilla',
   standalone: true,
   imports: [
-    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, ReactiveFormsModule,
+    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, MatIconModule, ReactiveFormsModule,
     MatFormFieldModule, MatInputModule, MatSelectModule
   ],
   templateUrl: './dialog-nueva-planilla.component.html',

@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ISupplierListarResponse } from '../../../interfaces/IMaestros';
@@ -18,7 +19,7 @@ import { DialogQuestionOneComponent } from '../../../../../core/components/dialo
   selector: 'app-supplier',
   standalone: true,
   imports: [
-    MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule,
+    MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatCardModule,
     MatPaginatorModule, MatSortModule, MatButtonModule, FormsModule, ReactiveFormsModule
   ],
   templateUrl: './supplier.component.html',

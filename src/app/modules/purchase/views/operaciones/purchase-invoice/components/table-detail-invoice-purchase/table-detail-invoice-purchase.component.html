@@ -1,22 +1,10 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
-
-    <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
-        <td mat-cell *matCellDef="let element">
-            <div style="display: flex; gap: 5px; justify-content: center;">
-                <button mat-mini-fab (click)="editItem(element)" matTooltip="Edit" aria-label="Edit" [disabled]="statusButton">
-                    <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-mini-fab (click)="deleteItem(element)" matTooltip="Delete" aria-label="Delete"
-                    style="color: red;" [disabled]="statusButton">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </div>
-        </td>
-
-        <td mat-footer-cell *matFooterCellDef></td>
-    </ng-container>
+@if (dataSource.data.length === 0) {
+<div class="empty-state">
+    <mat-icon>inventory_2</mat-icon>
+    <span>Aún no agregaste productos o servicios a esta factura.</span>
+</div>
+} @else {
+<table mat-table [dataSource]="dataSource" class="detail-table">
 
     <ng-container matColumnDef="item">
         <th mat-header-cell *matHeaderCellDef> N° </th>
@@ -40,13 +28,13 @@
             {{element.productName}}
         </td>
         <td mat-footer-cell *matFooterCellDef>
-            <div style="display: flex; gap: 20px; justify-content: end">
+            <div class="footer-summary">
                 <div>
-                    SubTotal: <span style="color: darkblue; font-size: large;"> {{subTotal | currency:'
+                    SubTotal: <span class="footer-summary__value"> {{subTotal | currency:'
                         ':'symbol':'0.2-2'}} </span>
                 </div>
                 <div>
-                    Igv: <span style="color: darkblue; font-size: large;">{{igv | currency:' ':'symbol':'0.2-2'}}</span>
+                    Igv: <span class="footer-summary__value">{{igv | currency:' ':'symbol':'0.2-2'}}</span>
                 </div>
             </div>
         </td>
@@ -58,41 +46,55 @@
             {{element.unitMeasurement}}
         </td>
         <td mat-footer-cell *matFooterCellDef>
-            Total:            
+            Total:
         </td>
     </ng-container>
 
     <ng-container matColumnDef="quantity">
-        <th mat-header-cell *matHeaderCellDef> Cant </th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cant </th>
+        <td mat-cell *matCellDef="let element" class="col-numeric">
             {{element.quantity | currency:' ':'symbol':'0.2-2'}}
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
     <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef> Precio </th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef class="col-numeric"> Precio </th>
+        <td mat-cell *matCellDef="let element" class="col-numeric">
             {{element.price | currency:' ':'symbol':'0.2-2'}}
         </td>
-        <td mat-footer-cell *matFooterCellDef>            
-            <span style="color: darkblue; font-size: large;">
+        <td mat-footer-cell *matFooterCellDef class="col-numeric">
+            <strong>
                 {{getTotalCost() | currency:' ':'symbol':'0.2-2'}}
-            </span>
+            </strong>
         </td>
     </ng-container>
 
     <ng-container matColumnDef="total">
-        <th mat-header-cell *matHeaderCellDef> Total </th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
+        <td mat-cell *matCellDef="let element" class="col-numeric">
             {{element.total | currency:' ':'symbol':'0.2-2'}}
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
-
+    <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+        <td mat-cell *matCellDef="let element" class="col-actions">
+            <button mat-icon-button (click)="editItem(element)" matTooltip="Editar" aria-label="Editar"
+                [disabled]="statusButton">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteItem(element)" matTooltip="Eliminar"
+                aria-label="Eliminar" [disabled]="statusButton">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
 </table>
+}

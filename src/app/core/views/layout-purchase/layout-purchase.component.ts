@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
@@ -12,10 +13,11 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
   selector: 'app-layout-purchase',
   standalone: true,
   imports: [
-    RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule
+    RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule,
+    MatDividerModule
   ],
   templateUrl: './layout-purchase.component.html',
-  styleUrl: './layout-purchase.component.css'
+  styleUrl: './layout-purchase.component.scss'
 })
 export class LayoutPurchaseComponent {
 

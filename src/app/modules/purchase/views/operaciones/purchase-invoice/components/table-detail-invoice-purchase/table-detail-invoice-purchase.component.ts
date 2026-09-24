@@ -2,6 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { PurchaseInvoiceStoreService } from '../../../../../services/purchase-invoice-store.service';
 import { PurchaseStoreInvoiceDetail } from '../../../../../interfaces/IOperaciones';
 import { CurrencyPipe } from '@angular/common';
@@ -12,7 +13,7 @@ import { DialogAddItemInvoicePurchaseComponent } from '../dialog-add-item-invoic
 @Component({
   selector: 'app-table-detail-invoice-purchase',
   standalone: true,
-  imports: [MatTableModule, MatIconModule, MatButtonModule, CurrencyPipe],
+  imports: [MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule, CurrencyPipe],
   templateUrl: './table-detail-invoice-purchase.component.html',
   styleUrl: './table-detail-invoice-purchase.component.css'
 })

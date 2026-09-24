@@ -22,6 +22,7 @@ import { IFacturasPorParamsList } from '../../../interfaces/IReportes';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-purchase-reportes-facturasxparams',
@@ -29,7 +30,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     MatRadioModule, MatIconModule, MatButtonModule, MatSelectModule, MatFormFieldModule, MatInputModule,
     FormsModule, ReactiveFormsModule, MatDatepickerModule, MatAutocompleteModule, TitleCasePipe, AsyncPipe, NgFor, CurrencyPipe,
-    MatTableModule, DatePipe, MatPaginatorModule, MatSortModule, RouterModule
+    MatTableModule, DatePipe, MatPaginatorModule, MatSortModule, RouterModule, MatCardModule
   ],
   providers: [
     provideNativeDateAdapter(),

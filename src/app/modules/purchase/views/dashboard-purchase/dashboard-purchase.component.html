@@ -1,1 +1,184 @@
-<p>dashboard-purchase works!</p>
+<div class="container-dashboard">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>dashboard</mat-icon>
+            <div class="page-header__heading">
+                <h1>Dashboard de Compras</h1>
+                <span class="page-header__subtitle">Resumen del mes actual, tendencias y cuentas por pagar</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">shopping_cart</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Compras del Mes</span>
+                <span class="stat-card__value">{{ summary?.monthPurchases ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">account_balance_wallet</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Cuentas por Pagar</span>
+                <span class="stat-card__value">{{ summary?.accountsPayable ?? 0 | currency:' ':'symbol':'0.2-2'
+                    }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">N° Compras del Mes</span>
+                <span class="stat-card__value">{{ summary?.purchaseCount ?? 0 }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">groups</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Proveedores Activos</span>
+                <span class="stat-card__value">{{ summary?.activeSuppliers ?? 0 }}</span>
+            </div>
+        </mat-card>
+    </div>
+
+    <div class="charts-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>bar_chart</mat-icon>
+                    Compras por Mes
+                </h2>
+            </div>
+            <mat-card-content>
+                <div class="bar-chart">
+                    @for (item of monthlyPurchases; track item.month) {
+                    <div class="bar-chart__col">
+                        <div class="bar-chart__track">
+                            <div class="bar-chart__bar" [style.height.%]="(item.amount / maxMonthlyAmount) * 100"
+                                [title]="item.amount | currency:' ':'symbol':'0.2-2'"></div>
+                        </div>
+                        <span class="bar-chart__label">{{ item.month }}</span>
+                    </div>
+                    } @empty {
+                    <p class="empty-hint">Aún no hay datos de compras por mes.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>inventory_2</mat-icon>
+                    Top Productos Comprados
+                </h2>
+            </div>
+            <mat-card-content class="top-products">
+                @for (item of topProducts; track item.productName; let i = $index) {
+                <div class="top-products__row">
+                    <span class="top-products__rank">{{ i + 1 }}</span>
+                    <div class="top-products__info">
+                        <span class="top-products__name">{{ item.productName }}</span>
+                        <div class="top-products__track">
+                            <div class="top-products__fill"
+                                [style.width.%]="(item.quantity / maxTopProductQuantity) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="top-products__qty">{{ item.quantity }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay datos de productos comprados.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>receipt_long</mat-icon>
+                Compras Recientes
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Proveedor</th>
+                        <th>Documento</th>
+                        <th>Emisión</th>
+                        <th class="col-numeric">Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of recentPurchases; track item.id) {
+                    <tr class="clickable-row" (click)="verCompra(item.id)">
+                        <td>{{ item.supplierName }}</td>
+                        <td>{{ item.documentNumber }}</td>
+                        <td>{{ item.invoiceIssueDate | date:'dd/MM/yyyy' }}</td>
+                        <td class="col-numeric">{{ item.total | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td>
+                            <span class="status-chip" [style.color]="item.paymentStatus | purchaseInvoiceStatusColor"
+                                [style.borderColor]="item.paymentStatus | purchaseInvoiceStatusColor">
+                                <span class="status-chip__dot"
+                                    [style.backgroundColor]="item.paymentStatus | purchaseInvoiceStatusColor"></span>
+                                {{ item.paymentStatus | purchaseInvoiceStatusLabel }}
+                            </span>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="5">No hay compras recientes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>account_balance_wallet</mat-icon>
+                Cuentas por Pagar
+            </h2>
+            <button mat-stroked-button color="primary" routerLink="/purchase/cuentas-pagar">
+                Ver todas
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Proveedor</th>
+                        <th>Documento</th>
+                        <th class="col-numeric">Saldo</th>
+                        <th class="col-numeric">Vencimiento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of accountsPayableTop; track item.purchaseInvoiceId) {
+                    <tr>
+                        <td>{{ item.supplierName }}</td>
+                        <td>{{ item.documentNumber }}</td>
+                        <td class="col-numeric">{{ item.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td class="col-numeric">{{ item.dueDate | date:'dd/MM/yyyy' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="4">No hay cuentas por pagar pendientes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

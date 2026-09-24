@@ -64,6 +64,12 @@ export interface ISupplierListarPorPatronResponse {
   name: string;
 }
 
+export interface IPaymentMethod {
+  id: number;
+  name: string;
+  isActive: boolean;
+}
+
 
 export interface IProductCreateRequest {
   name: string;
@@ -132,4 +138,47 @@ export interface IProductListarPatronResponse {
   price: number;
   unitMeasurementId: number;
   unitMeasurementDescription: string;
+}
+
+export interface ICategoryProd {
+  id: number;
+  name: string;
+  description: string;
+  status: string;
+}
+
+export interface ICategoryProdCreateRequest {
+  name: string;
+  description: string;
+  status?: string;
+}
+
+export interface ICategoryProdUpdateRequest {
+  id: number;
+  name: string;
+  description: string;
+  status: string;
+}
+
+export interface IUnitMeasurement {
+  id: number;
+  codeUm: string;
+  name: string;
+  description: string;
+  status: string;
+}
+
+export interface IUnitMeasurementCreateRequest {
+  name: string;
+  description: string;
+  codeUm: string;
+  status?: string;
+}
+
+export interface IUnitMeasurementUpdateRequest {
+  id: number;
+  name: string;
+  codeUm: string;
+  description: string;
+  status: string;
 }

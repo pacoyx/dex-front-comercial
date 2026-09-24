@@ -1,29 +1,44 @@
-<h2 mat-dialog-title>Nueva Planilla de Cobranza</h2>
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>assignment</mat-icon>
+        <h2 mat-dialog-title>Nueva Planilla de Cobranza</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="saving" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
-<mat-dialog-content [formGroup]="frmPlanilla">
+<mat-dialog-content class="dialog-content" [formGroup]="frmPlanilla">
 
-    <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Sucursal</mat-label>
-        <mat-select formControlName="branchId">
-            @for (branch of branches; track branch.id) {
-            <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
-            }
-        </mat-select>
-    </mat-form-field>
+    <div class="form-grid">
 
-    <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Número</mat-label>
-        <input type="text" matInput formControlName="number">
-    </mat-form-field>
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Sucursal</mat-label>
+            <mat-select formControlName="branchId">
+                @for (branch of branches; track branch.id) {
+                <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Observaciones</mat-label>
-        <input type="text" matInput formControlName="remarks">
-    </mat-form-field>
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Número</mat-label>
+            <input type="text" matInput formControlName="number">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Observaciones</mat-label>
+            <input type="text" matInput formControlName="remarks">
+        </mat-form-field>
+
+    </div>
 
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancelar</button>
-    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving">Guardar</button>
+    <button mat-stroked-button (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving">
+        <mat-icon>check</mat-icon>
+        {{ saving ? 'Guardando...' : 'Guardar' }}
+    </button>
 </mat-dialog-actions>

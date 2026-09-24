@@ -1,59 +1,79 @@
 <div class="container-planillas">
 
-    <div
-        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
-        <div style="display: flex; gap: 5px; align-items: center;">
+    <div class="page-header">
+        <div class="page-header__title">
             <mat-icon>assignment</mat-icon>
-            <label><strong>Planillas de Cobranza</strong></label>
+            <div class="page-header__heading">
+                <h1>Planillas de Cobranza</h1>
+                <span class="page-header__subtitle">Administra las aperturas y cierres de caja por cobranza</span>
+            </div>
         </div>
-        <button mat-fab extended (click)="nuevaPlanilla()">
-            <mat-icon>post_add</mat-icon>
-            Nueva Planilla
-        </button>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevaPlanilla()">
+                <mat-icon>post_add</mat-icon>
+                Nueva Planilla
+            </button>
+        </div>
     </div>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
 
-        <ng-container matColumnDef="numero">
-            <th mat-header-cell *matHeaderCellDef> Número </th>
-            <td mat-cell *matCellDef="let element"> {{ element.number }} </td>
-        </ng-container>
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef> Número </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.number }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="apertura">
-            <th mat-header-cell *matHeaderCellDef> Apertura </th>
-            <td mat-cell *matCellDef="let element"> {{ element.openDate | date:'dd/MM/yyyy HH:mm' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="apertura">
+                    <th mat-header-cell *matHeaderCellDef> Apertura </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.openDate | date:'dd/MM/yyyy HH:mm' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="cierre">
-            <th mat-header-cell *matHeaderCellDef> Cierre </th>
-            <td mat-cell *matCellDef="let element"> {{ element.closeDate ? (element.closeDate | date:'dd/MM/yyyy HH:mm') : '-' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="cierre">
+                    <th mat-header-cell *matHeaderCellDef> Cierre </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.closeDate ? (element.closeDate |
+                        date:'dd/MM/yyyy HH:mm') : '-' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef> Total </th>
-            <td mat-cell *matCellDef="let element"> {{ element.totalAmount | currency:' ':'symbol':'0.2-2' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.totalAmount | currency:'
+                        ':'symbol':'0.2-2' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef> Estado </th>
-            <td mat-cell *matCellDef="let element">
-                <span [style.color]="element.status | collectionSheetStatusColor" style="font-weight: 600;">
-                    {{ element.status | collectionSheetStatusLabel }}
-                </span>
-            </td>
-        </ng-container>
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [style.color]="element.status | collectionSheetStatusColor"
+                            [style.borderColor]="element.status | collectionSheetStatusColor">
+                            <span class="status-chip__dot"
+                                [style.backgroundColor]="element.status | collectionSheetStatusColor"></span>
+                            {{ element.status | collectionSheetStatusLabel }}
+                        </span>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef> Acciones </th>
-            <td mat-cell *matCellDef="let element">
-                <button mat-mini-fab [routerLink]="[element.id]" matTooltip="Ver detalle">
-                    <mat-icon>visibility</mat-icon>
-                </button>
-            </td>
-        </ng-container>
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button [routerLink]="[element.id]" matTooltip="Ver detalle">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se registraron planillas de cobranza.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
 
 </div>

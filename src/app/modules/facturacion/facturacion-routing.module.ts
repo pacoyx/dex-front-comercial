@@ -7,9 +7,12 @@ import { CuentasPorCobrarComponent } from './views/cuentas-por-cobrar/cuentas-po
 import { PlanillasComponent } from './views/planillas/planillas.component';
 import { PlanillaDetailComponent } from './views/planillas/planilla-detail/planilla-detail.component';
 import { RegistroVentasComponent } from './views/reportes/registro-ventas/registro-ventas.component';
+import { DashboardFacturacionComponent } from './views/dashboard-facturacion/dashboard-facturacion.component';
+import { FacturacionPorClienteComponent } from './views/reportes/facturacion-por-cliente/facturacion-por-cliente.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'facturas', pathMatch: 'full' },
+  { path: 'dashboard', component: DashboardFacturacionComponent },
   { path: 'facturas', component: FacturasComponent },
   { path: 'facturas/nueva', component: FacturaFormComponent },
   { path: 'facturas/:id', component: FacturaDetailComponent },
@@ -17,6 +20,7 @@ const routes: Routes = [
   { path: 'planillas', component: PlanillasComponent },
   { path: 'planillas/:id', component: PlanillaDetailComponent },
   { path: 'reportes/registro-ventas', component: RegistroVentasComponent },
+  { path: 'reportes/facturacion-por-cliente', component: FacturacionPorClienteComponent },
 ];
 
 @NgModule({

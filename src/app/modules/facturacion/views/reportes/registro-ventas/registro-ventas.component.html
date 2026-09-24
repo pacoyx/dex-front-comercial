@@ -1,8 +1,13 @@
 <div class="container-registro-ventas">
 
     <div class="page-header">
-        <mat-icon>receipt_long</mat-icon>
-        <label><strong>Registro de Ventas</strong></label>
+        <div class="page-header__title">
+            <mat-icon>receipt_long</mat-icon>
+            <div class="page-header__heading">
+                <h1>Registro de Ventas</h1>
+                <span class="page-header__subtitle">Consulta y exporta las ventas emitidas por período</span>
+            </div>
+        </div>
     </div>
 
     @if (validationErrors.length > 0) {
@@ -83,7 +88,7 @@
 
     <mat-card class="panel panel-tabla" appearance="outlined">
         <mat-card-content class="tabla-scroll">
-            <table mat-table [dataSource]="dataSource" class="custom-table">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
 
                 <ng-container matColumnDef="fecha">
                     <th mat-header-cell *matHeaderCellDef> Fecha </th>
@@ -101,32 +106,32 @@
                 </ng-container>
 
                 <ng-container matColumnDef="subTotal">
-                    <th mat-header-cell *matHeaderCellDef> SubTotal </th>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> SubTotal </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.subTotal | currency:' ':'symbol':'0.2-2' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="igv">
-                    <th mat-header-cell *matHeaderCellDef> IGV </th>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> IGV </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.igv | currency:' ':'symbol':'0.2-2' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="total">
-                    <th mat-header-cell *matHeaderCellDef> Total </th>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="pagado">
-                    <th mat-header-cell *matHeaderCellDef> Pagado </th>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Pagado </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.amountPaid | currency:' ':'symbol':'0.2-2' }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="saldo">
-                    <th mat-header-cell *matHeaderCellDef> Saldo </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Saldo </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric saldo-value">
                         {{ element.balance | currency:' ':'symbol':'0.2-2' }} </td>
                 </ng-container>
 
@@ -136,7 +141,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="tipoCambio">
-                    <th mat-header-cell *matHeaderCellDef> T. Cambio </th>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> T. Cambio </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.exchangeRate | currency:' ':'symbol':'0.2-3' }} </td>
                 </ng-container>
@@ -144,7 +149,10 @@
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef> Estado </th>
                     <td mat-cell *matCellDef="let element">
-                        <span [style.color]="element.status | salesRegisterStatusColor" class="estado-label">
+                        <span class="status-chip" [style.color]="element.status | salesRegisterStatusColor"
+                            [style.borderColor]="element.status | salesRegisterStatusColor">
+                            <span class="status-chip__dot"
+                                [style.backgroundColor]="element.status | salesRegisterStatusColor"></span>
                             {{ element.status | salesRegisterStatusLabel }}
                         </span>
                     </td>
@@ -163,6 +171,12 @@
     </mat-card>
 
     <mat-card class="panel panel-resumen" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>summarize</mat-icon>
+                Resumen del Período
+            </h2>
+        </div>
         <mat-card-content class="resumen-row">
 
             <div class="resumen-totales">

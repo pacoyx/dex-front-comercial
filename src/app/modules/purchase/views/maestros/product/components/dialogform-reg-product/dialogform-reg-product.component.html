@@ -1,21 +1,28 @@
-<h2 mat-dialog-title>
-    <mat-icon>edit_note</mat-icon> {{titulo}}
-</h2>
-<mat-dialog-content>
-    <form [formGroup]="productForm" style="padding: 5px; display: flex; flex-direction: column;">
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>edit_note</mat-icon>
+        <h2 mat-dialog-title>{{titulo}}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Nombre</mat-label>
-            <input matInput formControlName="name" (blur)="onBlurName()">
-        </mat-form-field>
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="productForm">
 
-        <mat-form-field appearance="outline">
-            <mat-label>Descripcion</mat-label>
-            <input matInput formControlName="description">
-        </mat-form-field>
+        <div class="form-grid">
 
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name" (blur)="onBlurName()">
+            </mat-form-field>
 
-        <div style="display: flex; gap: 10px;">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Descripcion</mat-label>
+                <input matInput formControlName="description">
+            </mat-form-field>
+
             <mat-form-field appearance="outline">
                 <mat-label>Unidad de Medida</mat-label>
                 <mat-select formControlName="unitMeasurementId">
@@ -33,20 +40,17 @@
                     }
                 </mat-select>
             </mat-form-field>
-        </div>
 
-        <div style="display: flex; gap: 10px;">
             <mat-form-field appearance="outline">
                 <mat-label>Precio</mat-label>
                 <input matInput formControlName="price" type="number" min="0" step="1">
             </mat-form-field>
+
             <mat-form-field appearance="outline">
                 <mat-label>Stock</mat-label>
                 <input matInput formControlName="stock" type="number" min="0" step="1">
             </mat-form-field>
-        </div>
 
-        <div style="display: flex; gap: 10px;">
             <mat-form-field appearance="outline">
                 <mat-label>Estado</mat-label>
                 <mat-select formControlName="status">
@@ -54,26 +58,18 @@
                     <mat-option value="I"> Inactivo </mat-option>
                 </mat-select>
             </mat-form-field>
+
         </div>
-
-
-
-
 
     </form>
 </mat-dialog-content>
 
-<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
-
-    <button mat-fab extended (click)="onCancel()">
-        <mat-icon style="color: red;">cancel</mat-icon>
-        Cancelar
-    </button>
-
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()">Cancelar</button>
 
     @if(loadingSave){
-    <button mat-fab extended>
-        <div style="display: flex; gap: 5px;">
+    <button mat-flat-button color="primary" [disabled]="true">
+        <div class="loading-btn-content">
             <app-loading></app-loading>
             Grabando...
         </div>
@@ -81,8 +77,8 @@
     }
 
     @if(!loadingSave){
-    <button mat-fab extended (click)="onSubmit()">
-        <mat-icon>save</mat-icon>
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
         Grabar
     </button>
     }

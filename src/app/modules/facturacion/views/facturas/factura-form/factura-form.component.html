@@ -1,114 +1,151 @@
 <div class="container-invoice">
-    <div
-        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-icon>dataset</mat-icon>
-            <label><strong>Registro de Factura</strong></label>
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>receipt_long</mat-icon>
+            <div class="page-header__heading">
+                <h1>Registro de Factura</h1>
+                <span class="page-header__subtitle">Completa los datos del comprobante y agrega los productos o
+                    servicios a facturar</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="limpiar()">
+                <mat-icon>restart_alt</mat-icon>
+                Nuevo
+            </button>
+            <button mat-flat-button color="primary" (click)="guardarFactura()" [disabled]="frmInvoice.disabled">
+                <mat-icon>save</mat-icon>
+                Registrar Factura
+            </button>
         </div>
     </div>
 
-    <div class="section-controls-header" [formGroup]="frmInvoice">
+    <div class="invoice-form" [formGroup]="frmInvoice">
 
-        <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>person</mat-icon>
+                    Cliente y Sucursal
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--cliente">
 
-            <mat-form-field appearance="outline" style="flex: 2;">
-                <mat-label>Cliente</mat-label>
-                <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
-                    placeholder="escribir nombre del cliente">
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
-                    [displayWith]="displayFn">
-                    <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                        {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Cliente</mat-label>
+                    <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+                        placeholder="Escribe el nombre del cliente">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
+                        [displayWith]="displayFn">
+                        <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
+                            {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" style="width: 200px;">
-                <mat-label>Sucursal</mat-label>
-                <mat-select formControlName="branchId">
-                    @for (branch of branches; track branch.id) {
-                    <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Sucursal</mat-label>
+                    <mat-select formControlName="branchId">
+                        @for (branch of branches; track branch.id) {
+                        <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
 
-        </div>
+            </mat-card-content>
+        </mat-card>
 
-        <div style="display: flex; gap: 5px; align-items: center; justify-content: space-between;">
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>description</mat-icon>
+                    Datos del Comprobante
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--documento">
 
-            <mat-form-field appearance="outline" style="width: 200px;">
-                <mat-label>Tipo Documento</mat-label>
-                <mat-select formControlName="documentTypeId">
-                    @for (doc of documentTypes; track doc.id) {
-                    <mat-option [value]="doc.id">{{ doc.name }}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo Documento</mat-label>
+                    <mat-select formControlName="documentTypeId">
+                        @for (doc of documentTypes; track doc.id) {
+                        <mat-option [value]="doc.id">{{ doc.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" style="width: 120px;">
-                <mat-label>Serie</mat-label>
-                <input type="text" matInput formControlName="serie">
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Serie</mat-label>
+                    <input type="text" matInput formControlName="serie">
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" style="width: 140px;">
-                <mat-label>Número</mat-label>
-                <input type="text" matInput formControlName="numero">
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Número</mat-label>
+                    <input type="text" matInput formControlName="numero">
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" style="width: 160px;">
-                <mat-label>Emisión</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="issueDate">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Emisión</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="issueDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
 
-            <mat-form-field appearance="outline" style="width: 160px;">
-                <mat-label>Vencimiento</mat-label>
-                <input matInput [matDatepicker]="pickerv" formControlName="dueDate">
-                <mat-datepicker-toggle matSuffix [for]="pickerv"></mat-datepicker-toggle>
-                <mat-datepicker #pickerv></mat-datepicker>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Vencimiento</mat-label>
+                    <input matInput [matDatepicker]="pickerv" formControlName="dueDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerv"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerv></mat-datepicker>
+                </mat-form-field>
 
-        </div>
+            </mat-card-content>
+        </mat-card>
 
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-form-field appearance="outline" style="width: 120px;">
-                <mat-label>Moneda</mat-label>
-                <input type="text" matInput formControlName="currencyId" maxlength="3" style="text-transform: uppercase;">
-            </mat-form-field>
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>payments</mat-icon>
+                    Moneda y Notas
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--moneda">
 
-            <mat-form-field appearance="outline" style="width: 140px;">
-                <mat-label>Tipo de Cambio</mat-label>
-                <input type="number" matInput formControlName="exchangeRate" step="0.0001" min="0">
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Moneda</mat-label>
+                    <input type="text" matInput formControlName="currencyId" maxlength="3" class="uppercase-input">
+                </mat-form-field>
 
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-form-field appearance="outline" style="width: 100%;">
-                <mat-label>Notas</mat-label>
-                <input type="text" matInput formControlName="notes">
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo de Cambio</mat-label>
+                    <input type="number" matInput formControlName="exchangeRate" step="0.0001" min="0">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Notas</mat-label>
+                    <input type="text" matInput formControlName="notes"
+                        placeholder="Observaciones o referencias adicionales">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
 
     </div>
 
-    <div class="section-controls-botones">
-        <button mat-fab extended (click)="addItem()" [disabled]="frmInvoice.disabled">
-            <mat-icon>post_add</mat-icon>
-            Agregar Producto/Servicio
-        </button>
-        <button mat-fab extended (click)="limpiar()">
-            <mat-icon>restart_alt</mat-icon>
-            Nuevo
-        </button>
-        <button mat-fab extended (click)="guardarFactura()" [disabled]="frmInvoice.disabled">
-            <mat-icon>save</mat-icon>
-            Registrar Factura
-        </button>
-    </div>
-
-    <div class="section-detalles">
-        <app-table-detalle-factura [disabled]="frmInvoice.disabled"></app-table-detalle-factura>
-    </div>
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>inventory_2</mat-icon>
+                Productos y Servicios
+            </h2>
+            <button mat-stroked-button color="primary" (click)="addItem()" [disabled]="frmInvoice.disabled">
+                <mat-icon>add</mat-icon>
+                Agregar
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <app-table-detalle-factura [disabled]="frmInvoice.disabled"></app-table-detalle-factura>
+        </mat-card-content>
+    </mat-card>
 
 </div>

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -19,7 +20,7 @@ import { DialogRegistrarPagoComponent } from './components/dialog-registrar-pago
   selector: 'app-factura-detail',
   standalone: true,
   imports: [
-    MatTableModule, CurrencyPipe, DatePipe, MatIconModule, MatFormFieldModule, MatInputModule,
+    MatTableModule, CurrencyPipe, DatePipe, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule,
     ReactiveFormsModule, MatButtonModule, RouterModule, InvoiceStatusLabelPipe, InvoiceStatusColorPipe
   ],
   templateUrl: './factura-detail.component.html',

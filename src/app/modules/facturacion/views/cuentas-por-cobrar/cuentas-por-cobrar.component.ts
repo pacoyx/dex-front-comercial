@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { RouterModule } from '@angular/router';
@@ -17,7 +18,7 @@ import { extractErrorMessage } from '../../shared/http-error.util';
   selector: 'app-cuentas-por-cobrar',
   standalone: true,
   imports: [
-    MatFormFieldModule, MatInputModule, MatIconModule, MatTableModule, MatSortModule, FormsModule,
+    MatFormFieldModule, MatInputModule, MatIconModule, MatCardModule, MatTableModule, MatSortModule, FormsModule,
     RouterModule, CurrencyPipe, DatePipe, InvoiceStatusLabelPipe, InvoiceStatusColorPipe
   ],
   templateUrl: './cuentas-por-cobrar.component.html',

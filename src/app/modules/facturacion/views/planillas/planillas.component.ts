@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,7 +18,7 @@ import { DialogNuevaPlanillaComponent } from './components/dialog-nueva-planilla
   selector: 'app-planillas',
   standalone: true,
   imports: [
-    MatButtonModule, MatIconModule, MatTableModule, MatTooltipModule, RouterModule, CurrencyPipe, DatePipe,
+    MatButtonModule, MatIconModule, MatCardModule, MatTableModule, MatTooltipModule, RouterModule, CurrencyPipe, DatePipe,
     CollectionSheetStatusLabelPipe, CollectionSheetStatusColorPipe
   ],
   templateUrl: './planillas.component.html',

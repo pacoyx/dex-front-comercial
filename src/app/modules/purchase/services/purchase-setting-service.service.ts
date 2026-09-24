@@ -1,7 +1,30 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { IGetCategoriaProductoShortResponse, IGetProductsPaginadoResponse, IGetSupplierPaginadoResponse, IGetUniMedidaShortResponse, IProductCreateRequest, IProductCreateResponse, IProductListarPatronResponse, IProductListarResponse, IProductUpdateRequest, IResponseGeneric, ISupplierCreateRequest, ISupplierCreateResponse, ISupplierListarPorPatronResponse, ISupplierListarResponse, ISupplierUpdateRequest } from '../interfaces/IMaestros';
+import {
+  ICategoryProd,
+  ICategoryProdCreateRequest,
+  ICategoryProdUpdateRequest,
+  IGetCategoriaProductoShortResponse,
+  IGetProductsPaginadoResponse,
+  IGetSupplierPaginadoResponse,
+  IGetUniMedidaShortResponse,
+  IPaymentMethod,
+  IProductCreateRequest,
+  IProductCreateResponse,
+  IProductListarPatronResponse,
+  IProductListarResponse,
+  IProductUpdateRequest,
+  IResponseGeneric,
+  ISupplierCreateRequest,
+  ISupplierCreateResponse,
+  ISupplierListarPorPatronResponse,
+  ISupplierListarResponse,
+  ISupplierUpdateRequest,
+  IUnitMeasurement,
+  IUnitMeasurementCreateRequest,
+  IUnitMeasurementUpdateRequest,
+} from '../interfaces/IMaestros';
 import { Observable } from 'rxjs';
 
 
@@ -73,9 +96,50 @@ export class PurchaseSettingServiceService {
     return this.http.get<IResponseGeneric<IGetCategoriaProductoShortResponse[]>>(`${this.apiUrl}${environment.EPListarCategoriaProductoShort}`, { headers });
   }
 
+  obtenerMetodosPago(): Observable<IResponseGeneric<IPaymentMethod[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IPaymentMethod[]>>(`${this.apiUrl}${environment.EPPaymentMethods}`, { headers });
+  }
 
+  listarCategoriasProducto(): Observable<IResponseGeneric<ICategoryProd[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<ICategoryProd[]>>(`${this.apiUrl}${environment.EPListarCategoriasProducto}`, { headers });
+  }
 
+  crearCategoriaProducto(req: ICategoryProdCreateRequest): Observable<IResponseGeneric<ICategoryProd>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<ICategoryProd>>(`${this.apiUrl}${environment.EPCrearCategoriaProducto}`, req, { headers });
+  }
 
+  actualizarCategoriaProducto(req: ICategoryProdUpdateRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarCategoriaProducto}`, req, { headers });
+  }
+
+  eliminarCategoriaProducto(id: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.delete<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPEliminarCategoriaProducto}/${id}`, { headers });
+  }
+
+  listarUnidadesMedida(): Observable<IResponseGeneric<IUnitMeasurement[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IUnitMeasurement[]>>(`${this.apiUrl}${environment.EPListarUnidadesMedida}`, { headers });
+  }
+
+  crearUnidadMedida(req: IUnitMeasurementCreateRequest): Observable<IResponseGeneric<IUnitMeasurement>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IUnitMeasurement>>(`${this.apiUrl}${environment.EPCrearUnidadMedida}`, req, { headers });
+  }
+
+  actualizarUnidadMedida(req: IUnitMeasurementUpdateRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarUnidadMedida}`, req, { headers });
+  }
+
+  eliminarUnidadMedida(id: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.delete<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPEliminarUnidadMedida}/${id}`, { headers });
+  }
 
 
 

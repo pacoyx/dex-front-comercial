@@ -1,136 +1,270 @@
 <div class="container-factura">
-    <div
-        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
-        <div style="display: flex; gap: 5px; align-items: center;">
+
+    <div class="page-header">
+        <div class="page-header__title">
             <mat-icon>dataset</mat-icon>
-            <label><strong>Vista Factura</strong></label>
+            <div class="page-header__heading">
+                <h1>Vista Factura</h1>
+                @if (invoice) {
+                <span class="page-header__subtitle">Compra {{ invoice.invoiceSerie }}-{{ invoice.invoiceNumber }}
+                    · {{ invoice.supplierName }}</span>
+                } @else {
+                <span class="page-header__subtitle">Detalle de factura de compra</span>
+                }
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            @if (invoice) {
+            <span class="status-chip" [style.color]="invoice.paymentStatus | purchaseInvoiceStatusColor"
+                [style.borderColor]="invoice.paymentStatus | purchaseInvoiceStatusColor">
+                <span class="status-chip__dot"
+                    [style.backgroundColor]="invoice.paymentStatus | purchaseInvoiceStatusColor"></span>
+                {{ invoice.paymentStatus | purchaseInvoiceStatusLabel }}
+            </span>
+            }
+            <button mat-stroked-button color="warn" (click)="anularCompra()" [disabled]="!canCancel">
+                <mat-icon>block</mat-icon>
+                Anular
+            </button>
+            <button mat-flat-button color="primary" (click)="registrarPago()" [disabled]="!canRegisterPayment">
+                <mat-icon>payments</mat-icon>
+                Registrar Pago
+            </button>
         </div>
     </div>
-    <div class="section-header" [formGroup]="formInvoice"> 
 
-        <div style="display: flex; gap: 5px; align-items: center;">
+    <div class="invoice-form" [formGroup]="formInvoice">
 
-            <mat-form-field style="flex: 2;">
-                <mat-label>Proveedor</mat-label>
-                <input matInput formControlName="supplierName" readonly="true">
-            </mat-form-field>
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>person</mat-icon>
+                    Proveedor y Documento
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--proveedor">
 
-            <mat-form-field>
-                <mat-label>Ruc</mat-label>
-                <input matInput formControlName="supplierRuc" readonly="true">
-            </mat-form-field>
-        </div>
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-form-field style="width: 70px;">
-                <mat-label>Tipo</mat-label>
-                <input matInput formControlName="invoiceType" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 70px;">
-                <mat-label>Serie</mat-label>
-                <input matInput formControlName="invoiceSerie" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>Numero</mat-label>
-                <input matInput formControlName="invoiceNumber" readonly="true">
-            </mat-form-field>           
+                <mat-form-field appearance="outline">
+                    <mat-label>Proveedor</mat-label>
+                    <input matInput formControlName="supplierName" readonly="true">
+                </mat-form-field>
 
-            <mat-form-field style="width: 160px;">
-                <mat-label>Emision</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="invoiceIssueDate">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Ruc</mat-label>
+                    <input matInput formControlName="supplierRuc" readonly="true">
+                </mat-form-field>
 
-            <mat-form-field style="width: 160px;">
-                <mat-label>Vencimiento</mat-label>
-                <input matInput [matDatepicker]="pickerv" formControlName="invoiceExpirationDate" readonly="true">
-                <mat-datepicker-toggle matSuffix [for]="pickerv"></mat-datepicker-toggle>
-                <mat-datepicker #pickerv></mat-datepicker>
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo</mat-label>
+                    <input matInput formControlName="invoiceType" readonly="true">
+                </mat-form-field>
 
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-form-field style="width: 90px;">
-                <mat-label>Tipo Pago</mat-label>
-                <input matInput formControlName="typePayment" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>Dias</mat-label>
-                <input matInput formControlName="daysCredit" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>Metodo pago</mat-label>
-                <input matInput formControlName="paymentMethod" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>Moneda</mat-label>
-                <input matInput formControlName="currencyId" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>T.C.</mat-label>
-                <input matInput formControlName="exchangeRate" readonly="true">
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Serie</mat-label>
+                    <input matInput formControlName="invoiceSerie" readonly="true">
+                </mat-form-field>
 
-        <div style="display: flex; gap: 5px; align-items: center;">
-            <mat-form-field style="width: 90px;">
-                <mat-label>SubTotal</mat-label>
-                <input matInput formControlName="subtotal" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>IGV</mat-label>
-                <input matInput formControlName="igv" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="width: 90px;">
-                <mat-label>Total</mat-label>
-                <input matInput formControlName="totalAmount" readonly="true">
-            </mat-form-field>
-            <mat-form-field style="flex: 2;">
-                <mat-label>Comentarios</mat-label>
-                <input matInput formControlName="comments" readonly="true">
-            </mat-form-field>
-        </div>
+                <mat-form-field appearance="outline">
+                    <mat-label>Numero</mat-label>
+                    <input matInput formControlName="invoiceNumber" readonly="true">
+                </mat-form-field>
 
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>calendar_month</mat-icon>
+                    Fechas y Montos
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--montos">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Emision</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="invoiceIssueDate">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Vencimiento</mat-label>
+                    <input matInput [matDatepicker]="pickerv" formControlName="invoiceExpirationDate" readonly="true">
+                    <mat-datepicker-toggle matSuffix [for]="pickerv"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerv></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>SubTotal</mat-label>
+                    <input matInput formControlName="subtotal" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>IGV</mat-label>
+                    <input matInput formControlName="igv" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Total</mat-label>
+                    <input matInput formControlName="totalAmount" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Moneda</mat-label>
+                    <input matInput formControlName="currencyId" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>T.C.</mat-label>
+                    <input matInput formControlName="exchangeRate" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Pagado</mat-label>
+                    <input matInput formControlName="amountPaid" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Saldo</mat-label>
+                    <input matInput formControlName="balance" readonly="true">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>account_balance_wallet</mat-icon>
+                    Condiciones de Pago y Notas
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--pagos">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo Pago</mat-label>
+                    <input matInput formControlName="typePayment" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Dias</mat-label>
+                    <input matInput formControlName="daysCredit" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Metodo pago</mat-label>
+                    <input matInput formControlName="paymentMethod" readonly="true">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Comentarios</mat-label>
+                    <input matInput formControlName="comments" readonly="true">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
 
     </div>
 
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>inventory_2</mat-icon>
+                Productos y Servicios
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="producto">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto </th>
+                    <td mat-cell *matCellDef="let element">{{element.productName}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="cantidad">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-numeric"> Cantidad </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">{{element.quantity | currency:'
+                        ':'symbol':'0.2-2'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="precio">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-numeric"> Precio </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">{{element.price | currency:'
+                        ':'symbol':'0.2-2'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-numeric"> Total </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">{{element.total | currency:'
+                        ':'symbol':'0.2-2'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="glosa">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Comentarios </th>
+                    <td mat-cell *matCellDef="let element">{{element.comments}}</td>
+                </ng-container>
 
 
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se registraron productos o servicios.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
 
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>payments</mat-icon>
+                Pagos
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="paymentsDataSource" class="detail-table">
 
+                <ng-container matColumnDef="paymentDate">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.paymentDate | date:'dd/MM/yyyy HH:mm' }} </td>
+                </ng-container>
 
+                <ng-container matColumnDef="paymentMethodName">
+                    <th mat-header-cell *matHeaderCellDef> Método </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.paymentMethodName }} </td>
+                </ng-container>
 
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Monto </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.amount | currency:'
+                        ':'symbol':'0.2-2' }} </td>
+                </ng-container>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="operationNumber">
+                    <th mat-header-cell *matHeaderCellDef> N° Operación </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.operationNumber }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="producto">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Producto </th>
-            <td mat-cell *matCellDef="let element">{{element.productName}}</td>
-        </ng-container>
+                <ng-container matColumnDef="observation">
+                    <th mat-header-cell *matHeaderCellDef> Observación </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.observation }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="cantidad">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Cantidad </th>
-            <td mat-cell *matCellDef="let element">{{element.quantity | currency:' ':'symbol':'0.2-2'}}</td>
-        </ng-container>
+                <tr mat-header-row *matHeaderRowDef="paymentColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: paymentColumns;"></tr>
 
-        <ng-container matColumnDef="precio">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Precio </th>
-            <td mat-cell *matCellDef="let element">{{element.price | currency:' ':'symbol':'0.2-2'}}</td>
-        </ng-container>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="paymentColumns.length">
+                        Aún no se registraron pagos para esta compra.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
 
-        <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Total </th>
-            <td mat-cell *matCellDef="let element">{{element.total | currency:' ':'symbol':'0.2-2'}}</td>
-        </ng-container>
-
-        <ng-container matColumnDef="glosa">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Comentarios </th>
-            <td mat-cell *matCellDef="let element">{{element.comments}}</td>
-        </ng-container>
-
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
 </div>

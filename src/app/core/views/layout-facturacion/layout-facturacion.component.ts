@@ -16,7 +16,7 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
     RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule, MatDividerModule
   ],
   templateUrl: './layout-facturacion.component.html',
-  styleUrl: './layout-facturacion.component.css'
+  styleUrl: './layout-facturacion.component.scss'
 })
 export class LayoutFacturacionComponent {
 

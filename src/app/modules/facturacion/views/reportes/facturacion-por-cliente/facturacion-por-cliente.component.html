@@ -1,0 +1,89 @@
+<div class="container-report">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>groups</mat-icon>
+            <div class="page-header__heading">
+                <h1>Facturación por Cliente</h1>
+                <span class="page-header__subtitle">Consulta cuánto facturaste a cada cliente en un rango de
+                    fechas</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()" [disabled]="loading">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>bar_chart</mat-icon>
+                Resultados
+            </h2>
+            <div class="resumen-inline">
+                <span class="resumen-item">
+                    <span class="resumen-item__label">Clientes</span>
+                    <span class="resumen-item__value">{{ data.length }}</span>
+                </span>
+                <span class="resumen-item">
+                    <span class="resumen-item__label">Total Facturado</span>
+                    <span class="resumen-item__value">{{ totalAmount | currency:' ':'symbol':'0.2-2' }}</span>
+                </span>
+            </div>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Cliente</th>
+                        <th></th>
+                        <th class="col-numeric">Monto Facturado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of data; track item.customerName) {
+                    <tr>
+                        <td>{{ item.customerName }}</td>
+                        <td class="col-track">
+                            <div class="ranked-list__track">
+                                <div class="ranked-list__fill" [style.width.%]="(item.amount / maxAmount) * 100">
+                                </div>
+                            </div>
+                        </td>
+                        <td class="col-numeric">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="3">No se encontraron facturas para el rango seleccionado.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

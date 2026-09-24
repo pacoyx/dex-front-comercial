@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { IInvoiceCreateRequest, IInvoiceCreateResponse } from '../interfaces/IOperaciones';
+import {
+  IInvoiceCreateRequest,
+  IInvoiceCreateResponse,
+  IPurchaseInvoiceCancelResponse,
+  IPurchaseInvoiceListFilters,
+  IPurchaseInvoiceListItem,
+  IPurchaseInvoicePayment,
+  IRegisterPurchasePaymentRequest,
+} from '../interfaces/IOperaciones';
 import { IResponseGeneric } from '../interfaces/IMaestros';
 import { IFacturasPorParamsResponse, IListInvoiceByIdResponse } from '../interfaces/IReportes';
+import { IAccountPayable } from '../interfaces/IAccountsPayable';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +32,24 @@ export class PurchaseOperationsService {
   obtenerInvoicePorId(invoiceId: number): Observable<IResponseGeneric<IListInvoiceByIdResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<IResponseGeneric<IListInvoiceByIdResponse>>(`${this.apiUrl}${environment.EPListarInvoice}/${invoiceId}`, { headers });
+  }
+
+  listarFacturas(filtros: IPurchaseInvoiceListFilters): Observable<IResponseGeneric<IPurchaseInvoiceListItem[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    let params = new HttpParams();
+    if (filtros.supplierId) {
+      params = params.set('supplierId', filtros.supplierId);
+    }
+    if (filtros.dateFrom) {
+      params = params.set('dateFrom', filtros.dateFrom);
+    }
+    if (filtros.dateTo) {
+      params = params.set('dateTo', filtros.dateTo);
+    }
+    if (filtros.status) {
+      params = params.set('status', filtros.status);
+    }
+    return this.http.get<IResponseGeneric<IPurchaseInvoiceListItem[]>>(`${this.apiUrl}${environment.EPListarInvoice}`, { headers, params });
   }
 
   obtenerFacturasPorMes(ayo: number, mes: number, pageIndex: number, pageSize: number): Observable<IResponseGeneric<IFacturasPorParamsResponse>> {
@@ -46,6 +73,24 @@ export class PurchaseOperationsService {
     return this.http.get<IResponseGeneric<IFacturasPorParamsResponse>>(`${this.apiUrl}${environment.EPFacturasPorProducto}/${pageIndex}/${pageSize}/${producto}`, { headers });
   }
 
+  registrarPago(purchaseInvoiceId: number, req: IRegisterPurchasePaymentRequest): Observable<IResponseGeneric<IPurchaseInvoicePayment>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IPurchaseInvoicePayment>>(`${this.apiUrl}${environment.EPListarInvoice}/${purchaseInvoiceId}/payments`, req, { headers });
+  }
 
+  listarPagos(purchaseInvoiceId: number): Observable<IResponseGeneric<IPurchaseInvoicePayment[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IPurchaseInvoicePayment[]>>(`${this.apiUrl}${environment.EPListarInvoice}/${purchaseInvoiceId}/payments`, { headers });
+  }
+
+  anularCompra(purchaseInvoiceId: number): Observable<IResponseGeneric<IPurchaseInvoiceCancelResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IPurchaseInvoiceCancelResponse>>(`${this.apiUrl}${environment.EPListarInvoice}/${purchaseInvoiceId}/cancel`, {}, { headers });
+  }
+
+  obtenerCuentasPorPagar(): Observable<IResponseGeneric<IAccountPayable[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IAccountPayable[]>>(`${this.apiUrl}${environment.EPAccountsPayable}`, { headers });
+  }
 
 }

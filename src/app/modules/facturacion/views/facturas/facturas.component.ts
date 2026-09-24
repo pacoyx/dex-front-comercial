@@ -3,6 +3,7 @@ import { AsyncPipe, CurrencyPipe, DatePipe, NgFor, TitleCasePipe } from '@angula
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,7 +27,7 @@ import { extractErrorMessage } from '../../shared/http-error.util';
   selector: 'app-facturas',
   standalone: true,
   imports: [
-    MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     MatAutocompleteModule, MatTableModule, MatDatepickerModule, ReactiveFormsModule, FormsModule,
     RouterModule, AsyncPipe, CurrencyPipe, DatePipe, TitleCasePipe, NgFor,
     InvoiceStatusLabelPipe, InvoiceStatusColorPipe

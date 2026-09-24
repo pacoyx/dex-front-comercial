@@ -152,13 +152,21 @@ export const environment = {
     // EPListarComprasPorIdProducto: 'api/purchase/searchByProductId',
     // EPListarComprasPorIdCategoria: 'api/purchase/searchByCategoryId',
 
-    //unidad de medida    
+    //unidad de medida
     EPListarUnidadMedidaShort: 'api/unitMeasurement/short',
-    
+    EPListarUnidadesMedida: 'api/unitMeasurement',
+    EPCrearUnidadMedida: 'api/unitMeasurement',
+    EPActualizarUnidadMedida: 'api/unitMeasurement',
+    EPEliminarUnidadMedida: 'api/unitMeasurement',
+
 
     //cateogoria producto
     EPListarCategoriaProductoShort: 'api/categoryProd/short',
-    
+    EPListarCategoriasProducto: 'api/categoryProd',
+    EPCrearCategoriaProducto: 'api/categoryProd',
+    EPActualizarCategoriaProducto: 'api/categoryProd',
+    EPEliminarCategoriaProducto: 'api/categoryProd',
+
     // Invoice
     EPListarInvoice: 'api/purchase-invoice',
     EPCrearInvoice: 'api/purchase-invoice',
@@ -168,6 +176,10 @@ export const environment = {
     EPFacturasPorFechas: 'api/purchase/reports/byDate',
     EPFacturasPorProveedor: 'api/purchase/reports/bySupplier',
     EPFacturasPorProducto: 'api/purchase/reports/byProduct',
+
+    // cuentas por pagar y dashboard de compras
+    EPAccountsPayable: 'api/accounts-payable',
+    EPPurchaseDashboard: 'api/purchase-dashboard',
 
     // FACTURACION
 
@@ -181,5 +193,15 @@ export const environment = {
     EPSalesRegisterReport: 'api/reports/sales-register',
     EPSalesRegisterReportPdf: 'api/reports/sales-register/pdf',
     EPSalesRegisterReportExcel: 'api/reports/sales-register/excel',
+
+    // dashboard facturacion
+    EPInvoiceDashboard: 'api/invoice-dashboard',
+
+    // Inspección / Zapatillas
+    EPSneakerBrands: 'api/sneaker-brands',
+    EPWorkGuideDetails: 'api/workguide-details',
+    EPInspections: 'api/inspections',
+    EPWorkGuides: 'api/workguides',
+    EPReporteSneakers: 'api/reports/sneakers',
 
 };

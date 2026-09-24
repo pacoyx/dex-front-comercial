@@ -1,114 +1,138 @@
 <div class="container-facturas">
 
-    <div
-        style="display: flex; justify-content: space-between; border: 1px solid gainsboro; border-radius: 5px; padding: 5px; margin-bottom: 5px;">
-        <div style="display: flex; gap: 5px; align-items: center;">
+    <div class="page-header">
+        <div class="page-header__title">
             <mat-icon>description</mat-icon>
-            <label><strong>Facturas</strong></label>
+            <div class="page-header__heading">
+                <h1>Facturas</h1>
+                <span class="page-header__subtitle">Busca, filtra y consulta los comprobantes emitidos</span>
+            </div>
         </div>
-        <button mat-fab extended routerLink="nueva">
-            <mat-icon>post_add</mat-icon>
-            Nueva Factura
-        </button>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" routerLink="nueva">
+                <mat-icon>post_add</mat-icon>
+                Nueva Factura
+            </button>
+        </div>
     </div>
 
-    <div class="section-filtros" style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
 
-        <mat-form-field appearance="outline" style="flex: 2; min-width: 220px;">
-            <mat-label>Cliente</mat-label>
-            <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="autoCustomer"
-                placeholder="Buscar cliente">
-            <mat-autocomplete #autoCustomer="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
-                [displayWith]="displayFn">
-                <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                    {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }} - {{ customer.codigo }}
-                </mat-option>
-            </mat-autocomplete>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="campo-cliente">
+                <mat-label>Cliente</mat-label>
+                <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="autoCustomer"
+                    placeholder="Buscar cliente">
+                <mat-autocomplete #autoCustomer="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
+                    [displayWith]="displayFn">
+                    <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
+                        {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }} - {{ customer.codigo
+                        }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline">
-            <mat-label>Rango de fechas</mat-label>
-            <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
-                <input matStartDate formControlName="start" placeholder="Desde">
-                <input matEndDate formControlName="end" placeholder="Hasta">
-            </mat-date-range-input>
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-date-range-picker #picker></mat-date-range-picker>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
 
-        <mat-form-field appearance="outline" style="width: 160px;">
-            <mat-label>Estado</mat-label>
-            <mat-select [(ngModel)]="selectedStatus">
-                @for (opt of statusOptions; track opt.value) {
-                <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-                }
-            </mat-select>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="campo-estado">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectedStatus">
+                    @for (opt of statusOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
 
-        <button mat-fab extended (click)="buscar()">
-            <mat-icon>search</mat-icon>
-            Buscar
-        </button>
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
 
-        <button mat-fab extended (click)="limpiar()">
-            <mat-icon>restart_alt</mat-icon>
-            Limpiar
-        </button>
+        </mat-card-content>
+    </mat-card>
 
-    </div>
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="cliente">
+                    <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.customerName }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="cliente">
-            <th mat-header-cell *matHeaderCellDef> Cliente </th>
-            <td mat-cell *matCellDef="let element"> {{ element.customerName }} </td>
-        </ng-container>
+                <ng-container matColumnDef="factura">
+                    <th mat-header-cell *matHeaderCellDef> Factura </th>
+                    <td mat-cell *matCellDef="let element">
+                        <a [routerLink]="[element.id]" routerLinkActive="router-link-active">
+                            {{ element.serie }} - {{ element.numero }}
+                        </a>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="factura">
-            <th mat-header-cell *matHeaderCellDef> Factura </th>
-            <td mat-cell *matCellDef="let element">
-                <a [routerLink]="[element.id]" routerLinkActive="router-link-active">
-                    {{ element.serie }} - {{ element.numero }}
-                </a>
-            </td>
-        </ng-container>
+                <ng-container matColumnDef="emision">
+                    <th mat-header-cell *matHeaderCellDef> Emisión </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.issueDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="emision">
-            <th mat-header-cell *matHeaderCellDef> Emisión </th>
-            <td mat-cell *matCellDef="let element"> {{ element.issueDate | date:'dd/MM/yyyy' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="vencimiento">
+                    <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.dueDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="vencimiento">
-            <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
-            <td mat-cell *matCellDef="let element"> {{ element.dueDate | date:'dd/MM/yyyy' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.total | currency:'
+                        ':'symbol':'0.2-2' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="total">
-            <th mat-header-cell *matHeaderCellDef> Total </th>
-            <td mat-cell *matCellDef="let element"> {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef> Moneda </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.currencyId }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="moneda">
-            <th mat-header-cell *matHeaderCellDef> Moneda </th>
-            <td mat-cell *matCellDef="let element"> {{ element.currencyId }} </td>
-        </ng-container>
+                <ng-container matColumnDef="saldo">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Saldo </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.balance | currency:'
+                        ':'symbol':'0.2-2' }} </td>
+                </ng-container>
 
-        <ng-container matColumnDef="saldo">
-            <th mat-header-cell *matHeaderCellDef> Saldo </th>
-            <td mat-cell *matCellDef="let element"> {{ element.balance | currency:' ':'symbol':'0.2-2' }} </td>
-        </ng-container>
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [style.color]="element.status | invoiceStatusColor"
+                            [style.borderColor]="element.status | invoiceStatusColor">
+                            <span class="status-chip__dot"
+                                [style.backgroundColor]="element.status | invoiceStatusColor"></span>
+                            {{ element.status | invoiceStatusLabel }}
+                        </span>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="estado">
-            <th mat-header-cell *matHeaderCellDef> Estado </th>
-            <td mat-cell *matCellDef="let element">
-                <span [style.color]="element.status | invoiceStatusColor" style="font-weight: 600;">
-                    {{ element.status | invoiceStatusLabel }}
-                </span>
-            </td>
-        </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron facturas para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
 
 </div>

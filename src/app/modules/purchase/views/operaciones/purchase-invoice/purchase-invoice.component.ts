@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AsyncPipe, JsonPipe, NgFor, TitleCasePipe } from '@angular/common';
 import { debounceTime, map, Observable, of, startWith, switchMap } from 'rxjs';
@@ -28,7 +29,7 @@ import { NotificationsSystemService } from '../../../../../core/services/notific
   standalone: true,
   imports: [
     MatIconModule, MatInputModule, MatFormFieldModule, MatAutocompleteModule,
-    MatButtonModule, FormsModule, ReactiveFormsModule,
+    MatButtonModule, MatCardModule, FormsModule, ReactiveFormsModule,
     MatDatepickerModule, MatSelectModule, TableDetailInvoicePurchaseComponent,
     TitleCasePipe, AsyncPipe, NgFor
   ],

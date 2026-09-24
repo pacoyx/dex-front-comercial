@@ -1,0 +1,322 @@
+<div class="container-dashboard">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>dashboard</mat-icon>
+            <div class="page-header__heading">
+                <h1>Dashboard de Facturación</h1>
+                <span class="page-header__subtitle">Resumen del mes actual, tendencias y cuentas por cobrar</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Facturado del Mes</span>
+                <span class="stat-card__value">{{ summary?.monthInvoiced ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">payments</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Cobrado del Mes</span>
+                <span class="stat-card__value">{{ summary?.monthCollected ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">account_balance_wallet</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Cuentas por Cobrar</span>
+                <span class="stat-card__value">{{ summary?.accountsReceivable ?? 0 | currency:' ':'symbol':'0.2-2'
+                    }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">description</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">N° Facturas del Mes</span>
+                <span class="stat-card__value">{{ summary?.invoiceCount ?? 0 }}</span>
+            </div>
+        </mat-card>
+    </div>
+
+    <div class="charts-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>bar_chart</mat-icon>
+                    Facturación por Mes
+                </h2>
+            </div>
+            <mat-card-content>
+                <div class="bar-chart">
+                    @for (item of monthlySales; track item.month) {
+                    <div class="bar-chart__col">
+                        <div class="bar-chart__track">
+                            <div class="bar-chart__bar" [style.height.%]="(item.amount / maxMonthlyAmount) * 100"
+                                [title]="item.amount | currency:' ':'symbol':'0.2-2'"></div>
+                        </div>
+                        <span class="bar-chart__label">{{ item.month }}</span>
+                    </div>
+                    } @empty {
+                    <p class="empty-hint">Aún no hay datos de facturación por mes.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>pie_chart</mat-icon>
+                    Facturas por Estado
+                </h2>
+            </div>
+            <mat-card-content class="donut-wrap">
+                @if (statusDonutTotal > 0) {
+                <div class="donut" [style.background]="statusDonutGradient">
+                    <div class="donut__hole">
+                        <span class="donut__total">{{ statusDonutTotal }}</span>
+                        <span class="donut__total-label">facturas</span>
+                    </div>
+                </div>
+                <div class="donut-legend">
+                    @for (segment of statusDonutSegments; track segment.status) {
+                    <div class="donut-legend__row">
+                        <span class="donut-legend__dot" [style.backgroundColor]="segment.color"></span>
+                        <span class="donut-legend__label">{{ segment.label }}</span>
+                        <span class="donut-legend__count">{{ segment.count }}</span>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="empty-hint">Aún no hay facturas este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <div class="ranked-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>emoji_events</mat-icon>
+                    Top Clientes del Mes
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of topCustomers; track item.customerId; let i = $index) {
+                <div class="ranked-list__row">
+                    <span class="ranked-list__rank">{{ i + 1 }}</span>
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.customerName }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill"
+                                [style.width.%]="(item.totalInvoiced / maxTopCustomerAmount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.totalInvoiced | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay clientes facturados este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>storefront</mat-icon>
+                    Facturación por Sucursal
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of branchSales; track item.branchName; let i = $index) {
+                <div class="ranked-list__row">
+                    <span class="ranked-list__rank">{{ i + 1 }}</span>
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.branchName }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill"
+                                [style.width.%]="(item.amount / maxBranchAmount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay ventas por sucursal este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>design_services</mat-icon>
+                    Facturación por Servicio
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of serviceSales; track item.serviceName; let i = $index) {
+                <div class="ranked-list__row">
+                    <span class="ranked-list__rank">{{ i + 1 }}</span>
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.serviceName }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill"
+                                [style.width.%]="(item.amount / maxServiceAmount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay ventas por servicio este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>account_balance_wallet</mat-icon>
+                Cuentas por Cobrar
+            </h2>
+            <button mat-stroked-button color="primary" routerLink="/facturacion/cuentas-cobrar">
+                Ver todas
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th class="col-numeric">Total</th>
+                        <th class="col-numeric">Saldo</th>
+                        <th>Estado</th>
+                        <th class="col-numeric">Días Atraso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of accountsReceivableTop; track item.invoiceId) {
+                    <tr class="clickable-row" (click)="verFactura(item.invoiceId)">
+                        <td>{{ item.customerName }}</td>
+                        <td>{{ item.documentNumber }}</td>
+                        <td class="col-numeric">{{ item.total | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td class="col-numeric">{{ item.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td>
+                            <span class="status-chip" [style.color]="item.status | invoiceStatusStringColor"
+                                [style.borderColor]="item.status | invoiceStatusStringColor">
+                                <span class="status-chip__dot"
+                                    [style.backgroundColor]="item.status | invoiceStatusStringColor"></span>
+                                {{ item.status | invoiceStatusStringLabel }}
+                            </span>
+                        </td>
+                        <td class="col-numeric">
+                            @if (item.daysPastDue > 0) {
+                            <span class="overdue-chip">{{ item.daysPastDue }}</span>
+                            } @else {
+                            <span class="overdue-none">–</span>
+                            }
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="6">No hay cuentas por cobrar pendientes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>warning</mat-icon>
+                Facturas Vencidas
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll tabla-scroll--max-height">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th class="col-numeric">Saldo</th>
+                        <th class="col-numeric">Días Vencido</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of overdueInvoices; track item.invoiceId) {
+                    <tr class="clickable-row" (click)="verFactura(item.invoiceId)">
+                        <td>{{ item.customerName }}</td>
+                        <td>{{ item.documentNumber }}</td>
+                        <td class="col-numeric">{{ item.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td class="col-numeric"><span class="overdue-chip">{{ item.daysPastDue }}</span></td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="4">No hay facturas vencidas.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>history</mat-icon>
+                Últimas Facturas
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th>Emisión</th>
+                        <th class="col-numeric">Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of recentInvoices; track item.invoiceId) {
+                    <tr class="clickable-row" (click)="verFactura(item.invoiceId)">
+                        <td>{{ item.customerName }}</td>
+                        <td>{{ item.documentNumber }}</td>
+                        <td>{{ item.issueDate | date:'dd/MM/yyyy' }}</td>
+                        <td class="col-numeric">{{ item.total | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td>
+                            <span class="status-chip" [style.color]="item.status | invoiceStatusStringColor"
+                                [style.borderColor]="item.status | invoiceStatusStringColor">
+                                <span class="status-chip__dot"
+                                    [style.backgroundColor]="item.status | invoiceStatusStringColor"></span>
+                                {{ item.status | invoiceStatusStringLabel }}
+                            </span>
+                        </td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="5">No hay facturas recientes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

@@ -1,21 +1,77 @@
 .container-registro-ventas {
-    padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
+/* ===== Page header ===== */
 
 .page-header {
     display: flex;
     align-items: center;
-    gap: 6px;
-    border: 1px solid gainsboro;
-    border-radius: 5px;
-    padding: 8px 10px;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
 }
 
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Cards ===== */
+
 .panel {
-    border-radius: 12px !important;
+    border-radius: 16px !important;
+}
+
+.panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 16px 0;
+}
+
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-on-surface-variant);
 }
 
 .alert-validacion {
@@ -23,10 +79,10 @@
     align-items: flex-start;
     gap: 8px;
     padding: 10px 14px;
-    border: 1px solid #f44336;
-    border-radius: 8px;
-    background: #fdecea;
-    color: #c62828;
+    border: 1px solid var(--mat-sys-error);
+    border-radius: 12px;
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
 }
 
 .alert-validacion ul {
@@ -66,40 +122,62 @@
     justify-content: center;
     gap: 8px;
     padding: 10px;
-    color: #6b7280;
+    color: var(--mat-sys-on-surface-variant);
 }
 
-.panel-tabla__content,
+/* ===== Tabla ===== */
+
 .tabla-scroll {
     overflow-x: auto;
 }
 
-.custom-table {
+.detail-table {
     width: 100%;
 }
 
-.cabecera {
-    text-align: center;
-    background-color: #7d9ad6;
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
 }
 
-.cabecera th {
-    color: white;
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
 }
 
 .col-numeric {
-    text-align: right;
+    text-align: right !important;
 }
 
-.estado-label {
+.saldo-value {
     font-weight: 600;
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 }
 
 .sin-datos {
     text-align: center;
-    padding: 20px;
-    color: #6b7280;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
 }
+
+/* ===== Resumen ===== */
 
 .resumen-row {
     display: flex;
@@ -122,17 +200,17 @@
 }
 
 .resumen-label {
-    font-size: .8rem;
-    color: #6b7280;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
 }
 
 .resumen-value {
-    font-size: 1.1rem;
+    font: var(--mat-sys-title-large);
     font-weight: 600;
 }
 
 .resumen-item--pendiente .resumen-value {
-    color: #c62828;
+    color: var(--mat-sys-error);
 }
 
 .resumen-acciones {
@@ -146,6 +224,15 @@
 }
 
 @media (max-width: 900px) {
+    .container-registro-ventas {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
     .filtros-row {
         flex-direction: column;
         align-items: stretch;

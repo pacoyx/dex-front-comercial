@@ -1,27 +1,49 @@
-<div class="contenedor-plataforma">
+<div class="module-shell">
 
-  <mat-toolbar class="win-proceso">
+  <mat-toolbar class="module-toolbar">
 
-    <button mat-icon-button (click)="toggleSidenav()">
+    <button mat-icon-button class="module-toolbar__menu-btn" (click)="toggleSidenav()" aria-label="Abrir menú principal">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <span>Facturación</span>
+    <span class="module-toolbar__title">Facturación</span>
 
-    <nav>
-      <a mat-button routerLink="/facturacion/facturas"
-        routerLinkActive="active"><mat-icon>description</mat-icon>Facturas</a>
-      <a mat-button routerLink="/facturacion/cuentas-cobrar"
-        routerLinkActive="active"><mat-icon>account_balance_wallet</mat-icon>Cuentas por Cobrar</a>
-      <a mat-button routerLink="/facturacion/planillas"
-        routerLinkActive="active"><mat-icon>assignment</mat-icon>Planillas de Cobranza</a>
-      <a mat-button routerLink="/facturacion/reportes/registro-ventas"
-        routerLinkActive="active"><mat-icon>receipt_long</mat-icon>Registro de Ventas</a>
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/facturacion/dashboard" routerLinkActive="is-active">
+        <mat-icon>dashboard</mat-icon><span>Dashboard</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/facturacion/facturas" routerLinkActive="is-active">
+        <mat-icon>description</mat-icon><span>Facturas</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/facturacion/cuentas-cobrar" routerLinkActive="is-active">
+        <mat-icon>account_balance_wallet</mat-icon><span>Cuentas por Cobrar</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/facturacion/planillas" routerLinkActive="is-active">
+        <mat-icon>assignment</mat-icon><span>Planillas de Cobranza</span>
+      </a>
+
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="reportesMenu">
+        <mat-icon>receipt_long</mat-icon><span>Reportes</span>
+      </button>
+      <mat-menu #reportesMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/facturacion/reportes/registro-ventas']" routerLinkActive="router-link-active">
+          <mat-icon>receipt_long</mat-icon>
+          Registro de Ventas
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/facturacion/reportes/facturacion-por-cliente']" routerLinkActive="router-link-active">
+          <mat-icon>groups</mat-icon>
+          Facturación por Cliente
+        </button>
+      </mat-menu>
     </nav>
 
+    <span class="module-toolbar__spacer"></span>
 
-    <span class="flexExpand"></span>
-    <span class="example-spacer"></span>
+    <button mat-button class="module-toolbar__user" [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ loginService.getLoginData()?.userName }}</span>
+    </button>
     <mat-menu #userMenu="matMenu">
       <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
         <mat-icon>settings</mat-icon>
@@ -34,13 +56,10 @@
       </button>
     </mat-menu>
 
-    <button mat-button [matMenuTriggerFor]="userMenu">
-      <mat-icon>account_circle</mat-icon>
-      {{ loginService.getLoginData()?.userName }}
-    </button>
-
   </mat-toolbar>
 
-  <router-outlet></router-outlet>
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
 
 </div>

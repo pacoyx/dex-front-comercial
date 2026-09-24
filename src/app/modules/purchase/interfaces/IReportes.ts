@@ -1,3 +1,5 @@
+import { IPurchaseInvoicePayment } from './IOperaciones';
+
 export interface IFacturasPorParamsResponse {
   invoices: IFacturasPorParamsList[];
   totalCount: number;
@@ -55,10 +57,14 @@ export interface IListInvoiceByIdResponse {
   igv: number;
   total: number;
   status: string;
+  amountPaid: number;
+  balance: number;
+  paymentStatus: number;
   currencyId: string;
   exchangeRate: number;
   comments: string;
   purchaseInvoiceDetails: IListInvoiceByIdDetail[];
+  payments: IPurchaseInvoicePayment[];
   purchaseDate: string;
 }
 
