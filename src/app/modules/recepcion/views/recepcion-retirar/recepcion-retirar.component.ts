@@ -27,6 +27,9 @@ import { NotificationServiceService } from '../../services/notification-service.
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { InspeccionService } from '../../services/inspeccion.service';
+import { DialogInspeccionItemComponent } from '../../components/dialog-inspeccion-item/dialog-inspeccion-item.component';
+import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-item/dialog-zapatilla-item.component';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -52,6 +55,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   loginService = inject(LoginService);
   notificacionService = inject(NotificationServiceService);
   route = inject(ActivatedRoute);
+  inspeccionService = inject(InspeccionService);
 
   guiaRetiroSubscription!: Subscription;
   estadoSituacionSubscription!: Subscription;
@@ -82,6 +86,8 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   msgValidacion = '';
   isSinCopia = false;
 
+  zapatillasCategoryId: number | null = null;
+
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
     if (this.estadoSituacionSubscription) this.estadoSituacionSubscription.unsubscribe();
@@ -90,6 +96,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     this.validarExisteCajaPorUsuario();
+    this.cargarCategoriaZapatillas();
     this.route.params.subscribe(params => {
       if (params['numGuia']) {
 
@@ -417,5 +424,33 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   onChangueToggleSinCopia(event: any) {
     this.store.addSinCopia(event.checked);
+  }
+
+  cargarCategoriaZapatillas() {
+    this.emisionService.listarCategoriasSevicios().subscribe({
+      next: (categorias) => {
+        const zapatillas = categorias.find(c => c.name.trim().toLowerCase() === 'zapatillas');
+        this.zapatillasCategoryId = zapatillas ? zapatillas.id : null;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  esZapatilla(item: IGuiaRetiroWgdDTO): boolean {
+    return this.zapatillasCategoryId != null && item.product.catServiceId === this.zapatillasCategoryId;
+  }
+
+  abrirInspeccion(item: IGuiaRetiroWgdDTO) {
+    this.dialog.open(DialogInspeccionItemComponent, {
+      data: { workGuideDetailId: item.id, productName: item.product.name }
+    });
+  }
+
+  abrirZapatilla(item: IGuiaRetiroWgdDTO) {
+    this.dialog.open(DialogZapatillaItemComponent, {
+      data: { workGuideDetailId: item.id, productName: item.product.name }
+    });
   }
 }

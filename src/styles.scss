@@ -1,0 +1,76 @@
+// You can add global styles to this file, and also import other style files
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Tema Material Design 3 de la app. Azul "azure" para conservar la identidad
+// de color previa (antes provista por el prebuilt theme azure-blue).
+$dex-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+:root {
+  // Expone los tokens de sistema M3 (--mat-sys-*) como variables CSS
+  // reutilizables por cualquier componente, dentro o fuera de Angular Material.
+  @include mat.system-level-colors($dex-theme, $prefix: 'mat-sys');
+  @include mat.system-level-typography($dex-theme, $prefix: 'mat-sys');
+  @include mat.system-level-shape($dex-theme, $prefix: 'mat-sys');
+  @include mat.system-level-elevation($dex-theme, $prefix: 'mat-sys');
+
+  --app-sidenav-width: 280px;
+  --app-sidenav-width-collapsed: 76px;
+}
+
+html {
+  @include mat.all-component-themes($dex-theme);
+  height: 100%;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+.green-snackbar {
+  background: rgb(65, 252, 134);
+  color: white;
+}
+
+.green-snackbar button {
+  background-color: rgb(65, 252, 134);
+  color: white;
+  border: none;
+}
+
+.red-snackbar {
+  background: #F44336;
+  color: white;
+}
+
+.red-snackbar button {
+  background-color: #F44336;
+  color: white !important;
+  border: none;
+}
+
+.error-snackbar {
+  background: #F44336 !important;
+  color: white !important;
+}

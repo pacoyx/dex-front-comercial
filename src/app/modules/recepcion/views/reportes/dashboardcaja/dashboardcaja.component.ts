@@ -14,7 +14,7 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { MaestrosService } from '../../../services/maestros.service';
-import { ISucursalesCombo } from '../../../interfaces/IReports';
+import { IDashboardCashWeekDayDto, ISucursalesCombo } from '../../../interfaces/IReports';
 import { ChartdashcajaComponent } from '../../../components/chartdashcaja/chartdashcaja.component';
 
 interface IDataGraficoCaja {
@@ -66,6 +66,7 @@ export class DashboardcajaComponent implements OnInit {
   maestroService = inject(MaestrosService);
 
   sucursales: ISucursalesCombo[] = [];
+  selectedSucursal = 0;
 
   meses = [
     { value: 1, viewValue: 'Enero' },
@@ -85,13 +86,13 @@ export class DashboardcajaComponent implements OnInit {
   // ---------- Diario ----------
   loadingDiario = false;
   fechaHoy: Date = new Date();
-  selectedSucursalDiario = 0;
   dataGraficoDiario: IDataGraficoCaja[] = [];
 
   // ---------- Semanal ----------
   loadingSemanal = false;
-  selectedSucursalSemanal = 0;
-  dataGraficoSemanal: IDataGraficoCaja[] = [];
+  dataGraficoSemanal: IDashboardCashWeekDayDto[] = [];
+  semanaLabels: string[] = [];
+  semanaValores: number[] = [];
   readonly rangeSemanaFrm = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
@@ -99,7 +100,6 @@ export class DashboardcajaComponent implements OnInit {
 
   // ---------- Mensual ----------
   loadingMensual = false;
-  selectedSucursalMensual = 0;
   selectedMes = new Date().getMonth() + 1;
   selectedAnio = new Date().getFullYear();
   dataGraficoMensual: IDataGraficoCaja[] = [];
@@ -143,7 +143,7 @@ export class DashboardcajaComponent implements OnInit {
     this.dataGraficoDiario = [];
     this.loadingDiario = true;
     this.reportsService
-      .obtenerCajaDashboard(this.fechaHoy.toDateString(), this.selectedSucursalDiario)
+      .obtenerCajaDashboard(this.fechaHoy.toDateString(), this.selectedSucursal)
       .subscribe({
         next: (response) => {
           if (response.success) {
@@ -169,13 +169,17 @@ export class DashboardcajaComponent implements OnInit {
     }
 
     this.dataGraficoSemanal = [];
+    this.semanaLabels = [];
+    this.semanaValores = [];
     this.loadingSemanal = true;
     this.reportsService
-      .obtenerCajaDashboardSemana(inicio.toDateString(), fin.toDateString(), this.selectedSucursalSemanal)
+      .obtenerCajaDashboardSemana(inicio.toDateString(), fin.toDateString(), this.selectedSucursal)
       .subscribe({
         next: (response) => {
           if (response.success) {
-            this.dataGraficoSemanal = this.mapearData(response.data);
+            this.dataGraficoSemanal = response.data;
+            this.semanaLabels = response.data.map((dia) => dia.diaSemana);
+            this.semanaValores = response.data.map((dia) => dia.montoTotal);
           } else {
             console.error('Error al cargar el dashboard semanal', response.message);
           }
@@ -189,11 +193,18 @@ export class DashboardcajaComponent implements OnInit {
       });
   }
 
+  formatDetallesDia(detalles: { tipoPago: string; montoTotal: number }[]): string {
+    if (!detalles || detalles.length === 0) {
+      return '-';
+    }
+    return detalles.map((d) => `${d.tipoPago}: ${d.montoTotal.toFixed(2)}`).join(' | ');
+  }
+
   cargarDashboardMensual() {
     this.dataGraficoMensual = [];
     this.loadingMensual = true;
     this.reportsService
-      .obtenerCajaDashboardMes(this.selectedMes, this.selectedAnio, this.selectedSucursalMensual)
+      .obtenerCajaDashboardMes(this.selectedMes, this.selectedAnio, this.selectedSucursal)
       .subscribe({
         next: (response) => {
           if (response.success) {

@@ -15,11 +15,12 @@ export class ChartdashcajaComponent {
   inputTitulo = input<string>("iniciando el titulo");
   inputValoresSeries = input<number[]>([1, 2, 3, 4, 5]);
   inputLabels = input<string[]>(["A", "B", "C", "D", "E"]);
+  inputTipo = input<ChartType>("pie");
 
   _title = {
     text: "titulo de prueba ",
   };
-  _series = [44, 55, 13, 43, 22];
+  _series: any = [44, 55, 13, 43, 22];
 
   _chart = {
     width: 380,
@@ -28,9 +29,14 @@ export class ChartdashcajaComponent {
 
   _labels = ["Team A", "Team B", "Team C", "Team D", "Team E"];
 
+  _xaxis: any = {};
+
   _dataLabels = {
     enabled: true,
     formatter: (val: number, opts: any) => {
+      if (this._chart.type === 'bar') {
+        return val.toFixed(2);
+      }
       return `${opts.w.globals.series[opts.seriesIndex].toFixed(2)} (${val.toFixed(2)}%)`;
     },
     style: {
@@ -60,8 +66,15 @@ export class ChartdashcajaComponent {
 
     effect(() => {
       this._title.text = this.inputTitulo();
-      this._series = this.inputValoresSeries();
-      this._labels = this.inputLabels();
+      this._chart = { ...this._chart, type: this.inputTipo() };
+
+      if (this.inputTipo() === 'bar') {
+        this._series = [{ name: this.inputTitulo(), data: this.inputValoresSeries() }];
+        this._xaxis = { categories: this.inputLabels() };
+      } else {
+        this._series = this.inputValoresSeries();
+        this._labels = this.inputLabels();
+      }
     });
   }
 

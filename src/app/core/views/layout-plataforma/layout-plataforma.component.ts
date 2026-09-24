@@ -7,6 +7,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { LoginService } from '../../services/login.service';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
 
@@ -16,10 +17,10 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
   imports: [
     RouterOutlet, MatToolbarModule, MatIconModule,
     MatButtonModule, RouterModule, MatSidenavModule,
-    MatListModule, MatMenuModule
+    MatListModule, MatMenuModule, MatDividerModule
   ],
   templateUrl: './layout-plataforma.component.html',
-  styleUrl: './layout-plataforma.component.css'
+  styleUrl: './layout-plataforma.component.scss'
 })
 export class LayoutPlataformaComponent {
 

@@ -235,8 +235,10 @@ export class DialogEditItemComponent implements OnInit {
         Precio: this.precio,
         Subtotal: this.total,
         Obs: this.obs,
-        Identificador: this.itemEdit?.Identificador!
+        Identificador: this.itemEdit?.Identificador!,
+        categoryDescription: this.itemEdit?.categoryDescription
       });
+      this.dialogRef.close();
     } else {
       this.store.add({
         codProd: this.data.item.id.toString(),
@@ -245,9 +247,10 @@ export class DialogEditItemComponent implements OnInit {
         Precio: this.precio,
         Subtotal: this.total,
         Obs: this.obs,
-        Identificador: ''
+        Identificador: '',
+        categoryDescription: this.data.item.categoryDescription
       });
+      this.dialogRef.close();
     }
-    this.dialogRef.close();
   }
 }

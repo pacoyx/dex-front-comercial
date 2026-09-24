@@ -1,32 +1,77 @@
-<mat-sidenav-container class="example-container">
-  <mat-sidenav #sidenav mode="over">
-    <mat-nav-list>
-      <a mat-list-item [routerLink]="['/recepcion']" routerLinkActive="router-link-active" (click)="toggle()">
-        <mat-icon>exit_to_app</mat-icon>
-        Recepcion
+<mat-sidenav-container class="app-shell">
+  <mat-sidenav #sidenav class="app-sidenav" [class.app-sidenav--collapsed]="collapsed" mode="over">
+    <div class="app-sidenav__brand">
+      <div class="app-sidenav__brand-mark">
+        <mat-icon>local_laundry_service</mat-icon>
+      </div>
+      <span class="app-sidenav__brand-name">{{ title }}</span>
+      <button mat-icon-button
+              class="app-sidenav__collapse-btn"
+              type="button"
+              (click)="toggleCollapse()"
+              [attr.aria-label]="collapsed ? 'Expandir menú' : 'Colapsar menú'"
+              [attr.aria-expanded]="!collapsed">
+        <mat-icon>{{ collapsed ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </div>
+
+    <mat-nav-list class="app-sidenav__nav">
+      <span class="app-sidenav__group-label">Módulos</span>
+
+      <a mat-list-item
+         [routerLink]="['/recepcion']"
+         routerLinkActive #rlaRecepcion="routerLinkActive"
+         [activated]="rlaRecepcion.isActive"
+         (click)="toggle()"
+         matTooltip="Recepción" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>exit_to_app</mat-icon>
+        <span matListItemTitle>Recepción</span>
       </a>
-      <a mat-list-item [routerLink]="['/purchase']" routerLinkActive="router-link-active" (click)="toggle()">
-        <mat-icon>point_of_sale</mat-icon>
-        Compras
+
+      <a mat-list-item
+         [routerLink]="['/purchase']"
+         routerLinkActive #rlaPurchase="routerLinkActive"
+         [activated]="rlaPurchase.isActive"
+         (click)="toggle()"
+         matTooltip="Compras" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>point_of_sale</mat-icon>
+        <span matListItemTitle>Compras</span>
       </a>
-      <a mat-list-item [routerLink]="['/roperia']" routerLinkActive="router-link-active" (click)="toggle()">
-        <mat-icon>person_search</mat-icon>
-        Roperia
+
+      <a mat-list-item
+         [routerLink]="['/roperia']"
+         routerLinkActive #rlaRoperia="routerLinkActive"
+         [activated]="rlaRoperia.isActive"
+         (click)="toggle()"
+         matTooltip="Ropería" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>person_search</mat-icon>
+        <span matListItemTitle>Ropería</span>
       </a>
-      <a mat-list-item [routerLink]="['/facturacion']" routerLinkActive="router-link-active" (click)="toggle()">
-        <mat-icon>receipt_long</mat-icon>
-        Facturacion
-      </a>
-      <a mat-list-item (click)="cerrarSesion()">
-        <mat-icon>logout</mat-icon>
-        Cerrar Sesion
+
+      <a mat-list-item
+         [routerLink]="['/facturacion']"
+         routerLinkActive #rlaFacturacion="routerLinkActive"
+         [activated]="rlaFacturacion.isActive"
+         (click)="toggle()"
+         matTooltip="Facturación" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>receipt_long</mat-icon>
+        <span matListItemTitle>Facturación</span>
       </a>
     </mat-nav-list>
+
+    <div class="app-sidenav__footer">
+      <mat-divider></mat-divider>
+      <a mat-list-item
+         class="app-sidenav__logout"
+         (click)="cerrarSesion()"
+         matTooltip="Cerrar sesión" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle>Cerrar sesión</span>
+      </a>
+    </div>
   </mat-sidenav>
 
-  <mat-sidenav-content>
-   
+  <mat-sidenav-content class="app-content">
     <router-outlet />
-
   </mat-sidenav-content>
 </mat-sidenav-container>

@@ -12,11 +12,18 @@ let refreshAttempts = 0;
 
 
 const whitelistUrls = [
-  '/api/prodService/getServicesQuickAccess',  
+  '/api/prodService/getServicesQuickAccess',
 ];
 
 function isWhitelisted(url: string): boolean {
   return whitelistUrls.some(whitelistedUrl => url.includes(whitelistedUrl));
+}
+
+function toClientError(status: number, body: unknown): Error & { status: number; error: unknown } {
+  const err = new Error(body as string) as Error & { status: number; error: unknown };
+  err.status = status;
+  err.error = body;
+  return err;
 }
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -81,12 +88,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           }),
           catchError((refreshError) => {
             router.navigate(['/login']);
-            return throwError(() => new Error(refreshError.error));
+            return throwError(() => toClientError(refreshError.status, refreshError.error));
           })
         );
       }
 
-      return throwError(() => new Error(error.error));
+      return throwError(() => toClientError(error.status, error.error));
     })
   );
 

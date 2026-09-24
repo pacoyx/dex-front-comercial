@@ -36,6 +36,10 @@
     min-width: 140px;
   }
 
+  .filtro-sucursal-global {
+    max-width: 260px;
+  }
+
   .section-options-dashboardcaja mat-form-field.campo-anio {
     flex: 0 1 90px;
     min-width: 80px;

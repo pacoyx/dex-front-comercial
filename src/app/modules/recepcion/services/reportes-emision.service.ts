@@ -3,7 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IResponseGeneric';
-import { DataResumenCaja, ICajasPorFecha, IDashboardCashResponseDto, IPrintingStatusResponse, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
+import { DataResumenCaja, ICajasPorFecha, IDashboardCashResponseDto, IDashboardCashWeekDayDto, IPrintingStatusResponse, IReportGetGuiasPaginadoResponse, IReportResumenCajaPorFechaResponse, IResumenCajaDetalle } from '../interfaces/IReports';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +63,7 @@ export class ReportesEmisionService {
   obtenerCajaDashboardSemana(fechaInicio: string, fechaFin: string, sucursal: number) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const params = { fechaInicio, fechaFin, sucursal };
-    return this.http.get<IResponseGeneric<IDashboardCashResponseDto[]>>(`${this.apiUrl}${environment.EPdashboardcashSemana}`, { headers, params });
+    return this.http.get<IResponseGeneric<IDashboardCashWeekDayDto[]>>(`${this.apiUrl}${environment.EPdashboardcashSemana}`, { headers, params });
   }
 
   obtenerCajaDashboardMes(mes: number, anio: number, sucursal: number) {

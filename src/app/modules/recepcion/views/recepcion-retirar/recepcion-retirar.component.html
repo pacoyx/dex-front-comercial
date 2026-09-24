@@ -124,6 +124,7 @@
         <div><mat-icon>phone</mat-icon> {{guiaRetiroData?.customerPhone}}</div>
         <!-- <button mat-stroked-button>Historial</button> -->
         <a mat-button [routerLink]="['/recepcion/consultas', clienteId]">Historial de guias</a>
+        <a mat-button [routerLink]="['/recepcion/inspeccion-resumen', guiaRetiroData?.id]">Ver Resumen Inspección</a>
     </div>
 
     <div class="section-totales">
@@ -312,11 +313,21 @@
             <ng-container matColumnDef="operaciones">
                 <th mat-header-cell *matHeaderCellDef class="operaciones-column"> Operaciones </th>
                 <td mat-cell *matCellDef="let element">
-                    <div style="display: flex; gap: 5px;">
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
                         <button mat-stroked-button (click)="devolverPrenda(element)" class="btn-block"
                             [disabled]="element.estadoSituacion == 'D' || element.estadoSituacion == 'E' ">
                             Devolver
                         </button>
+                        <button mat-stroked-button (click)="abrirInspeccion(element)" class="btn-block">
+                            <mat-icon>fact_check</mat-icon>
+                            Inspección
+                        </button>
+                        @if(esZapatilla(element)){
+                        <button mat-stroked-button (click)="abrirZapatilla(element)" class="btn-block">
+                            <mat-icon>sports_soccer</mat-icon>
+                            Zapatilla
+                        </button>
+                        }
                     </div>
                 </td>
             </ng-container>

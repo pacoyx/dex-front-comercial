@@ -26,8 +26,16 @@ import { IEmisionDocumento } from '../../models/IEmisionDocumento';
 import { IEmisionPago } from '../../models/IEmisionPago';
 import { DialogEditItemComponent } from '../../components/dialog-edit-item/dialog-edit-item.component';
 import { EmisionService } from '../../services/emision.service';
-import { Observable, of, Subject, Subscription } from 'rxjs';
 import {
+  firstValueFrom,
+  forkJoin,
+  Observable,
+  of,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import {
+  catchError,
   distinctUntilChanged,
   map,
   startWith,
@@ -35,7 +43,17 @@ import {
 } from 'rxjs/operators';
 import { debounceTime } from 'rxjs/operators';
 import { INumeracionDoc } from '../../interfaces/INumeracionDoc';
-import { ICreateGuideWork } from '../../interfaces/ICreateGuideWork';
+import {
+  ICreateGuideWork,
+  WgdCreateResponseDto,
+} from '../../interfaces/ICreateGuideWork';
+import { InspeccionService } from '../../services/inspeccion.service';
+import { DialogInspeccionItemComponent } from '../../components/dialog-inspeccion-item/dialog-inspeccion-item.component';
+import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-item/dialog-zapatilla-item.component';
+import { IEmisionItem } from '../../models/IEmisionItems';
+import { isSneakerCategory } from '../../shared/sneaker-category.util';
+import { agregarItemZapatillaDirecto } from '../../shared/agregar-item-zapatilla.util';
+import { formatearZapatillaDraft } from '../../shared/zapatilla-draft-format.util';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
@@ -90,6 +108,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   emisionService = inject(EmisionService);
   notificacionService = inject(NotificationServiceService);
   dataLogin = inject(LoginService);
+  inspeccionService = inject(InspeccionService);
 
   sucursalId = 1;
   sucursalNombre = '[Seleccione Sucursal]';
@@ -182,7 +201,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   subscriptionServixcat!: Subscription;
   subscriptionGrabarGuia!: Subscription;
   subscriptionFiltrarServixpatron!: Subscription;
-  subscriptionConsulta!: Subscription;
   subscriptionIdsPesoLavado!: Subscription;
   subscriptionQuickAccess!: Subscription;
 
@@ -211,17 +229,20 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     if (this.subscriptionGrabarGuia) this.subscriptionGrabarGuia.unsubscribe();
     if (this.subscriptionFiltrarServixpatron)
       this.subscriptionFiltrarServixpatron.unsubscribe();
-    if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
     if (this.subscriptionIdsPesoLavado)
       this.subscriptionIdsPesoLavado.unsubscribe();
     if (this.subscriptionQuickAccess)
       this.subscriptionQuickAccess.unsubscribe();
   }
 
-  ngOnInit(): void {
-    this.validarExisteCajaPorUsuario();
-    // this.cargarSucursalesLocalStorage();
-    this.obtenerSucursalCajaAbierta();
+  async ngOnInit(): Promise<void> {
+    const existeCaja = await this.validarExisteCajaPorUsuario();
+    console.log('existeCaja:', existeCaja);
+    console.log('existe caja:', existeCaja);
+
+    if (!existeCaja) {
+      this.obtenerSucursalCajaAbierta();
+    }
 
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
       startWith(''),
@@ -340,7 +361,14 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       id: item.prodServiceID,
       name: item.shortName,
       price: item.price,
+      categoryDescription: item.categoryDescription,
     };
+
+    if (isSneakerCategory(itemBusqueda.categoryDescription)) {
+      agregarItemZapatillaDirecto(this.dialog, this.store, itemBusqueda);
+      this.actualizarPago();
+      return;
+    }
 
     this.store.select(item.id);
     this.subscriptionQuickAccess = this.dialog
@@ -413,28 +441,49 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       });
   }
 
-  validarExisteCajaPorUsuario(): void {
-    this.subscriptionConsulta = this.emisionService
-      .ListarCajaPorIdUser(this.dataLogin.getLoginData()?.userId!)
-      .subscribe({
-        next: (data) => {
-          if (data.success) {
-            if (!data.data) {
-              this.bolExisteCaja = false;
-            }
-          } else {
-            this.bolExisteCaja = false;
-          }
-        },
-        error: (err) => {
-          this.notificacionService.showError(err);
-          this.bolExisteCaja = false;
-          this.msgValidacion = err;
-        },
-        complete: () => {
-          console.log('complete obtenerCajaPorUsuario()');
-        },
-      });
+  async validarExisteCajaPorUsuario(): Promise<boolean> {
+    try {
+      const data = await firstValueFrom(
+        this.emisionService.ListarCajaPorIdUser(
+          this.dataLogin.getLoginData()?.userId!,
+        ),
+      );
+
+      if (!data.success || !data.data) {
+        this.bolExisteCaja = false;
+        return false;
+      }
+
+      this.bolExisteCaja = true;
+      this.sucursalId = data.data.branchSalesId;
+
+      const storedData = localStorage.getItem('dex24Auth');
+      if (storedData == null) {
+        this.dialog.open(DialogMsgComponent, {
+          data: {
+            title: 'Error',
+            msg: 'No se encontraron datos de autenticación en el sistema.',
+            err: true,
+          },
+        });
+        return false;
+      }
+      const parsedData: ILoginResponseData = JSON.parse(storedData);
+      const foundSucursal = parsedData.branchSales.find(
+        (sucursal: any) => sucursal.branchSalesId == this.sucursalId,
+      );
+
+      this.sucursalNombre = foundSucursal
+        ? foundSucursal.branchSalesName
+        : '[Sucursal no encontrada]';
+
+      return true;
+    } catch (err: any) {
+      this.notificacionService.showError(err);
+      this.bolExisteCaja = false;
+      this.msgValidacion = err;
+      return false;
+    }
   }
 
   onClienteSelected(event: any) {
@@ -686,6 +735,10 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
         ? 'PA'
         : 'PE'; // PE: Pendiente, PA: Pagado, AN: Anulado
 
+    // se congela el orden de los items ANTES de grabar, para poder matchear 1 a 1
+    // contra el arreglo `details` que devuelve el backend al crear la guía
+    const itemsSnapshot = this.store.items();
+
     let objGuia: ICreateGuideWork = {
       serieGuia: '',
       numeroGuia: '',
@@ -708,8 +761,9 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       estadoPago: estadoPagoInicial, // PE: Pendiente, PA: Pagado, AN: Anulado
       estadoRegistro: 'A',
       estadoSituacion: 'P',
+      PrintCopy: this.store.selectedSinCopia() ? 0 : 1,
 
-      workGuideDetailsDTO: this.store.items().map((item, index) => {
+      workGuideDetailsDTO: itemsSnapshot.map((item, index) => {
         const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const identifier = alphabet[index % alphabet.length];
         return {
@@ -750,6 +804,11 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
             'Se grabó correctamente la guía de trabajo.',
             '# ' + resp.data.numeroDocumento,
             true,
+          );
+
+          this.registrarInspeccionesYZapatillasPendientes(
+            itemsSnapshot,
+            resp.data.details,
           );
         },
         error: (err) => {
@@ -822,5 +881,123 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.isEtiqueta = false;
     this.actualizarPago();
     this.clienteControl.setValue('');
+  }
+
+  abrirInspeccionItem(item: any) {
+    this.dialog
+      .open(DialogInspeccionItemComponent, {
+        data: {
+          workGuideDetailId: null,
+          productName: item.nomProd,
+          initialValue: this.store.getInspeccionDraft(item.id),
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result?.draft) {
+          this.store.setInspeccionDraft(item.id, result.draft);
+        }
+      });
+  }
+
+  abrirZapatillaItem(item: any) {
+    this.dialog
+      .open(DialogZapatillaItemComponent, {
+        data: {
+          workGuideDetailId: null,
+          productName: item.nomProd,
+          initialValue: this.store.getZapatillaDraft(item.id),
+        },
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (!result?.draft) return;
+
+        this.store.setZapatillaDraft(item.id, result.draft);
+        this.store.update({
+          ...item,
+          Obs: formatearZapatillaDraft(result.draft, result.brandName),
+        });
+      });
+  }
+
+  esZapatilla(item: any): boolean {
+    return isSneakerCategory(item.categoryDescription);
+  }
+
+  tieneInspeccionDraft(item: any): boolean {
+    return this.store.hasInspeccionDraft(item.id);
+  }
+
+  tieneZapatillaDraft(item: any): boolean {
+    return this.store.hasZapatillaDraft(item.id);
+  }
+
+  /**
+   * Encadena, recién después de grabada la guía, las llamadas de inspección/zapatilla
+   * pendientes usando los WorkGuideDetail.id que recién devolvió el backend
+   * (mismo orden en que se enviaron los items en workGuideDetailsDTO).
+   */
+  private registrarInspeccionesYZapatillasPendientes(
+    itemsSnapshot: IEmisionItem[],
+    details: WgdCreateResponseDto[],
+  ) {
+    const llamadas: Observable<unknown>[] = [];
+    const inspeccionDrafts = this.store.getAllInspeccionDrafts();
+    const zapatillaDrafts = this.store.getAllZapatillaDrafts();
+
+    itemsSnapshot.forEach((item, index) => {
+      const detalle = details?.[index];
+      if (!detalle) return;
+
+      const inspeccion = inspeccionDrafts.get(item.id);
+      if (inspeccion) {
+        llamadas.push(
+          this.inspeccionService.guardarInspeccion(detalle.id, inspeccion).pipe(
+            catchError((err) => {
+              console.log('Error guardando inspección de', item.nomProd, err);
+              return of(null);
+            }),
+          ),
+        );
+      }
+
+      const zapatilla = zapatillaDrafts.get(item.id);
+      if (zapatilla) {
+        llamadas.push(
+          this.inspeccionService
+            .guardarInfoZapatilla(detalle.id, zapatilla)
+            .pipe(
+              catchError((err) => {
+                console.log(
+                  'Error guardando info de zapatilla de',
+                  item.nomProd,
+                  err,
+                );
+                return of(null);
+              }),
+            ),
+        );
+      }
+    });
+
+    if (llamadas.length === 0) {
+      return;
+    }
+
+    forkJoin(llamadas).subscribe((resultados) => {
+      const fallidos = resultados.filter((r) => r === null).length;
+      if (fallidos === 0) {
+        this.notificacionService.showSuccess(
+          `Se registraron ${resultados.length} dato(s) de inspección/zapatilla asociados al ticket.`,
+        );
+      } else {
+        this.notificacionService.showError(
+          `${fallidos} de ${resultados.length} registro(s) de inspección/zapatilla no se pudieron guardar. Complétalos luego desde Retiros.`,
+        );
+      }
+      inspeccionDrafts.clear();
+      zapatillaDrafts.clear();
+    });
   }
 }

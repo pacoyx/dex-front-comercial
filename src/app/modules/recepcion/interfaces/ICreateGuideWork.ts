@@ -19,6 +19,7 @@ export interface ICreateGuideWork {
   estadoRegistro:string;
   estadoSituacion:string;  
   workGuideDetailsDTO: WorkGuideDetailsDTO[];
+  PrintCopy:number;
 }
 
 interface WorkGuideDetailsDTO {
@@ -44,4 +45,11 @@ export interface ICreateGuiaWorkResponse {
   numeroDocumento: string;
   fechaOperacion: string;
   fechaHoraEntrega: string;
+  details: WgdCreateResponseDto[];
+}
+
+export interface WgdCreateResponseDto {
+  id: number;
+  productId: number;
+  identificador: string;
 }

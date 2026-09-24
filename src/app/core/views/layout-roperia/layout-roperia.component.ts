@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
@@ -11,10 +12,11 @@ import { LoginService } from '../../services/login.service';
   selector: 'app-layout-roperia',
   standalone: true,
   imports: [
-    RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule
+    RouterModule, MatToolbarModule, MatIconModule, MatButtonModule, MatListModule, MatMenuModule,
+    MatDividerModule
   ],
   templateUrl: './layout-roperia.component.html',
-  styleUrl: './layout-roperia.component.css'
+  styleUrl: './layout-roperia.component.scss'
 })
 export class LayoutRoperiaComponent {
   @ViewChild('sidenav') sidenav!: MatSidenav;

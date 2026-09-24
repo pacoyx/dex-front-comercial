@@ -18,6 +18,8 @@ import { RecepcionRegUbicacionesComponent } from './views/recepcion-reg-ubicacio
 import { ReporteResumenCajaComponent } from './views/reportes/reporte-resumen-caja/reporte-resumen-caja.component';
 import { DashboardcajaComponent } from './views/reportes/dashboardcaja/dashboardcaja.component';
 import { DashboardprintersComponent } from './views/reportes/dashboardprinters/dashboardprinters.component';
+import { InspeccionResumenComponent } from './views/reportes/inspeccion-resumen/inspeccion-resumen.component';
+import { ReporteSneakersComponent } from './views/reportes/reporte-sneakers/reporte-sneakers.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -41,6 +43,9 @@ const routes: Routes = [
   { path: 'resumenCaja', component: ReporteResumenCajaComponent },  
   { path: 'dashboardcash', component: DashboardcajaComponent },
   { path: 'dashboardprinters', component: DashboardprintersComponent },
+  { path: 'inspeccion-resumen', component: InspeccionResumenComponent },
+  { path: 'inspeccion-resumen/:workGuideId', component: InspeccionResumenComponent },
+  { path: 'reportes/sneakers', component: ReporteSneakersComponent },
 ];
 
 @NgModule({

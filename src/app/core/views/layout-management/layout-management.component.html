@@ -1,36 +1,34 @@
-<mat-toolbar>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-        <mat-icon>menu</mat-icon>
-    </button>
-    <span>Administracion de Sistema</span>
+<div class="module-shell">
 
-    <button mat-button>
-        <mat-icon>dashboard</mat-icon>
-        <a [routerLink]="['/management/dashboard']" routerLinkActive="router-link-active">Dashboard</a>
-    </button>
-    <button mat-button>
-        <mat-icon>apartment</mat-icon>
-        <a [routerLink]="['/management/empresa']" routerLinkActive="router-link-active">Empresa</a>
-    </button>
-    <button mat-button>
-        <mat-icon>person</mat-icon>
-        <a [routerLink]="['/management/usuarios']" routerLinkActive="router-link-active">Usuarios</a>
-    </button>
-    <button mat-button>
-        <mat-icon>settings</mat-icon>
-        <a [routerLink]="['/management/configuraciones']" routerLinkActive="router-link-active">Configuraciones</a>
+  <mat-toolbar class="module-toolbar">
+
+    <button mat-icon-button class="module-toolbar__menu-btn" aria-label="Menú">
+      <mat-icon>menu</mat-icon>
     </button>
 
+    <span class="module-toolbar__title">Administración de Sistema</span>
 
-    <span class="example-spacer"></span>
-    <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-        <mat-icon>favorite</mat-icon>
-    </button>
-    <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-        <mat-icon>share</mat-icon>
-    </button>
-</mat-toolbar>
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/management/dashboard" routerLinkActive="is-active">
+        <mat-icon>dashboard</mat-icon><span>Dashboard</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/management/empresa" routerLinkActive="is-active">
+        <mat-icon>apartment</mat-icon><span>Empresa</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/management/usuarios" routerLinkActive="is-active">
+        <mat-icon>person</mat-icon><span>Usuarios</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/management/configuraciones" routerLinkActive="is-active">
+        <mat-icon>settings</mat-icon><span>Configuraciones</span>
+      </a>
+    </nav>
 
+    <span class="module-toolbar__spacer"></span>
 
+  </mat-toolbar>
 
-<router-outlet></router-outlet>
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

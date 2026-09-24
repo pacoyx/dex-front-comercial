@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { EmisionStoreService } from '../../../../services/emision.store.service';
 import { DialogEditItemComponent } from '../../../../components/dialog-edit-item/dialog-edit-item.component';
 import { Subscription } from 'rxjs';
+import { isSneakerCategory } from '../../../../shared/sneaker-category.util';
+import { agregarItemZapatillaDirecto } from '../../../../shared/agregar-item-zapatilla.util';
 
 @Component({
   selector: 'app-recepcion-grilla-busqueda-servicios',
@@ -45,6 +47,12 @@ export class RecepcionGrillaBusquedaServiciosComponent implements OnInit, OnChan
   }
 
   agregarItem(item: IListaItemsBusqueda): void {
+    if (isSneakerCategory(item.categoryDescription)) {
+      agregarItemZapatillaDirecto(this.dialog, this.store, item);
+      this.updatePayEvent.emit(true);
+      return;
+    }
+
     this.store.select(item.id);
     this.dialogSubscription = this.dialog.open(DialogEditItemComponent, { data: { edicion: false, item: item } })
       .afterClosed()

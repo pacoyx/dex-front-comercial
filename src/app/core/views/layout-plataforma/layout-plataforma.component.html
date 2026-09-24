@@ -1,164 +1,29 @@
-<!-- <div style="margin: 20px;margin-top: 0px;">
-  <div>
-    
+<div class="module-shell">
 
-    <mat-sidenav-container class="example-container">
-      <mat-sidenav #sidenav mode="side">
-        <mat-nav-list>
-          <a mat-list-item [routerLink]="['/recepcion/retiros']" routerLinkActive="router-link-active">
-            <mat-icon>exit_to_app</mat-icon>
-            Recepcion
-          </a>
-          <a mat-list-item [routerLink]="['/purchase']" routerLinkActive="router-link-active">
-            <mat-icon>point_of_sale</mat-icon>
-            Compras
-          </a>
-          <a mat-list-item [routerLink]="['/roperia']" routerLinkActive="router-link-active">
-            <mat-icon>person_search</mat-icon>
-            Roperia
-          </a>
-          <a mat-list-item (click)="cerrarSesion()">
-            <mat-icon>logout</mat-icon>
-            Cerrar Sesion
-          </a>
-        </mat-nav-list>
-      </mat-sidenav>
+  <mat-toolbar class="module-toolbar">
 
-      <mat-sidenav-content>
-        <mat-toolbar class="win-proceso">
-
-          <button mat-icon-button (click)="sidenav.toggle()">
-            <mat-icon>menu</mat-icon>
-          </button>
-
-          <span>Lavanderia Kyo</span>
-          
-          <nav>
-            <a mat-button routerLink="/recepcion/emision" routerLinkActive="active"><mat-icon>description</mat-icon>Emision</a>
-            <a mat-button routerLink="/recepcion/retiros" routerLinkActive="active"><mat-icon>exit_to_app</mat-icon>Retiros</a>
-            <a mat-button routerLink="/recepcion/gastos" routerLinkActive="active"><mat-icon>local_atm</mat-icon>Gastos</a>
-            <a mat-button routerLink="/recepcion/caja" routerLinkActive="active"><mat-icon>point_of_sale</mat-icon>Caja</a>
-        
-
-
-
-          <button mat-button [matMenuTriggerFor]="consMenu">
-            <mat-icon>person_search</mat-icon>
-            Consultas
-          </button>
-          <mat-menu #consMenu="matMenu">
-            <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
-              <mat-icon>dashboard</mat-icon>
-              Dashboard
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
-              <mat-icon>manage_accounts</mat-icon>
-              Guias
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/recepcion/resumenCaja']" routerLinkActive="router-link-active">
-              <mat-icon>summarize</mat-icon>
-              Resumen Caja
-            </button>
-          </mat-menu>
-
-
-          <button mat-button [matMenuTriggerFor]="operacionesMenu">
-            <mat-icon>rebase_edit</mat-icon>
-            Operaciones
-          </button>
-          <mat-menu #operacionesMenu="matMenu">
-            <button mat-button>
-              <mat-icon>edit_location</mat-icon>
-              <a [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">Reg.Ubicaciones</a>
-            </button>
-          </mat-menu>
-
-
-          <button mat-button [matMenuTriggerFor]="mntMenu">
-            <mat-icon>tab_group</mat-icon>
-            Maestros
-          </button>
-          <mat-menu #mntMenu="matMenu">
-            <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
-              <mat-icon>manage_accounts</mat-icon>
-              Clientes
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/recepcion/servicios']" routerLinkActive="router-link-active">
-              <mat-icon>inventory_2</mat-icon>
-              Servicios
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/recepcion/ubicaciones']" routerLinkActive="router-link-active">
-              <mat-icon>pin_drop</mat-icon>
-              Ubicaciones
-            </button>
-          </mat-menu> 
-
-          
-        </nav>
-
-     
-          <span class="flexExpand"></span>
-          <span class="example-spacer"></span>
-          <mat-menu #userMenu="matMenu">            
-            <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
-              <mat-icon>settings</mat-icon>              
-              Administrar
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
-              <mat-icon>settings</mat-icon>              
-              Profile
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="cerrarSesion()">
-              <mat-icon>logout</mat-icon>
-              Cerrar Sesion
-            </button>
-          </mat-menu>
-
-          <button mat-button [matMenuTriggerFor]="userMenu">
-            <mat-icon>account_circle</mat-icon>
-            {{ loginService.getLoginData()?.userName }}
-          </button>
-
-
-        </mat-toolbar>
-        
-          <router-outlet></router-outlet>
-        
-      </mat-sidenav-content>
-    </mat-sidenav-container>
-
-
-  </div>
-</div> -->
-
-<!-- <div style="height: 100vh; display: flex; flex-direction: column; margin: 20px; margin-top: 0;"> -->
-<div class="contenedor-plataforma">
-
-  <mat-toolbar class="win-proceso">
-
-    <button mat-icon-button (click)="toggleSidenav()">
+    <button mat-icon-button class="module-toolbar__menu-btn" (click)="toggleSidenav()" aria-label="Abrir menú principal">
       <mat-icon>menu</mat-icon>
     </button>
 
-    <span>Recepción</span>
+    <span class="module-toolbar__title">Recepción</span>
 
-    <nav>
-      <a mat-button routerLink="/recepcion/emision"
-        routerLinkActive="active"><mat-icon>description</mat-icon>Emision</a>
-      <a mat-button routerLink="/recepcion/retiros"
-        routerLinkActive="active"><mat-icon>exit_to_app</mat-icon>Retiros</a>
-      <a mat-button routerLink="/recepcion/gastos" routerLinkActive="active"><mat-icon>local_atm</mat-icon>Gastos</a>
-      <a mat-button routerLink="/recepcion/caja" routerLinkActive="active"><mat-icon>point_of_sale</mat-icon>Caja</a>
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/recepcion/emision" routerLinkActive="is-active">
+        <mat-icon>description</mat-icon><span>Emisión</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/recepcion/retiros" routerLinkActive="is-active">
+        <mat-icon>exit_to_app</mat-icon><span>Retiros</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/recepcion/gastos" routerLinkActive="is-active">
+        <mat-icon>local_atm</mat-icon><span>Gastos</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/recepcion/caja" routerLinkActive="is-active">
+        <mat-icon>point_of_sale</mat-icon><span>Caja</span>
+      </a>
 
-      <button mat-button [matMenuTriggerFor]="consMenu">
-        <mat-icon>person_search</mat-icon>
-        Consultas
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="consMenu">
+        <mat-icon>person_search</mat-icon><span>Consultas</span>
       </button>
       <mat-menu #consMenu="matMenu">
         <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
@@ -170,24 +35,30 @@
           <mat-icon>summarize</mat-icon>
           Resumen Caja
         </button>
-      </mat-menu>
-
-
-      <button mat-button [matMenuTriggerFor]="operacionesMenu">
-        <mat-icon>rebase_edit</mat-icon>
-        Operaciones
-      </button>
-      <mat-menu #operacionesMenu="matMenu">
-        <button mat-button>
-          <mat-icon>edit_location</mat-icon>
-          <a [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">Reg.Ubicaciones</a>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/inspeccion-resumen']" routerLinkActive="router-link-active">
+          <mat-icon>fact_check</mat-icon>
+          Resumen Inspección
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/recepcion/reportes/sneakers']" routerLinkActive="router-link-active">
+          <mat-icon>sports_soccer</mat-icon>
+          Reporte Zapatillas
         </button>
       </mat-menu>
 
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="operacionesMenu">
+        <mat-icon>rebase_edit</mat-icon><span>Operaciones</span>
+      </button>
+      <mat-menu #operacionesMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">
+          <mat-icon>edit_location</mat-icon>
+          Reg.Ubicaciones
+        </button>
+      </mat-menu>
 
-      <button mat-button [matMenuTriggerFor]="mntMenu">
-        <mat-icon>tab_group</mat-icon>
-        Maestros
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
+        <mat-icon>tab_group</mat-icon><span>Maestros</span>
       </button>
       <mat-menu #mntMenu="matMenu">
         <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
@@ -206,10 +77,8 @@
         </button>
       </mat-menu>
 
-
-      <button mat-button [matMenuTriggerFor]="adminMenu">
-        <mat-icon>admin_panel_settings</mat-icon>
-        Administracion
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="adminMenu">
+        <mat-icon>admin_panel_settings</mat-icon><span>Administración</span>
       </button>
       <mat-menu #adminMenu="matMenu">
         <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
@@ -242,13 +111,14 @@
           Estaciones de Trabajo
         </button>
       </mat-menu>
-
-
     </nav>
 
+    <span class="module-toolbar__spacer"></span>
 
-    <span class="flexExpand"></span>
-    <span class="example-spacer"></span>
+    <button mat-button class="module-toolbar__user" [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ loginService.getLoginData()?.userName }}</span>
+    </button>
     <mat-menu #userMenu="matMenu">
       <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
         <mat-icon>settings</mat-icon>
@@ -266,14 +136,10 @@
       </button>
     </mat-menu>
 
-    <button mat-button [matMenuTriggerFor]="userMenu">
-      <mat-icon>account_circle</mat-icon>
-      {{ loginService.getLoginData()?.userName }}
-    </button>
-
-
   </mat-toolbar>
 
-  <router-outlet></router-outlet>
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
 
 </div>

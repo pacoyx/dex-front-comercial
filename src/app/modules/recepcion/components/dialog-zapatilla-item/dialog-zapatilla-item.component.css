@@ -1,0 +1,57 @@
+mat-form-field {
+    width: 100%;
+}
+
+.seccion-label {
+    font-size: small;
+    font-weight: bold;
+    color: gray;
+    margin-bottom: 6px;
+}
+
+.fila-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip-btn {
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    padding: 6px 14px;
+    background: white;
+    cursor: pointer;
+    font-size: small;
+}
+
+.chip-btn--selected {
+    background-color: #7d9ad6;
+    color: white;
+    border-color: #7d9ad6;
+}
+
+.fila-colores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #999;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-swatch--selected {
+    outline: 3px solid #7d9ad6;
+    outline-offset: 2px;
+}
+
+.color-seleccionado {
+    font-size: small;
+    color: gray;
+    margin-top: 4px;
+}

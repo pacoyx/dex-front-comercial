@@ -186,6 +186,16 @@
                       matTooltip="Editar">
                       <mat-icon>edit</mat-icon>
                     </button>
+                    <button mat-icon-button (click)="abrirInspeccionItem(element)" [disabled]="blockSave"
+                      matTooltip="Inspección">
+                      <mat-icon [color]="tieneInspeccionDraft(element) ? 'primary' : ''">fact_check</mat-icon>
+                    </button>
+                    @if(esZapatilla(element)){
+                    <button mat-icon-button (click)="abrirZapatillaItem(element)" [disabled]="blockSave"
+                      matTooltip="Info Zapatilla">
+                      <mat-icon [color]="tieneZapatillaDraft(element) ? 'primary' : ''">sports_soccer</mat-icon>
+                    </button>
+                    }
                     <button mat-icon-button color="warn" (click)="deleteData(element)" [disabled]="blockSave"
                       matTooltip="Eliminar">
                       <mat-icon>delete</mat-icon>

@@ -5,6 +5,17 @@
         Dashboard Caja
     </h2>
 
+    <div class="section-options-dashboardcaja filtro-sucursal-global">
+        <mat-form-field appearance="outline">
+            <mat-label>Sucursal</mat-label>
+            <mat-select placeholder="Selecciona sucursal..." [(value)]="selectedSucursal">
+                @for (tipo of sucursales; track $index) {
+                <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+
     <div class="dashboard-secciones">
 
         <!-- ============ DIARIO ============ -->
@@ -20,15 +31,6 @@
                         [(ngModel)]="fechaHoy">
                     <mat-datepicker-toggle matSuffix [for]="pickerDiario"></mat-datepicker-toggle>
                     <mat-datepicker #pickerDiario></mat-datepicker>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Sucursales</mat-label>
-                    <mat-select placeholder="Selecciona sucursal..." [(value)]="selectedSucursalDiario">
-                        @for (tipo of sucursales; track $index) {
-                        <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
-                        }
-                    </mat-select>
                 </mat-form-field>
 
                 <button mat-fab extended (click)="cargarDashboardDiario()">
@@ -96,15 +98,6 @@
                     <mat-date-range-picker #pickerSemanal></mat-date-range-picker>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline">
-                    <mat-label>Sucursales</mat-label>
-                    <mat-select placeholder="Selecciona sucursal..." [(value)]="selectedSucursalSemanal">
-                        @for (tipo of sucursales; track $index) {
-                        <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-
                 <button mat-fab extended (click)="cargarDashboardSemanal()">
                     <mat-icon>search</mat-icon>
                     Procesar
@@ -119,31 +112,33 @@
             </div>
 
             <div class="graficos-seccion">
-                @for (item of dataGraficoSemanal; track $index) {
+                @if (dataGraficoSemanal.length > 0) {
                 <div class="tarjeta-grafico">
 
-                    <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
-                        [inputLabels]="item.tipoPagos"></app-chartdashcaja>
+                    <app-chartdashcaja inputTipo="bar" [inputTitulo]="'Ventas por día'"
+                        [inputValoresSeries]="semanaValores" [inputLabels]="semanaLabels"></app-chartdashcaja>
 
                     <table class="table-elegant" style="width: 100%; margin-top: 20px;">
                         <thead>
                             <tr>
-                                <th>Tipo de Pago</th>
-                                <th>Importe</th>
+                                <th>Día</th>
+                                <th>Detalle por tipo de pago</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @for (tipo of item.tipoPagos; track $index) {
+                            @for (dia of dataGraficoSemanal; track $index) {
                             <tr>
-                                <td>{{tipo}}</td>
-                                <td>{{item.importes[$index] | number:'1.2-2' }}</td>
+                                <td>{{dia.diaSemana}}</td>
+                                <td>{{formatDetallesDia(dia.detalles)}}</td>
+                                <td>{{dia.montoTotal | number:'1.2-2' }}</td>
                             </tr>
                             }
                         </tbody>
                         <tfoot style="font-weight: bold;">
                             <tr>
-                                <td>Total</td>
-                                <td>{{ getTotal(item.importes) | number:'1.2-2' }}</td>
+                                <td colspan="2">Total semana</td>
+                                <td>{{ getTotal(semanaValores) | number:'1.2-2' }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -172,15 +167,6 @@
                 <mat-form-field appearance="outline" class="campo-anio">
                     <mat-label>Año</mat-label>
                     <input matInput type="number" [(ngModel)]="selectedAnio">
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Sucursales</mat-label>
-                    <mat-select placeholder="Selecciona sucursal..." [(value)]="selectedSucursalMensual">
-                        @for (tipo of sucursales; track $index) {
-                        <mat-option [value]="tipo.id">{{tipo.description}}</mat-option>
-                        }
-                    </mat-select>
                 </mat-form-field>
 
                 <button mat-fab extended (click)="cargarDashboardMensual()">

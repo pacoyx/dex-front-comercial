@@ -7,4 +7,5 @@ export interface IEmisionItem {
     Subtotal: number;
     Obs: string;
     Identificador: string;
+    categoryDescription?: string;
 }

@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleStoreServiceService } from './core/services/toggle-store-service.service';
 
 @Component({
@@ -15,14 +17,17 @@ import { ToggleStoreServiceService } from './core/services/toggle-store-service.
   imports: [
     RouterOutlet, MatToolbarModule, MatIconModule,
     MatButtonModule, RouterModule, MatSidenavModule,
-    MatListModule, MatMenuModule
+    MatListModule, MatMenuModule, MatDividerModule, MatTooltipModule
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   title = 'Dexfront-Comercial';
+
+  /** Estado puramente visual: contrae el sidebar a un riel de iconos. No afecta la logica de apertura/cierre. */
+  collapsed = false;
 
   constructor(
     private router: Router,
@@ -46,8 +51,12 @@ export class AppComponent implements AfterViewInit {
     this.toggleStore.setToggleState(false);
   }
 
-  toggle() {       
+  toggle() {
     this.toggleStore.setToggleState(false);
+  }
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
   }
 
 }

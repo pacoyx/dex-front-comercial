@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule, MatToolbarModule, MatIconModule, MatButtonModule],
   templateUrl: './layout-management.component.html',
-  styleUrl: './layout-management.component.css'
+  styleUrl: './layout-management.component.scss'
 })
 export class LayoutManagementComponent {
 

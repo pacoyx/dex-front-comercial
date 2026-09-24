@@ -1,0 +1,21 @@
+.container-reporte-sneakers h2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-table {
+    width: 100%;
+}
+
+.cabecera {
+    text-align: center;
+    padding: 0px 0px !important;
+    background-color: #7d9ad6;
+    color: white;
+    border: 1px solid #ccc !important;
+}
+
+.filas {
+    padding: 0;
+}

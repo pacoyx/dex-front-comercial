@@ -120,6 +120,13 @@ export interface IDashboardCashDetailDto {
   montoTotal: number;
 }
 
+export interface IDashboardCashWeekDayDto {
+  fecha: string;
+  diaSemana: string;
+  montoTotal: number;
+  detalles: IDashboardCashDetailDto[];
+}
+
 
 export interface IPrintingStatusResponse {
   totalPrinters: number;

@@ -48,4 +48,5 @@ export interface IResponseServiceQuickAccess {
     iconName: string;
     status: string;
     price: number;
+    categoryDescription?: string;
 }

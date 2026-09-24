@@ -4,6 +4,7 @@ import { IEmisionCliente } from '../models/IEmisionCliente';
 import { IEmisionItem } from '../models/IEmisionItems';
 import { IEmisionPago } from '../models/IEmisionPago';
 import { IEmisionDocumento } from '../models/IEmisionDocumento';
+import { CreateItemInspectionRequest, UpsertSneakerDetailRequest } from '../interfaces/IInspeccion';
 
 
 export type GuiaServicioState = {
@@ -38,6 +39,10 @@ export class EmisionStoreService {
   private idCounter = 1;
   alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
+  /** datos de inspección/zapatilla capturados mientras el ticket aún no se graba (sin WorkGuideDetail.id) */
+  private inspeccionDrafts = new Map<number, CreateItemInspectionRequest>();
+  private zapatillaDrafts = new Map<number, UpsertSneakerDetailRequest>();
+
   public readonly items = this.guiaServicioState.items;
   public readonly selectedItem = this.guiaServicioState.selectedItem;
   public readonly selectedCliente = this.guiaServicioState.cliente;
@@ -54,6 +59,8 @@ export class EmisionStoreService {
 
   public resetState(): void {
     this.idCounter = 1;
+    this.inspeccionDrafts.clear();
+    this.zapatillaDrafts.clear();
     patchState(this.guiaServicioState, {
       items: [],
       selectedItem: null,
@@ -85,11 +92,14 @@ export class EmisionStoreService {
     });
   }
 
-  public add(item: Omit<IEmisionItem, 'id'>): void {
+  public add(item: Omit<IEmisionItem, 'id'>): number {
+    const newId = this.idCounter;
     const identifier = this.alphabet[(this.idCounter - 1) % this.alphabet.length];
     patchState(this.guiaServicioState, {
-      items: [...this.guiaServicioState.items(), { ...item, id: this.idCounter++, Identificador: identifier }],
+      items: [...this.guiaServicioState.items(), { ...item, id: newId, Identificador: identifier }],
     });
+    this.idCounter++;
+    return newId;
   }
 
   public addCliente(cliente: IEmisionCliente): void {
@@ -134,6 +144,38 @@ export class EmisionStoreService {
     patchState(this.guiaServicioState, {
       sinCopia: bolSinCopia,
     });
+  }
+
+  public setInspeccionDraft(itemId: number, draft: CreateItemInspectionRequest): void {
+    this.inspeccionDrafts.set(itemId, draft);
+  }
+
+  public getInspeccionDraft(itemId: number): CreateItemInspectionRequest | undefined {
+    return this.inspeccionDrafts.get(itemId);
+  }
+
+  public hasInspeccionDraft(itemId: number): boolean {
+    return this.inspeccionDrafts.has(itemId);
+  }
+
+  public setZapatillaDraft(itemId: number, draft: UpsertSneakerDetailRequest): void {
+    this.zapatillaDrafts.set(itemId, draft);
+  }
+
+  public getZapatillaDraft(itemId: number): UpsertSneakerDetailRequest | undefined {
+    return this.zapatillaDrafts.get(itemId);
+  }
+
+  public hasZapatillaDraft(itemId: number): boolean {
+    return this.zapatillaDrafts.has(itemId);
+  }
+
+  public getAllInspeccionDrafts(): Map<number, CreateItemInspectionRequest> {
+    return this.inspeccionDrafts;
+  }
+
+  public getAllZapatillaDrafts(): Map<number, UpsertSneakerDetailRequest> {
+    return this.zapatillaDrafts;
   }
 
 }
