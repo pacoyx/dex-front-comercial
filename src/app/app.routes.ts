@@ -6,6 +6,7 @@ import { LayoutProfileUserComponent } from './core/views/layout-profile-user/lay
 import { LayoutRoperiaComponent } from './core/views/layout-roperia/layout-roperia.component';
 import { LayoutPurchaseComponent } from './core/views/layout-purchase/layout-purchase.component';
 import { LayoutFacturacionComponent } from './core/views/layout-facturacion/layout-facturacion.component';
+import { LayoutRrhhComponent } from './core/views/layout-rrhh/layout-rrhh.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -40,6 +41,11 @@ export const routes: Routes = [
     {
         path: 'facturacion', component: LayoutFacturacionComponent, children: [
             { path: '', loadChildren: () => import('./modules/facturacion/facturacion.module').then(m => m.FacturacionModule) }
+        ]
+    },
+    {
+        path: 'rrhh', component: LayoutRrhhComponent, children: [
+            { path: '', loadChildren: () => import('./modules/rrhh/rrhh.module').then(m => m.RrhhModule) }
         ]
     }
 ];

@@ -1,0 +1,347 @@
+<div class="container-detalle">
+
+    @if (trabajador) {
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>groups</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ trabajador.firstName }} {{ trabajador.lastName }}</h1>
+                <span class="page-header__subtitle">
+                    {{ trabajador.code }} · {{ trabajador.documentNumber }} · {{ trabajador.areaName }} - {{ trabajador.positionName }}
+                </span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <span class="status-chip"
+                [class.status-chip--activo]="trabajador.isActive"
+                [class.status-chip--inactivo]="!trabajador.isActive">
+                <span class="status-chip__dot"></span>
+                {{ trabajador.isActive ? 'Activo' : 'Inactivo' }}
+            </span>
+            @if (trabajador.isActive) {
+            <button mat-stroked-button color="warn" (click)="darDeBaja()">
+                <mat-icon>person_off</mat-icon>
+                Dar de Baja
+            </button>
+            }
+            <button mat-stroked-button (click)="volver()">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    @if (!trabajador.isActive && trabajador.terminationDate) {
+    <div class="alert alert--warn">
+        Trabajador dado de baja el {{ trabajador.terminationDate | date:'dd/MM/yyyy' }}.
+    </div>
+    }
+
+    <mat-tab-group class="panel panel-tabs" animationDuration="0ms">
+
+        <mat-tab label="Datos">
+            <form [formGroup]="formDatos" class="tab-panel">
+
+                <div class="form-grid">
+                    <div class="readonly-field">
+                        <span class="readonly-field__label">Código</span>
+                        <span class="readonly-field__value">{{ trabajador.code }}</span>
+                    </div>
+                    <div class="readonly-field">
+                        <span class="readonly-field__label">N° Documento</span>
+                        <span class="readonly-field__value">{{ trabajador.documentNumber }}</span>
+                    </div>
+                    <div class="readonly-field">
+                        <span class="readonly-field__label">Fecha de Nacimiento</span>
+                        <span class="readonly-field__value">{{ trabajador.birthDate | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="readonly-field">
+                        <span class="readonly-field__label">Fecha de Ingreso</span>
+                        <span class="readonly-field__value">{{ trabajador.hireDate | date:'dd/MM/yyyy' }}</span>
+                    </div>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nombres</mat-label>
+                        <input matInput formControlName="firstName">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Apellidos</mat-label>
+                        <input matInput formControlName="lastName">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Teléfono</mat-label>
+                        <input matInput formControlName="phoneNumber">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Dirección</mat-label>
+                        <input matInput formControlName="address">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Área</mat-label>
+                        <mat-select formControlName="areaId">
+                            @for (area of areas; track area.id) {
+                            <mat-option [value]="area.id">{{ area.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Cargo</mat-label>
+                        <mat-select formControlName="positionId">
+                            @for (cargo of cargos; track cargo.id) {
+                            <mat-option [value]="cargo.id">{{ cargo.name }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tipo de Contrato</mat-label>
+                        <mat-select formControlName="contractType">
+                            @for (opt of contractTypeOptions; track opt.value) {
+                            <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                            }
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Sueldo Base</mat-label>
+                        <input matInput type="number" formControlName="baseSalary">
+                    </mat-form-field>
+                </div>
+
+                @if (trabajador.emergencyContacts.length > 0) {
+                <h3 class="tab-panel__subtitle"><mat-icon>contact_phone</mat-icon> Contactos de Emergencia</h3>
+                <table class="mini-table">
+                    <thead><tr><th>Nombre</th><th>Relación</th><th>Teléfono</th></tr></thead>
+                    <tbody>
+                        @for (c of trabajador.emergencyContacts; track c.id) {
+                        <tr><td>{{ c.name }}</td><td>{{ c.relationship }}</td><td>{{ c.phoneNumber }}</td></tr>
+                        }
+                    </tbody>
+                </table>
+                }
+
+                @if (trabajador.bankAccounts.length > 0) {
+                <h3 class="tab-panel__subtitle"><mat-icon>account_balance</mat-icon> Cuentas Bancarias</h3>
+                <table class="mini-table">
+                    <thead><tr><th>Banco</th><th>N° de Cuenta</th><th>CCI</th></tr></thead>
+                    <tbody>
+                        @for (b of trabajador.bankAccounts; track b.id) {
+                        <tr><td>{{ b.bankName }}</td><td>{{ b.accountNumber }}</td><td>{{ b.cci || '-' }}</td></tr>
+                        }
+                    </tbody>
+                </table>
+                }
+
+                <div class="tab-panel__actions">
+                    <button mat-flat-button color="primary" type="button" (click)="guardarDatos()" [disabled]="guardandoDatos">
+                        <mat-icon>save</mat-icon>
+                        {{ guardandoDatos ? 'Guardando...' : 'Guardar Cambios' }}
+                    </button>
+                </div>
+            </form>
+        </mat-tab>
+
+        <mat-tab label="Documentos">
+            <div class="tab-panel">
+                <div class="tab-panel__header">
+                    <button mat-stroked-button (click)="agregarDocumento()">
+                        <mat-icon>add</mat-icon> Agregar Documento
+                    </button>
+                </div>
+                <table mat-table [dataSource]="documentosDataSource" class="detail-table">
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                        <td mat-cell *matCellDef="let el">{{ el.documentTypeName }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="archivo">
+                        <th mat-header-cell *matHeaderCellDef>Archivo</th>
+                        <td mat-cell *matCellDef="let el"><a [href]="el.blobUrl" target="_blank" rel="noopener">{{ el.fileName }}</a></td>
+                    </ng-container>
+                    <ng-container matColumnDef="notas">
+                        <th mat-header-cell *matHeaderCellDef>Notas</th>
+                        <td mat-cell *matCellDef="let el">{{ el.notes || '-' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let el">{{ el.createdAt | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let el">
+                            <button mat-icon-button (click)="eliminarDocumento(el)" matTooltip="Eliminar">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="documentosColumns" class="cabecera"></tr>
+                    <tr mat-row *matRowDef="let row; columns: documentosColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell sin-datos" [attr.colspan]="documentosColumns.length">Sin documentos registrados.</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Asistencia">
+            <div class="tab-panel">
+                <table mat-table [dataSource]="asistenciaDataSource" class="detail-table">
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let el">{{ el.date | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="entrada">
+                        <th mat-header-cell *matHeaderCellDef>Entrada</th>
+                        <td mat-cell *matCellDef="let el">{{ el.checkIn || '-' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="salida">
+                        <th mat-header-cell *matHeaderCellDef>Salida</th>
+                        <td mat-cell *matCellDef="let el">{{ el.checkOut || '-' }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="asistenciaColumns" class="cabecera"></tr>
+                    <tr mat-row *matRowDef="let row; columns: asistenciaColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell sin-datos" [attr.colspan]="asistenciaColumns.length">Sin registros de asistencia.</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Incidencias">
+            <div class="tab-panel">
+                <div class="tab-panel__header">
+                    <button mat-stroked-button (click)="agregarIncidencia()">
+                        <mat-icon>add</mat-icon> Registrar Incidencia
+                    </button>
+                </div>
+                <table mat-table [dataSource]="incidenciasDataSource" class="detail-table">
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let el">{{ el.date | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                        <td mat-cell *matCellDef="let el">
+                            <span class="status-chip" [style.color]="el.type | incidentTypeColor" [style.borderColor]="el.type | incidentTypeColor">
+                                {{ el.type | incidentTypeLabel }}
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-numeric">Horas</th>
+                        <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.hours }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="observacion">
+                        <th mat-header-cell *matHeaderCellDef>Observación</th>
+                        <td mat-cell *matCellDef="let el">{{ el.observation || '-' }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="incidenciasColumns" class="cabecera"></tr>
+                    <tr mat-row *matRowDef="let row; columns: incidenciasColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell sin-datos" [attr.colspan]="incidenciasColumns.length">Sin incidencias registradas.</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Horas Extra">
+            <div class="tab-panel">
+                <div class="tab-panel__header">
+                    <button mat-stroked-button (click)="agregarHoraExtra()">
+                        <mat-icon>add</mat-icon> Registrar Hora Extra
+                    </button>
+                </div>
+                <table mat-table [dataSource]="horasExtraDataSource" class="detail-table">
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let el">{{ el.date | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-numeric">Horas</th>
+                        <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.hours }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="observacion">
+                        <th mat-header-cell *matHeaderCellDef>Observación</th>
+                        <td mat-cell *matCellDef="let el">{{ el.observation || '-' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef>Estado</th>
+                        <td mat-cell *matCellDef="let el">
+                            <span class="status-chip" [class.status-chip--activo]="el.approved" [class.status-chip--inactivo]="!el.approved">
+                                <span class="status-chip__dot"></span>
+                                {{ el.approved ? 'Aprobada' : 'Pendiente' }}
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let el">
+                            @if (!el.approved) {
+                            <button mat-stroked-button color="primary" (click)="aprobarHoraExtra(el)">Aprobar</button>
+                            }
+                        </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="horasExtraColumns" class="cabecera"></tr>
+                    <tr mat-row *matRowDef="let row; columns: horasExtraColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell sin-datos" [attr.colspan]="horasExtraColumns.length">Sin horas extra registradas.</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Préstamos">
+            <div class="tab-panel">
+                <div class="tab-panel__header">
+                    <button mat-stroked-button (click)="agregarPrestamo()">
+                        <mat-icon>add</mat-icon> Nuevo Préstamo / Adelanto
+                    </button>
+                </div>
+                <table mat-table [dataSource]="prestamosDataSource" class="detail-table">
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                        <td mat-cell *matCellDef="let el">{{ el.loanType | loanTypeLabel }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="fecha">
+                        <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                        <td mat-cell *matCellDef="let el">{{ el.loanDate | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="monto">
+                        <th mat-header-cell *matHeaderCellDef class="col-numeric">Monto</th>
+                        <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="saldo">
+                        <th mat-header-cell *matHeaderCellDef class="col-numeric">Saldo</th>
+                        <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef>Estado</th>
+                        <td mat-cell *matCellDef="let el">
+                            <span class="status-chip" [class.status-chip--activo]="!el.isClosed" [class.status-chip--inactivo]="el.isClosed">
+                                <span class="status-chip__dot"></span>
+                                {{ el.isClosed ? 'Cerrado' : 'Abierto' }}
+                            </span>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="observacion">
+                        <th mat-header-cell *matHeaderCellDef>Observación</th>
+                        <td mat-cell *matCellDef="let el">{{ el.observation || '-' }}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="prestamosColumns" class="cabecera"></tr>
+                    <tr mat-row *matRowDef="let row; columns: prestamosColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell sin-datos" [attr.colspan]="prestamosColumns.length">Sin préstamos ni adelantos registrados.</td>
+                    </tr>
+                </table>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+    }
+
+</div>

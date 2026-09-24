@@ -1,0 +1,63 @@
+<div class="container-marcacion">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>schedule</mat-icon>
+            <div class="page-header__heading">
+                <h1>Marcación Diaria</h1>
+                <span class="page-header__subtitle">Registra la entrada y salida de los trabajadores</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline" class="campo-trabajador">
+                <mat-label>Trabajador</mat-label>
+                <input type="text" matInput [formControl]="employeeControl" [matAutocomplete]="autoEmployee"
+                    placeholder="Buscar por nombre, documento o código">
+                <mat-autocomplete #autoEmployee="matAutocomplete" (optionSelected)="onEmployeeSelected($event)"
+                    [displayWith]="displayFn">
+                    @for (employee of filteredEmployees | async; track employee.id) {
+                    <mat-option [value]="employee">
+                        {{ employee.firstName }} {{ employee.lastName }} - {{ employee.code }}
+                    </mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-fecha">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="fecha" (dateChange)="onFechaChange()">
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+        </mat-card-content>
+    </mat-card>
+
+    @if (selectedEmployee) {
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="estado-marcacion">
+            <div class="estado-marcacion__row">
+                <span class="estado-marcacion__label">Entrada</span>
+                <span class="estado-marcacion__value">{{ registroDelDia?.checkIn || 'Sin marcar' }}</span>
+                <button mat-flat-button color="primary" (click)="marcarEntrada()" [disabled]="marcando || !!registroDelDia?.checkIn">
+                    <mat-icon>login</mat-icon>
+                    Marcar Entrada
+                </button>
+            </div>
+            <div class="estado-marcacion__row">
+                <span class="estado-marcacion__label">Salida</span>
+                <span class="estado-marcacion__value">{{ registroDelDia?.checkOut || 'Sin marcar' }}</span>
+                <button mat-flat-button color="primary" (click)="marcarSalida()" [disabled]="marcando || !!registroDelDia?.checkOut">
+                    <mat-icon>logout</mat-icon>
+                    Marcar Salida
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    }
+
+</div>

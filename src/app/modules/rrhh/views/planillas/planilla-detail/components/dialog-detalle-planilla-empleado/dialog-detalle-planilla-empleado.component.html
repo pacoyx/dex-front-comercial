@@ -1,0 +1,55 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>receipt_long</mat-icon>
+        <h2 mat-dialog-title>{{ data.payroll.employeeName }}</h2>
+    </div>
+    <button mat-icon-button (click)="cerrar()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+
+    <div class="resumen-grid">
+        <div class="resumen-item">
+            <span class="resumen-item__label">Sueldo Bruto</span>
+            <span class="resumen-item__value">{{ data.payroll.grossAmount | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+        <div class="resumen-item">
+            <span class="resumen-item__label">Descuentos</span>
+            <span class="resumen-item__value resumen-item__value--negativo">{{ data.payroll.discounts | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+        <div class="resumen-item">
+            <span class="resumen-item__label">Neto a Pagar</span>
+            <span class="resumen-item__value resumen-item__value--destacado">{{ data.payroll.netAmount | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+        <div class="resumen-item">
+            <span class="resumen-item__label">Generado</span>
+            <span class="resumen-item__value">{{ data.payroll.generatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+    </div>
+
+    <table mat-table [dataSource]="data.payroll.details" class="detail-table">
+        <ng-container matColumnDef="concepto">
+            <th mat-header-cell *matHeaderCellDef>Concepto</th>
+            <td mat-cell *matCellDef="let el">{{ el.conceptType | payrollConceptTypeLabel }}</td>
+        </ng-container>
+        <ng-container matColumnDef="descripcion">
+            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+            <td mat-cell *matCellDef="let el">{{ el.description }}</td>
+        </ng-container>
+        <ng-container matColumnDef="monto">
+            <th mat-header-cell *matHeaderCellDef class="col-numeric">Monto</th>
+            <td mat-cell *matCellDef="let el" class="col-numeric" [class.monto-negativo]="el.amount < 0">
+                {{ el.amount | currency:' ':'symbol':'0.2-2' }}
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button color="primary" (click)="cerrar()">Cerrar</button>
+</mat-dialog-actions>

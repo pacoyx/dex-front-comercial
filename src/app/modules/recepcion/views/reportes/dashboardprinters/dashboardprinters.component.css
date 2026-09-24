@@ -1,110 +1,167 @@
-.container-dashboardprinters {
+.container-dashboard {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin: 10px;
+    padding: 16px;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-.section-options-dashboardprinters {
+/* ===== Page header ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
+}
+
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.page-header__actions {
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
+    flex-wrap: wrap;
 }
 
 .indicador-carga {
     display: flex;
     align-items: center;
     gap: 5px;
+    color: var(--mat-sys-on-surface-variant);
 }
 
-/* ============ RESUMEN ============ */
-.resumen-cards {
+/* ===== Stat cards ===== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.stat-card {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 16px !important;
 }
 
-.tarjeta-resumen {
-    flex: 1 1 160px;
-    min-width: 150px;
+.stat-card__icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+    color: var(--mat-sys-primary);
+}
+
+.stat-card__body {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 16px;
-    border-radius: 8px;
-    background-color: #eef2fb;
-    color: #3a4f7d;
+    gap: 2px;
 }
 
-.tarjeta-resumen mat-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+.stat-card__label {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
 }
 
-.tarjeta-resumen-valor {
-    font-size: 28px;
-    font-weight: bold;
+.stat-card__value {
+    font: var(--mat-sys-title-large);
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
 }
 
-.tarjeta-resumen-label {
-    font-size: 13px;
-    text-align: center;
-}
-
-.tarjeta-resumen.tarjeta-ok {
-    background-color: #e4f7e9;
+.stat-card--ok .stat-card__icon {
     color: #1e7d34;
 }
 
-.tarjeta-resumen.tarjeta-error {
-    background-color: #fbe9e7;
+.stat-card--error .stat-card__icon {
     color: #c62828;
 }
 
-.tarjeta-resumen.tarjeta-warn {
-    background-color: #fff6e0;
+.stat-card--warn .stat-card__icon {
     color: #9a6b00;
 }
 
-/* ============ SECCIONES POR SUCURSAL ============ */
-.dashboard-secciones {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-    flex-wrap: wrap;
+/* ===== Cards ===== */
+
+.panel {
+    border-radius: 16px !important;
 }
 
-.seccion-dashboard {
+.panel__header {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1 1 320px;
-    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 16px 0;
 }
 
-.titulo-seccion {
+.panel__title {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 6px 0 0;
-    padding-bottom: 6px;
-    border-bottom: 2px solid #7d9ad6;
-    color: #3a4f7d;
+    margin: 0 0 12px;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+}
+
+/* ===== Tarjetas de impresora ===== */
+
+.tarjetas-impresora-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .tarjeta-impresora {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    border: 1px solid gainsboro;
-    border-left: 5px solid #2e7d32;
-    border-radius: 5px;
-    padding: 10px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-left: 5px solid var(--mat-sys-primary);
+    border-radius: 12px;
+    padding: 12px;
 }
 
 .tarjeta-impresora.tarjeta-impresora-offline {
@@ -117,42 +174,79 @@
     gap: 8px;
 }
 
+.tarjeta-impresora-header mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
 .tarjeta-impresora-nombre {
-    font-weight: bold;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
     flex: 1;
-}
-
-.badge-estado {
-    font-size: 12px;
-    font-weight: bold;
-    padding: 2px 10px;
-    border-radius: 12px;
-    text-transform: uppercase;
-}
-
-.badge-estado.badge-online {
-    background-color: #e4f7e9;
-    color: #1e7d34;
-}
-
-.badge-estado.badge-offline {
-    background-color: #fbe9e7;
-    color: #c62828;
 }
 
 .tarjeta-impresora-body {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font-size: 14px;
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface);
 }
 
 .dato-label {
-    color: #666;
+    color: var(--mat-sys-on-surface-variant);
     margin-right: 6px;
 }
 
 .dato-alerta {
     color: #c62828;
-    font-weight: bold;
+    font-weight: 600;
+}
+
+/* ===== Status chip ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--online {
+    color: #1e7d34;
+    border-color: #1e7d34;
+}
+
+.status-chip--online .status-chip__dot {
+    background-color: #1e7d34;
+}
+
+.status-chip--offline {
+    color: #c62828;
+    border-color: #c62828;
+}
+
+.status-chip--offline .status-chip__dot {
+    background-color: #c62828;
+}
+
+@media (max-width: 720px) {
+    .container-dashboard {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

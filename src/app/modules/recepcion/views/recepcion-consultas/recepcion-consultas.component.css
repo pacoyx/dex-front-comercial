@@ -1,86 +1,270 @@
 .container-reporteGuias {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 10px;
-  /* background-color: pink; */
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-.section-options-mnt-cliente {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  /* justify-content: space-between; */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px;
+/* ===== Page header ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
 }
 
-.section-controls-mnt-cliente {
-  display: flex;
-  justify-content: space-between;
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Panels (mat-card look, sin depender de MatCardModule) ===== */
+
+.panel {
+    display: block;
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.08);
+}
+
+.panel-content {
+    padding: 16px;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.tipo-reporte-group {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding-top: 8px;
+}
+
+.filtros-acciones {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1 1 auto;
+}
+
+.campo-filtro {
+    flex: 1 1 220px;
+    min-width: 200px;
+}
+
+.filtros-acciones button {
+    height: 56px;
+}
+
+/* ===== Tabla ===== */
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 4px 16px;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-medium);
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+    text-align: left;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Status chips ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--activo {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.status-chip--activo .status-chip__dot {
+    background-color: #2e7d32;
+}
+
+.status-chip--pendiente {
+    color: #b26a00;
+    border-color: #b26a00;
+}
+
+.status-chip--pendiente .status-chip__dot {
+    background-color: #b26a00;
+}
+
+.status-chip--inactivo {
+    color: var(--mat-sys-error);
+    border-color: var(--mat-sys-error);
+}
+
+.status-chip--inactivo .status-chip__dot {
+    background-color: var(--mat-sys-error);
+}
+
+/* ===== Fila expandible ===== */
 
 .cabecera {
-  text-align: center;
-  padding: 0px 0px !important;
-  background-color: #7d9ad6;
-  color: white;
-  border: 1px solid #ccc !important;
-  border-radius: 5px;
+    text-align: center;
 }
 
-
-
-
-
-
 tr.example-detail-row {
-  height: 0;
-  /* background-color: #7d9ad6; */
+    height: 0;
+}
+
+tr.example-element-row {
+    cursor: pointer;
 }
 
 tr.example-element-row:not(.example-expanded-row):hover {
-  background: whitesmoke;
+    background: var(--mat-sys-surface-container-low);
 }
 
 tr.example-element-row:not(.example-expanded-row):active {
-  background: #efefef;
+    background: var(--mat-sys-surface-container);
 }
 
 .example-element-row td {
-  border-bottom-width: 0; 
+    border-bottom-width: 0;
 }
 
 .example-element-row-pagado {
-  border-bottom-width: 0;
-  background-color: rgb(252, 241, 184);
+    border-bottom-width: 0;
+    background-color: color-mix(in srgb, var(--mat-sys-tertiary) 12%, transparent);
 }
 
 .example-element-detail {
-  overflow: hidden;
-  display: flex;
+    overflow: hidden;
+    display: flex;
 }
 
-.example-element-diagram {
-  min-width: 80px;
-  border: 2px solid black;
-  padding: 8px;
-  font-weight: lighter;
-  margin: 8px 0;
-  height: 104px;
+.detalle-inner-card {
+    width: 100%;
+    margin: 8px 0 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container);
+    border: 1px solid var(--mat-sys-outline-variant);
 }
 
-.example-element-symbol {
-  font-weight: bold;
-  font-size: 40px;
-  line-height: normal;
+.detalle-inner-card__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font: var(--mat-sys-title-small);
+    color: var(--mat-sys-on-surface);
 }
 
-.example-element-description {
-  padding: 16px;
+.detalle-inner-card__header mat-icon {
+    color: var(--mat-sys-primary);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
 }
 
-.example-element-description-attribution {
-  opacity: 0.5;
+@media (max-width: 900px) {
+    .container-reporteGuias {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tipo-reporte-group {
+        padding-top: 0;
+    }
+
+    .filtros-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filtros-acciones button {
+        height: 44px;
+    }
 }

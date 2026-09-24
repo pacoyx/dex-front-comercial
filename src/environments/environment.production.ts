@@ -184,4 +184,17 @@ export const environment = {
     EPInspections: 'api/inspections',
     EPWorkGuides: 'api/workguides',
     EPReporteSneakers: 'api/reports/sneakers',
+
+    // RRHH - Recursos Humanos y Planillas
+    EPHrAreas: 'api/hr/areas',
+    EPHrPositions: 'api/hr/positions',
+    EPHrDocumentTypes: 'api/hr/document-types',
+    EPEmployees: 'api/employees',
+    EPAttendance: 'api/attendance',
+    EPAttendanceIncidents: 'api/attendance/incidents',
+    EPExtraHours: 'api/extra-hours',
+    EPLoans: 'api/loans',
+    EPPayrollPeriods: 'api/payroll-periods',
+    EPHrDashboard: 'api/hr-dashboard',
+    EPHrReports: 'api/hr/reports',
 };

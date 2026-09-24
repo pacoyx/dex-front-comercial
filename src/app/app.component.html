@@ -57,6 +57,16 @@
         <mat-icon matListItemIcon>receipt_long</mat-icon>
         <span matListItemTitle>Facturación</span>
       </a>
+
+      <a mat-list-item
+         [routerLink]="['/rrhh']"
+         routerLinkActive #rlaRrhh="routerLinkActive"
+         [activated]="rlaRrhh.isActive"
+         (click)="toggle()"
+         matTooltip="Recursos Humanos" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>groups</mat-icon>
+        <span matListItemTitle>Recursos Humanos</span>
+      </a>
     </mat-nav-list>
 
     <div class="app-sidenav__footer">

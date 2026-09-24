@@ -1,56 +1,104 @@
-/* Estilos generales para la tabla */
-table {
+.mini-tabla-scroll {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.mini-detail-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 1em;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Estilos para las celdas de encabezado */
-  th {
-    background-color: #009879;
-    color: #ffffff;
+    font: var(--mat-sys-body-small);
+}
+
+.mini-detail-table th {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
     text-align: left;
-    padding: 12px 15px;
-  }
-  
-  /* Estilos para las celdas de datos */
-  td {
-    padding: 12px 15px;
-  }
-  
-  /* Estilos para las filas */
-  tr {
-    border-bottom: 1px solid #dddddd;
-  }
-  
-  /* Estilos para las filas alternas */
-  tr:nth-of-type(even) {
-    background-color: #f3f3f3;
-  }
-  
-  /* Estilos para la última fila */
-  tr:last-of-type {
-    border-bottom: 2px solid #009879;
-  }
-  
-  /* Estilos para las filas al pasar el ratón por encima */
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  /* Estilos para las celdas de detalles expandidos */
-  .example-element-detail {
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #dddddd;
-    border-radius: 5px;
-    margin-top: 10px;
-  }
-  
-  /* Estilos para las celdas de detalles expandidos al estar expandidas */
-  .example-element-detail[aria-expanded="true"] {
-    background-color: #e0f7fa;
-  }
+    font-weight: 600;
+    padding: 10px 12px;
+    white-space: nowrap;
+}
+
+.mini-detail-table td {
+    padding: 10px 12px;
+    color: var(--mat-sys-on-surface);
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.mini-detail-table tbody tr:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 16px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Status chips ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .78rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+.status-chip--activo {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.status-chip--activo .status-chip__dot {
+    background-color: #2e7d32;
+}
+
+.status-chip--pendiente {
+    color: #b26a00;
+    border-color: #b26a00;
+}
+
+.status-chip--pendiente .status-chip__dot {
+    background-color: #b26a00;
+}
+
+.status-chip--proceso {
+    color: var(--mat-sys-primary);
+    border-color: var(--mat-sys-primary);
+}
+
+.status-chip--proceso .status-chip__dot {
+    background-color: var(--mat-sys-primary);
+}
+
+.status-chip--inactivo {
+    color: var(--mat-sys-error);
+    border-color: var(--mat-sys-error);
+}
+
+.status-chip--inactivo .status-chip__dot {
+    background-color: var(--mat-sys-error);
+}
+
+@media (max-width: 900px) {
+    .mini-detail-table th,
+    .mini-detail-table td {
+        padding: 8px;
+        font-size: .8rem;
+    }
+}

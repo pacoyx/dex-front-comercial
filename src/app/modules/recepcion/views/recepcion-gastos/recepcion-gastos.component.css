@@ -1,23 +1,147 @@
 .container-gastos {
-    /* width: 100%; */
-    margin: 10px;
-    background-color: snow;
-}
-
-.section-controls {
-    /* width: 100%; */
     display: flex;
-    gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.cabecera {
-    text-align: center;
-    padding: 0px 0px !important;
-    background-color: #7d9ad6;
-    color: white;
-    border: 1px solid #ccc !important;
+/* ===== Page header ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
+}
+
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.page-header__actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ===== Cards ===== */
+
+.panel {
+    border-radius: 16px !important;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-fecha {
+    flex: 1 1 240px;
+    min-width: 220px;
+}
+
+/* ===== Loading ===== */
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 4px;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-medium);
+}
+
+/* ===== Tabla ===== */
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.col-importe {
+    text-align: right !important;
+    background-color: var(--mat-sys-surface-container-low);
+}
+
+.footer-total-label {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+}
+
+.footer-total-value {
+    font-weight: 700;
+    color: var(--mat-sys-primary);
+}
+
+.acciones-fila {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.icono-eliminar {
+    color: var(--mat-sys-error);
+}
+
+@media (max-width: 900px) {
+    .container-gastos {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-header__actions button {
+        flex: 1;
+    }
+
+    .filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

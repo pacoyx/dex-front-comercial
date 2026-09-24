@@ -1,25 +1,37 @@
-table {
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table {
     width: 100%;
-    font-size: 18px!important;
 }
 
 .cabecera {
     text-align: center;
-    padding: 0px 0px !important;
-    /* background-color: #a2cadf; */
-    background-color: #7d9ad6;
-    color: white;
-    border: 1px solid #ccc !important;
-    border-radius: 5px;
 }
 
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
 
-table tr:hover {
-    background-color: #04fd63;
-    color: #333;
+.detail-table .mat-mdc-row {
+    font-size: 1rem;
+}
+
+.clickable-row {
     cursor: pointer;
+    transition: background-color .15s ease;
 }
 
-.mat-table {
-    font-size: 25px!important;
+.clickable-row:hover {
+    background-color: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
 }

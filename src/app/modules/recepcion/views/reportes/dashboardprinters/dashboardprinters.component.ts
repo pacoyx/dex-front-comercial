@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { ReportesEmisionService } from '../../../services/reportes-emision.service';
@@ -15,7 +16,7 @@ interface IPrintersPorSucursal {
 @Component({
   selector: 'app-dashboardprinters',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, LoadingComponent, DatePipe],
+  imports: [MatButtonModule, MatCardModule, MatIconModule, LoadingComponent, DatePipe],
   templateUrl: './dashboardprinters.component.html',
   styleUrl: './dashboardprinters.component.css'
 })

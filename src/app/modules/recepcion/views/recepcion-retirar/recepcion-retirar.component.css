@@ -1,60 +1,232 @@
-
-.section-busqueda {
- 
+.container-retiros {
     display: flex;
-    gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 10px;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
-.seccion-detalle {
-    /* background-color: aliceblue; */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    /* width: 100%; */
-    /* display: flex; */
-    /* justify-content: space-around; */
+/* ===== Page header ===== */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
 }
 
-.seccion-detalle-check {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
     display: flex;
     flex-direction: column;
 }
 
-.section-totales {
-    /* width: 100%; */
-    display: flex;
-    gap: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 10px;
-    font-size: 25px;
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
 }
 
-.section-nombre-cliente {    
-    display: flex;
-    gap: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
-    margin-bottom: 10px;
-    font-size: 20px;
-    color: darkblue;
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
 }
 
+/* ===== Panels (mismo look visual que mat-card class="panel") ===== */
 
-.win-proceso {
+.panel {
     display: block;
+    border-radius: 16px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
 }
 
+.panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 16px 0;
+}
 
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.panel__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 16px 16px;
+}
+
+/* ===== Panel: Búsqueda de guía ===== */
+
+.busqueda-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.campo-guia {
+    width: 160px;
+}
+
+.busqueda-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.busqueda-estado {
+    display: flex;
+    align-items: center;
+}
+
+.fechas-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.dato-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.dato-item mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.dato-item__label {
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+/* ===== Panel: Estado de pago y entrega ===== */
+
+.estado-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.estado-row__check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.estado-row__loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.acciones-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.acciones-row__imprimir {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ===== Panel: Cliente y totales ===== */
+
+.cliente-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font: var(--mat-sys-body-large);
+    color: var(--mat-sys-on-surface);
+}
+
+.totales-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    font: var(--mat-sys-title-medium);
+}
+
+.totales-row__item {
+    color: var(--mat-sys-on-surface);
+}
+
+.totales-row__item--saldo {
+    color: var(--mat-sys-primary);
+}
+
+/* ===== Tabla de detalle ===== */
+
+.panel-tabla .panel__header {
+    border-bottom: none;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+    padding: 0 16px 16px;
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
 
 .cant-column {
     width: 60px;
@@ -67,12 +239,10 @@
     padding: 0;
 }
 
-
 .observaciones-column {
     width: 200px !important;
     padding: 0;
 }
-
 
 .precio-column {
     width: 60px;
@@ -88,7 +258,6 @@
 
 .estado-column {
     width: 100px;
-    /* Ajusta el ancho según sea necesario */
 }
 
 .entrega-column {
@@ -98,7 +267,6 @@
 
 .operaciones-column {
     width: 100px;
-    /* Ajusta el ancho según sea necesario */
 }
 
 .ubicacion-column {
@@ -114,12 +282,6 @@
 
 .column-right {
     text-align: right;
-
-}
-
-.column-center {
-    display: flex;
-    justify-content: center;
 }
 
 .btn-block {
@@ -127,57 +289,133 @@
     font-size: 12px;
 }
 
-.btn-almacen {
-    background-color: #007bff;
-    color: white;
-
-}
-
-.btn-planta {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-lavanderia {
-    background-color: #ffc107;
-    color: white;
-}
-
-.filas {
-    /* font-size: 12px; */
-    padding: 0;
-}
-
 .cabecera {
     text-align: center;
     padding: 0px 0px !important;
-    background-color: #7d9ad6;
-    color: white;
-    border: 1px solid #ccc !important;
+    background-color: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    border: 1px solid var(--mat-sys-outline-variant) !important;
 }
 
-.btn-devolver {
-    background-color: #dc3545;
-    color: white;
+.filas {
+    padding: 0;
 }
 
-.win-proceso {
-    display: block;
+/* ===== Celdas de estado ===== */
+
+.texto-info {
+    color: var(--mat-sys-primary);
+}
+
+.texto-devuelto {
+    color: var(--mat-sys-error);
+}
+
+.icono-pagado {
+    color: #2e7d32;
+}
+
+.icono-entregado {
+    color: var(--mat-sys-primary);
+}
+
+.icono-devuelto {
+    color: var(--mat-sys-error);
+}
+
+.icono-dinero-devuelto {
+    color: #2e7d32;
+}
+
+.celda-estado {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.celda-estado__linea {
+    display: flex;
+    width: 100%;
+    gap: 5px;
+    justify-content: center;
+}
+
+.celda-estado__fecha {
+    width: 100%;
+    text-align: center;
+}
+
+.celda-operaciones {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+/* ===== Status chip (reutilizado del patrón facturación/compras) ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--activo {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.status-chip--activo .status-chip__dot {
+    background-color: #2e7d32;
+}
+
+.status-chip--inactivo {
+    color: var(--mat-sys-error);
+    border-color: var(--mat-sys-error);
+}
+
+.status-chip--inactivo .status-chip__dot {
+    background-color: var(--mat-sys-error);
 }
 
 app-ticket-venta {
     display: none;
 }
 
-@media (max-width: 600px) {
-    .section-busqueda,
-    .seccion-detalle,
-    .seccion-detalle-check,
-    .section-totales,
-    .section-nombre-cliente {
+@media (max-width: 900px) {
+    .container-retiros {
+        padding: 12px;
+    }
+
+    .page-header {
         flex-direction: column;
-        gap: 5px;
-        font-size: 18px;
+        align-items: stretch;
+    }
+
+    .busqueda-row,
+    .fechas-row,
+    .estado-row,
+    .acciones-row,
+    .cliente-row,
+    .totales-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .campo-guia {
+        width: 100%;
     }
 
     .cant-column,
@@ -203,7 +441,6 @@ app-ticket-venta {
     }
 }
 
-
 @media print {
     .win-proceso {
         display: none;
@@ -212,6 +449,4 @@ app-ticket-venta {
     app-ticket-venta {
         display: block;
     }
-
-    
 }

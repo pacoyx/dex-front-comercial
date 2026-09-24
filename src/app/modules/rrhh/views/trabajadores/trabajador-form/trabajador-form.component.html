@@ -1,0 +1,208 @@
+<div class="container-form">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>person_add</mat-icon>
+            <div class="page-header__heading">
+                <h1>Nuevo Trabajador</h1>
+                <span class="page-header__subtitle">Registra los datos personales y laborales del trabajador</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="cancelar()">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    @if (errorMessage) {
+    <div class="alert alert--error">{{ errorMessage }}</div>
+    }
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="form">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title"><mat-icon>badge</mat-icon> Datos Personales</h2>
+            </div>
+            <mat-card-content class="form-grid">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Código</mat-label>
+                    <input matInput formControlName="code">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>N° Documento</mat-label>
+                    <input matInput formControlName="documentNumber">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Nombres</mat-label>
+                    <input matInput formControlName="firstName">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Apellidos</mat-label>
+                    <input matInput formControlName="lastName">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="phoneNumber">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Dirección</mat-label>
+                    <input matInput formControlName="address">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Fecha de Nacimiento</mat-label>
+                    <input matInput [matDatepicker]="pickerBirth" formControlName="birthDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerBirth"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerBirth></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Fecha de Ingreso</mat-label>
+                    <input matInput [matDatepicker]="pickerHire" formControlName="hireDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="pickerHire"></mat-datepicker-toggle>
+                    <mat-datepicker #pickerHire></mat-datepicker>
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title"><mat-icon>work</mat-icon> Datos Laborales</h2>
+            </div>
+            <mat-card-content class="form-grid">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Área</mat-label>
+                    <mat-select formControlName="areaId">
+                        @for (area of areas; track area.id) {
+                        <mat-option [value]="area.id">{{ area.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Cargo</mat-label>
+                    <mat-select formControlName="positionId">
+                        @for (cargo of cargos; track cargo.id) {
+                        <mat-option [value]="cargo.id">{{ cargo.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo de Contrato</mat-label>
+                    <mat-select formControlName="contractType">
+                        @for (opt of contractTypeOptions; track opt.value) {
+                        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sueldo Base</mat-label>
+                    <input matInput type="number" formControlName="baseSalary">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title"><mat-icon>contact_phone</mat-icon> Contactos de Emergencia</h2>
+                <button mat-stroked-button type="button" (click)="nuevoContacto()">
+                    <mat-icon>add</mat-icon> Agregar
+                </button>
+            </div>
+            <mat-card-content>
+                @if (emergencyContacts.controls.length === 0) {
+                <p class="empty-hint">No se han agregado contactos de emergencia.</p>
+                }
+                <div formArrayName="emergencyContacts" class="array-list">
+                    @for (contactGroup of emergencyContacts.controls; track $index; let i = $index) {
+                    <div [formGroupName]="i" class="array-row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre</mat-label>
+                            <input matInput formControlName="name">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Relación</mat-label>
+                            <input matInput formControlName="relationship">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Teléfono</mat-label>
+                            <input matInput formControlName="phoneNumber">
+                        </mat-form-field>
+                        <button mat-icon-button type="button" (click)="quitarContacto(i)" aria-label="Quitar contacto">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title"><mat-icon>account_balance</mat-icon> Cuentas Bancarias</h2>
+                <button mat-stroked-button type="button" (click)="nuevaCuenta()">
+                    <mat-icon>add</mat-icon> Agregar
+                </button>
+            </div>
+            <mat-card-content>
+                @if (bankAccounts.controls.length === 0) {
+                <p class="empty-hint">No se han agregado cuentas bancarias.</p>
+                }
+                <div formArrayName="bankAccounts" class="array-list">
+                    @for (accountGroup of bankAccounts.controls; track $index; let i = $index) {
+                    <div [formGroupName]="i" class="array-row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Banco</mat-label>
+                            <input matInput formControlName="bankName">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>N° de Cuenta</mat-label>
+                            <input matInput formControlName="accountNumber">
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>CCI</mat-label>
+                            <input matInput formControlName="cci">
+                        </mat-form-field>
+                        <button mat-icon-button type="button" (click)="quitarCuenta(i)" aria-label="Quitar cuenta">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancelar()" [disabled]="guardando">Cancelar</button>
+            <button mat-flat-button color="primary" type="button" (click)="guardar()" [disabled]="guardando">
+                <mat-icon>check</mat-icon>
+                {{ guardando ? 'Guardando...' : 'Registrar Trabajador' }}
+            </button>
+        </div>
+
+    </form>
+
+</div>

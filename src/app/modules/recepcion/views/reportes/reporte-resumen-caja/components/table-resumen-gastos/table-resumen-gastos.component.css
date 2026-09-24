@@ -1,7 +1,56 @@
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.panel__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-on-surface);
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+}
+
+.detail-table {
+  width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 600;
+}
+
 .cabecera {
-    text-align: center;
-    padding: 0px 0px !important;
-    background-color: #f1c64e;
-    color: white;
-    border: 1px solid #ccc !important;
-  }
+  text-align: center;
+  padding: 0px 0px !important;
+  background-color: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.col-numeric {
+  text-align: right !important;
+}
+
+.footer-strong {
+  font-weight: bold;
+}
+
+.mat-footer-row {
+  text-align: right;
+  font-weight: bold;
+}
+
+.sin-datos {
+  text-align: center;
+  padding: 24px;
+  color: var(--mat-sys-on-surface-variant);
+}

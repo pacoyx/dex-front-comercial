@@ -1,30 +1,26 @@
 <div class="emision-page win-proceso">
 
   <!-- ENCABEZADO -->
-  <mat-card class="header-card" appearance="outlined">
-    <div class="header-card__row">
-      <div class="header-card__title">
-        <div class="header-card__icon">
-          <mat-icon>point_of_sale</mat-icon>
-        </div>
-        <div>
-          <h1>Emisión de Recibo</h1>
-          <span class="header-card__subtitle">Punto de venta · Recepción</span>
-        </div>
-      </div>
-
-      <div class="header-card__meta">
-        <div class="meta-chip">
-          <mat-icon>event</mat-icon>
-          <span>{{fechaHoy | date:'dd/MM/yyyy'}}</span>
-        </div>
-        <div class="meta-chip">
-          <mat-icon>storefront</mat-icon>
-          <span>{{sucursalNombre}}</span>
-        </div>
+  <div class="page-header">
+    <div class="page-header__title">
+      <mat-icon>point_of_sale</mat-icon>
+      <div class="page-header__heading">
+        <h1>Emisión de Recibo</h1>
+        <span class="page-header__subtitle">Punto de venta · Recepción</span>
       </div>
     </div>
-  </mat-card>
+
+    <div class="page-header__meta">
+      <div class="meta-chip">
+        <mat-icon>event</mat-icon>
+        <span>{{fechaHoy | date:'dd/MM/yyyy'}}</span>
+      </div>
+      <div class="meta-chip">
+        <mat-icon>storefront</mat-icon>
+        <span>{{sucursalNombre}}</span>
+      </div>
+    </div>
+  </div>
 
   @if(!bolExisteCaja){
   <app-alert-danger [message]="msgValidacion" [timeShow]="3000"></app-alert-danger>
@@ -34,9 +30,12 @@
 
     <!-- COLUMNA IZQUIERDA: CATALOGO -->
     <mat-card class="panel panel-catalogo" appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>Catálogo de servicios</mat-card-title>
-      </mat-card-header>
+      <div class="panel__header">
+        <h2 class="panel__title">
+          <mat-icon>storefront</mat-icon>
+          Catálogo de servicios
+        </h2>
+      </div>
 
       <mat-card-content class="panel-catalogo__content">
         <mat-form-field appearance="outline" class="search-field">
@@ -101,6 +100,12 @@
 
       <!-- CLIENTE -->
       <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+          <h2 class="panel__title">
+            <mat-icon>person</mat-icon>
+            Datos del cliente
+          </h2>
+        </div>
         <mat-card-content class="cliente-row">
           <mat-form-field appearance="outline" class="cliente-field">
             <mat-label>Cliente</mat-label>
@@ -137,12 +142,15 @@
 
       <!-- TABLA DETALLE -->
       <mat-card class="panel panel-tabla" appearance="outlined">
-        <mat-card-header>
-          <mat-card-title>Detalle del pedido</mat-card-title>
-        </mat-card-header>
+        <div class="panel__header">
+          <h2 class="panel__title">
+            <mat-icon>receipt_long</mat-icon>
+            Detalle del pedido
+          </h2>
+        </div>
         <mat-card-content class="panel-tabla__content">
           <div class="tabla-scroll">
-            <table mat-table [dataSource]="dataSource" class="custom-table">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
 
               <ng-container matColumnDef="item">
                 <th mat-header-cell *matHeaderCellDef>#</th>
@@ -206,6 +214,12 @@
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+              <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                  Aún no agregaste servicios al pedido.
+                </td>
+              </tr>
             </table>
           </div>
         </mat-card-content>
@@ -213,6 +227,12 @@
 
       <!-- OPCIONES Y TOTALES -->
       <mat-card class="panel panel-resumen" appearance="outlined">
+        <div class="panel__header">
+          <h2 class="panel__title">
+            <mat-icon>summarize</mat-icon>
+            Totales y opciones
+          </h2>
+        </div>
         <mat-card-content>
           <div class="opciones-row">
             <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
@@ -243,9 +263,12 @@
 
       <!-- FORMA DE PAGO -->
       <mat-card class="panel panel-pago" appearance="outlined">
-        <mat-card-header>
-          <mat-card-title>Forma de pago</mat-card-title>
-        </mat-card-header>
+        <div class="panel__header">
+          <h2 class="panel__title">
+            <mat-icon>payments</mat-icon>
+            Forma de pago
+          </h2>
+        </div>
         <mat-card-content class="pago-row">
           <mat-button-toggle-group name="pagos" [(ngModel)]="tipoPago" [disabled]="blockSave">
             <mat-button-toggle value="SP" (change)="onValChangePago($event.value)">SP</mat-button-toggle>

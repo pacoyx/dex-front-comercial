@@ -1,37 +1,43 @@
 <div class="container-apertura">
 
-    <div class="container-form">
+    <div class="panel">
 
-        <div style="display: flex; justify-content: space-evenly;">
-            <mat-form-field appearance="outline">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>point_of_sale</mat-icon>
+                Apertura de Caja
+            </h2>
+            <span class="estado-chip" [class.estado-chip--abierta]="estadoCaja === 'CAJA ABIERTA'">
+                {{ estadoCaja }}
+            </span>
+        </div>
+
+        <div class="panel__info-row">
+            <mat-form-field appearance="outline" class="campo-info">
                 <mat-label>Fecha</mat-label>
                 <input matInput [(ngModel)]="fechaHoy" readonly>
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="campo-info">
                 <mat-label>Estado</mat-label>
-                <input matInput [(ngModel)]="estadoCaja" readonly style="color: blue;">
+                <input matInput [(ngModel)]="estadoCaja" readonly>
             </mat-form-field>
         </div>
-        <form [formGroup]="frmApertura" style="display: flex; flex-direction: column;">
 
-            <mat-form-field appearance="outline">
+        <form [formGroup]="frmApertura" class="panel__form">
+
+            <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Saldo Inicial</mat-label>
                 <input matInput type="number" formControlName="saldoInicial">
             </mat-form-field>
 
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Observaciones</mat-label>
-                <input matInput formControlName="observaciones" style="width: 100%;">
+                <input matInput formControlName="observaciones">
             </mat-form-field>
 
-            <div style="display: flex; justify-content: space-between;">
-                <!-- <mat-form-field appearance="outline">
-                    <mat-label>Sucursal</mat-label>
-                    <input matInput formControlName="branchSalesId" style="width: 100%;">
-                </mat-form-field> -->
-
-                <mat-form-field appearance="outline">
+            <div class="panel__form-row">
+                <mat-form-field appearance="outline" class="campo-mitad">
                     <mat-label>Sucursal</mat-label>
                     <mat-select placeholder="Selecciona sucursal..." (selectionChange)="applyFilterSucursal($event.value)"
                       [(value)]="sucursalId">
@@ -41,42 +47,36 @@
                     </mat-select>
                   </mat-form-field>
 
-
-
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" class="campo-mitad">
                     <mat-label>Horario</mat-label>
-                    <input matInput formControlName="workShiftId" style="width: 100%;">
+                    <input matInput formControlName="workShiftId">
                 </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
+
+            <mat-form-field appearance="outline" class="campo-full">
                 <mat-label>Usuario</mat-label>
-                <input matInput formControlName="userId" style="width: 100%;">
+                <input matInput formControlName="userId">
             </mat-form-field>
 
-
-
-
-            @if(!loading){
-            <button mat-fab extended (click)="registrarAperturaCaja()" [disabled]="estadoCaja != 'PENDIENTE'">
-                <mat-icon>save</mat-icon>
-                Guardar
-            </button>
-            }
-            @if(loading){
-            <button mat-fab extended>
-                <div style="display: flex; gap: 5px;">
-                    <app-loading></app-loading>
-                    Grabando...
-                </div>
-            </button>
-            }
+            <div class="panel__actions">
+                @if(!loading){
+                <button mat-flat-button color="primary" (click)="registrarAperturaCaja()" [disabled]="estadoCaja != 'PENDIENTE'">
+                    <mat-icon>save</mat-icon>
+                    Guardar Apertura
+                </button>
+                }
+                @if(loading){
+                <button mat-flat-button color="primary" disabled>
+                    <div class="btn-loading">
+                        <app-loading></app-loading>
+                        Grabando...
+                    </div>
+                </button>
+                }
+            </div>
 
         </form>
 
     </div>
-
-<!-- {{this.frmApertura.value | json}} -->
-
-
 
 </div>

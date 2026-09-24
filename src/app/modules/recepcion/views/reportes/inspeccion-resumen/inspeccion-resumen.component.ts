@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatCardModule } from '@angular/material/card';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { InspeccionService } from '../../../services/inspeccion.service';
 import { InspectionSummaryResponse, WorkGuidePhotoResponse } from '../../../interfaces/IInspeccion';
@@ -17,7 +18,7 @@ import { extractErrorMessage } from '../../../shared/http-error.util';
   standalone: true,
   imports: [
     CommonModule, FormsModule, MatButtonModule, MatFormFieldModule,
-    MatInputModule, MatIconModule, MatChipsModule, LoadingComponent
+    MatInputModule, MatIconModule, MatChipsModule, MatCardModule, LoadingComponent
   ],
   templateUrl: './inspeccion-resumen.component.html',
   styleUrl: './inspeccion-resumen.component.css'

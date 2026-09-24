@@ -1,0 +1,116 @@
+<div class="container-prestamos">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>payments</mat-icon>
+            <div class="page-header__heading">
+                <h1>Préstamos y Adelantos</h1>
+                <span class="page-header__subtitle">
+                    El saldo se descuenta íntegramente en la siguiente planilla generada para el trabajador. Regístralos desde la ficha del trabajador.
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline" class="campo-trabajador">
+                <mat-label>Trabajador</mat-label>
+                <input type="text" matInput [formControl]="employeeControl" [matAutocomplete]="autoEmployee"
+                    placeholder="Buscar por nombre, documento o código">
+                <mat-autocomplete #autoEmployee="matAutocomplete" (optionSelected)="onEmployeeSelected($event)"
+                    [displayWith]="displayFn">
+                    @for (employee of filteredEmployees | async; track employee.id) {
+                    <mat-option [value]="employee">
+                        {{ employee.firstName }} {{ employee.lastName }} - {{ employee.code }}
+                    </mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-tipo">
+                <mat-label>Tipo</mat-label>
+                <mat-select [(ngModel)]="selectedType">
+                    <mat-option [value]="null">Todos</mat-option>
+                    @for (opt of tipoOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-tipo">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectedClosed">
+                    @for (opt of estadoOptions; track opt.label) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()">
+                    <mat-icon>search</mat-icon> Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()">
+                    <mat-icon>restart_alt</mat-icon> Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="trabajador">
+                    <th mat-header-cell *matHeaderCellDef>Trabajador</th>
+                    <td mat-cell *matCellDef="let el">{{ el.employeeName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                    <td mat-cell *matCellDef="let el">{{ el.loanType | loanTypeLabel }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let el">{{ el.loanDate | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="monto">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Monto</th>
+                    <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="saldo">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Saldo</th>
+                    <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let el">
+                        <span class="status-chip" [class.status-chip--activo]="!el.isClosed" [class.status-chip--inactivo]="el.isClosed">
+                            <span class="status-chip__dot"></span>
+                            {{ el.isClosed ? 'Cerrado' : 'Abierto' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="observacion">
+                    <th mat-header-cell *matHeaderCellDef>Observación</th>
+                    <td mat-cell *matCellDef="let el">{{ el.observation || '-' }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">No se encontraron préstamos ni adelantos.</td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

@@ -1,89 +1,126 @@
-<table>
-    <thead>
-        <tr>
-            <th>Item</th>
-            <th>Servicio</th>
-            <th>Observaciones</th>
-            <th>Cantidad</th>
-            <th>Precio</th>
-            <th>Subtotal</th>
-            <th>Ubicacion</th>
-            <th>Estado Trabajo</th>
-            <th>Estado Registro</th>
-            <th>Estado Situacion</th>
-            <th>Estado Pago</th>
-            <th>Fecha Recojo</th>
-            <th>Fecha Devolucion</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (item of dataSource; track item.id; let idx = $index) {
-        <tr>
-            <td>{{ idx +1 }}</td>
-            <td>{{ item.servicio }}</td>
-            <td>{{ item.observaciones }}</td>
-            <td>{{ item.cant }}</td>
-            <td>{{ item.precio | number:'1.2-2' }}</td>
-            <td>{{ item.total | number:'1.2-2' }}</td>
-            <td>{{ item.ubicacion }}</td>
-            <td>
-                @switch (item.estadoTrabajo) {
-                @case ('P') {
-                <span style="color: darkblue;">Pendiente</span>
-                }
-                @case ('E') {
-                <span style="color: darkblue;">En Proceso</span>
-                }
-                @case ('F') {
-                <span style="color: darkblue;">Finalizado</span>
-                }
-                }
+<div class="mini-tabla-scroll">
+    <table class="mini-detail-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Servicio</th>
+                <th>Observaciones</th>
+                <th class="col-numeric">Cantidad</th>
+                <th class="col-numeric">Precio</th>
+                <th class="col-numeric">Subtotal</th>
+                <th>Ubicacion</th>
+                <th>Estado Trabajo</th>
+                <th>Estado Registro</th>
+                <th>Estado Situacion</th>
+                <th>Estado Pago</th>
+                <th>Fecha Recojo</th>
+                <th>Fecha Devolucion</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (item of dataSource; track item.id; let idx = $index) {
+            <tr>
+                <td>{{ idx +1 }}</td>
+                <td>{{ item.servicio }}</td>
+                <td>{{ item.observaciones }}</td>
+                <td class="col-numeric">{{ item.cant }}</td>
+                <td class="col-numeric">{{ item.precio | number:'1.2-2' }}</td>
+                <td class="col-numeric">{{ item.total | number:'1.2-2' }}</td>
+                <td>{{ item.ubicacion }}</td>
+                <td>
+                    @switch (item.estadoTrabajo) {
+                    @case ('P') {
+                    <span class="status-chip status-chip--pendiente">
+                        <span class="status-chip__dot"></span>
+                        Pendiente
+                    </span>
+                    }
+                    @case ('E') {
+                    <span class="status-chip status-chip--proceso">
+                        <span class="status-chip__dot"></span>
+                        En Proceso
+                    </span>
+                    }
+                    @case ('F') {
+                    <span class="status-chip status-chip--activo">
+                        <span class="status-chip__dot"></span>
+                        Finalizado
+                    </span>
+                    }
+                    }
 
-            </td>
-            <td>
-                @switch (item.estadoRegistro) {
-                @case('A'){
-                <span style="color: darkblue;">Activo</span>
-                }
-                @case('I')
-                {
-                <span style="color: red;">Anulado</span>
-                }
-                }
-            </td>
-            <td>
-                @switch (item.estadoSituacion) {
-                @case('P') {
-                <span style="color: green;">Por Recoger</span>
-                }
-                @case('E') {
-                <span style="color: darkblue;">Entregado</span>
-                }
-                @case('D') {
-                <span style="color: red;">Devuelto</span>
-                }
-                }
-            </td>
-            <td>
-                @switch (item.estadoPago) {
-                @case('PA') {
-                <span style="color: darkblue;">Pagado</span>
-                }
-                @case('PE') {
-                <span style="color: green;">Pendiente</span>
-                }
-                @case('AN') {
-                <span style="color: red;">Anulado</span>
-                }
-                }
+                </td>
+                <td>
+                    @switch (item.estadoRegistro) {
+                    @case('A'){
+                    <span class="status-chip status-chip--activo">
+                        <span class="status-chip__dot"></span>
+                        Activo
+                    </span>
+                    }
+                    @case('I')
+                    {
+                    <span class="status-chip status-chip--inactivo">
+                        <span class="status-chip__dot"></span>
+                        Anulado
+                    </span>
+                    }
+                    }
+                </td>
+                <td>
+                    @switch (item.estadoSituacion) {
+                    @case('P') {
+                    <span class="status-chip status-chip--pendiente">
+                        <span class="status-chip__dot"></span>
+                        Por Recoger
+                    </span>
+                    }
+                    @case('E') {
+                    <span class="status-chip status-chip--activo">
+                        <span class="status-chip__dot"></span>
+                        Entregado
+                    </span>
+                    }
+                    @case('D') {
+                    <span class="status-chip status-chip--inactivo">
+                        <span class="status-chip__dot"></span>
+                        Devuelto
+                    </span>
+                    }
+                    }
+                </td>
+                <td>
+                    @switch (item.estadoPago) {
+                    @case('PA') {
+                    <span class="status-chip status-chip--activo">
+                        <span class="status-chip__dot"></span>
+                        Pagado
+                    </span>
+                    }
+                    @case('PE') {
+                    <span class="status-chip status-chip--pendiente">
+                        <span class="status-chip__dot"></span>
+                        Pendiente
+                    </span>
+                    }
+                    @case('AN') {
+                    <span class="status-chip status-chip--inactivo">
+                        <span class="status-chip__dot"></span>
+                        Anulado
+                    </span>
+                    }
+                    }
 
-            </td>
-            <td>{{ item.fechaRecojo | date :'dd/MM/yyyy hh:mm:ss' }}</td>
-            <td>{{ item.fechaDevolucion | date :'dd/MM/yyyy hh:mm:ss' }}</td>
-        </tr>
+                </td>
+                <td>{{ item.fechaRecojo | date :'dd/MM/yyyy hh:mm:ss' }}</td>
+                <td>{{ item.fechaDevolucion | date :'dd/MM/yyyy hh:mm:ss' }}</td>
+            </tr>
 
-        } @empty {
-        <li>There are no items.</li>
-        }
-    </tbody>
-</table>
+            } @empty {
+            <tr>
+                <td class="sin-datos" colspan="13">No hay items para mostrar.</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

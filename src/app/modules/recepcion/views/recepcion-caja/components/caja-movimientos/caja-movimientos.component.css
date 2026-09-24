@@ -1,41 +1,165 @@
-.container-movimientos{
-    margin: 20px;    
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+.container-movimientos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
 }
 
-.section-filters{
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid grey;
-    border-radius: 5px;
-    display: flex;
-    gap: 10px;
+/* ===== Panels ===== */
+
+.panel {
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+    padding: 16px;
 }
 
-.section-tabla{
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid grey;
-    border-radius: 5px;
+.panel__header {
     display: flex;
-    gap: 10px;
-}
-
-.section-filters__buttons{
-    width: 100%;
-    display: flex;
-    /* gap: 10px; */
+    align-items: center;
     justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
 }
 
-.cabecera {
-    text-align: center;
-    padding: 0px 0px !important;
-    background-color: #7d9ad6;
-    color: white;
-    border: 1px solid #ccc !important;
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-primary);
+}
+
+/* ===== Filtros ===== */
+
+.section-filters {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-busqueda {
+    flex: 1 1 220px;
+    min-width: 200px;
+}
+
+.campo-tipo-pago {
+    flex: 0 1 200px;
+    min-width: 180px;
+}
+
+.section-filters__buttons {
+    display: flex;
+    gap: 8px;
+    padding-top: 8px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+/* ===== Tabla ===== */
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.detail-table td.mat-mdc-footer-cell,
+.detail-table th.mat-mdc-header-cell {
+    padding: 0 12px;
+}
+
+.footer-total {
+    font-weight: 600;
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface);
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.col-center {
+    text-align: center !important;
+}
+
+.celda-monto {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.celda-operaciones {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.icono-eliminar {
+    color: var(--mat-sys-error);
+}
+
+.tipo-pago__desc {
+    display: block;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Status chip (tipo de pago) ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1.5px solid var(--mat-sys-primary);
+    color: var(--mat-sys-primary);
+    font-weight: 600;
+    font-size: .78rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--mat-sys-primary);
+}
+
+@media (max-width: 900px) {
+    .container-movimientos {
+        padding: 12px;
+    }
+
+    .section-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .section-filters__buttons {
+        margin-left: 0;
+        justify-content: stretch;
+    }
+
+    .section-filters__buttons button {
+        flex: 1;
+    }
 }

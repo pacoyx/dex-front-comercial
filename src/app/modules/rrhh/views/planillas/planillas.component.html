@@ -1,0 +1,68 @@
+<div class="container-planillas">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>request_quote</mat-icon>
+            <div class="page-header__heading">
+                <h1>Planillas</h1>
+                <span class="page-header__subtitle">Crea periodos y genera las planillas de sueldos</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevoPeriodo()">
+                <mat-icon>add</mat-icon>
+                Nuevo Periodo
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef>Periodo</th>
+                    <td mat-cell *matCellDef="let el">
+                        <a class="fila-link" (click)="verDetalle(el)">{{ el.name }}</a>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="frequency">
+                    <th mat-header-cell *matHeaderCellDef>Frecuencia</th>
+                    <td mat-cell *matCellDef="let el">{{ el.frequency | payrollFrequencyLabel }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="inicio">
+                    <th mat-header-cell *matHeaderCellDef>Inicio</th>
+                    <td mat-cell *matCellDef="let el">{{ el.startDate | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fin">
+                    <th mat-header-cell *matHeaderCellDef>Fin</th>
+                    <td mat-cell *matCellDef="let el">{{ el.endDate | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let el">
+                        <button mat-stroked-button color="primary" (click)="generar(el)" [disabled]="generandoId === el.id" matTooltip="Genera la planilla para los trabajadores pendientes de este periodo">
+                            <mat-icon>play_arrow</mat-icon>
+                            {{ generandoId === el.id ? 'Generando...' : 'Generar' }}
+                        </button>
+                        <button mat-icon-button (click)="verDetalle(el)" matTooltip="Ver detalle">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">No se encontraron periodos de planilla.</td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

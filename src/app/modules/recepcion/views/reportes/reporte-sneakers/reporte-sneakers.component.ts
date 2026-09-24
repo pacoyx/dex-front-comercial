@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
@@ -32,7 +33,7 @@ const DELIVERY_STATUS_LABEL: Record<string, string> = {
   imports: [
     CommonModule, FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule,
-    MatTableModule, LoadingComponent
+    MatTableModule, MatCardModule, LoadingComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },

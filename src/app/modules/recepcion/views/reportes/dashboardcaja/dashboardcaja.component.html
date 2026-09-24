@@ -1,12 +1,15 @@
-<div class="container-reportedashboardcaja">
+<div class="container-dashboard">
 
-    <h2>
-        <mat-icon>summarize</mat-icon>
-        Dashboard Caja
-    </h2>
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>summarize</mat-icon>
+            <div class="page-header__heading">
+                <h1>Dashboard Caja</h1>
+                <span class="page-header__subtitle">Resumen diario, semanal y mensual de caja por sucursal</span>
+            </div>
+        </div>
 
-    <div class="section-options-dashboardcaja filtro-sucursal-global">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" class="filtro-sucursal-global">
             <mat-label>Sucursal</mat-label>
             <mat-select placeholder="Selecciona sucursal..." [(value)]="selectedSucursal">
                 @for (tipo of sucursales; track $index) {
@@ -16,206 +19,230 @@
         </mat-form-field>
     </div>
 
-    <div class="dashboard-secciones">
+    <div class="charts-grid">
 
         <!-- ============ DIARIO ============ -->
-        <div class="seccion-dashboard">
-            <h3 class="titulo-seccion">
-                <mat-icon>today</mat-icon>
-                Diario
-            </h3>
-            <div class="section-options-dashboardcaja">
-                <mat-form-field appearance="outline">
-                    <mat-label>Fecha</mat-label>
-                    <input matInput [matDatepicker]="pickerDiario" placeholder="Choose a date"
-                        [(ngModel)]="fechaHoy">
-                    <mat-datepicker-toggle matSuffix [for]="pickerDiario"></mat-datepicker-toggle>
-                    <mat-datepicker #pickerDiario></mat-datepicker>
-                </mat-form-field>
-
-                <button mat-fab extended (click)="cargarDashboardDiario()">
-                    <mat-icon>search</mat-icon>
-                    Procesar
-                </button>
-
-                @if(loadingDiario) {
-                <div class="indicador-carga">
-                    <app-loading></app-loading>
-                    Buscando...
-                </div>
-                }
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>today</mat-icon>
+                    Diario
+                </h2>
             </div>
+            <mat-card-content>
+                <div class="section-options-dashboardcaja">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Fecha</mat-label>
+                        <input matInput [matDatepicker]="pickerDiario" placeholder="Choose a date"
+                            [(ngModel)]="fechaHoy">
+                        <mat-datepicker-toggle matSuffix [for]="pickerDiario"></mat-datepicker-toggle>
+                        <mat-datepicker #pickerDiario></mat-datepicker>
+                    </mat-form-field>
 
-            <div class="graficos-seccion">
-                @for (item of dataGraficoDiario; track $index) {
-                <div class="tarjeta-grafico">
+                    <button mat-fab extended (click)="cargarDashboardDiario()">
+                        <mat-icon>search</mat-icon>
+                        Procesar
+                    </button>
 
-                    <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
-                        [inputLabels]="item.tipoPagos"></app-chartdashcaja>
-
-                    <table class="table-elegant" style="width: 100%; margin-top: 20px;">
-                        <thead>
-                            <tr>
-                                <th>Tipo de Pago</th>
-                                <th>Importe</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (tipo of item.tipoPagos; track $index) {
-                            <tr>
-                                <td>{{tipo}}</td>
-                                <td>{{item.importes[$index] | number:'1.2-2' }}</td>
-                            </tr>
-                            }
-                        </tbody>
-                        <tfoot style="font-weight: bold;">
-                            <tr>
-                                <td>Total</td>
-                                <td>{{ getTotal(item.importes) | number:'1.2-2' }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
+                    @if(loadingDiario) {
+                    <div class="indicador-carga">
+                        <app-loading></app-loading>
+                        Buscando...
+                    </div>
+                    }
                 </div>
-                }
-            </div>
-        </div>
+
+                <div class="graficos-seccion">
+                    @for (item of dataGraficoDiario; track $index) {
+                    <div class="tarjeta-grafico">
+
+                        <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
+                            [inputLabels]="item.tipoPagos"></app-chartdashcaja>
+
+                        <div class="tabla-scroll">
+                            <table class="detail-table">
+                                <thead>
+                                    <tr class="cabecera">
+                                        <th>Tipo de Pago</th>
+                                        <th class="col-numeric">Importe</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (tipo of item.tipoPagos; track $index) {
+                                    <tr>
+                                        <td>{{tipo}}</td>
+                                        <td class="col-numeric">{{item.importes[$index] | number:'1.2-2' }}</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fila-total">
+                                        <td>Total</td>
+                                        <td class="col-numeric">{{ getTotal(item.importes) | number:'1.2-2' }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                    } @empty {
+                    <p class="empty-hint">Aún no hay datos de caja para el día seleccionado.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
 
         <!-- ============ SEMANAL ============ -->
-        <div class="seccion-dashboard">
-            <h3 class="titulo-seccion">
-                <mat-icon>view_week</mat-icon>
-                Semanal
-            </h3>
-            <div class="section-options-dashboardcaja">
-                <mat-form-field appearance="outline">
-                    <mat-label>Rango de la semana</mat-label>
-                    <mat-date-range-input [formGroup]="rangeSemanaFrm" [rangePicker]="pickerSemanal">
-                        <input matStartDate formControlName="start" placeholder="Inicio">
-                        <input matEndDate formControlName="end" placeholder="Fin">
-                    </mat-date-range-input>
-                    <mat-datepicker-toggle matSuffix [for]="pickerSemanal"></mat-datepicker-toggle>
-                    <mat-date-range-picker #pickerSemanal></mat-date-range-picker>
-                </mat-form-field>
-
-                <button mat-fab extended (click)="cargarDashboardSemanal()">
-                    <mat-icon>search</mat-icon>
-                    Procesar
-                </button>
-
-                @if(loadingSemanal) {
-                <div class="indicador-carga">
-                    <app-loading></app-loading>
-                    Buscando...
-                </div>
-                }
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>view_week</mat-icon>
+                    Semanal
+                </h2>
             </div>
+            <mat-card-content>
+                <div class="section-options-dashboardcaja">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Rango de la semana</mat-label>
+                        <mat-date-range-input [formGroup]="rangeSemanaFrm" [rangePicker]="pickerSemanal">
+                            <input matStartDate formControlName="start" placeholder="Inicio">
+                            <input matEndDate formControlName="end" placeholder="Fin">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="pickerSemanal"></mat-datepicker-toggle>
+                        <mat-date-range-picker #pickerSemanal></mat-date-range-picker>
+                    </mat-form-field>
 
-            <div class="graficos-seccion">
-                @if (dataGraficoSemanal.length > 0) {
-                <div class="tarjeta-grafico">
+                    <button mat-fab extended (click)="cargarDashboardSemanal()">
+                        <mat-icon>search</mat-icon>
+                        Procesar
+                    </button>
 
-                    <app-chartdashcaja inputTipo="bar" [inputTitulo]="'Ventas por día'"
-                        [inputValoresSeries]="semanaValores" [inputLabels]="semanaLabels"></app-chartdashcaja>
-
-                    <table class="table-elegant" style="width: 100%; margin-top: 20px;">
-                        <thead>
-                            <tr>
-                                <th>Día</th>
-                                <th>Detalle por tipo de pago</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (dia of dataGraficoSemanal; track $index) {
-                            <tr>
-                                <td>{{dia.diaSemana}}</td>
-                                <td>{{formatDetallesDia(dia.detalles)}}</td>
-                                <td>{{dia.montoTotal | number:'1.2-2' }}</td>
-                            </tr>
-                            }
-                        </tbody>
-                        <tfoot style="font-weight: bold;">
-                            <tr>
-                                <td colspan="2">Total semana</td>
-                                <td>{{ getTotal(semanaValores) | number:'1.2-2' }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
+                    @if(loadingSemanal) {
+                    <div class="indicador-carga">
+                        <app-loading></app-loading>
+                        Buscando...
+                    </div>
+                    }
                 </div>
-                }
-            </div>
-        </div>
+
+                <div class="graficos-seccion">
+                    @if (dataGraficoSemanal.length > 0) {
+                    <div class="tarjeta-grafico">
+
+                        <app-chartdashcaja inputTipo="bar" [inputTitulo]="'Ventas por día'"
+                            [inputValoresSeries]="semanaValores" [inputLabels]="semanaLabels"></app-chartdashcaja>
+
+                        <div class="tabla-scroll">
+                            <table class="detail-table">
+                                <thead>
+                                    <tr class="cabecera">
+                                        <th>Día</th>
+                                        <th>Detalle por tipo de pago</th>
+                                        <th class="col-numeric">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (dia of dataGraficoSemanal; track $index) {
+                                    <tr>
+                                        <td>{{dia.diaSemana}}</td>
+                                        <td>{{formatDetallesDia(dia.detalles)}}</td>
+                                        <td class="col-numeric">{{dia.montoTotal | number:'1.2-2' }}</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fila-total">
+                                        <td colspan="2">Total semana</td>
+                                        <td class="col-numeric">{{ getTotal(semanaValores) | number:'1.2-2' }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                    } @else {
+                    <p class="empty-hint">Aún no hay datos de caja para la semana seleccionada.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
 
         <!-- ============ MENSUAL ============ -->
-        <div class="seccion-dashboard">
-            <h3 class="titulo-seccion">
-                <mat-icon>calendar_month</mat-icon>
-                Mensual
-            </h3>
-            <div class="section-options-dashboardcaja">
-                <mat-form-field appearance="outline">
-                    <mat-label>Mes</mat-label>
-                    <mat-select [(ngModel)]="selectedMes">
-                        @for (mes of meses; track mes.value) {
-                        <mat-option [value]="mes.value">{{mes.viewValue}}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="campo-anio">
-                    <mat-label>Año</mat-label>
-                    <input matInput type="number" [(ngModel)]="selectedAnio">
-                </mat-form-field>
-
-                <button mat-fab extended (click)="cargarDashboardMensual()">
-                    <mat-icon>search</mat-icon>
-                    Procesar
-                </button>
-
-                @if(loadingMensual) {
-                <div class="indicador-carga">
-                    <app-loading></app-loading>
-                    Buscando...
-                </div>
-                }
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>calendar_month</mat-icon>
+                    Mensual
+                </h2>
             </div>
-
-            <div class="graficos-seccion">
-                @for (item of dataGraficoMensual; track $index) {
-                <div class="tarjeta-grafico">
-
-                    <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
-                        [inputLabels]="item.tipoPagos"></app-chartdashcaja>
-
-                    <table class="table-elegant" style="width: 100%; margin-top: 20px;">
-                        <thead>
-                            <tr>
-                                <th>Tipo de Pago</th>
-                                <th>Importe</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @for (tipo of item.tipoPagos; track $index) {
-                            <tr>
-                                <td>{{tipo}}</td>
-                                <td>{{item.importes[$index] | number:'1.2-2' }}</td>
-                            </tr>
+            <mat-card-content>
+                <div class="section-options-dashboardcaja">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Mes</mat-label>
+                        <mat-select [(ngModel)]="selectedMes">
+                            @for (mes of meses; track mes.value) {
+                            <mat-option [value]="mes.value">{{mes.viewValue}}</mat-option>
                             }
-                        </tbody>
-                        <tfoot style="font-weight: bold;">
-                            <tr>
-                                <td>Total</td>
-                                <td>{{ getTotal(item.importes) | number:'1.2-2' }}</td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                        </mat-select>
+                    </mat-form-field>
 
+                    <mat-form-field appearance="outline" class="campo-anio">
+                        <mat-label>Año</mat-label>
+                        <input matInput type="number" [(ngModel)]="selectedAnio">
+                    </mat-form-field>
+
+                    <button mat-fab extended (click)="cargarDashboardMensual()">
+                        <mat-icon>search</mat-icon>
+                        Procesar
+                    </button>
+
+                    @if(loadingMensual) {
+                    <div class="indicador-carga">
+                        <app-loading></app-loading>
+                        Buscando...
+                    </div>
+                    }
                 </div>
-                }
-            </div>
-        </div>
+
+                <div class="graficos-seccion">
+                    @for (item of dataGraficoMensual; track $index) {
+                    <div class="tarjeta-grafico">
+
+                        <app-chartdashcaja [inputTitulo]="item.sucursal" [inputValoresSeries]="item.importes"
+                            [inputLabels]="item.tipoPagos"></app-chartdashcaja>
+
+                        <div class="tabla-scroll">
+                            <table class="detail-table">
+                                <thead>
+                                    <tr class="cabecera">
+                                        <th>Tipo de Pago</th>
+                                        <th class="col-numeric">Importe</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (tipo of item.tipoPagos; track $index) {
+                                    <tr>
+                                        <td>{{tipo}}</td>
+                                        <td class="col-numeric">{{item.importes[$index] | number:'1.2-2' }}</td>
+                                    </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="fila-total">
+                                        <td>Total</td>
+                                        <td class="col-numeric">{{ getTotal(item.importes) | number:'1.2-2' }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                    } @empty {
+                    <p class="empty-hint">Aún no hay datos de caja para el mes seleccionado.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
 
     </div>
 

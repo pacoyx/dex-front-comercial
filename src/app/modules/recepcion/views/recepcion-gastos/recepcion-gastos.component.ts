@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { EmisionService } from '../../services/emision.service';
 import { LoginService } from '../../../../core/services/login.service';
 import { IListaGastosPorUserResponse } from '../../interfaces/IGastos';
@@ -26,7 +27,7 @@ import { LoadingComponent } from '../../../../core/components/loading/loading.co
   standalone: true,
   imports: [
     FormsModule, MatIconModule, MatFormFieldModule, MatInputModule,
-    MatDatepickerModule, MatButtonModule, MatTableModule, DatePipe,
+    MatDatepickerModule, MatButtonModule, MatCardModule, MatTableModule, DatePipe,
     DecimalPipe, AlertDangerComponent, LoadingComponent],
   providers: [
 

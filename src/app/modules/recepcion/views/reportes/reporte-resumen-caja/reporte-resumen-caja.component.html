@@ -1,12 +1,18 @@
 <div class="container-reporteResumen">
 
-    <h2>
-        <mat-icon>summarize</mat-icon>
-        Resumen de Caja
-    </h2>
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>summarize</mat-icon>
+            <div class="page-header__heading">
+                <h1>Resumen de Caja</h1>
+                <span class="page-header__subtitle">Consulta el resumen de caja por fecha, usuario y tipo de
+                    pago</span>
+            </div>
+        </div>
+    </div>
 
-    <div class="section-options-resumen">
-        <div style="display: flex; gap: 10px;">
+    <div class="panel panel-filtros">
+        <div class="filtros-row">
             <mat-form-field appearance="outline">
                 <mat-label>Fecha</mat-label>
                 <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy">
@@ -14,15 +20,19 @@
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
 
-            <button mat-fab extended (click)="cargarCajasPorFecha()">
-                <mat-icon>search</mat-icon>
-                Buscar
-            </button>
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="cargarCajasPorFecha()">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
 
-            @if(loading) {
-                <app-loading></app-loading>
-                Buscando...
+                @if(loading) {
+                <div class="loading-inline">
+                    <app-loading></app-loading>
+                    <span>Buscando...</span>
+                </div>
                 }
+            </div>
         </div>
 
         <!-- <div style="display: flex; gap: 10px;">
@@ -44,82 +54,89 @@
         </div> -->
     </div>
 
-    <div style="display: flex; gap: 10px; flex-direction: column;">
+    <div class="secciones-reporte">
 
-        <div>            
-           
-
-
+        <div class="panel panel-tabla">
             <app-table-resumen-usuario [dataDetalleUsuario]="dataCajaXfecha"
                 (dataDetalleUsuarioClick)="cargarReporteResumenCaja($event)">
             </app-table-resumen-usuario>
 
-            <div style="display: flex;">
-                <div>
-                    <h2>Resumen por Tipo Pago</h2>                    
-                </div>
+            <div class="panel__header panel__header--secundario">
+                <h2 class="panel__title">
+                    <mat-icon>payments</mat-icon>
+                    Resumen por Tipo Pago
+                </h2>
                 @if(loadingDetalle) {
-                    <div style="display: flex; gap: 5px; padding-top: 20px; padding-left: 20px;">
-                        <app-loading></app-loading>
-                        <span>
-                            Buscando...
-                        </span>
-                    </div>
-                    }
+                <div class="loading-inline">
+                    <app-loading></app-loading>
+                    <span>Buscando...</span>
+                </div>
+                }
             </div>
 
-            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
+            <div class="tabla-scroll">
+                <table mat-table [dataSource]="dataSource" matSort class="detail-table">
 
-                <ng-container matColumnDef="usuario">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
-                    <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
-                    <td mat-footer-cell *matFooterCellDef> </td>
-                </ng-container>
+                    <ng-container matColumnDef="usuario">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
+                        <td mat-cell *matCellDef="let element"> {{element.usuario}} </td>
+                        <td mat-footer-cell *matFooterCellDef> </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="tipoPago">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pago </th>
-                    <td mat-cell *matCellDef="let element"> {{element.tipoPago}} </td>
-                    <td mat-footer-cell *matFooterCellDef> Total </td>
-                </ng-container>
+                    <ng-container matColumnDef="tipoPago">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo Pago </th>
+                        <td mat-cell *matCellDef="let element"> {{element.tipoPago}} </td>
+                        <td mat-footer-cell *matFooterCellDef> Total </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="totalAdelanto">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Adelanto </th>
-                    <td mat-cell *matCellDef="let element"> {{element.totalAdelanto | number:'1.2-2'}} </td>
-                    <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() | number:'1.2-2'}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="totalAdelanto">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Adelanto </th>
+                        <td mat-cell *matCellDef="let element" class="col-numeric"> {{element.totalAdelanto |
+                            number:'1.2-2'}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="col-numeric"> {{ getTotalAdelanto() |
+                            number:'1.2-2'}} </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="totalImporte">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Importe </th>
-                    <td mat-cell *matCellDef="let element"> {{element.totalImporte | number:'1.2-2'}} </td>
-                    <td mat-footer-cell *matFooterCellDef> {{ getTotalImporte() | number:'1.2-2'}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="totalImporte">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Importe </th>
+                        <td mat-cell *matCellDef="let element" class="col-numeric"> {{element.totalImporte |
+                            number:'1.2-2'}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="col-numeric"> {{ getTotalImporte() |
+                            number:'1.2-2'}} </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="totalCobrado">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cobrado </th>
-                    <td mat-cell *matCellDef="let element"> {{element.totalAdelanto + element.totalImporte |
-                        number:'1.2-2'}} </td>
-                    <td mat-footer-cell *matFooterCellDef> {{ getTotalAdelanto() + getTotalImporte() | number:'1.2-2'}}
-                    </td>
-                </ng-container>
-
-
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-                <tr mat-row matRipple [matRippleUnbounded]="false" [matRippleRadius]="50"
-                    *matRowDef="let row; columns: displayedColumns;" (click)="cargarDetallePorUsuarioyTipoPago(row)"
-                    class="example-element-row" [ngClass]="{'resaltarFila': row.flag }">
-                </tr>
-                <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
+                    <ng-container matColumnDef="totalCobrado">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Cobrado </th>
+                        <td mat-cell *matCellDef="let element" class="col-numeric"> {{element.totalAdelanto +
+                            element.totalImporte |
+                            number:'1.2-2'}} </td>
+                        <td mat-footer-cell *matFooterCellDef class="col-numeric"> {{ getTotalAdelanto() +
+                            getTotalImporte() | number:'1.2-2'}}
+                        </td>
+                    </ng-container>
 
 
 
-            </table>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                    <tr mat-row matRipple [matRippleUnbounded]="false" [matRippleRadius]="50"
+                        *matRowDef="let row; columns: displayedColumns;"
+                        (click)="cargarDetallePorUsuarioyTipoPago(row)" class="clickable-row"
+                        [ngClass]="{'resaltarFila': row.flag }">
+                    </tr>
+                    <tr mat-footer-row *matFooterRowDef="displayedColumns" class="mat-footer-row"></tr>
+
+
+
+                </table>
+            </div>
         </div>
-        <div>
+
+        <div class="panel panel-tabla">
             <app-table-det-resumen-caja [dataSource]="dataDetalle" [tipoPago]="tipoPagoDetalle">
             </app-table-det-resumen-caja>
         </div>
-        <div>
+
+        <div class="panel panel-tabla">
             <app-table-resumen-gastos [dataDetalleExpense]="dataDetalleExpense">
             </app-table-resumen-gastos>
         </div>

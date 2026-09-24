@@ -1,0 +1,82 @@
+<div class="container-detalle">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>request_quote</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ periodo?.name || 'Periodo de Planilla' }}</h1>
+                @if (periodo) {
+                <span class="page-header__subtitle">
+                    {{ periodo.frequency | payrollFrequencyLabel }} · {{ periodo.startDate | date:'dd/MM/yyyy' }} - {{ periodo.endDate | date:'dd/MM/yyyy' }}
+                </span>
+                }
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="generar()" [disabled]="generando">
+                <mat-icon>play_arrow</mat-icon>
+                {{ generando ? 'Generando...' : 'Generar Planilla' }}
+            </button>
+            <button mat-stroked-button (click)="volver()">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title"><mat-icon>groups</mat-icon> Planillas Generadas</h2>
+            <span class="panel__total">Total Neto: {{ totalNeto | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="trabajador">
+                    <th mat-header-cell *matHeaderCellDef>Trabajador</th>
+                    <td mat-cell *matCellDef="let el">{{ el.employeeName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="bruto">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Bruto</th>
+                    <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.grossAmount | currency:' ':'symbol':'0.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="descuentos">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Descuentos</th>
+                    <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.discounts | currency:' ':'symbol':'0.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="neto">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Neto</th>
+                    <td mat-cell *matCellDef="let el" class="col-numeric neto-destacado">{{ el.netAmount | currency:' ':'symbol':'0.2-2' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="generado">
+                    <th mat-header-cell *matHeaderCellDef>Generado</th>
+                    <td mat-cell *matCellDef="let el">{{ el.generatedAt | date:'dd/MM/yyyy' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let el">
+                        <button mat-stroked-button (click)="verDetalle(el)">
+                            <mat-icon>receipt_long</mat-icon>
+                            Ver Detalle
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        Aún no se ha generado planilla para este periodo. Usa "Generar Planilla" para procesarla.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

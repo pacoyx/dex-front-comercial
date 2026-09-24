@@ -1,85 +1,107 @@
-<div class="container-inspeccion-resumen" style="padding: 16px;">
-    <h2>
-        <mat-icon>fact_check</mat-icon>
-        Resumen de Inspección por Ticket
-    </h2>
-    <hr>
+<div class="container-inspeccion-resumen">
 
-    <div style="display: flex; gap: 10px; align-items: center;">
-        <mat-form-field appearance="outline" style="width: 160px;">
-            <mat-label>ID de Guía</mat-label>
-            <input matInput type="number" [(ngModel)]="workGuideId" (keydown.enter)="buscar()">
-        </mat-form-field>
-        <button mat-stroked-button (click)="buscar()" [disabled]="!workGuideId || cargando">Buscar</button>
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>fact_check</mat-icon>
+            <div class="page-header__heading">
+                <h1>Resumen de Inspección por Ticket</h1>
+                <span class="page-header__subtitle">Consulta el detalle de inspección y zapatillas de una guía de
+                    trabajo</span>
+            </div>
+        </div>
     </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline" class="campo-guia">
+                <mat-label>ID de Guía</mat-label>
+                <input matInput type="number" [(ngModel)]="workGuideId" (keydown.enter)="buscar()">
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="!workGuideId || cargando">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
 
     @if(cargando){
     <app-loading></app-loading>
     }
 
     @if(errorMessage){
-    <div style="color: red; margin-top: 10px;">{{errorMessage}}</div>
+    <div class="mensaje-error">{{errorMessage}}</div>
     }
 
     @if(resumen){
-    <div style="margin-top: 16px;">
-        <h3 style="color: darkblue;">Guía: {{resumen.workGuideNumber}}</h3>
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>local_shipping</mat-icon>
+                Guía: {{resumen.workGuideNumber}}
+            </h2>
+            <button mat-stroked-button color="primary" (click)="cargarFotos()"
+                [disabled]="cargandoFotos || fotosCargadas">
+                @if(cargandoFotos){<mat-icon>cached</mat-icon>}
+                Cargar Fotos
+            </button>
+        </div>
+        <mat-card-content>
+            <div class="detalles-lista">
+                @for(detalle of resumen.details; track detalle.workGuideDetailId){
+                <div class="detalle-item">
+                    <div class="detalle-item__titulo">{{detalle.productName}}</div>
 
-        <button mat-stroked-button (click)="cargarFotos()" [disabled]="cargandoFotos || fotosCargadas">
-            @if(cargandoFotos){<mat-icon>cached</mat-icon>}
-            Cargar Fotos
-        </button>
-
-        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
-            @for(detalle of resumen.details; track detalle.workGuideDetailId){
-            <div style="border: 1px solid #ddd; border-radius: 6px; padding: 10px;">
-                <div style="font-weight: bold;">{{detalle.productName}}</div>
-
-                @if(detalle.inspection){
-                <div style="margin-top: 6px;">
-                    <mat-chip-set>
-                        @if(detalle.inspection.hasStains){<mat-chip>Manchas</mat-chip>}
-                        @if(detalle.inspection.hasTears){<mat-chip>Roturas</mat-chip>}
-                        @if(detalle.inspection.hasFading){<mat-chip>Decoloración</mat-chip>}
-                        @if(detalle.inspection.hasMissingParts){<mat-chip>Partes faltantes</mat-chip>}
-                    </mat-chip-set>
-                    @if(detalle.inspection.notes){
-                    <div style="font-size: small; margin-top: 4px;">Notas: {{detalle.inspection.notes}}</div>
-                    }
-                    <div style="font-size: small; color: gray;">Fotos: {{detalle.inspection.photoCount}}</div>
-                </div>
-                }@else{
-                <div style="font-size: small; color: gray; margin-top: 6px;">Sin inspección registrada.</div>
-                }
-
-                @if(detalle.sneaker){
-                <div style="margin-top: 6px; border-top: 1px dashed #ccc; padding-top: 6px;">
-                    <div style="font-size: small;">
-                        <b>Zapatilla:</b> {{detalle.sneaker.brandName || 'Sin marca'}}
-                        @if(detalle.sneaker.primaryColor){ - {{detalle.sneaker.primaryColor}} }
-                        @if(detalle.sneaker.secondaryColor){ / {{detalle.sneaker.secondaryColor}} }
+                    @if(detalle.inspection){
+                    <div class="detalle-item__inspeccion">
+                        <mat-chip-set>
+                            @if(detalle.inspection.hasStains){<mat-chip>Manchas</mat-chip>}
+                            @if(detalle.inspection.hasTears){<mat-chip>Roturas</mat-chip>}
+                            @if(detalle.inspection.hasFading){<mat-chip>Decoloración</mat-chip>}
+                            @if(detalle.inspection.hasMissingParts){<mat-chip>Partes faltantes</mat-chip>}
+                        </mat-chip-set>
+                        @if(detalle.inspection.notes){
+                        <div class="detalle-item__notas">Notas: {{detalle.inspection.notes}}</div>
+                        }
+                        <div class="detalle-item__meta">Fotos: {{detalle.inspection.photoCount}}</div>
                     </div>
-                    <div style="font-size: small; color: gray;">
-                        Cordones: {{detalle.sneaker.hasLaces ? 'Sí' : 'No'}} |
-                        Plantillas: {{detalle.sneaker.hasInsoles ? 'Sí' : 'No'}}
-                    </div>
-                    @if(detalle.sneaker.observations){
-                    <div style="font-size: small;">Obs: {{detalle.sneaker.observations}}</div>
+                    }@else{
+                    <div class="detalle-item__meta">Sin inspección registrada.</div>
                     }
-                </div>
-                }
 
-                @if(fotosCargadas){
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
-                    @for(foto of fotosDeDetalle(detalle.workGuideDetailId); track foto.id){
-                    <img [src]="foto.blobUrl" [alt]="foto.fileName"
-                        style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+                    @if(detalle.sneaker){
+                    <div class="detalle-item__sneaker">
+                        <div class="detalle-item__sneaker-linea">
+                            <b>Zapatilla:</b> {{detalle.sneaker.brandName || 'Sin marca'}}
+                            @if(detalle.sneaker.primaryColor){ - {{detalle.sneaker.primaryColor}} }
+                            @if(detalle.sneaker.secondaryColor){ / {{detalle.sneaker.secondaryColor}} }
+                        </div>
+                        <div class="detalle-item__meta">
+                            Cordones: {{detalle.sneaker.hasLaces ? 'Sí' : 'No'}} |
+                            Plantillas: {{detalle.sneaker.hasInsoles ? 'Sí' : 'No'}}
+                        </div>
+                        @if(detalle.sneaker.observations){
+                        <div class="detalle-item__notas">Obs: {{detalle.sneaker.observations}}</div>
+                        }
+                    </div>
+                    }
+
+                    @if(fotosCargadas){
+                    <div class="detalle-item__fotos">
+                        @for(foto of fotosDeDetalle(detalle.workGuideDetailId); track foto.id){
+                        <img [src]="foto.blobUrl" [alt]="foto.fileName" class="detalle-item__foto">
+                        }
+                    </div>
                     }
                 </div>
                 }
             </div>
-            }
-        </div>
-    </div>
+        </mat-card-content>
+    </mat-card>
     }
+
 </div>

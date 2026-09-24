@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -43,6 +44,7 @@ function obtenerDomingoDeLaSemana(lunes: Date): Date {
   standalone: true,
   imports: [
     MatButtonModule,
+    MatCardModule,
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,

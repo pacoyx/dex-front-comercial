@@ -1,0 +1,89 @@
+<div class="module-shell">
+
+  <mat-toolbar class="module-toolbar">
+
+    <button mat-icon-button class="module-toolbar__menu-btn" (click)="toggleSidenav()" aria-label="Abrir menú principal">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span class="module-toolbar__title">Recursos Humanos</span>
+
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/rrhh/dashboard" routerLinkActive="is-active">
+        <mat-icon>dashboard</mat-icon><span>Dashboard</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/rrhh/trabajadores" routerLinkActive="is-active">
+        <mat-icon>groups</mat-icon><span>Trabajadores</span>
+      </a>
+
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="asistenciaMenu">
+        <mat-icon>event_available</mat-icon><span>Asistencia</span>
+      </button>
+      <mat-menu #asistenciaMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/rrhh/asistencia/marcacion']" routerLinkActive="router-link-active">
+          <mat-icon>schedule</mat-icon>
+          Marcación Diaria
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/rrhh/asistencia/incidencias']" routerLinkActive="router-link-active">
+          <mat-icon>report_problem</mat-icon>
+          Incidencias
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/rrhh/asistencia/horas-extra']" routerLinkActive="router-link-active">
+          <mat-icon>more_time</mat-icon>
+          Horas Extra
+        </button>
+      </mat-menu>
+
+      <a mat-button class="module-toolbar__link" routerLink="/rrhh/prestamos" routerLinkActive="is-active">
+        <mat-icon>payments</mat-icon><span>Préstamos</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/rrhh/planillas" routerLinkActive="is-active">
+        <mat-icon>request_quote</mat-icon><span>Planillas</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/rrhh/reportes" routerLinkActive="is-active">
+        <mat-icon>assessment</mat-icon><span>Reportes</span>
+      </a>
+
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
+        <mat-icon>tab_group</mat-icon><span>Maestros</span>
+      </button>
+      <mat-menu #mntMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/rrhh/areas']" routerLinkActive="router-link-active">
+          <mat-icon>account_tree</mat-icon>
+          Áreas
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/rrhh/cargos']" routerLinkActive="router-link-active">
+          <mat-icon>badge</mat-icon>
+          Cargos
+        </button>
+      </mat-menu>
+    </nav>
+
+    <span class="module-toolbar__spacer"></span>
+
+    <button mat-button class="module-toolbar__user" [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ loginService.getLoginData()?.userName }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>
+        Profile
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </button>
+    </mat-menu>
+
+  </mat-toolbar>
+
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

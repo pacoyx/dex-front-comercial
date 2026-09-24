@@ -1,16 +1,130 @@
 .container-apertura {
     width: 100%;
-    margin: 10px;
-    margin-top: 20px;
     display: flex;
-    justify-content: center;    
+    justify-content: center;
+    padding: 16px;
 }
 
-.container-form{
-    width: 500px;
-    margin: 10px;
-    background-color: snow;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px #ccc;
+.panel {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+}
+
+/* ===== Header ===== */
+
+.panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 12px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-primary);
+}
+
+.estado-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--mat-sys-error);
+    color: var(--mat-sys-error);
+    font-weight: 600;
+    font-size: .75rem;
+    white-space: nowrap;
+}
+
+.estado-chip--abierta {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+/* ===== Info row (fecha / estado) ===== */
+
+.panel__info-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-info {
+    flex: 1 1 200px;
+}
+
+/* ===== Form ===== */
+
+.panel__form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.campo-full {
+    width: 100%;
+}
+
+.panel__form-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-mitad {
+    flex: 1 1 220px;
+}
+
+.panel__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 8px;
+}
+
+.panel__actions button {
+    min-width: 200px;
+}
+
+.btn-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (max-width: 900px) {
+    .container-apertura {
+        padding: 12px;
+    }
+
+    .panel {
+        max-width: 100%;
+        padding: 16px;
+    }
+
+    .panel__info-row,
+    .panel__form-row {
+        flex-direction: column;
+    }
+
+    .panel__actions button {
+        width: 100%;
+    }
 }

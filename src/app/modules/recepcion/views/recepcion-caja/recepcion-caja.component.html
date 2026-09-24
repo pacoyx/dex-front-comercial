@@ -1,26 +1,31 @@
 <div class="container-caja">
-    <h2>
-        <mat-icon>point_of_sale</mat-icon>
-        Caja de Ventas
-    </h2>
-    <hr>
 
-    <div style="width: 100%;">
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>point_of_sale</mat-icon>
+            <div class="page-header__heading">
+                <h1>Caja de Ventas</h1>
+                <span class="page-header__subtitle">Apertura, movimientos y arqueo/cierre de la caja del día</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs-wrapper">
         <mat-tab-group [selectedIndex]="indexTabLocal" animationDuration="0ms">
             <mat-tab>
                 <ng-template mat-tab-label>
-                    <mat-icon class="example-tab-icon">open_in_browser</mat-icon>
+                    <mat-icon class="tab-icon">open_in_browser</mat-icon>
                     Apertura
                 </ng-template>
-                <app-caja-apertura 
-                [dataCaja]="dataCajaUsuario" 
+                <app-caja-apertura
+                [dataCaja]="dataCajaUsuario"
                 [dataLogin]="loginTmp"
                 [dataEstadoCaja]="estadoCaja"
                 ></app-caja-apertura>
             </mat-tab>
             <mat-tab>
                 <ng-template mat-tab-label>
-                    <mat-icon class="example-tab-icon">dynamic_feed</mat-icon>
+                    <mat-icon class="tab-icon">dynamic_feed</mat-icon>
                     Movimientos
                 </ng-template>
                 <app-caja-movimientos [movimientosData]="listsItemsTmp" [userIdData]="loginTmp.userId"
@@ -28,7 +33,7 @@
             </mat-tab>
             <mat-tab>
                 <ng-template mat-tab-label>
-                    <mat-icon class="example-tab-icon">blinds_closed</mat-icon>
+                    <mat-icon class="tab-icon">blinds_closed</mat-icon>
                     Arqueo y Cierre
                 </ng-template>
                 <app-caja-cierre [dataCaja]="cajaTmp" [dataLogin]="loginTmp" [dataTotalizado]="totalizadoData"

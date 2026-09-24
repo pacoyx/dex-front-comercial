@@ -1,70 +1,93 @@
 <div class="container-mnt-sucursal-usuarios">
-    <h2>
-        <mat-icon>group</mat-icon>
-        Usuarios de la Sucursal
-    </h2>
 
-    <div class="section-controls-mnt-sucursal-usuarios">
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>group</mat-icon>
+            <div class="page-header__heading">
+                <h1>Usuarios de la Sucursal</h1>
+                <span class="page-header__subtitle">Administra los usuarios asignados a la sucursal</span>
+            </div>
+        </div>
 
-        <button mat-fab extended (click)="regresarSucursales()">
-            <mat-icon>arrow_back</mat-icon>
-            Regresar a Sucursales
-        </button>
-
-        <button mat-fab extended (click)="crearSucursalUsuario()">
-            <mat-icon>person_add</mat-icon>
-            Nuevo Usuario
-        </button>
-
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="regresarSucursales()">
+                <mat-icon>arrow_back</mat-icon>
+                Regresar a Sucursales
+            </button>
+            <button mat-flat-button color="primary" (click)="crearSucursalUsuario()">
+                <mat-icon>person_add</mat-icon>
+                Nuevo Usuario
+            </button>
+        </div>
     </div>
-    <div>
-        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-            <ng-container matColumnDef="id">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
-                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-            </ng-container>
+    <div class="panel panel-tabla">
+        <div class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" matSort class="detail-table">
 
-            <ng-container matColumnDef="userName">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
-                <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
-            </ng-container>
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Id </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container>
 
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Estado </th>
-                <td mat-cell *matCellDef="let element" style="text-align: center;">
-                    @switch (element.status) {
-                    @case ('A') {
-                    <span style="color: green;">Activo</span>
-                    }
-                    @case ('I') {
-                    <span style="color: red;">Inactivo</span>
-                    }
-                    @default {
-                    <span style="color: red;">Inactivo</span>
-                    }
-                    }
-                </td>
-            </ng-container>
+                <ng-container matColumnDef="userName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Usuario </th>
+                    <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+                </ng-container>
 
-            <ng-container matColumnDef="operaciones">
-                <th mat-header-cell *matHeaderCellDef> Operaciones </th>
-                <td mat-cell *matCellDef="let element">
-                    <div style="display: flex; justify-content: space-evenly;">
-                        <button mat-mini-fab (click)="editSucursalUsuario(element)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button mat-mini-fab (click)="deleteSucursalUsuario(element)">
-                            <mat-icon style="color: red;">delete</mat-icon>
-                        </button>
-                    </div>
-                </td>
-                <td mat-footer-cell *matFooterCellDef> </td>
-            </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+                        @switch (element.status) {
+                        @case ('A') {
+                        <span class="status-chip status-chip--activo">
+                            <span class="status-chip__dot"></span>
+                            Activo
+                        </span>
+                        }
+                        @case ('I') {
+                        <span class="status-chip status-chip--inactivo">
+                            <span class="status-chip__dot"></span>
+                            Inactivo
+                        </span>
+                        }
+                        @default {
+                        <span class="status-chip status-chip--inactivo">
+                            <span class="status-chip__dot"></span>
+                            Inactivo
+                        </span>
+                        }
+                        }
+
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div style="display: flex; justify-content: space-evenly;">
+                            <button mat-icon-button (click)="editSucursalUsuario(element)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="deleteSucursalUsuario(element)">
+                                <mat-icon style="color: red;">delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron usuarios registrados para esta sucursal.
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
 </div>

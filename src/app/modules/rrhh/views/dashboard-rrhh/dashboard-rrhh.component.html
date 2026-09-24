@@ -1,0 +1,142 @@
+<div class="container-dashboard">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>dashboard</mat-icon>
+            <div class="page-header__heading">
+                <h1>Dashboard de Recursos Humanos</h1>
+                <span class="page-header__subtitle">Resumen del personal, planillas y préstamos</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">groups</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Trabajadores Activos</span>
+                <span class="stat-card__value">{{ summary?.activeEmployees ?? 0 }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">request_quote</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Costo Planilla Mensual (proyectado)</span>
+                <span class="stat-card__value">{{ summary?.monthlyPayrollCost ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">payments</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Préstamos Pendientes</span>
+                <span class="stat-card__value">{{ summary?.pendingLoans ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">more_time</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Horas Extra del Mes</span>
+                <span class="stat-card__value">{{ summary?.extraHoursMonth ?? 0 }}</span>
+            </div>
+        </mat-card>
+    </div>
+
+    <div class="charts-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>account_tree</mat-icon>
+                    Trabajadores por Área
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of employeesByArea; track item.areaId) {
+                <div class="ranked-list__row">
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.areaName }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill" [style.width.%]="(item.employeeCount / maxAreaCount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.employeeCount }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay trabajadores registrados por área.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>cake</mat-icon>
+                    Próximos Cumpleaños
+                </h2>
+            </div>
+            <mat-card-content class="tabla-scroll">
+                <table class="detail-table">
+                    <thead>
+                        <tr class="cabecera">
+                            <th>Trabajador</th>
+                            <th>Fecha</th>
+                            <th class="col-numeric">Días</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (item of upcomingBirthdays; track item.employeeId) {
+                        <tr>
+                            <td>{{ item.employeeName }}</td>
+                            <td>{{ item.birthDate | date:'dd/MM/yyyy' }}</td>
+                            <td class="col-numeric">{{ item.daysUntilBirthday }}</td>
+                        </tr>
+                        } @empty {
+                        <tr><td class="sin-datos" colspan="3">No hay cumpleaños próximos.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>payments</mat-icon>
+                Préstamos y Adelantos Pendientes
+            </h2>
+            <button mat-stroked-button color="primary" routerLink="/rrhh/prestamos">Ver todos</button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Trabajador</th>
+                        <th>Tipo</th>
+                        <th>Fecha</th>
+                        <th class="col-numeric">Monto</th>
+                        <th class="col-numeric">Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of pendingLoans; track item.id) {
+                    <tr>
+                        <td>{{ item.employeeName }}</td>
+                        <td>{{ item.loanType | loanTypeLabel }}</td>
+                        <td>{{ item.loanDate | date:'dd/MM/yyyy' }}</td>
+                        <td class="col-numeric">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                        <td class="col-numeric">{{ item.balance | currency:' ':'symbol':'0.2-2' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr><td class="sin-datos" colspan="5">No hay préstamos ni adelantos pendientes.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

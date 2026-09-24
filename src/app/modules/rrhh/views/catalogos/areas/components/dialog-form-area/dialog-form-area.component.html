@@ -1,0 +1,48 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>account_tree</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="form">
+        <div class="form-grid">
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+
+            @if (!data.esNuevo) {
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="isActive">
+                    <mat-option [value]="true"> Activo </mat-option>
+                    <mat-option [value]="false"> Inactivo </mat-option>
+                </mat-select>
+            </mat-form-field>
+            }
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
+        Grabar
+    </button>
+    }
+</mat-dialog-actions>

@@ -1,0 +1,112 @@
+<div class="container-reportes">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>assessment</mat-icon>
+            <div class="page-header__heading">
+                <h1>Reportes</h1>
+                <span class="page-header__subtitle">Consulta planillas, préstamos, adelantos y asistencia</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline" class="campo-tipo">
+                <mat-label>Tipo de Reporte</mat-label>
+                <mat-select [(ngModel)]="selectedReportType" (selectionChange)="onTipoChange()">
+                    @for (tipo of reportTypes; track tipo.key) {
+                    <mat-option [value]="tipo">{{ tipo.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-trabajador">
+                <mat-label>Trabajador</mat-label>
+                <input type="text" matInput [formControl]="employeeControl" [matAutocomplete]="autoEmployee"
+                    placeholder="Buscar por nombre, documento o código">
+                <mat-autocomplete #autoEmployee="matAutocomplete" (optionSelected)="onEmployeeSelected($event)"
+                    [displayWith]="displayFn">
+                    @for (employee of filteredEmployees | async; track employee.id) {
+                    <mat-option [value]="employee">
+                        {{ employee.firstName }} {{ employee.lastName }} - {{ employee.code }}
+                    </mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Desde</mat-label>
+                <input matInput [matDatepicker]="pickerIni" [(ngModel)]="fechaInicio">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerIni"></mat-datepicker-toggle>
+                <mat-datepicker #pickerIni></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Hasta</mat-label>
+                <input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFin></mat-datepicker>
+            </mat-form-field>
+
+            @if (selectedReportType.needsClosedFilter) {
+            <mat-form-field appearance="outline" class="campo-estado">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectedClosed">
+                    <mat-option [value]="null">Todos</mat-option>
+                    <mat-option [value]="false">Abiertos</mat-option>
+                    <mat-option [value]="true">Cerrados</mat-option>
+                </mat-select>
+            </mat-form-field>
+            }
+
+            @if (selectedReportType.needsApprovedFilter) {
+            <mat-form-field appearance="outline" class="campo-estado">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectedApproved">
+                    <mat-option [value]="null">Todas</mat-option>
+                    <mat-option [value]="false">Pendientes</mat-option>
+                    <mat-option [value]="true">Aprobadas</mat-option>
+                </mat-select>
+            </mat-form-field>
+            }
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()">
+                    <mat-icon>search</mat-icon> Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()">
+                    <mat-icon>restart_alt</mat-icon> Limpiar
+                </button>
+                <button mat-stroked-button (click)="exportar()">
+                    <mat-icon>download</mat-icon> Exportar CSV
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                @for (col of selectedReportType.columns; track col.key) {
+                <ng-container [matColumnDef]="col.key">
+                    <th mat-header-cell *matHeaderCellDef [class.col-numeric]="col.type === 'currency'">{{ col.header }}</th>
+                    <td mat-cell *matCellDef="let el" [class.col-numeric]="col.type === 'currency'">{{ formatCell(el, col) }}</td>
+                </ng-container>
+                }
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        {{ buscando ? 'Cargando...' : 'No se encontraron resultados para los filtros aplicados.' }}
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>
