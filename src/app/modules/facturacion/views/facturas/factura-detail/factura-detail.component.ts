@@ -57,6 +57,9 @@ export class FacturaDetailComponent implements OnInit {
       exchangeRate: [{ value: 0, disabled: true }],
       amountPaid: [{ value: 0, disabled: true }],
       balance: [{ value: 0, disabled: true }],
+      paymentMethod: [{ value: '', disabled: true }],
+      typePayment: [{ value: '', disabled: true }],
+      daysCredit: [{ value: 0, disabled: true }],
       notes: [{ value: '', disabled: true }],
     });
   }
@@ -89,6 +92,9 @@ export class FacturaDetailComponent implements OnInit {
           exchangeRate: response.data.exchangeRate,
           amountPaid: response.data.amountPaid,
           balance: response.data.balance,
+          paymentMethod: response.data.paymentMethod,
+          typePayment: response.data.typePayment,
+          daysCredit: response.data.daysCredit,
           notes: response.data.notes,
         });
       },

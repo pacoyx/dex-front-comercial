@@ -27,6 +27,7 @@ import {
   SalesRegisterStatusColorPipe,
   SalesRegisterStatusLabelPipe,
 } from '../../../shared/sales-register-status';
+import { PaymentTypeLabelPipe } from '../../../shared/payment-type';
 
 @Component({
   selector: 'app-registro-ventas',
@@ -35,7 +36,7 @@ import {
     MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     MatAutocompleteModule, MatTableModule, MatDatepickerModule, ReactiveFormsModule, FormsModule,
     AsyncPipe, CurrencyPipe, DatePipe, TitleCasePipe, NgFor, LoadingComponent,
-    SalesRegisterStatusLabelPipe, SalesRegisterStatusColorPipe,
+    SalesRegisterStatusLabelPipe, SalesRegisterStatusColorPipe, PaymentTypeLabelPipe,
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -67,7 +68,7 @@ export class RegistroVentasComponent implements OnInit {
 
   displayedColumns: string[] = [
     'fecha', 'cliente', 'documento', 'subTotal', 'igv', 'total',
-    'pagado', 'saldo', 'moneda', 'tipoCambio', 'estado',
+    'pagado', 'saldo', 'moneda', 'tipoCambio', 'formaPago', 'tipoPago', 'diasCredito', 'estado',
   ];
   dataSource = new MatTableDataSource<ISalesRegisterRow>([]);
   totals: ISalesRegisterTotals | null = null;
@@ -120,7 +121,7 @@ export class RegistroVentasComponent implements OnInit {
   }
 
   displayFn(customer: ICustomerSearchResult): string {
-    return customer ? `${customer.nombres} ${customer.apellidos}` : '';
+    return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
   }
 
   private obtenerFiltrosValidos(): ISalesRegisterFilters | null {

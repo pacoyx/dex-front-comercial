@@ -156,6 +156,9 @@ export const environment = {
     EPFacturasPorFechas: 'api/purchase/reports/byDate',
     EPFacturasPorProveedor: 'api/purchase/reports/bySupplier',
     EPFacturasPorProducto: 'api/purchase/reports/byProduct',
+    EPPurchaseRegisterReport: 'api/reports/purchase-register',
+    EPPurchaseRegisterReportPdf: 'api/reports/purchase-register/pdf',
+    EPPurchaseRegisterReportExcel: 'api/reports/purchase-register/excel',
 
     // cuentas por pagar y dashboard de compras
     EPAccountsPayable: 'api/accounts-payable',
@@ -168,6 +171,7 @@ export const environment = {
     EPSalesInvoices: 'api/invoices',
     EPAccountsReceivable: 'api/accounts-receivable',
     EPCollectionSheets: 'api/collection-sheets',
+    EPBuscarClientesPorPatron: 'api/customer/search/byPatron',
 
     // reportes facturacion
     EPSalesRegisterReport: 'api/reports/sales-register',

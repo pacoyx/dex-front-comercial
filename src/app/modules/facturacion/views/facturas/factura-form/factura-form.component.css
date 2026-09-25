@@ -113,6 +113,10 @@
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
 
+.form-grid--pago {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
 .form-grid--moneda {
     grid-template-columns: 140px 180px 1fr;
 }
@@ -150,6 +154,7 @@
     }
 
     .form-grid--cliente,
+    .form-grid--pago,
     .form-grid--moneda {
         grid-template-columns: 1fr;
     }

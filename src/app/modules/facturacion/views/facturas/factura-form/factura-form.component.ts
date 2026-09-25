@@ -35,10 +35,12 @@ import { InvoicesService } from '../../../services/invoices.service';
 import {
   IBranchSales,
   ICustomerSearchResult,
+  IPaymentMethod,
   ITypeDocument,
 } from '../../../interfaces/ICatalogos';
 import { IInvoiceCreateRequest } from '../../../interfaces/IInvoices';
 import { extractErrorMessage } from '../../../shared/http-error.util';
+import { PAYMENT_TYPE_OPTIONS } from '../../../shared/payment-type';
 import { InvoiceDetailStoreService } from './invoice-detail-store.service';
 import { TableDetalleFacturaComponent } from './components/table-detalle-factura/table-detalle-factura.component';
 import { DialogAddItemFacturaComponent } from './components/dialog-add-item-factura/dialog-add-item-factura.component';
@@ -82,6 +84,8 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
 
   branches: IBranchSales[] = [];
   documentTypes: ITypeDocument[] = [];
+  paymentMethods: IPaymentMethod[] = [];
+  typePaymentOptions = PAYMENT_TYPE_OPTIONS;
 
   frmInvoice: FormGroup;
   saved = false;
@@ -97,6 +101,9 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
       dueDate: [new Date(), Validators.required],
       currencyId: ['PEN', [Validators.required, Validators.maxLength(3)]],
       exchangeRate: [1.0, [Validators.required, Validators.min(0.000001)]],
+      paymentMethod: [null, Validators.required],
+      typePayment: ['contado', Validators.required],
+      daysCredit: [0, Validators.required],
       notes: [''],
     });
 
@@ -105,6 +112,41 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
         .get('customerId')
         ?.setValue(typeof value === 'object' && value ? value.id : null);
     });
+
+    this.frmInvoice.get('dueDate')?.valueChanges.subscribe(() => {
+      this.actualizarFormaPagoPorVencimiento();
+    });
+  }
+
+  private actualizarFormaPagoPorVencimiento(): void {
+    const fechaEmision = this.frmInvoice.get('issueDate')?.value;
+    const fechaVencimiento = this.frmInvoice.get('dueDate')?.value;
+
+    if (!fechaEmision || !fechaVencimiento) {
+      return;
+    }
+
+    const emision = new Date(fechaEmision);
+    const vencimiento = new Date(fechaVencimiento);
+    emision.setHours(0, 0, 0, 0);
+    vencimiento.setHours(0, 0, 0, 0);
+
+    if (vencimiento.getTime() < emision.getTime()) {
+      this.notificationService.showError('La fecha de vencimiento no puede ser menor a la fecha de emisión.');
+      setTimeout(() => {
+        this.frmInvoice.get('dueDate')?.setValue(new Date(fechaEmision));
+      });
+      return;
+    }
+
+    if (emision.getTime() === vencimiento.getTime()) {
+      this.frmInvoice.get('typePayment')?.setValue('contado');
+      this.frmInvoice.get('daysCredit')?.setValue(0);
+    } else {
+      const diffDays = Math.round((vencimiento.getTime() - emision.getTime()) / (1000 * 60 * 60 * 24));
+      this.frmInvoice.get('typePayment')?.setValue('credito');
+      this.frmInvoice.get('daysCredit')?.setValue(diffDays);
+    }
   }
 
   ngOnDestroy(): void {
@@ -146,6 +188,14 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
           'No se pudieron cargar los tipos de documento.',
         ),
     });
+
+    this.catalogosService.obtenerMetodosPago().subscribe({
+      next: (response) => (this.paymentMethods = response.data.filter((m) => m.isActive)),
+      error: () =>
+        this.notificationService.showError(
+          'No se pudieron cargar los métodos de pago.',
+        ),
+    });
   }
 
   onCustomerSelected(event: any) {
@@ -153,7 +203,7 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
   }
 
   displayFn(customer: ICustomerSearchResult): string {
-    return customer ? `${customer.nombres} ${customer.apellidos}` : '';
+    return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
   }
 
   addItem() {
@@ -187,6 +237,9 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
       dueDate: new Date(this.frmInvoice.get('dueDate')?.value).toISOString(),
       currencyId: this.frmInvoice.get('currencyId')?.value,
       exchangeRate: this.frmInvoice.get('exchangeRate')?.value,
+      paymentMethod: this.frmInvoice.get('paymentMethod')?.value,
+      typePayment: this.frmInvoice.get('typePayment')?.value,
+      daysCredit: this.frmInvoice.get('daysCredit')?.value,
       notes: this.frmInvoice.get('notes')?.value,
       details: this.invoiceStoreService.items().map((item) => ({
         productId: item.productId,
@@ -223,6 +276,8 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
       dueDate: new Date(),
       currencyId: 'PEN',
       exchangeRate: 1.0,
+      typePayment: 'contado',
+      daysCredit: 0,
     });
     this.customerControl.setValue(null);
     this.invoiceStoreService.resetState();

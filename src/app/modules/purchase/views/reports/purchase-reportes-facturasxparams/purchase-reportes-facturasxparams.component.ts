@@ -260,8 +260,13 @@ export class PurchaseReportesFacturasxparamsComponent implements OnInit, OnDestr
     // this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
   }
 
+  clearSupplier(event: Event): void {
+    event.stopPropagation();
+    this.supplierControl.setValue(null);
+  }
+
   displayFnSupplier(supplier: any): string {
-    var returnDisplay = supplier && supplier.name ? supplier.name : supplier;
+    var returnDisplay = supplier && supplier.name ? `${supplier.name} — RUC ${supplier.ruc}` : supplier;
     return returnDisplay;
   }
 

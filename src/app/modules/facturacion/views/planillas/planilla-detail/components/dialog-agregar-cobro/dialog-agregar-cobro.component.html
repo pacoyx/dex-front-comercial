@@ -9,7 +9,7 @@
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
             [displayWith]="displayFn">
             <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }}
+                {{ customer.name | titlecase }} — RUC {{ customer.ruc }}
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>

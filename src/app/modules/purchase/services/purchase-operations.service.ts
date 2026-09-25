@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   IInvoiceCreateRequest,
@@ -12,7 +12,7 @@ import {
   IRegisterPurchasePaymentRequest,
 } from '../interfaces/IOperaciones';
 import { IResponseGeneric } from '../interfaces/IMaestros';
-import { IFacturasPorParamsResponse, IListInvoiceByIdResponse } from '../interfaces/IReportes';
+import { IFacturasPorParamsResponse, IListInvoiceByIdResponse, IPurchaseRegisterFilters, IPurchaseRegisterResponse } from '../interfaces/IReportes';
 import { IAccountPayable } from '../interfaces/IAccountsPayable';
 
 @Injectable({
@@ -91,6 +91,40 @@ export class PurchaseOperationsService {
   obtenerCuentasPorPagar(): Observable<IResponseGeneric<IAccountPayable[]>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<IResponseGeneric<IAccountPayable[]>>(`${this.apiUrl}${environment.EPAccountsPayable}`, { headers });
+  }
+
+  private construirParamsRegistroCompras(filtros: IPurchaseRegisterFilters): Record<string, string> {
+    const params: Record<string, string> = {
+      fromDate: filtros.fromDate,
+      toDate: filtros.toDate,
+    };
+    if (filtros.supplierId != null) params['supplierId'] = String(filtros.supplierId);
+    if (filtros.status != null) params['status'] = String(filtros.status);
+    return params;
+  }
+
+  obtenerRegistroCompras(filtros: IPurchaseRegisterFilters): Observable<IResponseGeneric<IPurchaseRegisterResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const params = this.construirParamsRegistroCompras(filtros);
+    return this.http.get<IResponseGeneric<IPurchaseRegisterResponse>>(`${this.apiUrl}${environment.EPPurchaseRegisterReport}`, { headers, params });
+  }
+
+  descargarRegistroComprasPdf(filtros: IPurchaseRegisterFilters): Observable<HttpResponse<Blob>> {
+    const params = this.construirParamsRegistroCompras(filtros);
+    return this.http.get(`${this.apiUrl}${environment.EPPurchaseRegisterReportPdf}`, {
+      params,
+      responseType: 'blob',
+      observe: 'response',
+    });
+  }
+
+  descargarRegistroComprasExcel(filtros: IPurchaseRegisterFilters): Observable<HttpResponse<Blob>> {
+    const params = this.construirParamsRegistroCompras(filtros);
+    return this.http.get(`${this.apiUrl}${environment.EPPurchaseRegisterReportExcel}`, {
+      params,
+      responseType: 'blob',
+      observe: 'response',
+    });
   }
 
 }

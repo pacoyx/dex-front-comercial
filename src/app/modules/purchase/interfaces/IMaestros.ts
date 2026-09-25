@@ -62,6 +62,7 @@ export interface ISupplierListarResponse {
 export interface ISupplierListarPorPatronResponse {
   id: number;
   name: string;
+  ruc: string;
 }
 
 export interface IPaymentMethod {

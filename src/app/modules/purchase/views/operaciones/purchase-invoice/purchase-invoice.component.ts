@@ -76,6 +76,10 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
       this.frmInvoice.get('supplierId')?.setValue(value);
     });
 
+    this.frmInvoice.get('invoiceExpirationDate')?.valueChanges.subscribe(() => {
+      this.actualizarFormaPagoPorVencimiento();
+    });
+
 
     effect(() => {
 
@@ -115,6 +119,39 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
 
   }
 
+  private actualizarFormaPagoPorVencimiento(): void {
+    const fechaEmision = this.frmInvoice.get('invoiceIssueDate')?.value;
+    const fechaVencimiento = this.frmInvoice.get('invoiceExpirationDate')?.value;
+
+    if (!fechaEmision || !fechaVencimiento) {
+      return;
+    }
+
+    const emision = new Date(fechaEmision);
+    const vencimiento = new Date(fechaVencimiento);
+    emision.setHours(0, 0, 0, 0);
+    vencimiento.setHours(0, 0, 0, 0);
+
+    if (vencimiento.getTime() < emision.getTime()) {
+      this.notificationService.showError('La fecha de vencimiento no puede ser menor a la fecha de emisión.');
+      // Se difiere para que corra fuera del ciclo de escritura del propio datepicker,
+      // de lo contrario el input queda mostrando la fecha invalida aunque el control ya tenga el valor correcto.
+      setTimeout(() => {
+        this.frmInvoice.get('invoiceExpirationDate')?.setValue(new Date(fechaEmision));
+      });
+      return;
+    }
+
+    if (emision.getTime() === vencimiento.getTime()) {
+      this.frmInvoice.get('typePayment')?.setValue('CO');
+      this.frmInvoice.get('creditDays')?.setValue(0);
+    } else {
+      const diffDays = Math.round((vencimiento.getTime() - emision.getTime()) / (1000 * 60 * 60 * 24));
+      this.frmInvoice.get('typePayment')?.setValue('CR');
+      this.frmInvoice.get('creditDays')?.setValue(diffDays);
+    }
+  }
+
   onClienteSelected(event: any) {
     const supplier = event.option.value;
     // this.clienteTelefono = cliente.telefono;
@@ -122,8 +159,14 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
     // this.store.addCliente({ codigo: cliente.id, nombre: cliente.nombres + ' ' + cliente.apellidos, telefono: cliente.telefono });
   }
 
+  clearSupplier(event: Event): void {
+    event.stopPropagation();
+    this.supplierControl.setValue(null);
+    this.frmInvoice.get('supplierId')?.setValue(null);
+  }
+
   displayFn(supplier: any): string {
-    var returnDisplay = supplier && supplier.name ? supplier.name : supplier;
+    var returnDisplay = supplier && supplier.name ? `${supplier.name} — RUC ${supplier.ruc}` : supplier;
     return returnDisplay;
   }
 

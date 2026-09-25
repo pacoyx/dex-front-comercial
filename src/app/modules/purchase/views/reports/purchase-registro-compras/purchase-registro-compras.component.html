@@ -1,0 +1,225 @@
+<div class="container-registro-compras">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>receipt_long</mat-icon>
+            <div class="page-header__heading">
+                <h1>Registro de Compras</h1>
+                <span class="page-header__subtitle">Consulta y exporta las facturas de compra registradas por
+                    período</span>
+            </div>
+        </div>
+    </div>
+
+    @if (validationErrors.length > 0) {
+    <div class="alert-validacion">
+        <mat-icon>error_outline</mat-icon>
+        <ul>
+            @for (error of validationErrors; track $index) {
+            <li>{{ error }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-proveedor">
+                <mat-label>Proveedor</mat-label>
+                <input type="text" matInput [formControl]="supplierControl" [matAutocomplete]="autoSupplier"
+                    placeholder="Buscar proveedor">
+                @if (supplierControl.value) {
+                <button mat-icon-button matSuffix type="button" aria-label="Limpiar proveedor"
+                    (click)="clearSupplier($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+                <mat-autocomplete #autoSupplier="matAutocomplete" (optionSelected)="onSupplierSelected($event)"
+                    [displayWith]="displayFn">
+                    <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
+                        {{ supplier.name }} — RUC {{ supplier.ruc }}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-estado">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="selectedStatus">
+                    @for (opt of statusOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()" [disabled]="loading">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    @if(loading){
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando registro de compras...</span>
+    </div>
+    }
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.issueDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="proveedor">
+                    <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="proveedor-cell">
+                            <span class="proveedor-cell__nombre">{{ element.supplierName }}</span>
+                            <span class="proveedor-cell__ruc">RUC {{ element.supplierRuc }}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="documento">
+                    <th mat-header-cell *matHeaderCellDef> Documento </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.serieNumero }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="subTotal">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> SubTotal </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.subTotal | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="igv">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> IGV </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.igv | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pagado">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Pagado </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.amountPaid | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="saldo">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Saldo </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric saldo-value">
+                        {{ element.balance | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef> Moneda </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.currencyId }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="tipoCambio">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> T. Cambio </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.exchangeRate | currency:' ':'symbol':'0.2-3' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [style.color]="element.status | purchaseRegisterStatusColor"
+                            [style.borderColor]="element.status | purchaseRegisterStatusColor">
+                            <span class="status-chip__dot"
+                                [style.backgroundColor]="element.status | purchaseRegisterStatusColor"></span>
+                            {{ element.status | purchaseRegisterStatusLabel }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron registros para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-resumen" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>summarize</mat-icon>
+                Resumen del Período
+            </h2>
+        </div>
+        <mat-card-content class="resumen-row">
+
+            <div class="resumen-totales">
+                <div class="resumen-item">
+                    <span class="resumen-label">Documentos</span>
+                    <span class="resumen-value">{{ totals?.cantidadDocumentos ?? 0 }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Total Compras</span>
+                    <span class="resumen-value">{{ totals?.totalCompras ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Total Pagado</span>
+                    <span class="resumen-value">{{ totals?.totalPagado ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                <div class="resumen-item resumen-item--pendiente">
+                    <span class="resumen-label">Total Pendiente</span>
+                    <span class="resumen-value">{{ totals?.totalPendiente ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="resumen-acciones">
+                <button mat-stroked-button color="primary" (click)="exportarPdf()" [disabled]="loadingPdf">
+                    @if(loadingPdf){
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    }
+                    Exportar PDF
+                </button>
+                <button mat-stroked-button color="primary" (click)="exportarExcel()" [disabled]="loadingExcel">
+                    @if(loadingExcel){
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>grid_on</mat-icon>
+                    }
+                    Exportar Excel
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+</div>

@@ -111,6 +111,33 @@
         <mat-card class="panel" appearance="outlined">
             <div class="panel__header">
                 <h2 class="panel__title">
+                    <mat-icon>credit_card</mat-icon>
+                    Condiciones de Pago
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--condiciones">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo Pago</mat-label>
+                    <input matInput formControlName="typePayment" class="capitalize-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Días Crédito</mat-label>
+                    <input matInput formControlName="daysCredit">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Forma de Pago</mat-label>
+                    <input matInput formControlName="paymentMethod">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
                     <mat-icon>account_balance_wallet</mat-icon>
                     Pagos y Notas
                 </h2>

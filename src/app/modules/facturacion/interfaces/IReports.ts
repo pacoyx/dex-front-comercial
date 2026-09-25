@@ -18,6 +18,9 @@ export interface ISalesRegisterRow {
   exchangeRate: number;
   amountPaid: number;
   balance: number;
+  paymentMethod: string;
+  typePayment: string;
+  daysCredit: number;
   status: string;
 }
 

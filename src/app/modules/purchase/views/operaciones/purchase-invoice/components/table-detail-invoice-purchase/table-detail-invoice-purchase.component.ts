@@ -68,9 +68,4 @@ export class TableDetailInvoicePurchaseComponent {
     this.store.deleteItem(item.item);
   }
 
-  getTotalCost() {
-    return this.dataSource.data.reduce((acc, item) => acc + item.total, 0);
-  }
-  
-
 }

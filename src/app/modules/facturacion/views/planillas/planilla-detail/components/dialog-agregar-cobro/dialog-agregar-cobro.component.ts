@@ -88,7 +88,7 @@ export class DialogAgregarCobroComponent implements OnInit {
   }
 
   displayFn(customer: ICustomerSearchResult): string {
-    return customer ? `${customer.nombres} ${customer.apellidos}` : '';
+    return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
   }
 
   selectInvoice(invoice: IInvoiceListItem) {

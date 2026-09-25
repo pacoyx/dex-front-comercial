@@ -25,10 +25,16 @@
                 <mat-label>Proveedor</mat-label>
                 <input type="text" matInput [formControl]="supplierControl" [matAutocomplete]="autoSupplier"
                     placeholder="Buscar proveedor">
+                @if (supplierControl.value) {
+                <button mat-icon-button matSuffix type="button" aria-label="Limpiar proveedor"
+                    (click)="clearSupplier($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
                 <mat-autocomplete #autoSupplier="matAutocomplete" (optionSelected)="onSupplierSelected($event)"
                     [displayWith]="displayFn">
                     <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier">
-                        {{ supplier.name | titlecase }}
+                        {{ supplier.name | titlecase }} — RUC {{ supplier.ruc }}
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>

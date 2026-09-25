@@ -86,8 +86,14 @@ export class PurchaseInvoicesComponent implements OnInit {
     this.selectedSupplier = event.option.value;
   }
 
+  clearSupplier(event: Event): void {
+    event.stopPropagation();
+    this.supplierControl.setValue(null);
+    this.selectedSupplier = null;
+  }
+
   displayFn(supplier: ISupplierListarPorPatronResponse): string {
-    return supplier ? supplier.name : '';
+    return supplier ? `${supplier.name} — RUC ${supplier.ruc}` : '';
   }
 
   buscar(): void {

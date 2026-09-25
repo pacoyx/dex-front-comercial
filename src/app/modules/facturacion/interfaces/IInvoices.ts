@@ -16,6 +16,9 @@ export interface IInvoiceCreateRequest {
   dueDate: string;
   currencyId: string;
   exchangeRate: number;
+  paymentMethod: string;
+  typePayment: string;
+  daysCredit: number;
   notes?: string;
   details: IInvoiceDetailLineRequest[];
 }
@@ -29,6 +32,9 @@ export interface IInvoiceCreateResponse {
   total: number;
   currencyId: string;
   exchangeRate: number;
+  paymentMethod: string;
+  typePayment: string;
+  daysCredit: number;
   status: number;
 }
 
@@ -71,6 +77,9 @@ export interface IInvoiceDetail {
   exchangeRate: number;
   amountPaid: number;
   balance: number;
+  paymentMethod: string;
+  typePayment: string;
+  daysCredit: number;
   status: number;
   notes: string;
   details: IInvoiceDetailLine[];
@@ -90,6 +99,9 @@ export interface IInvoiceListItem {
   exchangeRate: number;
   amountPaid: number;
   balance: number;
+  paymentMethod: string;
+  typePayment: string;
+  daysCredit: number;
   status: number;
 }
 

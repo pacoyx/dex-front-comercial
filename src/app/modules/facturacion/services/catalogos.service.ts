@@ -22,7 +22,7 @@ export class CatalogosService {
 
   buscarClientesPorPatron(patron: string): Observable<IResponseGeneric<ICustomerSearchResult[]>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<IResponseGeneric<ICustomerSearchResult[]>>(`${this.apiUrl}${environment.EPFiltrarClientesPorPatron}/${patron}`, { headers });
+    return this.http.get<IResponseGeneric<ICustomerSearchResult[]>>(`${this.apiUrl}${environment.EPBuscarClientesPorPatron}/${patron}`, { headers });
   }
 
   obtenerSucursales(): Observable<IResponseGeneric<IBranchSales[]>> {

@@ -137,6 +137,14 @@
     grid-template-columns: 160px 160px 1fr;
 }
 
+.form-grid--condiciones {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.capitalize-input {
+    text-transform: capitalize;
+}
+
 .field--full {
     grid-column: 1 / -1;
 }
@@ -190,6 +198,7 @@
     }
 
     .form-grid--cliente,
+    .form-grid--condiciones,
     .form-grid--pagos {
         grid-template-columns: 1fr;
     }

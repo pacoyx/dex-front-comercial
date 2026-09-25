@@ -22,6 +22,7 @@ import { ICustomerSearchResult } from '../../interfaces/ICatalogos';
 import { IInvoiceListItem } from '../../interfaces/IInvoices';
 import { InvoiceStatus, InvoiceStatusColorPipe, InvoiceStatusLabelPipe } from '../../shared/invoice-status';
 import { extractErrorMessage } from '../../shared/http-error.util';
+import { PaymentTypeLabelPipe } from '../../shared/payment-type';
 
 @Component({
   selector: 'app-facturas',
@@ -30,7 +31,7 @@ import { extractErrorMessage } from '../../shared/http-error.util';
     MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     MatAutocompleteModule, MatTableModule, MatDatepickerModule, ReactiveFormsModule, FormsModule,
     RouterModule, AsyncPipe, CurrencyPipe, DatePipe, TitleCasePipe, NgFor,
-    InvoiceStatusLabelPipe, InvoiceStatusColorPipe
+    InvoiceStatusLabelPipe, InvoiceStatusColorPipe, PaymentTypeLabelPipe
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -64,7 +65,7 @@ export class FacturasComponent implements OnInit {
   ];
   selectedStatus: number | null = null;
 
-  displayedColumns: string[] = ['cliente', 'factura', 'emision', 'vencimiento', 'total', 'moneda', 'saldo', 'estado'];
+  displayedColumns: string[] = ['cliente', 'factura', 'emision', 'vencimiento', 'formaPago', 'total', 'moneda', 'saldo', 'estado'];
   dataSource = new MatTableDataSource<IInvoiceListItem>([]);
 
   ngOnInit(): void {
@@ -91,7 +92,7 @@ export class FacturasComponent implements OnInit {
   }
 
   displayFn(customer: ICustomerSearchResult): string {
-    return customer ? `${customer.nombres} ${customer.apellidos}` : '';
+    return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
   }
 
   buscar() {

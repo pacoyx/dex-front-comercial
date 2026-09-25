@@ -37,6 +37,16 @@
         </button>
       </mat-menu>
 
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="reportesMenu">
+        <mat-icon>receipt_long</mat-icon><span>Reportes</span>
+      </button>
+      <mat-menu #reportesMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/purchase/reportes/registro-compras']" routerLinkActive="router-link-active">
+          <mat-icon>receipt_long</mat-icon>
+          Registro de Compras
+        </button>
+      </mat-menu>
+
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
         <mat-icon>tab_group</mat-icon><span>Configuraciones</span>
       </button>

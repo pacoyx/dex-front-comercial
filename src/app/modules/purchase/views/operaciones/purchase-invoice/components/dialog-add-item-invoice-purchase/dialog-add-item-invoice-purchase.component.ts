@@ -86,6 +86,16 @@ export class DialogAddItemInvoicePurchaseComponent implements OnInit {
     this.unidadMedida = product.unitMeasurementDescription;
   }
 
+  clearProduct(event: Event): void {
+    event.stopPropagation();
+    this.productControl.setValue(null);
+    this.productoId = 0;
+    this.productoNombre = '';
+    this.unidadMedida = '';
+    this.unidadMedidaId = 0;
+    this.precioUnitario = 0.0;
+  }
+
   displayFn(product: any): string {
     var returnDisplay = product && product.name ? product.name : product;
     return returnDisplay;

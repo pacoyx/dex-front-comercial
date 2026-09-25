@@ -76,3 +76,38 @@ export interface IListInvoiceByIdDetail {
   total: number;
   comments: string;
 }
+
+export interface IPurchaseRegisterFilters {
+  fromDate: string;
+  toDate: string;
+  supplierId?: number;
+  status?: number;
+}
+
+export interface IPurchaseRegisterRow {
+  invoiceId: number;
+  issueDate: string;
+  supplierName: string;
+  supplierRuc: string;
+  serieNumero: string;
+  subTotal: number;
+  igv: number;
+  total: number;
+  currencyId: string;
+  exchangeRate: number;
+  amountPaid: number;
+  balance: number;
+  status: string;
+}
+
+export interface IPurchaseRegisterTotals {
+  cantidadDocumentos: number;
+  totalCompras: number;
+  totalPagado: number;
+  totalPendiente: number;
+}
+
+export interface IPurchaseRegisterResponse {
+  rows: IPurchaseRegisterRow[];
+  totals: IPurchaseRegisterTotals;
+}

@@ -40,7 +40,7 @@
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
                         [displayWith]="displayFn">
                         <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                            {{ customer.nombres | titlecase }} {{ customer.apellidos | titlecase }}
+                            {{ customer.name | titlecase }} — RUC {{ customer.ruc }}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
@@ -97,6 +97,41 @@
                     <input matInput [matDatepicker]="pickerv" formControlName="dueDate">
                     <mat-datepicker-toggle matIconSuffix [for]="pickerv"></mat-datepicker-toggle>
                     <mat-datepicker #pickerv></mat-datepicker>
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>credit_card</mat-icon>
+                    Condiciones de Pago
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--pago">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Tipo Pago</mat-label>
+                    <mat-select formControlName="typePayment">
+                        @for (opt of typePaymentOptions; track opt.value) {
+                        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Días Crédito</mat-label>
+                    <input type="number" matInput formControlName="daysCredit" min="0">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Forma de Pago</mat-label>
+                    <mat-select formControlName="paymentMethod">
+                        @for (method of paymentMethods; track method.id) {
+                        <mat-option [value]="method.name">{{ method.name }}</mat-option>
+                        }
+                    </mat-select>
                 </mat-form-field>
 
             </mat-card-content>

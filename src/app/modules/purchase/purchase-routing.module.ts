@@ -10,6 +10,7 @@ import { PurchaseInvoicesComponent } from './views/operaciones/purchase-invoices
 import { PurchaseReportesFacturasxparamsComponent } from './views/reports/purchase-reportes-facturasxparams/purchase-reportes-facturasxparams.component';
 import { PurchaseInvoiceDetailViewComponent } from './views/operaciones/purchase-invoice-detail-view/purchase-invoice-detail-view.component';
 import { CuentasPorPagarComponent } from './views/cuentas-por-pagar/cuentas-por-pagar.component';
+import { PurchaseRegistroComprasComponent } from './views/reports/purchase-registro-compras/purchase-registro-compras.component';
 
 
 const routes: Routes = [
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'categoriesProduct', component: CategoryProdComponent },
   { path: 'consultas/facturas', component:  PurchaseReportesFacturasxparamsComponent},
   { path: 'consultas/facturas/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
+  { path: 'reportes/registro-compras', component: PurchaseRegistroComprasComponent },
 
 ];
 

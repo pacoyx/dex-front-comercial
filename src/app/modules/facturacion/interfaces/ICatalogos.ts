@@ -8,10 +8,8 @@ export interface IResponseGeneric<T> {
 
 export interface ICustomerSearchResult {
   id: number;
-  codigo: string;
-  nombres: string;
-  apellidos: string;
-  telefono: string;
+  name: string;
+  ruc: string;
 }
 
 export interface IBranchSales {
