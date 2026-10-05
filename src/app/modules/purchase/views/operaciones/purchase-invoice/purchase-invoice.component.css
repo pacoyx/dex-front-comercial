@@ -31,6 +31,16 @@
     color: var(--mat-sys-primary);
 }
 
+/* Acento de color para diferenciar la ventana de Compras de la de Ventas */
+.page-header__title--compras {
+    border-left: 5px solid #D84315;
+    padding-left: 14px;
+}
+
+.page-header__title--compras>mat-icon {
+    color: #D84315;
+}
+
 .page-header__heading {
     display: flex;
     flex-direction: column;

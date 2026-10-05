@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { LoginService } from '../../services/login.service';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
+import { PermissionsStoreService } from '../../services/permissions-store.service';
 
 @Component({
   selector: 'app-layout-plataforma',
@@ -25,10 +26,15 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
 export class LayoutPlataformaComponent {
 
   loginService = inject(LoginService);
+  private permissionsStore = inject(PermissionsStoreService);
   constructor(
     private router: Router,
     private toggleStore: ToggleStoreServiceService
   ) { }
+
+  hasPermission(code: string): boolean {
+    return this.permissionsStore.hasPermission(code);
+  }
 
   cerrarSesion() {
     localStorage.setItem('dex24Auth', '');

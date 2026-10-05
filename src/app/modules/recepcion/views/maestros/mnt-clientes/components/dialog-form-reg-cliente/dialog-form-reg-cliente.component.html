@@ -17,6 +17,18 @@
                 <input matInput formControlName="docPersonal">
             </mat-form-field>
             <mat-form-field appearance="outline">
+                <mat-label>Tipo de Cliente</mat-label>
+                <mat-select formControlName="customerType">
+                    @for (opt of customerTypeOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Código Interno</mat-label>
+                <input matInput formControlName="internalCode">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
                 <mat-label>Teléfono</mat-label>
                 <input matInput formControlName="phone">
             </mat-form-field>

@@ -1,0 +1,163 @@
+<div class="container-gastos">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>paid</mat-icon>
+            <div class="page-header__heading">
+                <h1>Gastos</h1>
+                <span class="page-header__subtitle">Gastos administrativos y generales (agua, luz, internet,
+                    alquiler, etc.) — distinto de Caja Chica</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" routerLink="nuevo">
+                <mat-icon>add</mat-icon>
+                Nuevo Gasto
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-sucursal">
+                <mat-label>Sucursal</mat-label>
+                <mat-select [(ngModel)]="selectedBranchId" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todas]</mat-option>
+                    @for (branch of branches; track branch.id) {
+                    <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-categoria">
+                <mat-label>Categoría</mat-label>
+                <mat-select [(ngModel)]="selectedCategoryId" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todas]</mat-option>
+                    @for (cat of categories; track cat.id) {
+                    <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-origen">
+                <mat-label>Origen</mat-label>
+                <mat-select [(ngModel)]="selectedSourceType" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todos]</mat-option>
+                    @for (opt of sourceTypeOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()" [disabled]="loading">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.expenseDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="sucursal">
+                    <th mat-header-cell *matHeaderCellDef> Sucursal </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.branchName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="categoria">
+                    <th mat-header-cell *matHeaderCellDef> Categoría </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.categoryName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="origen">
+                    <th mat-header-cell *matHeaderCellDef> Origen </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [style.color]="element.sourceType | expenseSourceTypeColor"
+                            [style.borderColor]="element.sourceType | expenseSourceTypeColor">
+                            <span class="status-chip__dot"
+                                [style.backgroundColor]="element.sourceType | expenseSourceTypeColor"></span>
+                            {{ element.sourceType | expenseSourceTypeLabel }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="monto">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Monto </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.amount |
+                        currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="docSustento">
+                    <th mat-header-cell *matHeaderCellDef> Doc. Sustento </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.hasSupportingDocument) {
+                        <mat-icon class="icon-check" [matTooltip]="element.documentNumber ?? ''">check_circle</mat-icon>
+                        } @else {
+                        <mat-icon class="icon-none">remove_circle_outline</mat-icon>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="proveedor">
+                    <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.supplierName ?? '—' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button [routerLink]="[element.id, 'editar']" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button (click)="verAdjuntos(element)" aria-label="Adjuntos">
+                            <mat-icon>attach_file</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="eliminar(element)" aria-label="Eliminar">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron gastos para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

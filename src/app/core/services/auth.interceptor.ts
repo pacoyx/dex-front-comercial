@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { ILoginResponseData } from '../interfaces/ILoginResponse';
 import { LoginService } from './login.service';
+import { NotificationsSystemService } from './notifications-system.service';
 
 
 const MAX_REFRESH_ATTEMPTS = 5;
@@ -39,6 +40,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const router = inject(Router);
   const authService = inject(LoginService);
+  const notificationsService = inject(NotificationsSystemService);
   const authTokenString = localStorage.getItem('dex24Auth');
   const authDataLogin: ILoginResponseData | null = authTokenString ? JSON.parse(authTokenString) : null;
   let authReq = req;
@@ -69,6 +71,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       console.log(req.url);
 
       console.log('error interceptor ==>', error.error);
+      if (error.status === 403) {
+        // Autenticado pero sin el permiso requerido: no es un problema de
+        // token, no se reintenta refresh ni se redirige.
+        notificationsService.showError('No tienes permiso para realizar esta acción.');
+        return throwError(() => toClientError(error.status, error.error));
+      }
+
       if (error.status === 401 && !req.url.includes('api/login')) {
         if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
           console.log('***M*** Maximum refresh attempts exceeded');

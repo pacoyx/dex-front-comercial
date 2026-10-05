@@ -14,132 +14,138 @@
     <app-alert-danger [message]="msgValidacion" [timeShow]="5000"></app-alert-danger>
     }
 
-    <!-- Panel: Búsqueda de guía -->
-    <div class="panel">
-        <div class="panel__header">
-            <h2 class="panel__title">
-                <mat-icon>search</mat-icon>
-                Búsqueda de Guía
-            </h2>
-        </div>
-        <div class="panel__content">
-            <div class="busqueda-row">
-                <mat-form-field appearance="outline" class="campo-guia">
-                    <mat-label>N° Guia</mat-label>
-                    <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
-                </mat-form-field>
-
-                @if(bolBuscandoGuia){
-                <div class="busqueda-loading">
-                    <app-loading></app-loading>
-                    Buscando...
-                </div>
-                }@else {
-                <div class="busqueda-estado">
-                    @if (guiaRetiroData?.estadoRegistro == 'A') {
-                    <span class="status-chip status-chip--activo">
-                        <span class="status-chip__dot"></span>
-                        ACTIVO
-                    </span>
-                    }
-
-                    @if (guiaRetiroData?.estadoRegistro == 'I') {
-                    <span class="status-chip status-chip--inactivo">
-                        <span class="status-chip__dot"></span>
-                        ANULADO
-                    </span>
-                    }
-                </div>
-                }
+    <div class="panels-row">
+        <!-- Panel: Búsqueda de guía -->
+        <div class="panel panels-row__item">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>search</mat-icon>
+                    Búsqueda de Guía
+                </h2>
             </div>
+            <div class="panel__content">
+                <div class="busqueda-row">
+                    <mat-form-field appearance="outline" class="campo-guia">
+                        <mat-label>N° Guia</mat-label>
+                        <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
+                    </mat-form-field>
 
-            <div class="fechas-row">
-                <div class="dato-item">
-                    <mat-icon>calendar_month</mat-icon>
-                    <span class="dato-item__label">Emisión:</span>
-                    {{guiaRetiroData?.fechaOperacion | date :'dd/MM/yyyy hh:mm:ss'}}
+                    @if(bolBuscandoGuia){
+                    <div class="busqueda-loading">
+                        <app-loading></app-loading>
+                        Buscando...
+                    </div>
+                    }@else {
+                    <div class="busqueda-estado">
+                        @if (guiaRetiroData?.estadoRegistro == 'A') {
+                        <span class="status-chip status-chip--activo">
+                            <span class="status-chip__dot"></span>
+                            ACTIVO
+                        </span>
+                        }
+
+                        @if (guiaRetiroData?.estadoRegistro == 'I') {
+                        <span class="status-chip status-chip--inactivo">
+                            <span class="status-chip__dot"></span>
+                            ANULADO
+                        </span>
+                        }
+
+                        @switch (guiaRetiroData?.tipoRecepcion) {
+                        @case ('R') {
+                        <span class="status-chip status-chip--recepcion">
+                            <mat-icon>account_box</mat-icon>
+                            RECEPCIÓN
+                        </span>
+                        }
+                        @case ('D') {
+                        <span class="status-chip status-chip--delivery">
+                            <mat-icon>local_shipping</mat-icon>
+                            DELIVERY
+                        </span>
+                        }
+                        }
+                    </div>
+                    }
                 </div>
-                <div class="dato-item">
-                    <mat-icon>calendar_month</mat-icon>
-                    <span class="dato-item__label">Entrega:</span>
-                    {{guiaRetiroData?.fechaHoraEntrega | date :'dd/MM/yyyy hh:mm:ss'}}
-                </div>
-                <div class="dato-item">
-                    @switch (guiaRetiroData?.tipoRecepcion) {
-                    @case ('R') {
-                    <mat-icon>account_box</mat-icon>
-                    <span class="dato-item__label">Atendido por:</span>
-                    Recepción
-                    }
-                    @case ('D') {
-                    <mat-icon>local_shipping</mat-icon>
-                    <span class="dato-item__label">Atendido por:</span>
-                    Delivery
-                    }
-                    }
+
+                <div class="fechas-row">
+                    <div class="dato-item">
+                        <mat-icon>calendar_month</mat-icon>
+                        <span class="dato-item__label">Emisión:</span>
+                        {{guiaRetiroData?.fechaOperacion | date :'dd/MM/yyyy hh:mm:ss'}}
+                    </div>
+                    <div class="dato-item">
+                        <mat-icon>calendar_month</mat-icon>
+                        <span class="dato-item__label">Entrega:</span>
+                        {{guiaRetiroData?.fechaHoraEntrega | date :'dd/MM/yyyy hh:mm:ss'}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Panel: Estado de pago y entrega -->
-    <div class="panel">
-        <div class="panel__header">
-            <h2 class="panel__title">
-                <mat-icon>fact_check</mat-icon>
-                Estado de Pago y Entrega
-            </h2>
-        </div>
-        <div class="panel__content">
-            <div class="estado-row">
-                <div class="estado-row__check">
-                    <mat-checkbox (change)="cancelar($event)" [(ngModel)]="bolCancelado"
-                        [disabled]="bolCancelado">Cancelado</mat-checkbox>
-                    <mat-chip-set aria-label="tipo pago">
-                        @if (guiaRetiroData?.tipoPagoCancelacion) {
-                        <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion }} </small></mat-chip>
-                        }
-                        @if(guiaRetiroData?.fechaPago){
-                        <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small>
-                        </mat-chip>
-                        }
-                    </mat-chip-set>
-                </div>
-
-                <div class="estado-row__check">
-                    <mat-checkbox (change)="actualizarEstadoEntrega($event)" [ngModel]="bolEntregado"
-                        [disabled]="bolEntregado">Recogio todo</mat-checkbox>
-                    <mat-chip-set aria-label="entrega">
-                        @if(guiaRetiroData?.fechaRecojo){
-                        <mat-chip> <small> {{guiaRetiroData?.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}} </small>
-                        </mat-chip>
-                        }
-                    </mat-chip-set>
-                </div>
-
-                @if(loadingCancelado){
-                <div class="estado-row__loading">
-                    <app-loading></app-loading>
-                    <b>Procesando...</b>
-                </div>
-                }
+        <!-- Panel: Estado de pago y entrega -->
+        <div class="panel panels-row__item">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>fact_check</mat-icon>
+                    Estado de Pago y Entrega
+                </h2>
             </div>
+            <div class="panel__content">
+                <div class="estado-row">
+                    <div class="estado-row__check">
+                        <mat-checkbox (change)="cancelar($event)" [(ngModel)]="bolCancelado"
+                            [disabled]="bolCancelado">Cancelado</mat-checkbox>
+                        <mat-chip-set aria-label="tipo pago">
+                            @if (guiaRetiroData?.tipoPagoCancelacion) {
+                            <mat-chip> <small> {{guiaRetiroData!.tipoPagoCancelacion }} </small></mat-chip>
+                            }
+                            @if(guiaRetiroData?.fechaPago){
+                            <mat-chip> <small> {{guiaRetiroData?.fechaPago | date:'dd/MM/yyyy hh:mm:ss'}}</small>
+                            </mat-chip>
+                            }
+                        </mat-chip-set>
+                    </div>
 
-            <div class="acciones-row">
-                <button mat-fab extended (click)="anularGuia()" [disabled]="guiaRetiroData?.estadoRegistro == 'I'">
-                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="delete_forever"></mat-icon>
-                    Anular
-                </button>
-                <button mat-fab extended (click)="registrarAlerta()" disabled>
-                    <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="warning"></mat-icon>
-                    Alertas
-                </button>
-                <div class="acciones-row__imprimir">
-                    <button mat-fab extended (click)="imprimirGuia()">
-                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="print"></mat-icon>
-                        Imprimir
+                    <div class="estado-row__check">
+                        <mat-checkbox (change)="actualizarEstadoEntrega($event)" [ngModel]="bolEntregado"
+                            [disabled]="bolEntregado">Recogio todo</mat-checkbox>
+                        <mat-chip-set aria-label="entrega">
+                            @if(guiaRetiroData?.fechaRecojo){
+                            <mat-chip> <small> {{guiaRetiroData?.fechaRecojo | date:'dd/MM/yyyy hh:mm:ss'}} </small>
+                            </mat-chip>
+                            }
+                        </mat-chip-set>
+                    </div>
+
+                    @if(loadingCancelado){
+                    <div class="estado-row__loading">
+                        <app-loading></app-loading>
+                        <b>Procesando...</b>
+                    </div>
+                    }
+                </div>
+
+                <div class="acciones-row">
+                    <button mat-stroked-button class="accion-btn" (click)="anularGuia()"
+                        [disabled]="guiaRetiroData?.estadoRegistro == 'I'">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon"
+                            fontIcon="delete_forever"></mat-icon>
+                        Anular
                     </button>
-                    <mat-slide-toggle [(ngModel)]="isSinCopia" (change)="onChangueToggleSinCopia($event)">
+                    <button mat-stroked-button class="accion-btn" (click)="previewGuia()"
+                        [disabled]="!guiaRetiroData">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="visibility"></mat-icon>
+                        Preview
+                    </button>
+                    <button mat-stroked-button class="accion-btn" (click)="imprimirGuia()"
+                        [disabled]="!guiaRetiroData || loadingReimprimir">
+                        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="print"></mat-icon>
+                        {{loadingReimprimir ? 'Imprimiendo...' : 'Imprimir'}}
+                    </button>
+                    <mat-slide-toggle class="accion-toggle" [(ngModel)]="isSinCopia"
+                        (change)="onChangueToggleSinCopia($event)">
                         Sin Copia</mat-slide-toggle>
                 </div>
             </div>
@@ -158,11 +164,11 @@
             <div class="cliente-row">
                 <div class="dato-item">
                     <mat-icon>people</mat-icon>
-                    {{guiaRetiroData?.customerName}}
+                    <span class="cliente-nombre">{{guiaRetiroData?.customerName}}</span>
                 </div>
                 <div class="dato-item">
                     <mat-icon>phone</mat-icon>
-                    {{guiaRetiroData?.customerPhone}}
+                    {{formatearTelefono(guiaRetiroData?.customerPhone)}}
                 </div>
                 <a mat-button [routerLink]="['/recepcion/consultas', clienteId]">Historial de guias</a>
                 <a mat-button [routerLink]="['/recepcion/inspeccion-resumen', guiaRetiroData?.id]">Ver Resumen

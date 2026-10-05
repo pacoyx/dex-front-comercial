@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--mat-sys-surface-container-high);
+  border-radius: 16px;
+}
+
+.kb-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.kb-key {
+  min-width: 48px;
+  min-height: 48px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.kb-key--wide {
+  flex: 1 1 auto;
+  max-width: 420px;
+}
+
+.kb-key--primary {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+.kb-key--danger {
+  color: var(--mat-sys-error);
+}
+
+@media (max-width: 900px) {
+  .kb-key {
+    min-width: 36px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+}

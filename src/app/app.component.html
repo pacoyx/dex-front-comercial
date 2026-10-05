@@ -18,6 +18,7 @@
     <mat-nav-list class="app-sidenav__nav">
       <span class="app-sidenav__group-label">Módulos</span>
 
+      @if (hasPermission('reception.access')) {
       <a mat-list-item
          [routerLink]="['/recepcion']"
          routerLinkActive #rlaRecepcion="routerLinkActive"
@@ -27,7 +28,9 @@
         <mat-icon matListItemIcon>exit_to_app</mat-icon>
         <span matListItemTitle>Recepción</span>
       </a>
+      }
 
+      @if (hasPermission('purchases.access')) {
       <a mat-list-item
          [routerLink]="['/purchase']"
          routerLinkActive #rlaPurchase="routerLinkActive"
@@ -37,7 +40,9 @@
         <mat-icon matListItemIcon>point_of_sale</mat-icon>
         <span matListItemTitle>Compras</span>
       </a>
+      }
 
+      @if (hasPermission('reception.access')) {
       <a mat-list-item
          [routerLink]="['/roperia']"
          routerLinkActive #rlaRoperia="routerLinkActive"
@@ -47,7 +52,9 @@
         <mat-icon matListItemIcon>person_search</mat-icon>
         <span matListItemTitle>Ropería</span>
       </a>
+      }
 
+      @if (hasPermission('invoices.access')) {
       <a mat-list-item
          [routerLink]="['/facturacion']"
          routerLinkActive #rlaFacturacion="routerLinkActive"
@@ -57,7 +64,9 @@
         <mat-icon matListItemIcon>receipt_long</mat-icon>
         <span matListItemTitle>Facturación</span>
       </a>
+      }
 
+      @if (hasPermission('employees.access')) {
       <a mat-list-item
          [routerLink]="['/rrhh']"
          routerLinkActive #rlaRrhh="routerLinkActive"
@@ -67,6 +76,19 @@
         <mat-icon matListItemIcon>groups</mat-icon>
         <span matListItemTitle>Recursos Humanos</span>
       </a>
+      }
+
+      @if (hasPermission('expenses.access')) {
+      <a mat-list-item
+         [routerLink]="['/gastos']"
+         routerLinkActive #rlaGastos="routerLinkActive"
+         [activated]="rlaGastos.isActive"
+         (click)="toggle()"
+         matTooltip="Gastos" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>account_balance</mat-icon>
+        <span matListItemTitle>Gastos</span>
+      </a>
+      }
     </mat-nav-list>
 
     <div class="app-sidenav__footer">

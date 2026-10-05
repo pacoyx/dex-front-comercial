@@ -48,6 +48,12 @@
                 <mat-label>Cliente</mat-label>
                 <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="autoCustomer"
                     placeholder="Buscar cliente">
+                @if (customerControl.value) {
+                <button mat-icon-button matSuffix type="button" aria-label="Limpiar cliente"
+                    (click)="clearCustomer($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
                 <mat-autocomplete #autoCustomer="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
                     [displayWith]="displayFn">
                     <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
@@ -144,21 +150,6 @@
                     <th mat-header-cell *matHeaderCellDef class="col-numeric"> T. Cambio </th>
                     <td mat-cell *matCellDef="let element" class="col-numeric">
                         {{ element.exchangeRate | currency:' ':'symbol':'0.2-3' }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="formaPago">
-                    <th mat-header-cell *matHeaderCellDef> Forma Pago </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.paymentMethod }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="tipoPago">
-                    <th mat-header-cell *matHeaderCellDef> Tipo Pago </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.typePayment | paymentTypeLabel }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="diasCredito">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Días Créd. </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.daysCredit }} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="estado">

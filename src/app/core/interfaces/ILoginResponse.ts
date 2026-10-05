@@ -8,13 +8,16 @@ export interface ILoginResponse {
 
 export interface ILoginResponseData {
     token: string;
+    refreshToken: string;
     name: string;
     userName: string;
-    role: string;
+    role: string; // legado, solo display, ya no se usa para autorizar nada
     status: string;
     userId: number;
     branchSales: BranchSale[];
     branchSalesCashId: number;
+    roles: string[];
+    permissions: string[];
 }
 
 interface BranchSale {

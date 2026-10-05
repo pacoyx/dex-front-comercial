@@ -39,7 +39,6 @@ export class TableListadoMntUserComponent {
 
   editUser(user: IGetUserResponse) {
       const dialogRef = this.dialog.open(DialogAddUserComponent, {
-        width: '400px',
         data: { esNuevo: false, objUsuario: user }
       });
   

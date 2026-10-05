@@ -24,6 +24,12 @@
                 <mat-label>Cliente</mat-label>
                 <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="autoCustomer"
                     placeholder="Buscar cliente">
+                @if (customerControl.value) {
+                <button mat-icon-button matSuffix type="button" aria-label="Limpiar cliente"
+                    (click)="clearCustomer($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
                 <mat-autocomplete #autoCustomer="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
                     [displayWith]="displayFn">
                     <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">

@@ -1,41 +1,148 @@
-.container {
-    /* background-color: aqua; */
-    /* margin: 10px; */
+.login-shell {
+    min-height: 100dvh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 500px;
-
-    background: rgb(149, 68, 233);
-    background: linear-gradient(40deg, rgba(149, 68, 233, 0.48923319327731096) 22%, rgba(68, 225, 233, 0.22032563025210083) 75%);
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 15% 20%, color-mix(in srgb, var(--mat-sys-primary) 18%, transparent) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, color-mix(in srgb, var(--mat-sys-tertiary) 16%, transparent) 0%, transparent 50%),
+        var(--mat-sys-surface-container-lowest);
 }
 
-.container-login {
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px 32px 24px;
+    border-radius: 24px !important;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    /* border: 1px solid black; */
-    border-radius: 5px;
-    padding: 20px;
-    width: 80%;
-    max-width: 400px;
-    background-color: white;
-    box-shadow: 15px 5px 10px #48529944;
-
+    gap: 8px;
 }
 
-.cajaLogin {
+/* ===== Brand ===== */
+
+.login-card__brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.login-card__logo {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 14px;
+    flex: 0 0 auto;
+}
+
+.login-card__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-card__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.login-card__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Form ===== */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.login-form__field {
     width: 100%;
+}
+
+.login-form__forgot-link {
+    align-self: flex-end;
+    margin: -4px 0 16px;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-primary);
+    text-decoration: none;
+}
+
+.login-form__forgot-link:hover {
+    text-decoration: underline;
+}
+
+.login-form__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    border-radius: var(--mat-sys-corner-full);
+    font: var(--mat-sys-title-medium);
+}
+
+.login-form__submit app-loading {
+    display: inline-flex;
+}
+
+.login-form__error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 10px 14px;
+    border: 1px solid var(--mat-sys-error);
+    border-radius: 12px;
+    background: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+    font: var(--mat-sys-body-medium);
 }
 
 /* El navegador superpone su propio ojo nativo de "mostrar contraseña" sobre
    inputs type="password" con contenido. Como ya tenemos nuestro propio botón
    de mostrar/ocultar, lo desactivamos para que no se vean dos a la vez. */
-.cajaLogin input[type="password"]::-ms-reveal,
-.cajaLogin input[type="password"]::-ms-clear {
+.login-form__field input[type="password"]::-ms-reveal,
+.login-form__field input[type="password"]::-ms-clear {
     display: none;
 }
 
-.cajaLogin input[type="password"]::-webkit-textfield-decoration-container {
+.login-form__field input[type="password"]::-webkit-textfield-decoration-container {
     visibility: hidden;
+}
+
+/* ===== Footer ===== */
+
+.login-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.login-card__footer a {
+    color: var(--mat-sys-primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-card__footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: 24px 20px 20px;
+        border-radius: 20px !important;
+    }
 }

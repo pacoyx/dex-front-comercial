@@ -1,0 +1,116 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>edit_note</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="clienteForm">
+        <div class="form-grid">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="firstName">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Apellido</mat-label>
+                <input matInput formControlName="lastName">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Dni / Ruc</mat-label>
+                <input matInput formControlName="docPersonal">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo de Cliente</mat-label>
+                <mat-select formControlName="customerType">
+                    @for (opt of customerTypeOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Código Interno</mat-label>
+                <input matInput formControlName="internalCode" placeholder="ej: CLI-0010">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Teléfono</mat-label>
+                <input matInput formControlName="phone">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" type="email">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A">Activo</mat-option>
+                    <mat-option value="I">Inactivo</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Dirección</mat-label>
+                <input matInput formControlName="address">
+            </mat-form-field>
+
+        </div>
+    </form>
+
+    @if (esEmpresaExistente) {
+    <div class="billing-callout">
+        <div class="billing-callout__text">
+            <mat-icon>business_center</mat-icon>
+            <span>Este cliente es una Empresa. Administra su RUC, crédito y contactos en su ficha de
+                facturación.</span>
+        </div>
+        <button mat-stroked-button color="primary" type="button" (click)="irADatosFacturacion()">
+            <mat-icon>arrow_forward</mat-icon>
+            Datos de Facturación
+        </button>
+    </div>
+    } @else if (!data.esNuevo && clienteForm.get('customerType')?.value === CustomerType.Company) {
+    <div class="billing-callout billing-callout--hint">
+        <div class="billing-callout__text">
+            <mat-icon>info</mat-icon>
+            <span>Guarda los cambios para habilitar el acceso a los Datos de Facturación de este cliente.</span>
+        </div>
+    </div>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
+        Grabar
+    </button>
+    }
+</mat-dialog-actions>

@@ -1,0 +1,100 @@
+<div class="client-dialog">
+
+    <div class="client-dialog__header">
+        <h2 mat-dialog-title>{{ vista === 'busqueda' ? 'Buscar cliente' : 'Registrar nuevo cliente' }}</h2>
+        <button mat-icon-button (click)="cerrar()" aria-label="Cerrar">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="client-dialog__body">
+
+        @if (vista === 'busqueda') {
+
+        <div class="client-dialog__search" [class.active]="campoActivo === 'busqueda'">
+            <mat-icon>search</mat-icon>
+            <input type="text" class="client-dialog__search-input" readonly
+                [(ngModel)]="filtroNombre" (ngModelChange)="disparaBusqueda()" (focus)="seleccionarCampo('busqueda')"
+                placeholder="Escribe un nombre...">
+        </div>
+
+        <div class="client-dialog__results">
+            @if (buscando) {
+            <div class="loading-row">
+                <app-loading></app-loading>
+                <span>Buscando...</span>
+            </div>
+            }
+
+            @if (!buscando && filtroNombre.trim().length >= 2 && resultados.length === 0) {
+            <div class="client-dialog__hint">No se encontraron clientes con ese nombre.</div>
+            }
+
+            @if (!buscando && filtroNombre.trim().length < 2) {
+            <div class="client-dialog__hint">Escribe al menos 2 letras para buscar.</div>
+            }
+
+            @for (cliente of resultados; track cliente.id) {
+            <button type="button" class="client-result" (click)="seleccionarCliente(cliente)">
+                <mat-icon class="client-result__avatar">person</mat-icon>
+                <div class="client-result__lines">
+                    <span class="client-result__name">{{ cliente.nombres }} {{ cliente.apellidos }}</span>
+                    <span class="client-result__phone">{{ cliente.telefono }}</span>
+                </div>
+            </button>
+            }
+        </div>
+
+        <button type="button" class="client-dialog__new-btn" (click)="mostrarRegistro()">
+            <mat-icon>person_add</mat-icon>
+            Registrar nuevo cliente
+        </button>
+        }
+
+        @if (vista === 'registro') {
+
+        <button type="button" class="client-dialog__back" (click)="volverABusqueda()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver a la búsqueda
+        </button>
+
+        <div class="client-form">
+            <label class="client-form__field" [class.active]="campoActivo === 'nombre'">
+                <span class="client-form__label">Nombre completo</span>
+                <input type="text" class="client-form__input" readonly
+                    [formControl]="$any(formRegistrarCliente.get('nombres'))" (focus)="seleccionarCampo('nombre')"
+                    placeholder="Nombre y apellido">
+            </label>
+            <label class="client-form__field" [class.active]="campoActivo === 'telefono'">
+                <span class="client-form__label">Teléfono</span>
+                <input type="tel" class="client-form__input" readonly
+                    [formControl]="$any(formRegistrarCliente.get('telefono'))" (focus)="seleccionarCampo('telefono')"
+                    maxlength="9" placeholder="9 dígitos">
+            </label>
+        </div>
+
+        @if (bolShowError) {
+        <app-alert-danger [message]="msgError" [timeShow]="3000"></app-alert-danger>
+        }
+
+        @if (loadingSave) {
+        <button mat-flat-button color="primary" class="client-dialog__save" disabled>
+            <span class="loading-row">
+                <app-loading></app-loading>
+                Grabando...
+            </span>
+        </button>
+        } @else {
+        <button mat-flat-button color="primary" class="client-dialog__save" (click)="registrarCliente()">
+            <mat-icon>check</mat-icon>
+            Guardar y seleccionar
+        </button>
+        }
+        }
+
+    </div>
+
+    <app-alpha-keypad (key)="onKeypadKey($event)" (backspace)="onKeypadBackspace()" (clear)="onKeypadClear()">
+    </app-alpha-keypad>
+
+</div>

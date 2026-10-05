@@ -1,0 +1,73 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>attach_file</mat-icon>
+        <h2 mat-dialog-title>Adjuntos del Gasto</h2>
+    </div>
+    <button mat-icon-button (click)="cerrar()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando adjuntos...</span>
+    </div>
+    } @else {
+    <ul class="attachment-list">
+        @for (item of attachments; track item.id) {
+        <li class="attachment-list__item">
+            <mat-icon>description</mat-icon>
+            <div class="attachment-list__info">
+                <a [href]="item.blobUrl" target="_blank" rel="noopener">{{ item.originalFileName }}</a>
+                <span class="attachment-list__date">{{ item.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+        </li>
+        } @empty {
+        <li class="attachment-list__empty">Este gasto no tiene adjuntos registrados.</li>
+        }
+    </ul>
+    }
+
+    <p class="attachment-hint">
+        <mat-icon>info</mat-icon>
+        El backend no sube archivos: registra la referencia (nombre y URL) de un archivo que ya fue subido
+        externamente (blob/bucket).
+    </p>
+
+    <form [formGroup]="form" class="form-grid">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre de Archivo</mat-label>
+            <input matInput formControlName="fileName" placeholder="ej. boleta-001.pdf">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre Original</mat-label>
+            <input matInput formControlName="originalFileName" placeholder="ej. Boleta Internet Set.pdf">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>URL del Archivo</mat-label>
+            <input matInput formControlName="blobUrl" placeholder="https://...">
+        </mat-form-field>
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cerrar()">Cerrar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Guardando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" [disabled]="form.invalid" (click)="agregar()">
+        <mat-icon>add</mat-icon>
+        Agregar Adjunto
+    </button>
+    }
+</mat-dialog-actions>

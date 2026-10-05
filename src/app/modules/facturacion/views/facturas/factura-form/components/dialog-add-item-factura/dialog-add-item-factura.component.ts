@@ -81,6 +81,13 @@ export class DialogAddItemFacturaComponent implements OnInit {
     return product && product.name ? product.name : product;
   }
 
+  clearProduct(event: Event): void {
+    event.stopPropagation();
+    this.productControl.setValue(null);
+    this.productoId = 0;
+    this.productoNombre = '';
+  }
+
   get lineTotalPreview(): number {
     return (this.cantidad * this.precioUnitario) - this.descuento;
   }

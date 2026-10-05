@@ -4,6 +4,7 @@ import { ManagementConfiguracionesComponent } from './views/management-configura
 import { ManagentEmpresaComponent } from './views/managent-empresa/managent-empresa.component';
 import { ManagentUsersComponent } from './views/managent-users/managent-users.component';
 import { ManagementDashboardComponent } from './views/management-dashboard/management-dashboard.component';
+import { RolesComponent } from './views/roles/roles.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'empresa', component: ManagentEmpresaComponent },
   { path: 'usuarios', component: ManagentUsersComponent },
   { path: 'configuraciones', component: ManagementConfiguracionesComponent },
+  { path: 'roles', component: RolesComponent },
 ];
 
 @NgModule({

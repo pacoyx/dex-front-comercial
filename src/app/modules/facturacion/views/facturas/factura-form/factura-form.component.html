@@ -1,7 +1,7 @@
 <div class="container-invoice">
 
     <div class="page-header">
-        <div class="page-header__title">
+        <div class="page-header__title page-header__title--ventas">
             <mat-icon>receipt_long</mat-icon>
             <div class="page-header__heading">
                 <h1>Registro de Factura</h1>
@@ -34,13 +34,19 @@
             <mat-card-content class="form-grid form-grid--cliente">
 
                 <mat-form-field appearance="outline">
-                    <mat-label>Cliente</mat-label>
+                    <mat-label>Cliente (Empresa)</mat-label>
                     <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
-                        placeholder="Escribe el nombre del cliente">
+                        placeholder="Escribe la razón social o el RUC">
+                    @if (customerControl.value && customerControl.enabled) {
+                    <button mat-icon-button matSuffix type="button" aria-label="Limpiar cliente"
+                        (click)="clearCustomer($event)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    }
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)"
                         [displayWith]="displayFn">
                         <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer">
-                            {{ customer.name | titlecase }} — RUC {{ customer.ruc }}
+                            {{ customer.businessName | titlecase }} — RUC {{ customer.taxId }}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>

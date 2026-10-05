@@ -70,6 +70,18 @@ body {
   border: none;
 }
 
+// Dialogo a pantalla completa (ej. busqueda de cliente en recepcion-touch).
+// El padding/border-radius por defecto de Material solo se puede anular
+// desde una hoja global, ya que .mat-mdc-dialog-container vive fuera del
+// encapsulamiento de vista del componente que abre el dialogo.
+.client-search-dialog .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+.client-search-dialog .mdc-dialog__surface {
+  border-radius: 0;
+}
+
 .error-snackbar {
   background: #F44336 !important;
   color: white !important;

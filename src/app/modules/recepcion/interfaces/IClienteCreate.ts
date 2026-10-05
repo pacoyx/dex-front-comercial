@@ -1,3 +1,5 @@
+import { CustomerType } from './ICliente';
+
 export interface IClienteCreate {
     firstName: string;
     lastName: string;
@@ -6,6 +8,8 @@ export interface IClienteCreate {
     email: string;
     docPersonal: string;
     status: string;
+    customerType?: CustomerType;
+    internalCode?: string;
 }
 
 export interface IClienteUpdate {
@@ -17,4 +21,6 @@ export interface IClienteUpdate {
     email: string;
     docPersonal: string;
     status: string;
+    customerType?: CustomerType;
+    internalCode?: string;
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -10,6 +10,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleStoreServiceService } from './core/services/toggle-store-service.service';
+import { PermissionsStoreService } from './core/services/permissions-store.service';
+import { LoginService } from './core/services/login.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +24,7 @@ import { ToggleStoreServiceService } from './core/services/toggle-store-service.
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
   @ViewChild('sidenav') sidenav!: MatSidenav;
   title = 'Dexfront-Comercial';
 
@@ -31,9 +33,23 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     private router: Router,
-    private toggleStore: ToggleStoreServiceService
+    private toggleStore: ToggleStoreServiceService,
+    private permissionsStore: PermissionsStoreService,
+    private loginService: LoginService,
   ) {
     console.log('backend.Base', environment.apiUrlBase);
+  }
+
+  ngOnInit(): void {
+    // Rehidrata roles/permisos vigentes en el backend al recargar la pagina
+    // (el store ya arranca con el ultimo valor guardado en localStorage para
+    // evitar el parpadeo del menu mientras esta llamada resuelve).
+    if (localStorage.getItem('dex24Auth')) {
+      this.loginService.obtenerUsuarioActual().subscribe({
+        next: (resp) => this.permissionsStore.setSession(resp.data.roles, resp.data.permissions),
+        error: () => { /* el interceptor ya maneja el refresh/logout ante un 401 */ },
+      });
+    }
   }
 
   ngAfterViewInit(): void {
@@ -45,8 +61,13 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
+  hasPermission(code: string): boolean {
+    return this.permissionsStore.hasPermission(code);
+  }
+
   cerrarSesion() {
     localStorage.setItem('dex24Auth', '');
+    this.permissionsStore.clear();
     this.router.navigate(['/login']);
     this.toggleStore.setToggleState(false);
   }

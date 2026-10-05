@@ -1,0 +1,23 @@
+<div class="keypad-grid">
+  @for (d of digits; track d) {
+  <button type="button" mat-flat-button (click)="digit.emit(d)">{{ d }}</button>
+  }
+
+  <button type="button" mat-flat-button class="keypad-clear" (click)="clear.emit()">C</button>
+  <button type="button" mat-flat-button (click)="digit.emit('0')">0</button>
+  @if (allowDecimal) {
+  <button type="button" mat-flat-button (click)="digit.emit('.')">.</button>
+  } @else {
+  <div></div>
+  }
+
+  <button type="button" mat-flat-button class="keypad-back keypad-span" (click)="backspace.emit()">
+    <mat-icon>backspace</mat-icon>
+    Borrar último
+  </button>
+</div>
+
+<button type="button" mat-flat-button color="primary" class="keypad-done" (click)="done.emit()">
+  <mat-icon>check</mat-icon>
+  Listo
+</button>

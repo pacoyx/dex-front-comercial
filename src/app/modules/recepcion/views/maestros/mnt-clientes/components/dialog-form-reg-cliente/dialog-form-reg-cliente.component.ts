@@ -3,7 +3,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { IClienteCreate, IClienteUpdate } from '../../../../../interfaces/IClienteCreate';
+import { CUSTOMER_TYPE_OPTIONS, CustomerType } from '../../../../../interfaces/ICliente';
 import { MaestrosService } from '../../../../../services/maestros.service';
+import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LoadingComponent } from '../../../../../../../core/components/loading/loading.component';
@@ -17,7 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     FormsModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatDialogActions, MatDialogTitle,
-    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule
+    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule
   ],
   templateUrl: './dialog-form-reg-cliente.component.html',
   styleUrl: './dialog-form-reg-cliente.component.css'
@@ -30,6 +32,7 @@ export class DialogFormRegClienteComponent implements OnInit {
 
   loadingSave = false;
   titulo = this.data.esNuevo ? 'Registrar Cliente' : 'Actualizar Cliente';
+  customerTypeOptions = CUSTOMER_TYPE_OPTIONS;
 
   constructor(
     private fb: FormBuilder,
@@ -44,15 +47,17 @@ export class DialogFormRegClienteComponent implements OnInit {
       phone: '',
       email: '',
       docPersonal: '',
-      status: ['', Validators.required]
+      status: ['', Validators.required],
+      customerType: [CustomerType.Individual, Validators.required],
+      internalCode: '',
     });
   }
 
   ngOnInit(): void {
     this.clienteForm.reset();
-    if (this.data.esNuevo) {      
-      this.clienteForm.patchValue({ status: 'A' });
-    } else {      
+    if (this.data.esNuevo) {
+      this.clienteForm.patchValue({ status: 'A', customerType: CustomerType.Individual });
+    } else {
       this.clienteForm.patchValue(this.data.objCliente);
       this.clienteForm.get('firstName')?.setValue(this.data.objCliente.firstName);
     }

@@ -1,0 +1,177 @@
+<div class="container-gasto-form">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>paid</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ titulo }}</h1>
+                <span class="page-header__subtitle">Registra un gasto administrativo o general de la empresa</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="cancelar()" [disabled]="saving">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+            <button mat-flat-button color="primary" (click)="guardar()" [disabled]="saving || loading">
+                @if (saving) {
+                <app-loading></app-loading>
+                } @else {
+                <mat-icon>save</mat-icon>
+                }
+                {{ esNuevo ? 'Registrar Gasto' : 'Guardar Cambios' }}
+            </button>
+        </div>
+    </div>
+
+    @if (validationErrors.length > 0) {
+    <div class="alert-validacion">
+        <mat-icon>error_outline</mat-icon>
+        <ul>
+            @for (error of validationErrors; track $index) {
+            <li>{{ error }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando gasto...</span>
+    </div>
+    }
+
+    <div class="gasto-form" [formGroup]="frmExpense">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>storefront</mat-icon>
+                    Sucursal y Categoría
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--dos">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sucursal</mat-label>
+                    <mat-select formControlName="branchSalesId">
+                        @for (branch of branches; track branch.id) {
+                        <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (frmExpense.get('branchSalesId')?.hasError('required')) {
+                    <mat-error>La sucursal es obligatoria.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Categoría de Gasto</mat-label>
+                    <mat-select formControlName="expenseCategoryId">
+                        @for (cat of categories; track cat.id) {
+                        <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (frmExpense.get('expenseCategoryId')?.hasError('required')) {
+                    <mat-error>La categoría es obligatoria.</mat-error>
+                    }
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>receipt_long</mat-icon>
+                    Detalle del Gasto
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--tres">
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Origen del Gasto</mat-label>
+                    <mat-select formControlName="sourceType">
+                        @for (opt of sourceTypeOptions; track opt.value) {
+                        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                    </mat-select>
+                    @if (frmExpense.get('sourceType')?.hasError('required')) {
+                    <mat-error>El origen es obligatorio.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Fecha del Gasto</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="expenseDate">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    @if (frmExpense.get('expenseDate')?.hasError('required')) {
+                    <mat-error>La fecha es obligatoria.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Monto (S/)</mat-label>
+                    <input type="number" matInput formControlName="amount" step="0.01" min="0.01">
+                    @if (frmExpense.get('amount')?.hasError('required')) {
+                    <mat-error>El monto es obligatorio.</mat-error>
+                    }
+                    @if (frmExpense.get('amount')?.hasError('min')) {
+                    <mat-error>El monto debe ser mayor a 0.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Descripción</mat-label>
+                    <input type="text" matInput formControlName="description" maxlength="500"
+                        placeholder="ej. Pago mensual de Internet">
+                    @if (frmExpense.get('description')?.hasError('required')) {
+                    <mat-error>La descripción es obligatoria.</mat-error>
+                    }
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>description</mat-icon>
+                    Documento de Sustento
+                </h2>
+            </div>
+            <mat-card-content class="form-grid form-grid--tres">
+
+                <mat-checkbox formControlName="hasSupportingDocument" class="field--full">
+                    Este gasto tiene documento de sustento (boleta, factura, recibo)
+                </mat-checkbox>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>N° de Documento</mat-label>
+                    <input type="text" matInput formControlName="documentNumber" maxlength="50"
+                        placeholder="ej. F001-12345">
+                    @if (frmExpense.get('documentNumber')?.hasError('required')) {
+                    <mat-error>El N° de documento es obligatorio si tiene sustento.</mat-error>
+                    }
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Proveedor</mat-label>
+                    <input type="text" matInput formControlName="supplierName" maxlength="150"
+                        placeholder="ej. Movistar">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Observación</mat-label>
+                    <input type="text" matInput formControlName="observation" maxlength="500"
+                        placeholder="Observaciones adicionales">
+                </mat-form-field>
+
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+</div>

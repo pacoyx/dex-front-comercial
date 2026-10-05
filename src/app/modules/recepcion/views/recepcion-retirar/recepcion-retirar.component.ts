@@ -87,6 +87,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   isSinCopia = false;
 
   zapatillasCategoryId: number | null = null;
+  loadingReimprimir = false;
 
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
@@ -366,11 +367,41 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     });
   }
 
-  imprimirGuia() {
+  previewGuia() {
     if (!this.guiaRetiroData) {
       return;
     }
     window.print();
+  }
+
+  imprimirGuia() {
+    if (!this.guiaRetiroData || this.loadingReimprimir) {
+      return;
+    }
+
+    this.loadingReimprimir = true;
+    const printCopy = this.isSinCopia ? 0 : 1;
+    this.emisionService.ReimprimirGuia(this.guiaRetiroData.id, printCopy).subscribe({
+      next: (resp) => {
+        this.loadingReimprimir = false;
+        if (!resp.success) {
+          this.notificacionService.showError(resp.message);
+          return;
+        }
+        this.notificacionService.showSuccess(resp.message || 'Ticket enviado a reimprimir');
+      },
+      error: (err) => {
+        this.loadingReimprimir = false;
+        const mensaje = err?.error?.message || 'No se pudo reimprimir la guía.';
+        this.notificacionService.showError(mensaje);
+        if (err?.status === 404) {
+          this.buscarGuia();
+        }
+      },
+      complete: () => {
+        console.log('complete() ReimprimirGuia');
+      },
+    });
   }
 
   recogerPrendaxItem(item: IGuiaRetiroWgdDTO) {
@@ -446,6 +477,13 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     this.dialog.open(DialogInspeccionItemComponent, {
       data: { workGuideDetailId: item.id, productName: item.product.name }
     });
+  }
+
+  formatearTelefono(telefono: string | undefined | null): string {
+    if (!telefono) {
+      return '';
+    }
+    return telefono.replace(/\D/g, '').match(/.{1,3}/g)?.join('-') || telefono;
   }
 
   abrirZapatilla(item: IGuiaRetiroWgdDTO) {

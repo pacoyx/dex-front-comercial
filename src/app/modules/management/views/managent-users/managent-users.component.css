@@ -1,15 +1,115 @@
-.container-mntuser{
+.container-usuarios {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 10px;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.section-controls-mnt-users{
+/* ===== Page header ===== */
+
+.page-header {
     display: flex;
-    gap: 10px;
+    align-items: center;
     justify-content: space-between;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 5px;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
+}
+
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading {
+    display: flex;
+    flex-direction: column;
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.page-header__actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ===== Panel / filtros ===== */
+
+.panel {
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.panel-tabla {
+    padding: 0;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-buscar {
+    flex: 1 1 260px;
+    min-width: 220px;
+}
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+@media (max-width: 720px) {
+    .container-usuarios {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-header__actions {
+        justify-content: stretch;
+    }
+
+    .page-header__actions button {
+        flex: 1;
+    }
+
+    .filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
 }

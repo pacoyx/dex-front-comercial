@@ -27,7 +27,6 @@ import {
   SalesRegisterStatusColorPipe,
   SalesRegisterStatusLabelPipe,
 } from '../../../shared/sales-register-status';
-import { PaymentTypeLabelPipe } from '../../../shared/payment-type';
 
 @Component({
   selector: 'app-registro-ventas',
@@ -36,7 +35,7 @@ import { PaymentTypeLabelPipe } from '../../../shared/payment-type';
     MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
     MatAutocompleteModule, MatTableModule, MatDatepickerModule, ReactiveFormsModule, FormsModule,
     AsyncPipe, CurrencyPipe, DatePipe, TitleCasePipe, NgFor, LoadingComponent,
-    SalesRegisterStatusLabelPipe, SalesRegisterStatusColorPipe, PaymentTypeLabelPipe,
+    SalesRegisterStatusLabelPipe, SalesRegisterStatusColorPipe,
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -68,7 +67,7 @@ export class RegistroVentasComponent implements OnInit {
 
   displayedColumns: string[] = [
     'fecha', 'cliente', 'documento', 'subTotal', 'igv', 'total',
-    'pagado', 'saldo', 'moneda', 'tipoCambio', 'formaPago', 'tipoPago', 'diasCredito', 'estado',
+    'pagado', 'saldo', 'moneda', 'tipoCambio', 'estado',
   ];
   dataSource = new MatTableDataSource<ISalesRegisterRow>([]);
   totals: ISalesRegisterTotals | null = null;
@@ -118,6 +117,12 @@ export class RegistroVentasComponent implements OnInit {
 
   onCustomerSelected(event: any) {
     this.selectedCustomer = event.option.value;
+  }
+
+  clearCustomer(event: Event): void {
+    event.stopPropagation();
+    this.customerControl.setValue(null);
+    this.selectedCustomer = null;
   }
 
   displayFn(customer: ICustomerSearchResult): string {

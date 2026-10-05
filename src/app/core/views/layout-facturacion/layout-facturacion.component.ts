@@ -8,6 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
+import { PermissionsStoreService } from '../../services/permissions-store.service';
 
 @Component({
   selector: 'app-layout-facturacion',
@@ -21,10 +22,15 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
 export class LayoutFacturacionComponent {
 
   loginService = inject(LoginService);
+  private permissionsStore = inject(PermissionsStoreService);
   constructor(
     private router: Router,
     private toggleStore: ToggleStoreServiceService
   ) { }
+
+  hasPermission(code: string): boolean {
+    return this.permissionsStore.hasPermission(code);
+  }
 
   cerrarSesion() {
     localStorage.setItem('dex24Auth', '');

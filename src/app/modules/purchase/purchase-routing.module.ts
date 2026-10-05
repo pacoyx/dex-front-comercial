@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { permissionGuard } from '../../core/guards/permission.guard';
 import { DashboardPurchaseComponent } from './views/dashboard-purchase/dashboard-purchase.component';
 import { SupplierComponent } from './views/maestros/supplier/supplier.component';
 import { ProductComponent } from './views/maestros/product/product.component';
@@ -20,13 +21,13 @@ const routes: Routes = [
   { path: 'invoices/nueva', component: PurchaseInvoiceComponent },
   { path: 'invoices/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
   { path: 'cuentas-pagar', component: CuentasPorPagarComponent },
-  { path: 'suppliers', component: SupplierComponent },
+  { path: 'suppliers', component: SupplierComponent, canActivate: [permissionGuard], data: { permission: 'suppliers.access' } },
   { path: 'products', component: ProductComponent },
   { path: 'unitmeasure', component: UnitMeasurementComponent },
   { path: 'categoriesProduct', component: CategoryProdComponent },
   { path: 'consultas/facturas', component:  PurchaseReportesFacturasxparamsComponent},
   { path: 'consultas/facturas/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
-  { path: 'reportes/registro-compras', component: PurchaseRegistroComprasComponent },
+  { path: 'reportes/registro-compras', component: PurchaseRegistroComprasComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
 
 ];
 

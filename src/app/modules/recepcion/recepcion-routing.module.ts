@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { permissionGuard } from '../../core/guards/permission.guard';
 import { RecepcionEmisionComponent } from './views/recepcion-emision/recepcion-emision.component';
+import { RecepcionTouchComponent } from './views/recepcion-touch/recepcion-touch.component';
 import { RecepcionRetirarComponent } from './views/recepcion-retirar/recepcion-retirar.component';
 import { RecepcionCajaComponent } from './views/recepcion-caja/recepcion-caja.component';
 import { RecepcionConsultasComponent } from './views/recepcion-consultas/recepcion-consultas.component';
@@ -24,28 +26,29 @@ import { ReporteSneakersComponent } from './views/reportes/reporte-sneakers/repo
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
   { path: 'emision', component: RecepcionEmisionComponent },
+  { path: 'touch', component: RecepcionTouchComponent },
   { path: 'retiros', component: RecepcionRetirarComponent },
   { path: 'retiros/:serie/:numGuia', component: RecepcionRetirarComponent },
   { path: 'caja', component: RecepcionCajaComponent },
   { path: 'consultas', component: RecepcionConsultasComponent },
   { path: 'consultas/:clienteId', component: RecepcionConsultasComponent },
   { path: 'gastos', component: RecepcionGastosComponent },
-  { path: 'clientes', component: MntClientesComponent },
-  { path: 'usuarios', component: MntUsuariosComponent },
+  { path: 'clientes', component: MntClientesComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
+  { path: 'usuarios', component: MntUsuariosComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'servicios', component: MntProdservicesComponent },
   { path: 'ubicaciones', component: MntUbicacionComponent },
-  { path: 'sucursales', component: MntSucursalesComponent },
-  { path: 'sucursales/:branchId/usuarios', component: MntSucursalUsuariosComponent },
-  { path: 'impresoras', component: MntImpresorasComponent },
-  { path: 'workerNodes', component: MntWorkerNodesComponent },
-  { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent },
+  { path: 'sucursales', component: MntSucursalesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
+  { path: 'sucursales/:branchId/usuarios', component: MntSucursalUsuariosComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
+  { path: 'impresoras', component: MntImpresorasComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
+  { path: 'workerNodes', component: MntWorkerNodesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
+  { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent },
-  { path: 'resumenCaja', component: ReporteResumenCajaComponent },  
-  { path: 'dashboardcash', component: DashboardcajaComponent },
-  { path: 'dashboardprinters', component: DashboardprintersComponent },
+  { path: 'resumenCaja', component: ReporteResumenCajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
+  { path: 'dashboardcash', component: DashboardcajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
+  { path: 'dashboardprinters', component: DashboardprintersComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'inspeccion-resumen', component: InspeccionResumenComponent },
   { path: 'inspeccion-resumen/:workGuideId', component: InspeccionResumenComponent },
-  { path: 'reportes/sneakers', component: ReporteSneakersComponent },
+  { path: 'reportes/sneakers', component: ReporteSneakersComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
 ];
 
 @NgModule({

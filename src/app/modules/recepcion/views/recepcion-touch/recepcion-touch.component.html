@@ -1,0 +1,315 @@
+<div class="touch-page win-proceso">
+
+  <!-- BARRA SUPERIOR: cliente + telefono + sucursal/fecha + nuevo -->
+  <div class="topbar">
+
+    <div class="client-chip" [class.needs-client]="!clienteAsignado">
+      <mat-icon class="client-chip__icon">{{ clienteAsignado ? 'person' : 'person_off' }}</mat-icon>
+
+      <div class="client-chip__body">
+        <input type="text" class="client-chip__input" [formControl]="clienteControl" [matAutocomplete]="auto"
+          placeholder="Buscar cliente" [readonly]="blockSave">
+        <span class="client-chip__hint">
+          {{ clienteAsignado ? 'Toca para cambiar de cliente' : 'Requerido: nombre y teléfono' }}
+        </span>
+
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onClienteSelected($event)"
+          [displayWith]="displayFn">
+          <mat-option *ngFor="let cliente of filteredClientes | async" [value]="cliente">
+            {{ cliente.nombres | titlecase }} {{ cliente.apellidos | titlecase }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
+
+      <button mat-mini-fab color="primary" class="client-chip__add" (click)="openDialogClientes()"
+        [disabled]="blockSave" matTooltip="Nuevo cliente">
+        <mat-icon>person_add</mat-icon>
+      </button>
+    </div>
+
+    @if (clienteAsignado) {
+    <div class="phone-chip" [class.editing]="phoneKeypadOpen">
+      <button type="button" class="phone-chip__value" [disabled]="blockSave" (click)="abrirTecladoTelefono()">
+        <mat-icon>call</mat-icon>
+        <span>{{ clienteTelefono || 'Sin teléfono' }}</span>
+        <mat-icon class="phone-chip__edit-icon">edit</mat-icon>
+      </button>
+
+      @if (loadingUpdatePhone) {
+      <app-loading></app-loading>
+      }
+
+      @if (phoneKeypadOpen) {
+      <app-numeric-keypad [allowDecimal]="false" (digit)="onTelefonoDigit($event)"
+        (backspace)="onTelefonoBackspace()" (clear)="onTelefonoClear()" (done)="confirmarTelefonoDesdeTeclado()">
+      </app-numeric-keypad>
+      }
+    </div>
+    }
+
+    <div class="doc-meta">
+      <span class="doc-pill"><mat-icon>storefront</mat-icon>{{ sucursalNombre }}</span>
+      <span class="doc-pill"><mat-icon>event</mat-icon>{{ fechaHoy | date:'dd/MM/yyyy' }}</span>
+    </div>
+
+    <div class="topbar__spacer"></div>
+
+    <button mat-stroked-button color="primary" (click)="nuevaGuia()">
+      <mat-icon>post_add</mat-icon>
+      Nuevo
+    </button>
+  </div>
+
+  @if (!bolExisteCaja) {
+  <app-alert-danger [message]="msgValidacion" [timeShow]="3000"></app-alert-danger>
+  }
+
+  <div class="touch-body">
+
+    <!-- CATALOGO -->
+    <div class="catalog">
+
+      <div class="catalog__search">
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Buscar producto o servicio..." [(ngModel)]="searchText"
+          (keyup)="onSearchInputChange()">
+      </div>
+
+      <div class="chips-row">
+        <button type="button" class="cat-chip" [class.active]="activeCategoryId === 'favoritos'"
+          (click)="ocultarMenuItems()">
+          Favoritos
+        </button>
+        @for (cat of categories; track cat.id) {
+        <button type="button" class="cat-chip" [class.active]="activeCategoryId === cat.id"
+          (click)="mostrarMenuItems(cat.id)">
+          {{ cat.name }}
+        </button>
+        }
+      </div>
+
+      <div class="catalog__scroll">
+
+        @if (loading) {
+        <div class="loading-row">
+          <app-loading></app-loading>
+          <span>Cargando...</span>
+        </div>
+        }
+
+        @if (!showMenuItems) {
+        <div class="tile-grid">
+
+          @if (loadingServicesQuick) {
+          <div class="loading-row loading-row--full">
+            <app-loading></app-loading>
+            <span>Cargando acceso rápido...</span>
+          </div>
+          }
+
+          @for (item of dataServiciosAccesosRapido; track item.id) {
+          <button type="button" class="service-tile" (click)="agregarItemQuickAccess(item)" [disabled]="blockSave">
+            <img [src]="item.iconName" alt="" class="service-tile__icon">
+            <span class="service-tile__label">{{ item.shortName }}</span>
+          </button>
+          }
+        </div>
+        }
+
+        @if (showMenuItems) {
+
+        @if (loadingFilterServices) {
+        <div class="loading-row">
+          <app-loading></app-loading>
+          <span>Buscando...</span>
+        </div>
+        }
+
+        <app-recepcion-grilla-busqueda-servicios [itemsData]="items" (updatePayEvent)="actualizarPago($event)">
+        </app-recepcion-grilla-busqueda-servicios>
+        }
+
+      </div>
+    </div>
+
+    <!-- TICKET -->
+    <aside class="ticket">
+
+      <div class="ticket__fulfillment">
+        <button type="button" class="fulfill-opt" [class.active]="!isDelivery" [disabled]="blockSave"
+          (click)="isDelivery = false; onChangueToggle({ checked: false })">
+          <mat-icon>storefront</mat-icon>
+          Recepción
+        </button>
+        <button type="button" class="fulfill-opt" [class.active]="isDelivery" [disabled]="blockSave"
+          (click)="isDelivery = true; onChangueToggle({ checked: true })">
+          <mat-icon>two_wheeler</mat-icon>
+          Delivery
+        </button>
+      </div>
+
+      <div class="ticket__items">
+        <table mat-table [dataSource]="dataSource" class="detail-table">
+
+          <ng-container matColumnDef="item">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} {{element.Identificador}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="nomProd">
+            <th mat-header-cell *matHeaderCellDef> Servicio</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="item-cell">
+                <span class="item-cell__name">{{element.nomProd}}</span>
+                @if (element.Obs) {
+                <span class="item-cell__obs">{{element.Obs}}</span>
+                }
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Cant">
+            <th mat-header-cell *matHeaderCellDef> Cant </th>
+            <td mat-cell *matCellDef="let element" class="col-numeric">
+              {{element.Cant | currency:' ':'symbol':'0.2-2'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Precio">
+            <th mat-header-cell *matHeaderCellDef> Precio </th>
+            <td mat-cell *matCellDef="let element" class="col-numeric">
+              {{element.Precio | currency:' ':'symbol':'0.2-2'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Subtotal">
+            <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+            <td mat-cell *matCellDef="let element" class="col-numeric">
+              {{element.Subtotal | currency:' ':'symbol':'0.2-2'}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Obs">
+            <th mat-header-cell *matHeaderCellDef> Obs </th>
+            <td mat-cell *matCellDef="let element"> {{element.Obs}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+            <td mat-cell *matCellDef="let element">
+              <div class="row-actions">
+                <button mat-icon-button (click)="editData(element)" [disabled]="blockSave" matTooltip="Editar">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="abrirInspeccionItem(element)" [disabled]="blockSave"
+                  matTooltip="Inspección">
+                  <mat-icon [color]="tieneInspeccionDraft(element) ? 'primary' : ''">fact_check</mat-icon>
+                </button>
+                @if (esZapatilla(element)) {
+                <button mat-icon-button (click)="abrirZapatillaItem(element)" [disabled]="blockSave"
+                  matTooltip="Info Zapatilla">
+                  <mat-icon [color]="tieneZapatillaDraft(element) ? 'primary' : ''">sports_soccer</mat-icon>
+                </button>
+                }
+                <button mat-icon-button color="warn" (click)="deleteData(element)" [disabled]="blockSave"
+                  matTooltip="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+              Aún no agregaste servicios al pedido.
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="ticket__totals">
+        <div class="trow total">
+          <span>Total</span>
+          <span class="amt">{{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+      </div>
+
+      <div class="ticket__payment">
+        <span class="section-label">Forma de pago</span>
+        <div class="pay-grid">
+          <button type="button" class="pay-opt" [class.active]="tipoPago === 'SP'" [disabled]="blockSave"
+            (click)="tipoPago = 'SP'; onValChangePago('SP')">
+            Sin pago (crédito)
+          </button>
+          <button type="button" class="pay-opt" [class.active]="tipoPago === 'EF'" [disabled]="blockSave"
+            (click)="tipoPago = 'EF'; onValChangePago('EF')">
+            <mat-icon>payments</mat-icon> Efectivo
+          </button>
+          <button type="button" class="pay-opt" [class.active]="tipoPago === 'QR'" [disabled]="blockSave"
+            (click)="tipoPago = 'QR'; onValChangePago('QR')">
+            <mat-icon>qr_code</mat-icon> QR / Yape
+          </button>
+          <button type="button" class="pay-opt" [class.active]="tipoPago === 'TA'" [disabled]="blockSave"
+            (click)="tipoPago = 'TA'; onValChangePago('TA')">
+            <mat-icon>credit_card</mat-icon> Tarjeta
+          </button>
+        </div>
+      </div>
+
+      @if (showPago) {
+      <div class="ticket__amount">
+        <div class="amount-row">
+          <span class="section-label">Monto a pagar ahora</span>
+
+          <div class="amount-chip" [class.editing]="montoKeypadOpen">
+            <button type="button" class="amount-chip__value" [disabled]="blockSave" (click)="abrirTecladoMonto()">
+              @if (montoKeypadOpen) {
+              {{ montoPagoBuffer || '0' }}
+              } @else {
+              {{ montoPago | currency:' ':'symbol':'0.2-2' }}
+              }
+            </button>
+
+            @if (montoKeypadOpen) {
+            <app-numeric-keypad placement="up" (digit)="onMontoDigit($event)" (backspace)="onMontoBackspace()"
+              (clear)="onMontoClear()" (done)="confirmarMontoDesdeTeclado()">
+            </app-numeric-keypad>
+            }
+          </div>
+        </div>
+
+        <div class="trow" [class.saldo]="(store.itemSumTotal() - (store.selectedPago()?.monto ?? 0)) > 0.001">
+          <span>Saldo</span>
+          <span>{{ store.itemSumTotal() - (store.selectedPago()?.monto ?? 0) | currency:' ':'symbol':'0.2-2' }}</span>
+        </div>
+      </div>
+      }
+
+      <div class="ticket__actions">
+        <button mat-flat-button color="accent" [disabled]="!blockSave" (click)="imprimirTicket()">
+          <mat-icon>print</mat-icon>
+          Imprimir
+        </button>
+
+        @if (loadingSave) {
+        <button mat-flat-button color="primary" class="ticket__actions-main" disabled>
+          <span class="loading-row">
+            <app-loading></app-loading>
+            Grabando...
+          </span>
+        </button>
+        } @else {
+        <button mat-flat-button color="primary" class="ticket__actions-main" [disabled]="blockSave"
+          (click)="grabarRecibo()">
+          <mat-icon>save</mat-icon>
+          Grabar
+        </button>
+        }
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<app-ticket-venta></app-ticket-venta>

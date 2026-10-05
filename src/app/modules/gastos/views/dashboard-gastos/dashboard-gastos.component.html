@@ -1,0 +1,208 @@
+<div class="container-dashboard">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>dashboard</mat-icon>
+            <div class="page-header__heading">
+                <h1>Dashboard de Gastos</h1>
+                <span class="page-header__subtitle">Resumen del mes actual: gastos operativos (Caja Chica) y
+                    administrativos (Gastos Generales)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">account_balance</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Total Gastos del Mes</span>
+                <span class="stat-card__value">{{ summary?.currentMonthExpenses ?? 0 | currency:' ':'symbol':'0.2-2'
+                    }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">local_atm</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Operativo (Caja Chica)</span>
+                <span class="stat-card__value">{{ summary?.currentMonthOperational ?? 0 |
+                    currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">paid</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Administrativo (Gastos)</span>
+                <span class="stat-card__value">{{ summary?.currentMonthAdministrative ?? 0 |
+                    currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">N° Registros del Mes</span>
+                <span class="stat-card__value">{{ summary?.expenseCount ?? 0 }}</span>
+            </div>
+        </mat-card>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>bar_chart</mat-icon>
+                Tendencia (Últimos 6 Meses)
+            </h2>
+        </div>
+        <mat-card-content>
+            <div class="bar-chart">
+                @for (item of monthlyTrend; track item.month) {
+                <div class="bar-chart__col">
+                    <div class="bar-chart__track">
+                        <div class="bar-chart__bar" [style.height.%]="(item.amount / maxMonthlyAmount) * 100"
+                            [title]="item.amount | currency:' ':'symbol':'0.2-2'"></div>
+                    </div>
+                    <span class="bar-chart__label">{{ item.month }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay datos de tendencia mensual.</p>
+                }
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="ranked-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>category</mat-icon>
+                    Gastos por Categoría (Mes Actual)
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of byCategory; track item.category; let i = $index) {
+                <div class="ranked-list__row">
+                    <span class="ranked-list__rank">{{ i + 1 }}</span>
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.category }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill"
+                                [style.width.%]="(item.amount / maxCategoryAmount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay gastos por categoría este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>storefront</mat-icon>
+                    Gastos por Sucursal (Mes Actual)
+                </h2>
+            </div>
+            <mat-card-content class="ranked-list">
+                @for (item of byBranch; track item.branch; let i = $index) {
+                <div class="ranked-list__row">
+                    <span class="ranked-list__rank">{{ i + 1 }}</span>
+                    <div class="ranked-list__info">
+                        <span class="ranked-list__name">{{ item.branch }}</span>
+                        <div class="ranked-list__track">
+                            <div class="ranked-list__fill"
+                                [style.width.%]="(item.amount / maxBranchAmount) * 100"></div>
+                        </div>
+                    </div>
+                    <span class="ranked-list__value">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+                } @empty {
+                <p class="empty-hint">Aún no hay gastos por sucursal este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>emoji_events</mat-icon>
+                Gastos de Mayor Monto (Mes Actual)
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Fecha</th>
+                        <th>Sucursal</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th class="col-numeric">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of topExpenses; track item.id) {
+                    <tr class="clickable-row" (click)="verGasto(item.id)">
+                        <td>{{ item.expenseDate | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ item.branchName }}</td>
+                        <td>{{ item.categoryName }}</td>
+                        <td>{{ item.description }}</td>
+                        <td class="col-numeric">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="5">No hay gastos registrados este mes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-detalle" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>history</mat-icon>
+                Últimos Gastos
+            </h2>
+            <button mat-stroked-button color="primary" routerLink="/gastos/gastos">
+                Ver todos
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table class="detail-table">
+                <thead>
+                    <tr class="cabecera">
+                        <th>Fecha</th>
+                        <th>Sucursal</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th class="col-numeric">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (item of recentExpenses; track item.id) {
+                    <tr class="clickable-row" (click)="verGasto(item.id)">
+                        <td>{{ item.expenseDate | date:'dd/MM/yyyy' }}</td>
+                        <td>{{ item.branchName }}</td>
+                        <td>{{ item.categoryName }}</td>
+                        <td>{{ item.description }}</td>
+                        <td class="col-numeric">{{ item.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                    </tr>
+                    } @empty {
+                    <tr>
+                        <td class="sin-datos" colspan="5">No hay gastos recientes.</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

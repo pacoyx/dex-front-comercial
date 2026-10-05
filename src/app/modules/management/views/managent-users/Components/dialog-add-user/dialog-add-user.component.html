@@ -1,75 +1,102 @@
-<h2 mat-dialog-title>
-    <mat-icon>edit_note</mat-icon> {{titulo}}
-</h2>
-<mat-dialog-content>
-    <form [formGroup]="userForm">
-        <div style="padding: 5px; display: flex; flex-direction: column;">
-            <mat-form-field appearance="outline">
-                <mat-label>Nombre</mat-label>
-                <input matInput formControlName="name">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>User Name</mat-label>
-                <input matInput formControlName="userName">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Password</mat-label>
-                <input matInput formControlName="password">
-            </mat-form-field>
-            <!-- <mat-form-field appearance="outline">
-                <mat-label>role</mat-label>
-                <input matInput formControlName="role">
-            </mat-form-field> -->
-            <mat-form-field appearance="outline">
-                <mat-label>Email</mat-label>
-                <input matInput formControlName="email">
-            </mat-form-field>
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>edit_note</mat-icon>
+        <h2 mat-dialog-title>{{titulo}}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
 
-            <mat-form-field>
-                <mat-label>Role</mat-label>
-                <mat-select formControlName="role">
-                    <mat-option value="admin">Admin</mat-option>
-                    <mat-option value="user">User</mat-option>
-                </mat-select>
-            </mat-form-field>
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="userForm" class="form-grid">
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Nombre</mat-label>
+            <input matInput formControlName="name">
+        </mat-form-field>
 
-            <mat-form-field>
-                <mat-label>Estado</mat-label>
-                <mat-select formControlName="status">
-                    <mat-option value="A">Activo</mat-option>
-                    <mat-option value="I">Inactivo</mat-option>
-                </mat-select>
-            </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>User Name</mat-label>
+            <input matInput formControlName="userName">
+        </mat-form-field>
 
-        </div>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password">
+        </mat-form-field>
 
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Rol</mat-label>
+            <mat-select formControlName="role">
+                <mat-option value="admin">Admin</mat-option>
+                <mat-option value="user">User</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="status">
+                <mat-option value="A">Activo</mat-option>
+                <mat-option value="I">Inactivo</mat-option>
+            </mat-select>
+        </mat-form-field>
     </form>
+
+    @if (!data.esNuevo) {
+    <div class="roles-section">
+        <h3 class="roles-section__title">
+            <mat-icon>admin_panel_settings</mat-icon>
+            Roles Asignados
+        </h3>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Roles</mat-label>
+            <mat-select [(ngModel)]="selectedRoleIds" [ngModelOptions]="{standalone: true}" multiple
+                [disabled]="loadingRoles">
+                @for (role of availableRoles; track role.id) {
+                <mat-option [value]="role.id">{{ role.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <p class="roles-section__hint">
+            El usuario verá el cambio de roles la próxima vez que inicie sesión o se refresque su token.
+        </p>
+
+        @if (savingRoles) {
+        <button mat-stroked-button color="primary" disabled>
+            <app-loading></app-loading>
+            Guardando roles...
+        </button>
+        } @else {
+        <button mat-stroked-button color="primary" [disabled]="loadingRoles" (click)="guardarRoles()">
+            <mat-icon>save</mat-icon>
+            Guardar Roles
+        </button>
+        }
+    </div>
+    }
 </mat-dialog-content>
 
-<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
-
-    <button mat-fab extended (click)="onCancel()">
-        <mat-icon style="color: red;">cancel</mat-icon>
-        Cancelar
-    </button>
-
-    <!-- 
-    <button mat-button (click)="onSubmit()" [disabled]="clienteForm.invalid">Guardar</button> -->
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
 
     @if(loadingSave){
-    <button mat-fab extended>
-        <div style="display: flex; gap: 5px;">
-            <app-loading></app-loading>
-            Grabando...
-        </div>
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
     </button>
     }
 
     @if(!loadingSave){
-    <button mat-fab extended (click)="onSubmit()">
+    <button mat-flat-button color="primary" (click)="onSubmit()">
         <mat-icon>save</mat-icon>
         Grabar
     </button>
     }
-
 </mat-dialog-actions>

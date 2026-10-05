@@ -1,0 +1,89 @@
+:host {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 220px;
+  padding: 12px;
+  background: var(--mat-sys-surface-container-highest);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+  box-shadow: 0 12px 24px -8px rgba(16, 24, 40, .35);
+}
+
+:host::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  background: var(--mat-sys-surface-container-highest);
+  border-left: 1px solid var(--mat-sys-outline-variant);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  transform: rotate(45deg);
+}
+
+/* variante para controles pegados al borde inferior/derecho: abre hacia arriba */
+:host.numeric-keypad--up {
+  top: auto;
+  bottom: calc(100% + 8px);
+  left: auto;
+  right: 0;
+}
+
+:host.numeric-keypad--up::before {
+  top: auto;
+  bottom: -6px;
+  left: auto;
+  right: 20px;
+  border-left: none;
+  border-top: none;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+/* variante para dialogos: en el flujo normal, sin flechita ni posicion absoluta */
+:host.numeric-keypad--inline {
+  position: static;
+  width: 100%;
+  max-width: 320px;
+  margin: 4px auto 0;
+}
+
+:host.numeric-keypad--inline::before {
+  display: none;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.keypad-grid button {
+  min-height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.keypad-span {
+  grid-column: 1 / -1;
+}
+
+.keypad-clear {
+  color: var(--mat-sys-error);
+}
+
+.keypad-back {
+  color: var(--mat-sys-primary);
+}
+
+.keypad-done {
+  width: 100%;
+  min-height: 46px;
+  font-weight: 700;
+}

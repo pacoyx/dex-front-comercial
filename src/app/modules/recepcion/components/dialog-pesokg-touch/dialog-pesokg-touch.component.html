@@ -1,0 +1,50 @@
+<h2 mat-dialog-title> {{dataInput.inTitulo}} </h2>
+<mat-dialog-content class="mat-typography">
+
+    <div class="calc-fields">
+        <button type="button" class="calc-field" [class.active]="campoActivo === 'peso'"
+            (click)="abrirTeclado('peso')">
+            <span class="calc-field__label">
+                @if (dataInput.inEsPeso) { Peso KG. } @else { Cantidad }
+            </span>
+            <span class="calc-field__value">{{ pesoKg.toFixed(2) }}</span>
+        </button>
+
+        <button type="button" class="calc-field" [class.active]="campoActivo === 'precio'"
+            (click)="abrirTeclado('precio')">
+            <span class="calc-field__label">
+                Precio @if (dataInput.inEsPeso) { x KG. }
+            </span>
+            <span class="calc-field__value">{{ precioKg.toFixed(2) }}</span>
+        </button>
+
+        <button type="button" class="calc-field calc-field--total" [class.active]="campoActivo === 'total'"
+            (click)="abrirTeclado('total')">
+            <span class="calc-field__label">Total soles</span>
+            <span class="calc-field__value">{{ total.toFixed(2) }}</span>
+        </button>
+    </div>
+
+    @if (tecladoAbierto) {
+    <app-numeric-keypad placement="inline" (digit)="onDigit($event)" (backspace)="onBackspace()"
+        (clear)="onClear()" (done)="cerrarTeclado()">
+    </app-numeric-keypad>
+    }
+
+    <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Observaciones</mat-label>
+        <textarea matInput placeholder="comentarios" [(ngModel)]="obs"></textarea>
+    </mat-form-field>
+
+    <div class="dialog-actions-row">
+        <button mat-raised-button (click)="cerrar()">
+            <mat-icon fontIcon="close"></mat-icon>
+            Cerrar
+        </button>
+        <button mat-flat-button color="primary" (click)="registrarYcerrar()" class="example-full-width">
+            <mat-icon fontIcon="done_all"></mat-icon>
+            Registrar
+        </button>
+    </div>
+
+</mat-dialog-content>

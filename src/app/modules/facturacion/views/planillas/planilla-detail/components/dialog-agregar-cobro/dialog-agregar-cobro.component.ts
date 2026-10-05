@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe, CurrencyPipe, NgFor, TitleCasePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +21,7 @@ import { NotificationsSystemService } from '../../../../../../../core/services/n
   selector: 'app-dialog-agregar-cobro',
   standalone: true,
   imports: [
-    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, ReactiveFormsModule,
+    MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, MatIconModule, ReactiveFormsModule,
     FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatAutocompleteModule,
     AsyncPipe, NgFor, TitleCasePipe, CurrencyPipe
   ],
@@ -89,6 +90,13 @@ export class DialogAgregarCobroComponent implements OnInit {
 
   displayFn(customer: ICustomerSearchResult): string {
     return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
+  }
+
+  clearCustomer(event: Event): void {
+    event.stopPropagation();
+    this.customerControl.setValue(null);
+    this.selectedInvoice = null;
+    this.invoicesForCustomer = [];
   }
 
   selectInvoice(invoice: IInvoiceListItem) {

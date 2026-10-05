@@ -14,6 +14,11 @@
         <mat-label>Producto / Servicio</mat-label>
         <input type="text" matInput [formControl]="productControl" [matAutocomplete]="auto"
             placeholder="Escribir nombre del servicio">
+        @if (productControl.value) {
+        <button mat-icon-button matSuffix type="button" aria-label="Limpiar producto" (click)="clearProduct($event)">
+            <mat-icon>close</mat-icon>
+        </button>
+        }
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onProductSelected($event)"
             [displayWith]="displayFn">
             <mat-option *ngFor="let product of filteredProducts | async" [value]="product">

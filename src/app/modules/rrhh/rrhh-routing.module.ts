@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { permissionGuard } from '../../core/guards/permission.guard';
 import { DashboardRrhhComponent } from './views/dashboard-rrhh/dashboard-rrhh.component';
 import { AreasComponent } from './views/catalogos/areas/areas.component';
 import { CargosComponent } from './views/catalogos/cargos/cargos.component';
@@ -29,10 +30,10 @@ const routes: Routes = [
   { path: 'asistencia/incidencias', component: AsistenciaIncidenciasComponent },
   { path: 'asistencia/horas-extra', component: AsistenciaHorasExtraComponent },
 
-  { path: 'prestamos', component: PrestamosComponent },
+  { path: 'prestamos', component: PrestamosComponent, canActivate: [permissionGuard], data: { permission: 'payroll.access' } },
 
-  { path: 'planillas', component: PlanillasComponent },
-  { path: 'planillas/:id', component: PlanillaDetailComponent },
+  { path: 'planillas', component: PlanillasComponent, canActivate: [permissionGuard], data: { permission: 'payroll.access' } },
+  { path: 'planillas/:id', component: PlanillaDetailComponent, canActivate: [permissionGuard], data: { permission: 'payroll.access' } },
 
   { path: 'reportes', component: ReportesComponent },
 ];

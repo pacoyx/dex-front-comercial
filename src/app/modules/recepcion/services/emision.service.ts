@@ -18,6 +18,7 @@ import { IDevolucionPrendaRequest, IRecogerItemRequest } from '../interfaces/IDe
 import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, IListaGastosPorUserResponse } from '../interfaces/IGastos';
 import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse, IReqSpliPayCash } from '../interfaces/ICajaVentas';
 import { IIdsPesoLavadoResponse, IResponseServiceQuickAccess } from '../interfaces/IProdServices';
+import { IReimprimirGuiaRequest } from '../interfaces/IReimprimirGuiaRequest';
 
 
 @Injectable({
@@ -117,6 +118,13 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPAnularGuia}/${idGuia}`;
     return this.http.put<IResponseGeneric<string>>(url, {}, { headers });
+  }
+
+  ReimprimirGuia(idGuia: number, printCopy: number): Observable<IResponseGeneric<number>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPReimprimirGuia}/${idGuia}/reprint`;
+    const body: IReimprimirGuiaRequest = { printCopy };
+    return this.http.post<IResponseGeneric<number>>(url, body, { headers });
   }
 
   CrearAlerta(alerta: ICreateAlertaRequest): Observable<IResponseGeneric<ICreateAlertaResponse>> {

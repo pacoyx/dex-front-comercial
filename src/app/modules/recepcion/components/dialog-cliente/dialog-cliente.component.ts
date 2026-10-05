@@ -129,7 +129,7 @@ export class DialogClienteComponent implements OnInit, AfterViewInit, AfterViewC
     }
 
     const nombres: string[] = this.formRegistrarCliente.get('nombres')?.value.toLowerCase().split(' ').filter((n: string) => n.trim() !== '') || [];
-    var firstName = nombres[0].charAt(0).toUpperCase() + nombres[0].slice(1);        
+    var firstName = nombres[0].charAt(0).toUpperCase() + nombres[0].slice(1);
     var lastName = nombres.slice(1).join(' ');
 
     let cliente: IClienteCreate = {

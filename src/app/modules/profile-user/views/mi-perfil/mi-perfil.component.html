@@ -1,0 +1,254 @@
+<div class="container-perfil">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>account_circle</mat-icon>
+            <div class="page-header__heading">
+                <h1>Mi Cuenta</h1>
+                <span class="page-header__subtitle">Administra tus datos personales, tu foto y tus
+                    documentos</span>
+            </div>
+        </div>
+    </div>
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando tu perfil...</span>
+    </div>
+    } @else if (perfil) {
+
+    <div class="perfil-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>photo_camera</mat-icon>
+                    Foto de Perfil
+                </h2>
+            </div>
+            <mat-card-content class="foto-content">
+                <div class="avatar">
+                    @if (perfil.photoUrl) {
+                    <img [src]="perfil.photoUrl" alt="Foto de perfil">
+                    } @else {
+                    <mat-icon class="avatar__placeholder">account_circle</mat-icon>
+                    }
+                </div>
+
+                @if (!editandoFoto) {
+                <div class="foto-acciones">
+                    <button mat-stroked-button color="primary" (click)="abrirCambiarFoto()">
+                        <mat-icon>upload</mat-icon>
+                        Cambiar Foto
+                    </button>
+                    @if (perfil.photoUrl) {
+                    <button mat-stroked-button color="warn" (click)="quitarFoto()" [disabled]="removingFoto">
+                        <mat-icon>delete</mat-icon>
+                        Quitar Foto
+                    </button>
+                    }
+                </div>
+                } @else {
+                <form [formGroup]="frmFoto" class="foto-form">
+                    <p class="hint-text">
+                        El sistema aún no cuenta con un mecanismo de subida de archivos: sube la imagen al
+                        almacenamiento correspondiente y pega aquí la URL resultante.
+                    </p>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nombre del Archivo</mat-label>
+                        <input matInput formControlName="fileName" placeholder="ej: perfil.jpg">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>URL de la Foto (blobUrl)</mat-label>
+                        <input matInput formControlName="blobUrl" placeholder="https://...">
+                    </mat-form-field>
+                    <div class="foto-form__acciones">
+                        <button mat-stroked-button type="button" (click)="cancelarCambiarFoto()"
+                            [disabled]="savingFoto">Cancelar</button>
+                        <button mat-flat-button color="primary" type="button" (click)="guardarFoto()"
+                            [disabled]="savingFoto">
+                            @if (savingFoto) {
+                            <app-loading></app-loading>
+                            } @else {
+                            <mat-icon>check</mat-icon>
+                            }
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>badge</mat-icon>
+                    Datos Básicos
+                </h2>
+            </div>
+            <mat-card-content class="form-grid" [formGroup]="frmDatos">
+                <mat-form-field appearance="outline">
+                    <mat-label>Usuario</mat-label>
+                    <input matInput [value]="perfil.userName" disabled>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Rol</mat-label>
+                    <input matInput [value]="perfil.role" disabled>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Nombre</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Teléfono</mat-label>
+                    <input matInput formControlName="phone">
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions align="end">
+                <button mat-flat-button color="primary" (click)="guardarDatos()" [disabled]="savingDatos">
+                    @if (savingDatos) {
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>save</mat-icon>
+                    }
+                    Guardar Datos
+                </button>
+            </mat-card-actions>
+        </mat-card>
+
+        <mat-card class="panel panel--password" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>lock</mat-icon>
+                    Cambiar Contraseña
+                </h2>
+            </div>
+            <mat-card-content>
+                @if (passwordValidationErrors.length > 0) {
+                <div class="alert alert--error">
+                    <ul>
+                        @for (e of passwordValidationErrors; track e) {
+                        <li>{{ e }}</li>
+                        }
+                    </ul>
+                </div>
+                }
+                <div class="form-grid" [formGroup]="frmPassword">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Contraseña Actual</mat-label>
+                        <input matInput [type]="hideCurrent() ? 'password' : 'text'"
+                            formControlName="currentPassword">
+                        <button type="button" mat-icon-button matSuffix (click)="toggleHideCurrent($event)"
+                            [attr.aria-label]="'Mostrar/ocultar contraseña'">
+                            <mat-icon>{{ hideCurrent() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Nueva Contraseña</mat-label>
+                        <input matInput [type]="hideNew() ? 'password' : 'text'" formControlName="newPassword">
+                        <button type="button" mat-icon-button matSuffix (click)="toggleHideNew($event)"
+                            [attr.aria-label]="'Mostrar/ocultar contraseña'">
+                            <mat-icon>{{ hideNew() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Confirmar Contraseña</mat-label>
+                        <input matInput [type]="hideConfirm() ? 'password' : 'text'"
+                            formControlName="confirmNewPassword">
+                        <button type="button" mat-icon-button matSuffix (click)="toggleHideConfirm($event)"
+                            [attr.aria-label]="'Mostrar/ocultar contraseña'">
+                            <mat-icon>{{ hideConfirm() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                        </button>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+            <mat-card-actions align="end">
+                <button mat-flat-button color="primary" (click)="cambiarPassword()" [disabled]="savingPassword">
+                    @if (savingPassword) {
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>lock_reset</mat-icon>
+                    }
+                    Cambiar Contraseña
+                </button>
+            </mat-card-actions>
+        </mat-card>
+
+    </div>
+
+    <mat-card class="panel panel-documentos" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>folder</mat-icon>
+                Mis Documentos
+            </h2>
+            <button mat-stroked-button color="primary" (click)="agregarDocumento()">
+                <mat-icon>add</mat-icon>
+                Agregar Documento
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            @if (loadingDocumentos) {
+            <div class="loading-row">
+                <app-loading></app-loading>
+                <span>Cargando documentos...</span>
+            </div>
+            } @else {
+            <table mat-table [dataSource]="documentsDataSource" class="detail-table">
+
+                <ng-container matColumnDef="documentName">
+                    <th mat-header-cell *matHeaderCellDef> Documento </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.documentName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fileName">
+                    <th mat-header-cell *matHeaderCellDef> Archivo </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.fileName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.createdAt | date:'dd/MM/yyyy HH:mm' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button (click)="verDocumento(element)" aria-label="Ver">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="eliminarDocumento(element)"
+                            aria-label="Eliminar">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="documentColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: documentColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="documentColumns.length">
+                        Aún no registraste documentos.
+                    </td>
+                </tr>
+            </table>
+            }
+        </mat-card-content>
+    </mat-card>
+
+    }
+
+</div>

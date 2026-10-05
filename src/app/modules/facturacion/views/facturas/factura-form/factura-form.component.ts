@@ -20,6 +20,7 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
+  catchError,
   debounceTime,
   distinctUntilChanged,
   map,
@@ -32,12 +33,13 @@ import { CUSTOM_DATE_FORMATS } from '../../../../../core/configGlobal/custom-dat
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
 import { CatalogosService } from '../../../services/catalogos.service';
 import { InvoicesService } from '../../../services/invoices.service';
+import { ClientesService } from '../../../services/clientes.service';
 import {
   IBranchSales,
-  ICustomerSearchResult,
   IPaymentMethod,
   ITypeDocument,
 } from '../../../interfaces/ICatalogos';
+import { ICompanySearchResult } from '../../../interfaces/ICustomer';
 import { IInvoiceCreateRequest } from '../../../interfaces/IInvoices';
 import { extractErrorMessage } from '../../../shared/http-error.util';
 import { PAYMENT_TYPE_OPTIONS } from '../../../shared/payment-type';
@@ -74,13 +76,14 @@ import { DialogAddItemFacturaComponent } from './components/dialog-add-item-fact
 export class FacturaFormComponent implements OnInit, OnDestroy {
   catalogosService = inject(CatalogosService);
   invoicesService = inject(InvoicesService);
+  clientesService = inject(ClientesService);
   invoiceStoreService = inject(InvoiceDetailStoreService);
   dialog = inject(MatDialog);
   notificationService = inject(NotificationsSystemService);
   router = inject(Router);
 
   customerControl = new FormControl();
-  filteredCustomers!: Observable<ICustomerSearchResult[]>;
+  filteredCustomers!: Observable<ICompanySearchResult[]>;
 
   branches: IBranchSales[] = [];
   documentTypes: ITypeDocument[] = [];
@@ -110,7 +113,7 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
     this.customerControl.valueChanges.subscribe((value) => {
       this.frmInvoice
         .get('customerId')
-        ?.setValue(typeof value === 'object' && value ? value.id : null);
+        ?.setValue(typeof value === 'object' && value ? value.customerId : null);
     });
 
     this.frmInvoice.get('dueDate')?.valueChanges.subscribe(() => {
@@ -161,15 +164,22 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
         if (!value || typeof value !== 'string' || value.trim().length < 3) {
           return of([]);
         }
-        if (!value || (typeof value === 'string' && value.trim() === '')) {
-          return of([]);
-        }
         if (typeof value === 'object') {
           return of([value]);
         }
-        return this.catalogosService
-          .buscarClientesPorPatron(value)
-          .pipe(map((response) => response.data));
+        const texto = value.trim();
+        const esRuc = /^\d+$/.test(texto);
+        return this.clientesService
+          .buscarEmpresas(esRuc ? { ruc: texto } : { businessName: texto })
+          .pipe(
+            map((response) => response?.data ?? []),
+            catchError((err) => {
+              this.notificationService.showError(
+                extractErrorMessage(err, 'No se pudo buscar empresas.'),
+              );
+              return of([]);
+            }),
+          );
       }),
     );
 
@@ -199,11 +209,17 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
   }
 
   onCustomerSelected(event: any) {
-    this.frmInvoice.get('customerId')?.setValue(event.option.value.id);
+    this.frmInvoice.get('customerId')?.setValue(event.option.value.customerId);
   }
 
-  displayFn(customer: ICustomerSearchResult): string {
-    return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
+  clearCustomer(event: Event): void {
+    event.stopPropagation();
+    this.customerControl.setValue(null);
+    this.frmInvoice.get('customerId')?.setValue(null);
+  }
+
+  displayFn(customer: ICompanySearchResult): string {
+    return customer ? `${customer.businessName} — RUC ${customer.taxId}` : '';
   }
 
   addItem() {

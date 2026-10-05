@@ -1,0 +1,303 @@
+import { Component, inject, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { EmisionStoreService } from '../../services/emision.store.service';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { IEmisionItem } from '../../models/IEmisionItems';
+import { IListaItemsBusqueda } from '../../interfaces/IListaItemsBusqueda';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { NumericKeypadComponent } from '../numeric-keypad/numeric-keypad.component';
+import { COLORES_PRENDA_TOUCH, IColorPrenda } from '../../shared/colores-prenda.util';
+
+
+interface Marcas {
+  value: string;
+  name: string;
+}
+
+type CampoCalculo = 'cantidad' | 'precio' | 'total';
+
+/**
+ * Version touch de DialogEditItemComponent: Cantidad/Precio/Total se editan
+ * con botones + teclado numerico en pantalla. Copia separada (no condicional)
+ * para no afectar el modal original que sigue usando recepcion-emision.
+ * Colores/disenos/marcas quedan igual que el original (no es parte de lo pedido).
+ */
+@Component({
+  selector: 'app-dialog-edit-item-touch',
+  standalone: true,
+  imports: [
+    MatFormFieldModule, FormsModule, ReactiveFormsModule,
+    MatDialogModule, MatIconModule, MatInputModule, MatButtonModule,
+    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule, MatCardModule,
+    NumericKeypadComponent
+  ],
+  templateUrl: './dialog-edit-item-touch.component.html',
+  styleUrl: './dialog-edit-item-touch.component.css'
+})
+export class DialogEditItemTouchComponent implements OnInit {
+
+  readonly store = inject(EmisionStoreService);
+  readonly dialogRef = inject(MatDialogRef<DialogEditItemTouchComponent>);
+  readonly data = inject<{ edicion: boolean, item: IListaItemsBusqueda }>(MAT_DIALOG_DATA);
+  cantidad = 0.0;
+  precio = 0.0;
+  total = 0.0;
+  obs = '';
+  itemEdit: IEmisionItem | null = null;
+
+  // --- teclado numerico flotante para cantidad/precio/total ---
+  campoActivo: CampoCalculo = 'cantidad';
+  tecladoAbierto = false;
+  buffer = '';
+
+  form: FormGroup;
+  formTemas: FormGroup;
+  formMarcas: FormGroup;
+  formMarcasx: FormGroup;
+
+  colores: IColorPrenda[] = COLORES_PRENDA_TOUCH;
+  temas = ['Rayado', 'Circulos', 'Jaspeado', 'Cebra', 'Floreado', 'dibujos'];
+
+  temaStyles = [
+    { nombre: 'Rayado', estilo: '' },
+    { nombre: 'Circulos', estilo: '' },
+    { nombre: 'Jaspeado', estilo: '' },
+    { nombre: 'Cebra', estilo: '' },
+    { nombre: 'Princesa', estilo: '' },
+    { nombre: 'Ositos', estilo: '' },
+    { nombre: 'Corazones', estilo: '' },
+    { nombre: 'Marvel', estilo: '' },
+    { nombre: 'Tigres', estilo: '' },
+    { nombre: 'Franjas', estilo: '' },
+    { nombre: 'Banderas', estilo: '' },
+    { nombre: 'Floreado', estilo: '' },
+  ];
+
+  marcasRopas = [
+    'ADIDAS', 'ARMANI', 'BARONET', 'BILLABONG', 'CACHAREL', 'CALVIN KLEIN', 'CAT',
+    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA',
+    'FILLIPO ALPI', 'GAP', 'GUCCI', 'GUESS', 'GZUCK', 'H&M', 'HANK', 'HOLLISTER', 'HURLEY', 'LA MARTINA',
+    'LACOSTE', 'LANCASTER', 'LEONISA', 'LEVI\'S', 'LOIS', 'LOUIS VUITTON', 'MARTINA', 'MC GREGOR', 'MOSSIMO',
+    'NEW BALANCE', 'NEW PORT', 'NIKE', 'O\'NEILL', 'OAKLEY', 'PIONIER', 'POWER', 'PRADA', 'PUMA', 'QUIKSILVER',
+    'RALPH LAUREN', 'REEBOK', 'RIP CURL', 'ROSE', 'SYBILLA', 'TIGRE', 'TOMMY HILFIGER', 'TOPITOP', 'TPT', 'UMBRO',
+    'UNDER ARMOR', 'UNIQLO', 'UNIVERSITY CLUB', 'VANS', 'XIOMI', 'ZARA', 'NAVIGATA'
+  ];
+
+  marcasZapatillas = [
+    'ADIDAS', 'CAT', 'CHEROKEE', 'CONVERSE', 'DC SHOES', 'DIADORA', 'FILA',
+    'NEW BALANCE', 'NIKE', 'O\'NEILL', 'POWER', 'PUMA', 'ASICS',
+    'REEBOK', 'TIGRE', 'UMBRO', 'UNDER ARMOUR', 'VANS', 'NEW ATLETIC', 'SKECHERS'
+  ];
+
+  marcasEdredones = ['RIPLEY HOME', 'DISNEY', 'ROSEN', 'CASATEX',
+    'DRIMER', 'ISATEX', 'COBITEX', 'KAZ-HOME', 'ROBERTA ALLEN', 'MICA', 'BENETTON',
+    'BASEMENT HOME', 'AMBIENTA', 'VIVA HOME', 'DECO HOME', 'DALIA'
+  ]
+
+
+  marcasControl = new FormControl();
+
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      checkboxesColores: this.fb.array([]),
+    });
+
+    this.formTemas = this.fb.group({
+      checkboxesTemas: this.fb.array([]),
+    });
+    this.formMarcas = this.fb.group({
+      checkboxesMarcas: this.fb.array([]),
+    });
+
+
+    this.formMarcasx = new FormGroup({
+      marcas: this.marcasControl,
+    });
+
+  }
+
+  ngOnInit(): void {
+    this.addCheckboxesColores();
+    this.addCheckboxesTemas();
+    this.addCheckboxesMarcas();
+
+    if (this.data.edicion) {
+      console.log('item seleccionado para edicion:', this.store.selectedItem());
+      this.itemEdit = this.store.selectedItem();
+      this.cantidad = this.itemEdit?.Cant!;
+      this.precio = this.itemEdit?.Precio!;
+      this.total = this.itemEdit?.Subtotal!;
+      this.obs = this.itemEdit?.Obs!;
+    } else {
+      this.cantidad = 1
+      this.precio = this.data.item.price;
+      this.total = this.cantidad * this.precio;
+      this.obs = '';
+    }
+  }
+
+  private addCheckboxesColores() {
+    this.colores.forEach(() => this.checkboxesColoresFormArray.push(new FormControl(false)));
+  }
+
+  private addCheckboxesTemas() {
+    this.temaStyles.forEach(() => this.checkboxesTemasFormArray.push(new FormControl(false)));
+  }
+
+  private addCheckboxesMarcas() {
+    this.marcasRopas.forEach(() => this.checkboxesMarcasFormArray.push(new FormControl(false)));
+  }
+
+  get checkboxesColoresFormArray() {
+    return this.form.controls['checkboxesColores'] as FormArray;
+  }
+
+  get checkboxesTemasFormArray() {
+    return this.formTemas.controls['checkboxesTemas'] as FormArray;
+  }
+
+  get checkboxesMarcasFormArray() {
+    return this.formMarcas.controls['checkboxesMarcas'] as FormArray;
+  }
+
+  onCheckboxChange(event: any, index: number) {
+    // console.log(`Checkbox ${index + 1} changed to ${event.checked}`);
+    // console.log('Color seleccionado:', this.colores[index].nombre);
+  }
+
+  onSubmit() {
+    // console.log(this.form.value);
+  }
+
+  calcularPrecio() {
+    this.total = this.cantidad * this.precio;
+  }
+
+  calcularPrecioPesoKG() {
+
+    this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
+
+
+    // if (this.itemEdit?.nomProd === 'Lavado KG' || this.itemEdit?.nomProd.toLocaleLowerCase().includes('alfombra')) {
+    //   this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
+    // } else {
+    //   this.total = this.cantidad * this.precio;
+    // }
+
+  }
+
+  focusTotal() {
+    this.total = this.cantidad * this.precio;
+  }
+
+  abrirTeclado(campo: CampoCalculo): void {
+    this.campoActivo = campo;
+    this.buffer = this.valorDe(campo).toFixed(2);
+    this.tecladoAbierto = true;
+  }
+
+  cerrarTeclado(): void {
+    this.tecladoAbierto = false;
+  }
+
+  onDigit(d: string): void {
+    if (d === '.' && this.buffer.includes('.')) return;
+    this.buffer += d;
+    this.aplicarBuffer();
+  }
+
+  onBackspace(): void {
+    this.buffer = this.buffer.slice(0, -1);
+    this.aplicarBuffer();
+  }
+
+  onClear(): void {
+    this.buffer = '';
+    this.aplicarBuffer();
+  }
+
+  private valorDe(campo: CampoCalculo): number {
+    if (campo === 'cantidad') return this.cantidad;
+    if (campo === 'precio') return this.precio;
+    return this.total;
+  }
+
+  private aplicarBuffer(): void {
+    const valor = parseFloat(this.buffer) || 0;
+    if (this.campoActivo === 'total') {
+      this.total = valor;
+      this.calcularPrecioPesoKG();
+    } else {
+      if (this.campoActivo === 'cantidad') this.cantidad = valor;
+      else this.precio = valor;
+      this.calcularPrecio();
+    }
+  }
+
+  cerrar() {
+    this.dialogRef.close();
+  }
+
+  registrarItem() {
+
+    const selectedColores = this.form.value.checkboxesColores
+      .map((checked: boolean, i: number) => checked ? this.colores[i].nombre : null)
+      .filter((v: string | null) => v !== null);
+
+    // console.log('Colores seleccionados:', selectedColores.toString());
+
+    const selectedTemas = this.formTemas.value.checkboxesTemas
+      .map((checked: boolean, i: number) => checked ? this.temaStyles[i].nombre : null)
+      .filter((v: string | null) => v !== null);
+
+    // console.log('Temas seleccionados:', selectedTemas.toString());
+
+    let obsControls = '';
+    if (selectedColores.length > 0) {
+      obsControls += ' |colores:' + selectedColores.toString();
+    }
+    if (selectedTemas.length > 0) {
+      obsControls += ' |diseño:' + selectedTemas.toString();
+    }
+    if (this.marcasControl.value) {
+      obsControls += ' |marca:' + this.marcasControl.value;
+    }
+
+    this.obs += obsControls;
+
+    if (this.data.edicion) {
+      this.store.update({
+        id: this.itemEdit?.id!,
+        codProd: this.itemEdit?.codProd!,
+        nomProd: this.itemEdit?.nomProd!,
+        Cant: this.cantidad,
+        Precio: this.precio,
+        Subtotal: this.total,
+        Obs: this.obs,
+        Identificador: this.itemEdit?.Identificador!,
+        categoryDescription: this.itemEdit?.categoryDescription
+      });
+      this.dialogRef.close();
+    } else {
+      this.store.add({
+        codProd: this.data.item.id.toString(),
+        nomProd: this.data.item.name,
+        Cant: this.cantidad,
+        Precio: this.precio,
+        Subtotal: this.total,
+        Obs: this.obs,
+        Identificador: '',
+        categoryDescription: this.data.item.categoryDescription
+      });
+      this.dialogRef.close();
+    }
+  }
+}

@@ -1,0 +1,50 @@
+<div class="module-shell">
+
+  <mat-toolbar class="module-toolbar">
+
+    <button mat-icon-button class="module-toolbar__menu-btn" (click)="toggleSidenav()" aria-label="Abrir menú principal">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span class="module-toolbar__title">Gastos</span>
+
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/gastos/dashboard" routerLinkActive="is-active">
+        <mat-icon>dashboard</mat-icon><span>Dashboard</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/gastos/gastos" routerLinkActive="is-active">
+        <mat-icon>paid</mat-icon><span>Gastos</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/gastos/categorias" routerLinkActive="is-active">
+        <mat-icon>category</mat-icon><span>Categorías</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/gastos/reportes" routerLinkActive="is-active">
+        <mat-icon>assessment</mat-icon><span>Reportes</span>
+      </a>
+    </nav>
+
+    <span class="module-toolbar__spacer"></span>
+
+    <button mat-button class="module-toolbar__user" [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ loginService.getLoginData()?.userName }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>
+        Profile
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </button>
+    </mat-menu>
+
+  </mat-toolbar>
+
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

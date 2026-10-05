@@ -15,9 +15,11 @@
       <a mat-button class="module-toolbar__link" routerLink="/purchase/invoices" routerLinkActive="is-active">
         <mat-icon>description</mat-icon><span>Facturas</span>
       </a>
+      @if (hasPermission('suppliers.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/purchase/suppliers" routerLinkActive="is-active">
         <mat-icon>exit_to_app</mat-icon><span>Proveedores</span>
       </a>
+      }
       <a mat-button class="module-toolbar__link" routerLink="/purchase/products" routerLinkActive="is-active">
         <mat-icon>exit_to_app</mat-icon><span>Productos</span>
       </a>
@@ -37,6 +39,7 @@
         </button>
       </mat-menu>
 
+      @if (hasPermission('reports.access')) {
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="reportesMenu">
         <mat-icon>receipt_long</mat-icon><span>Reportes</span>
       </button>
@@ -46,6 +49,7 @@
           Registro de Compras
         </button>
       </mat-menu>
+      }
 
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
         <mat-icon>tab_group</mat-icon><span>Configuraciones</span>

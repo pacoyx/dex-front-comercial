@@ -12,6 +12,9 @@
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/emision" routerLinkActive="is-active">
         <mat-icon>description</mat-icon><span>Emisión</span>
       </a>
+      <a mat-button class="module-toolbar__link" routerLink="/recepcion/touch" routerLinkActive="is-active">
+        <mat-icon>touch_app</mat-icon><span>Touch</span>
+      </a>
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/retiros" routerLinkActive="is-active">
         <mat-icon>exit_to_app</mat-icon><span>Retiros</span>
       </a>
@@ -30,42 +33,38 @@
           <mat-icon>manage_accounts</mat-icon>
           Guias
         </button>
+        @if (hasPermission('reports.access')) {
         <mat-divider></mat-divider>
         <button mat-menu-item [routerLink]="['/recepcion/resumenCaja']" routerLinkActive="router-link-active">
           <mat-icon>summarize</mat-icon>
           Resumen Caja
         </button>
+        }
         <mat-divider></mat-divider>
         <button mat-menu-item [routerLink]="['/recepcion/inspeccion-resumen']" routerLinkActive="router-link-active">
           <mat-icon>fact_check</mat-icon>
           Resumen Inspección
         </button>
+        @if (hasPermission('reports.access')) {
         <mat-divider></mat-divider>
         <button mat-menu-item [routerLink]="['/recepcion/reportes/sneakers']" routerLinkActive="router-link-active">
           <mat-icon>sports_soccer</mat-icon>
           Reporte Zapatillas
         </button>
-      </mat-menu>
-
-      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="operacionesMenu">
-        <mat-icon>rebase_edit</mat-icon><span>Operaciones</span>
-      </button>
-      <mat-menu #operacionesMenu="matMenu">
-        <button mat-menu-item [routerLink]="['/recepcion/registroUbicaciones']" routerLinkActive="router-link-active">
-          <mat-icon>edit_location</mat-icon>
-          Reg.Ubicaciones
-        </button>
+        }
       </mat-menu>
 
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
         <mat-icon>tab_group</mat-icon><span>Maestros</span>
       </button>
       <mat-menu #mntMenu="matMenu">
+        @if (hasPermission('customers.access')) {
         <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
           <mat-icon>manage_accounts</mat-icon>
           Clientes
         </button>
         <mat-divider></mat-divider>
+        }
         <button mat-menu-item [routerLink]="['/recepcion/servicios']" routerLinkActive="router-link-active">
           <mat-icon>inventory_2</mat-icon>
           Servicios
@@ -77,15 +76,19 @@
         </button>
       </mat-menu>
 
+      @if (hasPermission('settings.access') || hasPermission('reports.access')) {
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="adminMenu">
         <mat-icon>admin_panel_settings</mat-icon><span>Administración</span>
       </button>
       <mat-menu #adminMenu="matMenu">
+        @if (hasPermission('reports.access')) {
         <button mat-menu-item [routerLink]="['/recepcion/dashboardcash']" routerLinkActive="router-link-active">
           <mat-icon>dashboard</mat-icon>
           Dashboard Caja
         </button>
         <mat-divider></mat-divider>
+        }
+        @if (hasPermission('settings.access')) {
         <button mat-menu-item [routerLink]="['/recepcion/dashboardprinters']" routerLinkActive="router-link-active">
           <mat-icon>print</mat-icon>
           Dashboard Printers
@@ -110,7 +113,9 @@
           <mat-icon>dns</mat-icon>
           Estaciones de Trabajo
         </button>
+        }
       </mat-menu>
+      }
     </nav>
 
     <span class="module-toolbar__spacer"></span>
@@ -120,11 +125,13 @@
       <span>{{ loginService.getLoginData()?.userName }}</span>
     </button>
     <mat-menu #userMenu="matMenu">
+      @if (hasPermission('settings.access')) {
       <button mat-menu-item [routerLink]="['/management']" routerLinkActive="router-link-active">
         <mat-icon>settings</mat-icon>
         Administrar
       </button>
       <mat-divider></mat-divider>
+      }
       <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
         <mat-icon>settings</mat-icon>
         Profile

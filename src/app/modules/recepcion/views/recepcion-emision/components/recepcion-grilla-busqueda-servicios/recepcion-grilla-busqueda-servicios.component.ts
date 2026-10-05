@@ -7,8 +7,10 @@ import { CurrencyPipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { EmisionStoreService } from '../../../../services/emision.store.service';
 import { DialogEditItemComponent } from '../../../../components/dialog-edit-item/dialog-edit-item.component';
+import { DialogPesokgComponent } from '../../../../components/dialog-pesokg/dialog-pesokg.component';
 import { Subscription } from 'rxjs';
 import { isSneakerCategory } from '../../../../shared/sneaker-category.util';
+import { isPesoItem } from '../../../../shared/peso-item.util';
 import { agregarItemZapatillaDirecto } from '../../../../shared/agregar-item-zapatilla.util';
 
 @Component({
@@ -50,6 +52,20 @@ export class RecepcionGrillaBusquedaServiciosComponent implements OnInit, OnChan
     if (isSneakerCategory(item.categoryDescription)) {
       agregarItemZapatillaDirecto(this.dialog, this.store, item);
       this.updatePayEvent.emit(true);
+      return;
+    }
+
+    if (isPesoItem(item.isPeso)) {
+      this.dialogSubscription = this.dialog.open(DialogPesokgComponent, {
+        minWidth: '420px',
+        data: {
+          inTitulo: item.name,
+          inIdServicio: item.id,
+          inDesServicio: item.name,
+          inEsPeso: true,
+          inPrecio: item.price,
+        },
+      }).afterClosed().subscribe((_) => this.updatePayEvent.emit(true));
       return;
     }
 

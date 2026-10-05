@@ -1,0 +1,70 @@
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.col-actions {
+    text-align: center !important;
+    width: 96px;
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--active {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.status-chip--active .status-chip__dot {
+    background: #2e7d32;
+}
+
+.status-chip--inactive {
+    color: #757575;
+    border-color: #757575;
+}
+
+.status-chip--inactive .status-chip__dot {
+    background: #757575;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+@media (max-width: 768px) {
+    .col-actions {
+        width: 120px;
+    }
+}

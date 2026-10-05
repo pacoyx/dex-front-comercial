@@ -4,6 +4,12 @@ export const environment = {
     EPlogin: 'api/login',
     EPRefreshToken: 'api/refresh-token',
     // apiUrlBase: 'http://64.23.253.167:8080/', // produccion docker DigOcean
+
+    // Mi Cuenta (perfil del usuario logueado)
+    EPUserMe: 'api/user/me',
+    EPUserMePassword: 'api/user/me/password',
+    EPUserMePhoto: 'api/user/me/photo',
+    EPUserMeDocuments: 'api/user/me/documents',
     EPListarCategoriasServicios: 'api/catService',
     EPListarServiciosPorCat: 'api/prodService/category',
     EPFiltrarClientesPorPatron: 'api/customer/search',
@@ -33,6 +39,7 @@ export const environment = {
     EPListarAlertas: 'api/workGuideMain/getAlertsByWorkGuide',
     EPDevolverPrendas: 'api/workGuideMain/returnUnwashedClothes',
     EPRecogerItem: 'api/workGuideMain/pickUpItem',
+    EPReimprimirGuia: 'api/workGuideMain', // POST {id}/reprint
     
     EPListarGastosPorUsuario: 'api/expenseBox/byUser',
     EPListarGastosPorFecha: 'api/expenseBox/byDate',
@@ -174,6 +181,11 @@ export const environment = {
     EPCollectionSheets: 'api/collection-sheets',
     EPBuscarClientesPorPatron: 'api/customer/search/byPatron',
 
+    // Customer Empresa: perfil de facturacion, contactos, busqueda y resumen de cuenta
+    EPCustomersBase: 'api/customers',
+    EPCustomerContactItem: 'api/customer-contacts',
+    EPCustomerCompanySearch: 'api/customers/company-search',
+
     // reportes facturacion
     EPSalesRegisterReport: 'api/reports/sales-register',
     EPSalesRegisterReportPdf: 'api/reports/sales-register/pdf',
@@ -201,4 +213,16 @@ export const environment = {
     EPPayrollPeriods: 'api/payroll-periods',
     EPHrDashboard: 'api/hr-dashboard',
     EPHrReports: 'api/hr/reports',
+
+    // GASTOS (Expenses) - gastos administrativos/generales, distinto de ExpenseBox/Caja Chica
+    EPExpenseCategories: 'api/expense-categories',
+    EPExpenses: 'api/expenses',
+    EPExpenseDashboard: 'api/expense-dashboard',
+    EPExpenseReports: 'api/expense-reports',
+
+    // RBAC - Roles y Permisos
+    EPAuthMe: 'api/auth/me',
+    EPRoles: 'api/roles',
+    EPPermissions: 'api/permissions',
+    EPUsersRoles: 'api/users', // OJO: plural, distinto de EPGetUsers ('api/user')
 };

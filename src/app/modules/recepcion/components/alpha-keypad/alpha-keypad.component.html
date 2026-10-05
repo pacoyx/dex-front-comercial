@@ -1,0 +1,22 @@
+@for (row of rows; track $index) {
+<div class="kb-row">
+  @for (k of row; track k) {
+  <button type="button" mat-flat-button class="kb-key" (click)="key.emit(k)">{{ k }}</button>
+  }
+
+  @if ($index === rows.length - 1) {
+  <button type="button" mat-flat-button class="kb-key kb-key--danger" (click)="clear.emit()">
+    <mat-icon>close</mat-icon>
+    Limpiar
+  </button>
+  }
+</div>
+}
+
+<div class="kb-row">
+  <button type="button" mat-flat-button class="kb-key kb-key--wide" (click)="key.emit(' ')">Espacio</button>
+  <button type="button" mat-flat-button class="kb-key kb-key--primary" (click)="backspace.emit()">
+    <mat-icon>backspace</mat-icon>
+    Borrar
+  </button>
+</div>

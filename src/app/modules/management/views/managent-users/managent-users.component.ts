@@ -67,7 +67,6 @@ export class ManagentUsersComponent implements OnInit, OnDestroy {
   newUser() {
 
     const dialogRef = this.dialog.open(DialogAddUserComponent, {
-      width: '500px',
       data: { esNuevo: true, objUsuario: null }
     });
 

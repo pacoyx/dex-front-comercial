@@ -1,0 +1,65 @@
+mat-form-field {
+    width: 100%;
+}
+
+.zapatilla-content {
+    min-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.seccion-label {
+    font-size: .8rem;
+    font-weight: bold;
+    color: var(--mat-sys-on-surface-variant, gray);
+    margin-bottom: 8px;
+}
+
+.fila-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chip-btn {
+    min-height: 44px;
+    border: 1.5px solid var(--mat-sys-outline-variant, #ccc);
+    border-radius: 999px;
+    padding: 8px 18px;
+    background: white;
+    cursor: pointer;
+    font-size: .9rem;
+}
+
+.chip-btn--selected {
+    background-color: var(--mat-sys-primary-container, #7d9ad6);
+    color: var(--mat-sys-on-primary-container, white);
+    border-color: var(--mat-sys-primary, #7d9ad6);
+}
+
+.fila-colores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.color-swatch {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #999;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-swatch--selected {
+    outline: 3px solid var(--mat-sys-primary, #7d9ad6);
+    outline-offset: 2px;
+}
+
+.color-seleccionado {
+    font-size: .85rem;
+    color: var(--mat-sys-on-surface-variant, gray);
+    margin-top: 4px;
+}

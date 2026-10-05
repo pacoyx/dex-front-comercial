@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -6,6 +6,10 @@ import { ILoginResponse, ILoginResponseData } from '../interfaces/ILoginResponse
 import { ILoginRequest } from '../interfaces/ILoginRequest';
 import { tap } from 'rxjs/operators';
 import { IRefreshTokenRequest } from '../interfaces/IRefreshTokenRequest';
+import { IRefreshTokenResponse } from '../interfaces/IRefreshTokenResponse';
+import { ICurrentUserResponse } from '../interfaces/ICurrentUserResponse';
+import { IResponseGeneric } from '../interfaces/IShared';
+import { PermissionsStoreService } from './permissions-store.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +17,7 @@ import { IRefreshTokenRequest } from '../interfaces/IRefreshTokenRequest';
 export class LoginService {
 
   private apiUrl = environment.apiUrlBase;
+  private permissionsStore = inject(PermissionsStoreService);
 
   constructor(private http: HttpClient) { }
 
@@ -35,7 +40,7 @@ export class LoginService {
     return parsedData;
   }
 
-  refreshToken(): Observable<any> {
+  refreshToken(): Observable<IRefreshTokenResponse> {
 
 
     const infoUser = localStorage.getItem('dex24Auth');
@@ -53,16 +58,21 @@ export class LoginService {
       'Content-Type': 'application/json'
     });
 
-    return this.http.post<any>(this.apiUrl + environment.EPRefreshToken, requestRefresh, { headers }).pipe(
+    return this.http.post<IRefreshTokenResponse>(this.apiUrl + environment.EPRefreshToken, requestRefresh, { headers }).pipe(
       tap((response) => {
         objToken.token = response.token;
         objToken.refreshToken = response.refreshToken;
+        objToken.roles = response.roles;
+        objToken.permissions = response.permissions;
         localStorage.setItem('dex24Auth', JSON.stringify(objToken));
-        console.log('Refresh token success');
-        console.log('localStorage actualizado');
-
+        this.permissionsStore.setSession(response.roles, response.permissions);
       })
     );
+  }
+
+  obtenerUsuarioActual(): Observable<IResponseGeneric<ICurrentUserResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<ICurrentUserResponse>>(this.apiUrl + environment.EPAuthMe, { headers });
   }
 
 }

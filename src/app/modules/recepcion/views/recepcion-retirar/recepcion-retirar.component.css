@@ -47,6 +47,19 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+/* ===== Fila de paneles lado a lado ===== */
+
+.panels-row {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+}
+
+.panels-row__item {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
 /* ===== Panels (mismo look visual que mat-card class="panel") ===== */
 
 .panel {
@@ -109,6 +122,8 @@
 .busqueda-estado {
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .fechas-row {
@@ -162,17 +177,28 @@
 
 .acciones-row {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
+    align-items: center;
+    gap: 10px;
     flex-wrap: wrap;
     padding-top: 12px;
     border-top: 1px solid var(--mat-sys-outline-variant);
 }
 
-.acciones-row__imprimir {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.accion-btn {
+    font-size: 12px;
+    line-height: 32px;
+}
+
+.accion-btn mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+.accion-toggle {
+    margin-left: 4px;
 }
 
 /* ===== Panel: Cliente y totales ===== */
@@ -184,6 +210,12 @@
     flex-wrap: wrap;
     font: var(--mat-sys-body-large);
     color: var(--mat-sys-on-surface);
+}
+
+.cliente-nombre {
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--mat-sys-primary);
 }
 
 .totales-row {
@@ -371,6 +403,12 @@
     border-radius: 50%;
 }
 
+.status-chip mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
 .status-chip--activo {
     color: #2e7d32;
     border-color: #2e7d32;
@@ -389,6 +427,16 @@
     background-color: var(--mat-sys-error);
 }
 
+.status-chip--recepcion {
+    color: #c62828;
+    border-color: #c62828;
+}
+
+.status-chip--delivery {
+    color: #1565c0;
+    border-color: #1565c0;
+}
+
 app-ticket-venta {
     display: none;
 }
@@ -401,6 +449,10 @@ app-ticket-venta {
     .page-header {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .panels-row {
+        flex-direction: column;
     }
 
     .busqueda-row,

@@ -1,7 +1,9 @@
-import { NgIf, NgStyle } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -11,15 +13,17 @@ import { LoadingComponent } from "../loading/loading.component";
 import { Subscription } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
+import { PermissionsStoreService } from '../../services/permissions-store.service';
 import { ILoginResponseData } from '../../interfaces/ILoginResponse';
+import { DialogAuthInfoComponent } from './components/dialog-auth-info/dialog-auth-info.component';
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule,
-    MatIcon, ReactiveFormsModule, NgStyle, NgIf, LoadingComponent, MatSelectModule],
+    MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, FormsModule,
+    MatIcon, ReactiveFormsModule, NgIf, LoadingComponent, MatSelectModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -28,9 +32,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   router = inject(Router);
   authService = inject(LoginService);
+  private permissionsStore = inject(PermissionsStoreService);
+  private dialog = inject(MatDialog);
   txtUsuario = '';
   txtPwd = '';
-  screenHeight: any;
   hide = signal(true);
   loading = signal(false);
   showError = signal(false);
@@ -53,7 +58,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.screenHeight = window.innerHeight;
   }
 
   onSubmit() {
@@ -89,6 +93,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
 
           localStorage.setItem('dex24Auth', JSON.stringify(parsedData));
+          this.permissionsStore.setSession(parsedData.roles, parsedData.permissions);
           this.router.navigate(['recepcion']);
 
 
@@ -102,7 +107,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.mostrarerror(errMsg);
         },
         complete: () => {
-          console.log('complete() => login()');
           this.loading.set(false);
         },
       });
@@ -128,6 +132,30 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   applyFilterSucursal(event: any) {
 
+  }
+
+  olvideContrasena(event: Event): void {
+    event.preventDefault();
+    this.dialog.open(DialogAuthInfoComponent, {
+      width: '420px',
+      data: {
+        icon: 'lock_reset',
+        title: 'Recuperar Contraseña',
+        message: 'Por seguridad, el restablecimiento de contraseña lo realiza un administrador del sistema. Comunícate con el administrador de tu sucursal o empresa para que te ayude a recuperar el acceso.',
+      },
+    });
+  }
+
+  solicitarAcceso(event: Event): void {
+    event.preventDefault();
+    this.dialog.open(DialogAuthInfoComponent, {
+      width: '420px',
+      data: {
+        icon: 'person_add',
+        title: 'Solicitar Acceso',
+        message: 'Las cuentas de acceso al sistema son creadas por un administrador. Comunícate con el administrador de tu empresa para solicitar la creación de tu usuario.',
+      },
+    });
   }
 
 }

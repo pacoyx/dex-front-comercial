@@ -4,10 +4,13 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
+import { NotificationsSystemService } from '../../../../../../core/services/notifications-system.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ManagentSystemService } from '../../../../services/managent-system.service';
+import { RolesService } from '../../../../services/roles.service';
 import { ICreateUserRequest, IUpdateUserRequest } from '../../../../interfaces/IUsers';
+import { IRole } from '../../../../../../core/interfaces/IRbac';
 import { MatSelectModule } from '@angular/material/select';
 
 @Component({
@@ -26,10 +29,19 @@ export class DialogAddUserComponent {
 
   readonly data = inject<{ esNuevo: boolean, objUsuario: any }>(MAT_DIALOG_DATA);
   usuarioService = inject(ManagentSystemService);
+  private rolesService = inject(RolesService);
+  private notificationService = inject(NotificationsSystemService);
   userForm: FormGroup;
 
   loadingSave = false;
   titulo = this.data.esNuevo ? 'Registrar Usuario' : 'Actualizar Usuario';
+
+  // Roles asignados: solo aplica editando un usuario ya existente (se
+  // necesita su id, que aun no existe al crear).
+  availableRoles: IRole[] = [];
+  selectedRoleIds: number[] = [];
+  loadingRoles = false;
+  savingRoles = false;
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +66,39 @@ export class DialogAddUserComponent {
     } else {
       this.userForm.patchValue(this.data.objUsuario);
       this.userForm.get('password')?.setValue('');
+      this.cargarRoles();
     }
+  }
+
+  private cargarRoles(): void {
+    this.loadingRoles = true;
+    this.rolesService.listarRoles(true).subscribe({
+      next: (resp) => {
+        this.availableRoles = resp.data;
+        this.rolesService.obtenerRolesDeUsuario(this.data.objUsuario.id).subscribe({
+          next: (rolesResp) => {
+            this.selectedRoleIds = rolesResp.data.roles.map(r => r.id);
+            this.loadingRoles = false;
+          },
+          error: () => { this.loadingRoles = false; },
+        });
+      },
+      error: () => { this.loadingRoles = false; },
+    });
+  }
+
+  guardarRoles(): void {
+    this.savingRoles = true;
+    this.rolesService.actualizarRolesDeUsuario(this.data.objUsuario.id, { roleIds: this.selectedRoleIds }).subscribe({
+      next: () => {
+        this.savingRoles = false;
+        this.notificationService.showSuccess('Roles del usuario actualizados. El usuario verá el cambio la próxima vez que inicie sesión o se refresque su token.');
+      },
+      error: (err) => {
+        this.savingRoles = false;
+        this.notificationService.showError(err?.message || 'No se pudieron guardar los roles del usuario.');
+      },
+    });
   }
 
 

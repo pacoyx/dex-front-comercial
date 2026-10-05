@@ -91,6 +91,12 @@ export class FacturasComponent implements OnInit {
     this.selectedCustomer = event.option.value;
   }
 
+  clearCustomer(event: Event): void {
+    event.stopPropagation();
+    this.customerControl.setValue(null);
+    this.selectedCustomer = null;
+  }
+
   displayFn(customer: ICustomerSearchResult): string {
     return customer ? `${customer.name} — RUC ${customer.ruc}` : '';
   }

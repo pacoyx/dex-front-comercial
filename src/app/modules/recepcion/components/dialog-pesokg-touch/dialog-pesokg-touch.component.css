@@ -1,0 +1,51 @@
+.example-full-width{
+    width: 100%;
+}
+
+.calc-fields {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    margin-bottom: 14px;
+}
+
+.calc-field {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 64px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--mat-sys-outline-variant);
+    background: var(--mat-sys-surface-container-low);
+    cursor: pointer;
+    text-align: left;
+}
+
+.calc-field.active {
+    border-color: var(--mat-sys-primary);
+    background: var(--mat-sys-primary-container);
+}
+
+.calc-field__label {
+    font: var(--mat-sys-label-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.calc-field__value {
+    font: var(--mat-sys-title-large);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--mat-sys-on-surface);
+}
+
+app-numeric-keypad {
+    display: block;
+    margin-bottom: 14px;
+}
+
+.dialog-actions-row {
+    display: flex;
+    gap: 20px;
+}

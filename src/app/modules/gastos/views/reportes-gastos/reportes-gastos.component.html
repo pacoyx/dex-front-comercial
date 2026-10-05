@@ -1,0 +1,227 @@
+<div class="container-reportes">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>assessment</mat-icon>
+            <div class="page-header__heading">
+                <h1>Reportes de Gastos</h1>
+                <span class="page-header__subtitle">Consulta y exporta los gastos administrativos por período</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-button-toggle-group class="report-type-group" [value]="reportType"
+        (change)="cambiarTipoReporte($event.value)">
+        @for (opt of reportTypes; track opt.value) {
+        <mat-button-toggle [value]="opt.value">{{ opt.label }}</mat-button-toggle>
+        }
+    </mat-button-toggle-group>
+
+    @if (validationErrors.length > 0) {
+    <div class="alert-validacion">
+        <mat-icon>error_outline</mat-icon>
+        <ul>
+            @for (error of validationErrors; track $index) {
+            <li>{{ error }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-sucursal">
+                <mat-label>Sucursal</mat-label>
+                <mat-select [(ngModel)]="selectedBranchId" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todas]</mat-option>
+                    @for (branch of branches; track branch.id) {
+                    <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-categoria">
+                <mat-label>Categoría</mat-label>
+                <mat-select [(ngModel)]="selectedCategoryId" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todas]</mat-option>
+                    @for (cat of categories; track cat.id) {
+                    <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="campo-origen">
+                <mat-label>Origen</mat-label>
+                <mat-select [(ngModel)]="selectedSourceType" [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="null">[Todos]</mat-option>
+                    @for (opt of sourceTypeOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                    <mat-icon>search</mat-icon>
+                    Buscar
+                </button>
+                <button mat-stroked-button (click)="limpiar()" [disabled]="loading">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando reporte...</span>
+    </div>
+    }
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+
+            @if (esReporteDetalle) {
+            <table mat-table [dataSource]="detailRows" class="detail-table">
+
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.expenseDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="sucursal">
+                    <th mat-header-cell *matHeaderCellDef> Sucursal </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.branchName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="categoria">
+                    <th mat-header-cell *matHeaderCellDef> Categoría </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.categoryName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="origen">
+                    <th mat-header-cell *matHeaderCellDef> Origen </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.sourceType | expenseSourceTypeLabel }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="monto">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Monto </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.amount |
+                        currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="docSustento">
+                    <th mat-header-cell *matHeaderCellDef> N° Documento </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.documentNumber ?? '—' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="proveedor">
+                    <th mat-header-cell *matHeaderCellDef> Proveedor </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.supplierName ?? '—' }} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="detailDisplayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: detailDisplayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="detailDisplayedColumns.length">
+                        No se encontraron registros para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+            } @else {
+            <table mat-table [dataSource]="aggregateRows" class="detail-table">
+
+                <ng-container matColumnDef="label">
+                    <th mat-header-cell *matHeaderCellDef> {{ reportType === 'by-category' ? 'Categoría' :
+                        'Sucursal' }} </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.label }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="count">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cantidad </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.count }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Monto </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.amount |
+                        currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="aggregateDisplayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: aggregateDisplayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="aggregateDisplayedColumns.length">
+                        No se encontraron registros para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+            }
+
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-resumen" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>summarize</mat-icon>
+                Resumen del Período
+            </h2>
+        </div>
+        <mat-card-content class="resumen-row">
+
+            <div class="resumen-totales">
+                <div class="resumen-item">
+                    <span class="resumen-label">Registros</span>
+                    <span class="resumen-value">{{ totals?.count ?? 0 }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Monto Total</span>
+                    <span class="resumen-value">{{ totals?.totalAmount ?? 0 | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="resumen-acciones">
+                <button mat-stroked-button color="primary" (click)="exportarPdf()" [disabled]="loadingPdf">
+                    @if (loadingPdf) {
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    }
+                    Descargar PDF
+                </button>
+                <button mat-stroked-button color="primary" (click)="exportarExcel()" [disabled]="loadingExcel">
+                    @if (loadingExcel) {
+                    <app-loading></app-loading>
+                    } @else {
+                    <mat-icon>grid_on</mat-icon>
+                    }
+                    Descargar Excel
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+</div>

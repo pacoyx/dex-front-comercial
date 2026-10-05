@@ -1,0 +1,50 @@
+:host {
+    display: block;
+    min-width: 320px;
+    max-width: 420px;
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px 4px;
+}
+
+.dialog-header__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    flex: 0 0 auto;
+}
+
+.dialog-header h2 {
+    margin: 0;
+    font: var(--mat-sys-title-large);
+}
+
+.dialog-content {
+    padding: 8px 24px 4px;
+}
+
+.dialog-content p {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-body-medium);
+    line-height: 1.5;
+}
+
+mat-dialog-actions {
+    padding: 12px 24px 20px;
+}
+
+@media (max-width: 480px) {
+    :host {
+        min-width: 0;
+    }
+}

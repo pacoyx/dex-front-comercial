@@ -10,11 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 import { InspeccionService } from '../../services/inspeccion.service';
 import { SneakerBrandResponse, UpsertSneakerDetailRequest } from '../../interfaces/IInspeccion';
 import { extractErrorMessage, extractValidationErrors } from '../../shared/http-error.util';
-
-interface ColorBasico {
-  nombre: string;
-  valor: string;
-}
+import { COLORES_PRENDA, IColorPrenda } from '../../shared/colores-prenda.util';
 
 @Component({
   selector: 'app-dialog-zapatilla-item',
@@ -29,20 +25,7 @@ interface ColorBasico {
 })
 export class DialogZapatillaItemComponent implements OnInit {
 
-  readonly colores: ColorBasico[] = [
-    { nombre: 'Blanco', valor: '#FFFFFF' },
-    { nombre: 'Negro', valor: '#000000' },
-    { nombre: 'Azul', valor: '#0000FF' },
-    { nombre: 'Celeste', valor: '#87CEEB' },
-    { nombre: 'Amarillo', valor: '#FFFF00' },
-    { nombre: 'Rosado', valor: '#FFC0CB' },
-    { nombre: 'Morado', valor: '#800080' },
-    { nombre: 'Beig', valor: '#F5F5DC' },
-    { nombre: 'Marron', valor: '#A52A2A' },
-    { nombre: 'Acero', valor: '#B0C4DE' },
-    { nombre: 'Rojo', valor: '#FF0000' },
-    { nombre: 'Verde', valor: 'green' }
-  ];
+  readonly colores: IColorPrenda[] = COLORES_PRENDA;
 
   readonly dialogRef = inject(MatDialogRef<DialogZapatillaItemComponent>);
   readonly data = inject<{ workGuideDetailId: number | null, productName: string, initialValue?: UpsertSneakerDetailRequest }>(MAT_DIALOG_DATA);

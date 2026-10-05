@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { COLORES_PRENDA, IColorPrenda } from '../../shared/colores-prenda.util';
 
 
 interface Marcas {
@@ -47,20 +48,7 @@ export class DialogEditItemComponent implements OnInit {
   formMarcas: FormGroup;
   formMarcasx: FormGroup;
 
-  colores = [
-    { nombre: 'Blanco', valor: '#FFFFFF' },
-    { nombre: 'Negro', valor: '#000000' },
-    { nombre: 'Azul', valor: '#0000FF' },
-    { nombre: 'Celeste', valor: '#87CEEB' },
-    { nombre: 'Amarillo', valor: '#FFFF00' },
-    { nombre: 'Rosado', valor: '#FFC0CB' },
-    { nombre: 'Morado', valor: '#800080' },
-    { nombre: 'Beig', valor: '#F5F5DC' },
-    { nombre: 'Marron', valor: '#A52A2A' },
-    { nombre: 'Acero', valor: '#B0C4DE' },
-    { nombre: 'Rojo', valor: '#FF0000' },
-    { nombre: 'Verde', valor: 'green' }
-  ];
+  colores: IColorPrenda[] = COLORES_PRENDA;
   temas = ['Rayado', 'Circulos', 'Jaspeado', 'Cebra', 'Floreado', 'dibujos'];
 
   temaStyles = [
@@ -80,7 +68,7 @@ export class DialogEditItemComponent implements OnInit {
 
   marcasRopas = [
     'ADIDAS', 'ARMANI', 'BARONET', 'BILLABONG', 'CACHAREL', 'CALVIN KLEIN', 'CAT',
-    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA', 
+    'CHEROKEE', 'COLUMBIA', 'CONVERSE', 'DC SHOES', 'DIADORA', 'DIESEL', 'DOO AUSTRALIA',
     'FILLIPO ALPI', 'GAP', 'GUCCI', 'GUESS', 'GZUCK', 'H&M', 'HANK', 'HOLLISTER', 'HURLEY', 'LA MARTINA',
     'LACOSTE', 'LANCASTER', 'LEONISA', 'LEVI\'S', 'LOIS', 'LOUIS VUITTON', 'MARTINA', 'MC GREGOR', 'MOSSIMO',
     'NEW BALANCE', 'NEW PORT', 'NIKE', 'O\'NEILL', 'OAKLEY', 'PIONIER', 'POWER', 'PRADA', 'PUMA', 'QUIKSILVER',
@@ -183,7 +171,7 @@ export class DialogEditItemComponent implements OnInit {
     this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
 
 
-    // if (this.itemEdit?.nomProd === 'Lavado KG' || this.itemEdit?.nomProd.toLocaleLowerCase().includes('alfombra')) {      
+    // if (this.itemEdit?.nomProd === 'Lavado KG' || this.itemEdit?.nomProd.toLocaleLowerCase().includes('alfombra')) {
     //   this.cantidad = parseFloat((this.total / this.precio).toFixed(2));
     // } else {
     //   this.total = this.cantidad * this.precio;
