@@ -1,0 +1,84 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>sell</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <div class="form-grid">
+        <mat-form-field appearance="outline" [class.field--full]="!data.esNuevo">
+            <mat-label>Nombre</mat-label>
+            <input type="text" matInput [(ngModel)]="name" [disabled]="!data.esNuevo">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Inicio</mat-label>
+            <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="effectiveFrom" [disabled]="!data.esNuevo">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Fin</mat-label>
+            <input matInput [matDatepicker]="pickerTo" [(ngModel)]="effectiveTo" [disabled]="!data.esNuevo">
+            <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+
+        @if (data.esNuevo) {
+        <div class="checkbox-field">
+            <mat-checkbox [(ngModel)]="activate">Activar al guardar</mat-checkbox>
+        </div>
+        }
+    </div>
+
+    <h3 class="section-title">Precios por Servicio</h3>
+
+    <div class="tabla-scroll">
+        <table mat-table [dataSource]="data.servicios" class="detail-table">
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Servicio </th>
+                <td mat-cell *matCellDef="let servicio"> {{ servicio.name }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="unitPrice">
+                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Precio Unitario </th>
+                <td mat-cell *matCellDef="let servicio" class="col-numeric">
+                    <input type="number" class="precio-input" [(ngModel)]="precios[servicio.id]" min="0" step="0.01">
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="!isValid || saving">
+        @if (saving) {
+        <app-loading></app-loading>
+        } @else {
+        <mat-icon>save</mat-icon>
+        }
+        Guardar
+    </button>
+</mat-dialog-actions>

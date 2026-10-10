@@ -1,0 +1,25 @@
+@if (isCancelled) {
+<div class="status-selector status-selector--cancelled">
+    <mat-icon>block</mat-icon>
+    <span>Guía Anulada</span>
+</div>
+} @else {
+<div class="status-selector">
+    @for (paso of pasos; track paso.value; let last = $last) {
+    <div class="status-selector__step" [class.status-selector__step--clickable]="esSiguiente(paso.value)"
+        [class.status-selector__step--completado]="estadoPaso(paso.value) === 'completado'"
+        [class.status-selector__step--actual]="estadoPaso(paso.value) === 'actual'"
+        (click)="onPasoClick(paso.value)">
+        <div class="status-selector__dot">
+            @if (estadoPaso(paso.value) === 'completado') {
+            <mat-icon>check</mat-icon>
+            }
+        </div>
+        <span class="status-selector__label">{{ paso.label }}</span>
+    </div>
+    @if (!last) {
+    <div class="status-selector__connector" [class.status-selector__connector--completado]="estadoPaso(paso.value) === 'completado'"></div>
+    }
+    }
+</div>
+}

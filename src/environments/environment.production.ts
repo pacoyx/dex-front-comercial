@@ -225,4 +225,15 @@ export const environment = {
     EPRoles: 'api/roles',
     EPPermissions: 'api/permissions',
     EPUsersRoles: 'api/users', // OJO: plural, distinto de EPGetUsers ('api/user')
+
+    // Operaciones Corporativas - Guias de Recojo
+    EPPickupGuides: 'api/pickup-guides',
+
+    // Tarifas por Cliente (CustomerPriceList)
+    EPPriceLists: 'api/price-lists', // /{id}, /{id}/clone, /{id}/activate, /{id}/deactivate
+    // EPCustomersBase ('api/customers') ya existe: se usa para /{id}/price-lists y /{id}/price-lists/active
+
+    // Portal Cliente (administracion desde Backoffice)
+    EPCustomerPortalAdmin: 'api/customer-portal-admin', // /customers
+    // portal-enable, portal-status, portal-admin/regenerate-activation-link cuelgan de EPCustomersBase
 };

@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
@@ -17,13 +18,16 @@ import { ClientesService } from '../../../services/clientes.service';
 import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
 import { CustomerType, IAccountSummary, IBillingProfileRequest, ICustomer, ICustomerContact } from '../../../interfaces/ICustomer';
 import { DialogFormContactoComponent } from './components/dialog-form-contacto/dialog-form-contacto.component';
+import { GestionTarifasComponent } from '../../tarifas-cliente/components/gestion-tarifas/gestion-tarifas.component';
+import { PortalClienteTabComponent } from './components/portal-cliente-tab/portal-cliente-tab.component';
 
 @Component({
   selector: 'app-ficha-cliente',
   standalone: true,
   imports: [
     ReactiveFormsModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatSelectModule, MatSlideToggleModule, MatTableModule, CurrencyPipe, LoadingComponent,
+    MatInputModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, CurrencyPipe, LoadingComponent,
+    GestionTarifasComponent, PortalClienteTabComponent,
   ],
   templateUrl: './ficha-cliente.component.html',
   styleUrl: './ficha-cliente.component.css'

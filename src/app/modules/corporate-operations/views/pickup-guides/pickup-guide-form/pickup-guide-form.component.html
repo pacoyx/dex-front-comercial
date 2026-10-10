@@ -1,0 +1,182 @@
+<div class="container-guide-form">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <button mat-icon-button routerLink="/corporate-operations/pickup-guides" aria-label="Volver al listado">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <mat-icon>local_shipping</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ titulo }}</h1>
+            </div>
+        </div>
+    </div>
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando guía...</span>
+    </div>
+    } @else {
+
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>assignment</mat-icon>
+                Datos de la Guía
+            </h2>
+        </div>
+        <mat-card-content>
+            <div class="form-grid">
+
+                @if (esNuevo) {
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Cliente</mat-label>
+                    <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+                        placeholder="Buscar por razón social">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)" [displayWith]="displayCustomerFn">
+                        @for (customer of filteredCustomers | async; track customer.customerId) {
+                        <mat-option [value]="customer">{{ customer.businessName }}</mat-option>
+                        }
+                    </mat-autocomplete>
+                </mat-form-field>
+                } @else {
+                <div class="readonly-field field--full">
+                    <span class="readonly-field__label">Cliente</span>
+                    <span class="readonly-field__value">{{ customerNameReadonly }}</span>
+                </div>
+                }
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Sucursal</mat-label>
+                    <mat-select [(ngModel)]="branchSalesId" [ngModelOptions]="{standalone: true}">
+                        @for (branch of branches; track branch.id) {
+                        <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Fecha de Recojo</mat-label>
+                    <input matInput [matDatepicker]="picker" [(ngModel)]="pickupDate" [ngModelOptions]="{standalone: true}">
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Observación</mat-label>
+                    <input type="text" matInput [(ngModel)]="observation" [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    @if (selectedCustomer || !esNuevo) {
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>list_alt</mat-icon>
+                Ítems
+            </h2>
+            <button mat-stroked-button color="primary" (click)="agregarItem()" [disabled]="loadingPriceList || !priceListLoaded">
+                <mat-icon>add</mat-icon>
+                Agregar Ítem
+            </button>
+        </div>
+        <mat-card-content class="tabla-scroll">
+
+            @if (loadingPriceList) {
+            <div class="loading-row">
+                <app-loading></app-loading>
+                <span>Cargando tarifa activa...</span>
+            </div>
+            } @else if (!priceListLoaded) {
+            <div class="alert alert--error">
+                Este cliente no tiene una tarifa activa. No se pueden agregar ítems a la guía.
+            </div>
+            }
+
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="serviceItemName">
+                    <th mat-header-cell *matHeaderCellDef> Servicio </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.serviceItemName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cantidad </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.isPeso ? '—' : element.quantity }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="weight">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Peso (Kg) </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.isPeso ? (element.weight | number:'0.2-2') : '—' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="unitPrice">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Precio Unitario </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.unitPrice | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lineTotal">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Importe </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.lineTotal | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button (click)="editarItem(element)" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="eliminarItem(element)" aria-label="Eliminar">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        Aún no se agregaron ítems a esta guía.
+                    </td>
+                </tr>
+            </table>
+
+            <div class="total-card">
+                <span class="total-card__label">Importe Total</span>
+                <span class="total-card__value">{{ store.itemSumTotal() | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+    }
+
+    <div class="panel__actions">
+        <button mat-stroked-button (click)="cancelar()" [disabled]="saving">Cancelar</button>
+        <button mat-flat-button color="primary" (click)="guardar()" [disabled]="saving">
+            @if (saving) {
+            <app-loading></app-loading>
+            } @else {
+            <mat-icon>save</mat-icon>
+            }
+            Guardar
+        </button>
+    </div>
+
+    }
+
+</div>

@@ -9,6 +9,7 @@ import { LayoutPurchaseComponent } from './core/views/layout-purchase/layout-pur
 import { LayoutFacturacionComponent } from './core/views/layout-facturacion/layout-facturacion.component';
 import { LayoutRrhhComponent } from './core/views/layout-rrhh/layout-rrhh.component';
 import { LayoutGastosComponent } from './core/views/layout-gastos/layout-gastos.component';
+import { LayoutCorporateOperationsComponent } from './core/views/layout-corporate-operations/layout-corporate-operations.component';
 import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
@@ -58,6 +59,11 @@ export const routes: Routes = [
     {
         path: 'gastos', component: LayoutGastosComponent, canActivate: [permissionGuard], data: { permission: 'expenses.access' }, children: [
             { path: '', loadChildren: () => import('./modules/gastos/gastos.module').then(m => m.GastosModule) }
+        ]
+    },
+    {
+        path: 'corporate-operations', component: LayoutCorporateOperationsComponent, canActivate: [permissionGuard], data: { permission: 'corporate-operations.access' }, children: [
+            { path: '', loadChildren: () => import('./modules/corporate-operations/corporate-operations.module').then(m => m.CorporateOperationsModule) }
         ]
     }
 ];

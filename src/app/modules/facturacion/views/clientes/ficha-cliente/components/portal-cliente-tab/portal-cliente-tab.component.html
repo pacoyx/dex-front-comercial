@@ -1,0 +1,72 @@
+<div class="portal-tab">
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando estado del portal...</span>
+    </div>
+    } @else if (estado) {
+
+    @if (!estado.portalEnabled) {
+    <div class="empty-state">
+        <mat-icon>lock</mat-icon>
+        <p>Este cliente aún no tiene el Portal Cliente habilitado.</p>
+        <button mat-flat-button color="primary" (click)="habilitarPortal()">
+            <mat-icon>lock_open</mat-icon>
+            Habilitar Portal
+        </button>
+    </div>
+    } @else {
+
+    <div class="stats-grid">
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">lock_open</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Portal Habilitado</span>
+                <span class="status-chip status-chip--activo">
+                    <span class="status-chip__dot"></span>
+                    Sí
+                </span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">group</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Total Usuarios</span>
+                <span class="stat-card__value">{{ estado.totalUsers }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">how_to_reg</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Usuarios Activos</span>
+                <span class="stat-card__value">{{ estado.activeUsers }}</span>
+            </div>
+        </mat-card>
+
+        <mat-card class="stat-card" appearance="outlined">
+            <mat-icon class="stat-card__icon">admin_panel_settings</mat-icon>
+            <div class="stat-card__body">
+                <span class="stat-card__label">Administrador Existe</span>
+                <span class="stat-card__value">{{ estado.administratorExists ? 'Sí' : 'No' }}</span>
+            </div>
+        </mat-card>
+    </div>
+
+    <div class="panel__actions">
+        <button mat-stroked-button (click)="cargarEstado()">
+            <mat-icon>refresh</mat-icon>
+            Ver Estado
+        </button>
+        <button mat-stroked-button color="primary" (click)="regenerarLink()">
+            <mat-icon>autorenew</mat-icon>
+            Regenerar Link
+        </button>
+    </div>
+
+    }
+    }
+
+</div>

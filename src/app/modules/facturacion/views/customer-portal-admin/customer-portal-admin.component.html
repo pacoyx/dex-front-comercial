@@ -1,0 +1,73 @@
+<div class="container-portal-admin">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>admin_panel_settings</mat-icon>
+            <div class="page-header__heading">
+                <h1>Portal Clientes</h1>
+                <span class="page-header__subtitle">Estado del Portal Cliente para todos los clientes corporativos</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="cargar()" [disabled]="loading">
+                <mat-icon>refresh</mat-icon>
+                Actualizar
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+
+            @if (loading) {
+            <div class="loading-row">
+                <app-loading></app-loading>
+                <span>Cargando reporte...</span>
+            </div>
+            } @else {
+            <table mat-table [dataSource]="clientes" class="detail-table">
+
+                <ng-container matColumnDef="customerName">
+                    <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.customerName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="portalEnabled">
+                    <th mat-header-cell *matHeaderCellDef> Portal Habilitado </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.portalEnabled ? 'Sí' : 'No' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalUsers">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Usuarios </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.activeUsers }} / {{ element.totalUsers }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastLogin">
+                    <th mat-header-cell *matHeaderCellDef> Último Acceso </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.lastLogin ? (element.lastLogin | date:'dd/MM/yyyy HH:mm') : '—' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [style.color]="colorEstado(element.status)" [style.borderColor]="colorEstado(element.status)">
+                            <span class="status-chip__dot" [style.backgroundColor]="colorEstado(element.status)"></span>
+                            {{ element.status }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron clientes.
+                    </td>
+                </tr>
+            </table>
+            }
+        </mat-card-content>
+    </mat-card>
+
+</div>

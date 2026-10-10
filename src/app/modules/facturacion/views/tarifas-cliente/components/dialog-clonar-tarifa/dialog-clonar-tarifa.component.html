@@ -1,0 +1,46 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>content_copy</mat-icon>
+        <h2 mat-dialog-title>Clonar Tarifa</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+
+    <p class="hint">Se creará una nueva versión a partir de "{{ data.nombreActual }}". Podrás ajustar los precios en el siguiente paso.</p>
+
+    <mat-form-field appearance="outline" class="field--full">
+        <mat-label>Nombre</mat-label>
+        <input type="text" matInput [(ngModel)]="name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Fecha Inicio</mat-label>
+        <input matInput [matDatepicker]="pickerFrom" [(ngModel)]="effectiveFrom">
+        <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+        <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Fecha Fin</mat-label>
+        <input matInput [matDatepicker]="pickerTo" [(ngModel)]="effectiveTo">
+        <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+        <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="saving">
+        @if (saving) {
+        <app-loading></app-loading>
+        } @else {
+        <mat-icon>content_copy</mat-icon>
+        }
+        Clonar
+    </button>
+</mat-dialog-actions>

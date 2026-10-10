@@ -1,0 +1,57 @@
+<div class="container-tarifas-cliente">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>sell</mat-icon>
+            <div class="page-header__heading">
+                <h1>Tarifas por Cliente</h1>
+                <span class="page-header__subtitle">Gestión de tarifas versionadas por cliente corporativo</span>
+            </div>
+        </div>
+    </div>
+
+    @if (!customerId) {
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content>
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Buscar cliente por razón social</mat-label>
+                <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+                    placeholder="Escribe para buscar...">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)" [displayWith]="displayCustomerFn">
+                    @for (customer of filteredCustomers | async; track customer.customerId) {
+                    <mat-option [value]="customer">{{ customer.businessName }}</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+        </mat-card-content>
+    </mat-card>
+    } @else {
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando cliente...</span>
+    </div>
+    } @else if (cliente) {
+
+    <div class="cliente-header">
+        <div class="cliente-header__info">
+            <span class="cliente-header__nombre">{{ cliente.firstName }} {{ cliente.lastName }}</span>
+            <a [routerLink]="['/facturacion/clientes', customerId]">Ver ficha completa</a>
+        </div>
+        <button mat-stroked-button (click)="cambiarCliente()">
+            <mat-icon>swap_horiz</mat-icon>
+            Cambiar Cliente
+        </button>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content>
+            <app-gestion-tarifas [customerId]="customerId"></app-gestion-tarifas>
+        </mat-card-content>
+    </mat-card>
+
+    }
+    }
+
+</div>

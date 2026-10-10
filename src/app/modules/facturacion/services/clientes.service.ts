@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/ICatalogos';
 import {
@@ -54,7 +54,38 @@ export class ClientesService {
 
   obtenerClientePorId(id: number): Observable<IResponseGeneric<ICustomer>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<IResponseGeneric<ICustomer>>(`${this.apiUrl}${environment.EPListarClientes}/${id}`, { headers });
+    return this.http.get<unknown>(`${this.apiUrl}${environment.EPListarClientes}/${id}`, { headers }).pipe(
+      map(raw => this.normalizarRespuestaCliente(raw))
+    );
+  }
+
+  /**
+   * GET /api/customer/{id} es un endpoint legado: a veces devuelve el cliente
+   * envuelto en { success, data, ... } y a veces el objeto del cliente directo
+   * (sin envoltorio), además con el campo "firtsName" (typo del backend) en vez
+   * de "firstName". Normalizamos ambos casos para que el resto del frontend
+   * siempre reciba un IResponseGeneric<ICustomer> consistente.
+   */
+  private normalizarRespuestaCliente(raw: unknown): IResponseGeneric<ICustomer> {
+    const body = raw as Record<string, unknown> | null;
+    const estaEnvuelto = !!body && typeof body === 'object' && 'data' in body;
+    const clienteRaw = (estaEnvuelto ? body!['data'] : body) as (ICustomer & { firtsName?: string }) | null;
+
+    if (clienteRaw && !clienteRaw.firstName && clienteRaw.firtsName) {
+      clienteRaw.firstName = clienteRaw.firtsName;
+    }
+
+    if (estaEnvuelto) {
+      return body as unknown as IResponseGeneric<ICustomer>;
+    }
+
+    return {
+      success: !!clienteRaw,
+      message: '',
+      data: clienteRaw as ICustomer,
+      errors: [],
+      statusCode: 200,
+    };
   }
 
   obtenerPerfilFacturacion(customerId: number): Observable<IResponseGeneric<IBillingProfile>> {

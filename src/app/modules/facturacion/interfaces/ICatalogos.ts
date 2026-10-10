@@ -41,3 +41,18 @@ export interface IProdServiceSearchResult {
   name: string;
   price: number;
 }
+
+/** Item del catalogo completo de servicios (maestro de Recepción), incluye el flag "Es Peso?". */
+export interface IProdServiceCatalogItem {
+  id: number;
+  name: string;
+  price: number;
+  status: string;
+  /** 'S' | 'N' */
+  isPeso: string;
+}
+
+export interface IProdServiceCatalogPaginatedResponse {
+  totalCount: number;
+  servicios: IProdServiceCatalogItem[];
+}

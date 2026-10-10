@@ -6,6 +6,7 @@ import {
   IBranchSales,
   ICustomerSearchResult,
   IPaymentMethod,
+  IProdServiceCatalogPaginatedResponse,
   IProdServiceSearchResult,
   IResponseGeneric,
   ITypeDocument,
@@ -43,6 +44,12 @@ export class CatalogosService {
   buscarServiciosPorPatron(patron: string): Observable<IProdServiceSearchResult[]> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<IProdServiceSearchResult[]>(`${this.apiUrl}${environment.EPFiltrarServiciosPorPatron}/${patron}`, { headers });
+  }
+
+  /** Catálogo completo de servicios configurados (para armar tarifas y resolver el flag "Es Peso?"). */
+  listarCatalogoServicios(numFilas = 1000): Observable<IResponseGeneric<IProdServiceCatalogPaginatedResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IProdServiceCatalogPaginatedResponse>>(`${this.apiUrl}${environment.EPListarProdServices}/1/${numFilas}`, { headers });
   }
 
 }

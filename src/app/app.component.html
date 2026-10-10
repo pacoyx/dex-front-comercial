@@ -54,6 +54,18 @@
       </a>
       }
 
+      @if (hasPermission('corporate-operations.access')) {
+      <a mat-list-item
+         [routerLink]="['/corporate-operations']"
+         routerLinkActive #rlaCorporateOperations="routerLinkActive"
+         [activated]="rlaCorporateOperations.isActive"
+         (click)="toggle()"
+         matTooltip="Operaciones Corporativas" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>local_shipping</mat-icon>
+        <span matListItemTitle>Operaciones Corporativas</span>
+      </a>
+      }
+
       @if (hasPermission('invoices.access')) {
       <a mat-list-item
          [routerLink]="['/facturacion']"
