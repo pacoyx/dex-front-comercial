@@ -1,4 +1,9 @@
 export function extractErrorMessage(err: unknown, fallback: string): string {
+  const backendMessage = (err as { error?: { message?: unknown } })?.error?.message;
+  if (typeof backendMessage === 'string' && backendMessage.trim() !== '') {
+    return backendMessage;
+  }
+
   const message = (err as Error)?.message;
   if (typeof message === 'string' && message.trim() !== '' && message !== '[object Object]') {
     return message;

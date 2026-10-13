@@ -1,0 +1,53 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>directions_car</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="vehicleForm">
+        <div class="form-grid">
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Placa</mat-label>
+                <input matInput formControlName="plate">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Descripción</mat-label>
+                <input matInput formControlName="description">
+            </mat-form-field>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
+        Grabar
+    </button>
+    }
+</mat-dialog-actions>

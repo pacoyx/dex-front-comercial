@@ -236,6 +236,20 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+.notif-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notif-icon--on {
+    color: var(--mat-sys-primary);
+}
+
+.notif-icon--off {
+    color: var(--mat-sys-outline-variant);
+}
+
 @media (max-width: 900px) {
     .container-ficha {
         padding: 12px;

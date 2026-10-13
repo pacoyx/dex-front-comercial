@@ -1,0 +1,83 @@
+<div class="container-vehicles">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>directions_car</mat-icon>
+            <div class="page-header__heading">
+                <h1>Vehículos</h1>
+                <span class="page-header__subtitle">Flota de vehículos utilizados para el recojo de guías
+                    corporativas</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevo()">
+                <mat-icon>add</mat-icon>
+                Nuevo Vehículo
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+            <mat-slide-toggle [(ngModel)]="mostrarInactivos" (change)="cargar()">
+                Mostrar inactivos
+            </mat-slide-toggle>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="plate">
+                    <th mat-header-cell *matHeaderCellDef> Placa </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.plate }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="description">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.description }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="isActive">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="status-chip" [class.status-chip--inactive]="!element.isActive">
+                            <span class="status-chip__dot"></span>
+                            {{ element.isActive ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button (click)="editar(element)" aria-label="Editar" matTooltip="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        @if (element.isActive) {
+                        <button mat-icon-button color="warn" (click)="desactivar(element)" aria-label="Desactivar" matTooltip="Desactivar">
+                            <mat-icon>block</mat-icon>
+                        </button>
+                        } @else {
+                        <button mat-icon-button color="primary" (click)="reactivar(element)" aria-label="Reactivar" matTooltip="Reactivar">
+                            <mat-icon>check_circle</mat-icon>
+                        </button>
+                        }
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron vehículos.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

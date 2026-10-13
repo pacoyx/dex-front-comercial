@@ -11,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
@@ -26,7 +27,7 @@ import { PortalClienteTabComponent } from './components/portal-cliente-tab/porta
   standalone: true,
   imports: [
     ReactiveFormsModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule,
-    MatInputModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, CurrencyPipe, LoadingComponent,
+    MatInputModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, CurrencyPipe, LoadingComponent,
     GestionTarifasComponent, PortalClienteTabComponent,
   ],
   templateUrl: './ficha-cliente.component.html',
@@ -53,7 +54,7 @@ export class FichaClienteComponent implements OnInit {
 
   contactos: ICustomerContact[] = [];
   loadingContactos = false;
-  contactColumns: string[] = ['fullName', 'position', 'phoneNumber', 'email', 'isPrimary', 'acciones'];
+  contactColumns: string[] = ['fullName', 'position', 'phoneNumber', 'email', 'isPrimary', 'notificaciones', 'acciones'];
 
   resumen: IAccountSummary | null = null;
   loadingResumen = false;

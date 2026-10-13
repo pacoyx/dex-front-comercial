@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { PickupGuideStatus } from '../interfaces/IPickupGuide';
+import { PickupGuideEmailStatus, PickupGuideStatus } from '../interfaces/IPickupGuide';
 
-export { PickupGuideStatus };
+export { PickupGuideStatus, PickupGuideEmailStatus };
 
 export const PICKUP_GUIDE_STATUS_META: Record<number, { label: string; color: string }> = {
   [PickupGuideStatus.Draft]: { label: 'Borrador', color: '#757575' },
@@ -40,5 +40,35 @@ export class PickupGuideStatusLabelPipe implements PipeTransform {
 export class PickupGuideStatusColorPipe implements PipeTransform {
   transform(status: number): string {
     return getPickupGuideStatusMeta(status).color;
+  }
+}
+
+export const PICKUP_GUIDE_EMAIL_STATUS_META: Record<number, { label: string; color: string }> = {
+  [PickupGuideEmailStatus.Pending]: { label: 'Pendiente', color: '#f9a825' },
+  [PickupGuideEmailStatus.Sent]: { label: 'Enviado', color: '#2e7d32' },
+  [PickupGuideEmailStatus.Failed]: { label: 'Fallido', color: '#c62828' },
+};
+
+export function getPickupGuideEmailStatusMeta(status: number): { label: string; color: string } {
+  return PICKUP_GUIDE_EMAIL_STATUS_META[status] ?? { label: 'Desconocido', color: '#757575' };
+}
+
+@Pipe({
+  name: 'pickupGuideEmailStatusLabel',
+  standalone: true,
+})
+export class PickupGuideEmailStatusLabelPipe implements PipeTransform {
+  transform(status: number): string {
+    return getPickupGuideEmailStatusMeta(status).label;
+  }
+}
+
+@Pipe({
+  name: 'pickupGuideEmailStatusColor',
+  standalone: true,
+})
+export class PickupGuideEmailStatusColorPipe implements PipeTransform {
+  transform(status: number): string {
+    return getPickupGuideEmailStatusMeta(status).color;
   }
 }

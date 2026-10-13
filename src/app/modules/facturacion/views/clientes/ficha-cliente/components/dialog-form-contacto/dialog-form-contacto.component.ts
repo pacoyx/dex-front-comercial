@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { LoadingComponent } from '../../../../../../../core/components/loading/loading.component';
@@ -16,7 +17,7 @@ import { extractErrorMessage, extractValidationErrors } from '../../../../../sha
   selector: 'app-dialog-form-contacto',
   standalone: true,
   imports: [
-    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSlideToggleModule,
+    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSlideToggleModule, MatCheckboxModule,
     MatDialogActions, MatDialogTitle, MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule,
   ],
   templateUrl: './dialog-form-contacto.component.html',
@@ -44,6 +45,9 @@ export class DialogFormContactoComponent implements OnInit {
       phoneNumber: ['', Validators.required],
       email: ['', Validators.email],
       isPrimary: [false],
+      receivePickupGuideEmails: [false],
+      receiveInvoices: [false],
+      receivePortalNotifications: [false],
     });
   }
 

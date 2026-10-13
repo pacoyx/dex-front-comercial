@@ -35,95 +35,247 @@
         </div>
     </div>
 
-    <mat-card class="panel" appearance="outlined">
-        <div class="panel__header">
-            <h2 class="panel__title">
-                <mat-icon>timeline</mat-icon>
-                Estado
-            </h2>
-        </div>
-        <mat-card-content>
-            <app-status-selector [current]="guide.status" (select)="cambiarEstado($event)"></app-status-selector>
-        </mat-card-content>
-    </mat-card>
+    <mat-tab-group class="panel-tabs" (selectedTabChange)="onTabChange($event)">
 
-    <mat-card class="panel" appearance="outlined">
-        <div class="panel__header">
-            <h2 class="panel__title">
-                <mat-icon>info</mat-icon>
-                Cabecera
-            </h2>
-        </div>
-        <mat-card-content>
-            <div class="resumen-grid">
-                <div class="resumen-item">
-                    <span class="resumen-label">Cliente</span>
-                    <span class="resumen-value">{{ guide.customerName }}</span>
-                </div>
-                <div class="resumen-item">
-                    <span class="resumen-label">Fecha de Recojo</span>
-                    <span class="resumen-value">{{ guide.pickupDate | date:'dd/MM/yyyy' }}</span>
-                </div>
-                <div class="resumen-item">
-                    <span class="resumen-label">Tarifa Utilizada</span>
-                    <span class="resumen-value">#{{ guide.customerPriceListId }}</span>
-                </div>
-                <div class="resumen-item">
-                    <span class="resumen-label">Importe Total</span>
-                    <span class="resumen-value">{{ guide.totalAmount | currency:' ':'symbol':'0.2-2' }}</span>
-                </div>
+        <mat-tab label="Datos Generales">
+            <div class="tab-panel">
+
+                <mat-card class="panel" appearance="outlined">
+                    <div class="panel__header">
+                        <h2 class="panel__title">
+                            <mat-icon>timeline</mat-icon>
+                            Estado
+                        </h2>
+                    </div>
+                    <mat-card-content>
+                        <app-status-selector [current]="guide.status" (select)="cambiarEstado($event)"></app-status-selector>
+                    </mat-card-content>
+                </mat-card>
+
+                <mat-card class="panel" appearance="outlined">
+                    <div class="panel__header">
+                        <h2 class="panel__title">
+                            <mat-icon>info</mat-icon>
+                            Cabecera
+                        </h2>
+                        @if (canResendEmail) {
+                        @if (resendingEmail) {
+                        <button mat-stroked-button disabled>
+                            <app-loading></app-loading>
+                            Enviando...
+                        </button>
+                        } @else {
+                        <button mat-stroked-button color="primary" (click)="reenviarConstancia()">
+                            <mat-icon>forward_to_inbox</mat-icon>
+                            Reenviar Constancia
+                        </button>
+                        }
+                        }
+                    </div>
+                    <mat-card-content>
+                        <div class="resumen-grid">
+                            <div class="resumen-item">
+                                <span class="resumen-label">Cliente</span>
+                                <span class="resumen-value">{{ guide.customerName }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Fecha de Recojo</span>
+                                <span class="resumen-value">{{ guide.pickupDate | date:'dd/MM/yyyy' }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Tarifa Utilizada</span>
+                                <span class="resumen-value">#{{ guide.customerPriceListId }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Importe Total</span>
+                                <span class="resumen-value">{{ guide.totalAmount | currency:' ':'symbol':'0.2-2' }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Empleado</span>
+                                <span class="resumen-value">{{ guide.employeeName ?? '—' }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Vehículo</span>
+                                <span class="resumen-value">{{ guide.vehiclePlate ? (guide.vehiclePlate + (guide.vehicleDescription ? ' · ' + guide.vehicleDescription : '')) : '—' }}</span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Estado de Correo</span>
+                                <span class="resumen-value">
+                                    <span class="status-chip" [style.color]="guide.emailDeliveryStatus | pickupGuideEmailStatusColor"
+                                        [style.borderColor]="guide.emailDeliveryStatus | pickupGuideEmailStatusColor">
+                                        <span class="status-chip__dot" [style.backgroundColor]="guide.emailDeliveryStatus | pickupGuideEmailStatusColor"></span>
+                                        {{ guide.emailDeliveryStatus | pickupGuideEmailStatusLabel }}
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="resumen-item">
+                                <span class="resumen-label">Enviado el</span>
+                                <span class="resumen-value">{{ guide.emailSentAt ? (guide.emailSentAt | date:'dd/MM/yyyy HH:mm') : '—' }}</span>
+                            </div>
+                        </div>
+                        @if (guide.observation) {
+                        <p class="observation">{{ guide.observation }}</p>
+                        }
+                    </mat-card-content>
+                </mat-card>
+
             </div>
-            @if (guide.observation) {
-            <p class="observation">{{ guide.observation }}</p>
-            }
-        </mat-card-content>
-    </mat-card>
+        </mat-tab>
 
-    <mat-card class="panel panel-tabla" appearance="outlined">
-        <div class="panel__header">
-            <h2 class="panel__title">
-                <mat-icon>list_alt</mat-icon>
-                Detalle
-            </h2>
-        </div>
-        <mat-card-content class="tabla-scroll">
-            <table mat-table [dataSource]="guide.details" class="detail-table">
+        <mat-tab label="Detalle">
+            <div class="tab-panel">
+                <mat-card class="panel panel-tabla" appearance="outlined">
+                    <mat-card-content class="tabla-scroll">
+                        <table mat-table [dataSource]="guide.details" class="detail-table">
 
-                <ng-container matColumnDef="serviceItemName">
-                    <th mat-header-cell *matHeaderCellDef> Servicio </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.serviceItemName }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="serviceItemName">
+                                <th mat-header-cell *matHeaderCellDef> Servicio </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.serviceItemName }} </td>
+                            </ng-container>
 
-                <ng-container matColumnDef="quantity">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cantidad </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.weight != null ? '—' : element.quantity }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="quantity">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cantidad </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.weight != null ? '—' : element.quantity }} </td>
+                            </ng-container>
 
-                <ng-container matColumnDef="weight">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Peso (Kg) </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.weight != null ? (element.weight | number:'0.2-2') : '—' }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="weight">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Peso (Kg) </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.weight != null ? (element.weight | number:'0.2-2') : '—' }} </td>
+                            </ng-container>
 
-                <ng-container matColumnDef="unitPrice">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Precio </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.unitPrice | currency:' ':'symbol':'0.2-2' }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="unitPrice">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Precio </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.unitPrice | currency:' ':'symbol':'0.2-2' }} </td>
+                            </ng-container>
 
-                <ng-container matColumnDef="total">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Importe </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="total">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Importe </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.total | currency:' ':'symbol':'0.2-2' }} </td>
+                            </ng-container>
 
-                <ng-container matColumnDef="observation">
-                    <th mat-header-cell *matHeaderCellDef> Observación </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.observation ?? '—' }} </td>
-                </ng-container>
+                            <ng-container matColumnDef="observation">
+                                <th mat-header-cell *matHeaderCellDef> Observación </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.observation ?? '—' }} </td>
+                            </ng-container>
 
-                <tr mat-header-row *matHeaderRowDef="detailColumns" class="cabecera"></tr>
-                <tr mat-row *matRowDef="let row; columns: detailColumns;"></tr>
-            </table>
-        </mat-card-content>
-    </mat-card>
+                            <tr mat-header-row *matHeaderRowDef="detailColumns" class="cabecera"></tr>
+                            <tr mat-row *matRowDef="let row; columns: detailColumns;"></tr>
+                        </table>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Evidencias">
+            <div class="tab-panel">
+
+                @if (loadingAttachments) {
+                <div class="loading-row">
+                    <app-loading></app-loading>
+                    <span>Cargando evidencias...</span>
+                </div>
+                } @else if (guide.attachments.length === 0) {
+                <p class="sin-datos">No se registraron evidencias para esta guía.</p>
+                } @else {
+
+                <div class="evidencias-grid">
+                    @for (att of guide.attachments; track att.id) {
+                    <mat-card class="panel evidencia-card" appearance="outlined">
+
+                        @if (att.attachmentType === AttachmentType.Photo || att.attachmentType === AttachmentType.Signature) {
+                        <div class="evidencia-preview">
+                            @if (urlDe(att); as url) {
+                            <img [src]="url" [alt]="att.originalFileName" (click)="verEnNuevaPestana(att)">
+                            } @else {
+                            <mat-icon>broken_image</mat-icon>
+                            }
+                        </div>
+                        } @else {
+                        <div class="evidencia-preview evidencia-preview--pdf">
+                            <mat-icon>picture_as_pdf</mat-icon>
+                        </div>
+                        }
+
+                        <div class="evidencia-info">
+                            <span class="evidencia-tipo">
+                                {{ att.attachmentType === AttachmentType.Photo ? 'Foto' : (att.attachmentType === AttachmentType.Signature ? 'Firma' : 'PDF') }}
+                                @if (!att.isCurrent) {
+                                <span class="status-chip status-chip--inactive">Reemplazado</span>
+                                }
+                            </span>
+                            <span class="evidencia-nombre" [title]="att.originalFileName">{{ att.originalFileName }}</span>
+                            <span class="evidencia-meta">{{ formatearTamano(att.fileSize) }} · {{ att.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                        </div>
+
+                        <div class="evidencia-acciones">
+                            <button mat-stroked-button (click)="verEnNuevaPestana(att)">
+                                <mat-icon>visibility</mat-icon>
+                                {{ att.attachmentType === AttachmentType.Pdf ? 'Ver PDF' : 'Ver' }}
+                            </button>
+                            <button mat-stroked-button (click)="descargar(att)">
+                                <mat-icon>download</mat-icon>
+                                Descargar
+                            </button>
+                        </div>
+
+                    </mat-card>
+                    }
+                </div>
+
+                }
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Revisiones">
+            <div class="tab-panel">
+                @if (guide.revisions.length === 0) {
+                <p class="sin-datos">No se registraron revisiones para esta guía.</p>
+                } @else {
+                @for (rev of guide.revisions; track rev.id) {
+                <mat-card class="panel" appearance="outlined">
+                    <div class="panel__header">
+                        <h2 class="panel__title">
+                            <mat-icon>history</mat-icon>
+                            {{ rev.revisionDate | date:'dd/MM/yyyy HH:mm' }} · {{ rev.employeeName }}
+                        </h2>
+                    </div>
+                    <mat-card-content>
+                        @if (rev.observation) {
+                        <p class="observation">{{ rev.observation }}</p>
+                        }
+                        <table mat-table [dataSource]="rev.details" class="detail-table">
+
+                            <ng-container matColumnDef="serviceItemName">
+                                <th mat-header-cell *matHeaderCellDef> Servicio </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.serviceItemName }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="originalQuantity">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cant. Original </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.originalQuantity }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="newQuantity">
+                                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Cant. Nueva </th>
+                                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.newQuantity }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="reason">
+                                <th mat-header-cell *matHeaderCellDef> Motivo </th>
+                                <td mat-cell *matCellDef="let element"> {{ element.reason }} </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="['serviceItemName','originalQuantity','newQuantity','reason']" class="cabecera"></tr>
+                            <tr mat-row *matRowDef="let row; columns: ['serviceItemName','originalQuantity','newQuantity','reason'];"></tr>
+                        </table>
+                    </mat-card-content>
+                </mat-card>
+                }
+                }
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
 
     }
 

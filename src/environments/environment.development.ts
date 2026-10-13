@@ -228,6 +228,9 @@ export const environment = {
     // Operaciones Corporativas - Guias de Recojo
     EPPickupGuides: 'api/pickup-guides',
 
+    // Operaciones Corporativas - Vehiculos
+    EPVehicles: 'api/vehicles',
+
     // Tarifas por Cliente (CustomerPriceList)
     EPPriceLists: 'api/price-lists', // /{id}, /{id}/clone, /{id}/activate, /{id}/deactivate
     // EPCustomersBase ('api/customers') ya existe: se usa para /{id}/price-lists y /{id}/price-lists/active

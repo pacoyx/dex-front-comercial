@@ -9,6 +9,7 @@ import {
   IPickupGuide,
   IPickupGuideFilters,
   IPickupGuideSummary,
+  IResendEmailResult,
   IUpdatePickupGuideRequest,
 } from '../interfaces/IPickupGuide';
 
@@ -49,6 +50,21 @@ export class PickupGuidesService {
   cambiarEstado(id: number, req: IChangePickupGuideStatusRequest): Observable<IResponseGeneric<unknown>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<unknown>>(`${this.apiUrl}${environment.EPPickupGuides}/${id}/status`, req, { headers });
+  }
+
+  reenviarCorreo(id: number): Observable<IResponseGeneric<IResendEmailResult>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IResendEmailResult>>(`${this.apiUrl}${environment.EPPickupGuides}/${id}/resend-email`, {}, { headers });
+  }
+
+  /**
+   * Descarga el binario de un adjunto (foto, firma o PDF). El endpoint exige el mismo
+   * Bearer token que el resto de la API, por eso no se puede enlazar directo con <img>/<a>:
+   * hay que traer el blob vía HttpClient (el interceptor agrega el header) y exponerlo
+   * con URL.createObjectURL en el componente.
+   */
+  descargarAdjunto(attachmentId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPPickupGuides}/attachments/${attachmentId}/download`, { responseType: 'blob' });
   }
 
 }

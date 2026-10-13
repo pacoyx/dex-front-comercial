@@ -124,6 +124,130 @@
     text-align: right !important;
 }
 
+/* ===== Tabs ===== */
+
+.panel-tabs {
+    background: var(--mat-sys-surface-container-lowest);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Status chip (estado de correo) ===== */
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--inactive {
+    border: 1.5px solid #757575;
+    color: #757575;
+    margin-left: 6px;
+    padding: 1px 8px;
+    font-size: .72rem;
+}
+
+/* ===== Evidencias ===== */
+
+.evidencias-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.evidencia-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.evidencia-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    background: var(--mat-sys-surface-container-high);
+    overflow: hidden;
+}
+
+.evidencia-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: zoom-in;
+}
+
+.evidencia-preview mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.evidencia-preview--pdf mat-icon {
+    color: #c62828;
+}
+
+.evidencia-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 12px 0;
+}
+
+.evidencia-tipo {
+    font-weight: 600;
+    font-size: .85rem;
+}
+
+.evidencia-nombre {
+    font: var(--mat-sys-body-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.evidencia-meta {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.evidencia-acciones {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+}
+
+.evidencia-acciones button {
+    flex: 1;
+}
+
 @media (max-width: 900px) {
     .container-guide-detail {
         padding: 12px;

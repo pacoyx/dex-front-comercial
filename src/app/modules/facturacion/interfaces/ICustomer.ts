@@ -73,6 +73,9 @@ export interface ICustomerContact {
   phoneNumber: string;
   email: string;
   isPrimary: boolean;
+  receivePickupGuideEmails: boolean;
+  receiveInvoices: boolean;
+  receivePortalNotifications: boolean;
 }
 
 export interface ICustomerContactRequest {
@@ -81,6 +84,9 @@ export interface ICustomerContactRequest {
   phoneNumber: string;
   email: string;
   isPrimary: boolean;
+  receivePickupGuideEmails: boolean;
+  receiveInvoices: boolean;
+  receivePortalNotifications: boolean;
 }
 
 export interface ICompanySearchFilters {
