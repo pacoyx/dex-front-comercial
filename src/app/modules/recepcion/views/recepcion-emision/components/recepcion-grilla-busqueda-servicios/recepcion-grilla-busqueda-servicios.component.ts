@@ -11,6 +11,7 @@ import { DialogPesokgComponent } from '../../../../components/dialog-pesokg/dial
 import { Subscription } from 'rxjs';
 import { isSneakerCategory } from '../../../../shared/sneaker-category.util';
 import { isPesoItem } from '../../../../shared/peso-item.util';
+import { isLavadoItem } from '../../../../shared/lavado-item.util';
 import { agregarItemZapatillaDirecto } from '../../../../shared/agregar-item-zapatilla.util';
 
 @Component({
@@ -55,14 +56,14 @@ export class RecepcionGrillaBusquedaServiciosComponent implements OnInit, OnChan
       return;
     }
 
-    if (isPesoItem(item.isPeso)) {
+    if (isPesoItem(item.isPeso) || isLavadoItem(item.isLavado)) {
       this.dialogSubscription = this.dialog.open(DialogPesokgComponent, {
         minWidth: '420px',
         data: {
           inTitulo: item.name,
           inIdServicio: item.id,
           inDesServicio: item.name,
-          inEsPeso: true,
+          inEsPeso: isPesoItem(item.isPeso),
           inPrecio: item.price,
         },
       }).afterClosed().subscribe((_) => this.updatePayEvent.emit(true));

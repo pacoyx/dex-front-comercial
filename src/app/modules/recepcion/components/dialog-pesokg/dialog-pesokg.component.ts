@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,9 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './dialog-pesokg.component.html',
   styleUrl: './dialog-pesokg.component.css'
 })
-export class DialogPesokgComponent implements OnInit, AfterViewInit {
-  @ViewChild('publicTotalBox', { static: false }) totalBoxField!: ElementRef;
-
+export class DialogPesokgComponent implements OnInit {
 
   readonly dataInput = inject<{ inTitulo: string, inPrecio: number, inEsPeso: boolean, inIdServicio: number, inDesServicio: string }>(MAT_DIALOG_DATA);
 
@@ -37,33 +35,17 @@ export class DialogPesokgComponent implements OnInit, AfterViewInit {
 
     this.codProd = this.dataInput.inIdServicio;
     this.nomProd = this.dataInput.inDesServicio;
+    this.precioKg = this.dataInput.inPrecio;
     if (this.dataInput.inEsPeso) {
       this.pesoKg = 0;
-      this.precioKg = this.dataInput.inPrecio;
     }
 
     this.total = 0;
-    this.totalBoxField.nativeElement.focus();
   }
 
-  ngAfterViewChecked(): void {
-    // console.log('ngAfterViewChecked()');
-    // this.totalBoxField.nativeElement.focus();
-    // this.totalBoxField.nativeElement.select();
+  seleccionarTotal(event: FocusEvent): void {
+    (event.target as HTMLInputElement).select();
   }
-
-  ngAfterViewInit(): void {
-    // console.log('ngAfterViewInit()');
-    // this.totalBoxField.nativeElement.focus();
-    // this.totalBoxField.nativeElement.select();
-
-    setTimeout(() => {
-      this.totalBoxField.nativeElement.focus();
-      this.totalBoxField.nativeElement.select();
-    }, 0);
-  }
-
-  precioFocus() { }
 
   registrarItem() {
     this.store.add({

@@ -8,9 +8,6 @@
                 <th class="col-numeric">Cantidad</th>
                 <th class="col-numeric">Precio</th>
                 <th class="col-numeric">Subtotal</th>
-                <th>Ubicacion</th>
-                <th>Estado Trabajo</th>
-                <th>Estado Registro</th>
                 <th>Estado Situacion</th>
                 <th>Estado Pago</th>
                 <th>Fecha Recojo</th>
@@ -20,53 +17,22 @@
         <tbody>
             @for (item of dataSource; track item.id; let idx = $index) {
             <tr>
-                <td>{{ idx +1 }}</td>
+                <td>
+                    {{ idx +1 }}
+                    @if(item.estadoRegistro === 'I'){
+                    <span class="texto-anulado"> (Anulado)</span>
+                    }
+                </td>
                 <td>{{ item.servicio }}</td>
-                <td>{{ item.observaciones }}</td>
+                <td>
+                    {{ item.observaciones }}
+                    @if(item.ubicacion !== 'L'){
+                    <span class="texto-ubicacion"> ({{ item.ubicacion }})</span>
+                    }
+                </td>
                 <td class="col-numeric">{{ item.cant }}</td>
                 <td class="col-numeric">{{ item.precio | number:'1.2-2' }}</td>
                 <td class="col-numeric">{{ item.total | number:'1.2-2' }}</td>
-                <td>{{ item.ubicacion }}</td>
-                <td>
-                    @switch (item.estadoTrabajo) {
-                    @case ('P') {
-                    <span class="status-chip status-chip--pendiente">
-                        <span class="status-chip__dot"></span>
-                        Pendiente
-                    </span>
-                    }
-                    @case ('E') {
-                    <span class="status-chip status-chip--proceso">
-                        <span class="status-chip__dot"></span>
-                        En Proceso
-                    </span>
-                    }
-                    @case ('F') {
-                    <span class="status-chip status-chip--activo">
-                        <span class="status-chip__dot"></span>
-                        Finalizado
-                    </span>
-                    }
-                    }
-
-                </td>
-                <td>
-                    @switch (item.estadoRegistro) {
-                    @case('A'){
-                    <span class="status-chip status-chip--activo">
-                        <span class="status-chip__dot"></span>
-                        Activo
-                    </span>
-                    }
-                    @case('I')
-                    {
-                    <span class="status-chip status-chip--inactivo">
-                        <span class="status-chip__dot"></span>
-                        Anulado
-                    </span>
-                    }
-                    }
-                </td>
                 <td>
                     @switch (item.estadoSituacion) {
                     @case('P') {
@@ -118,7 +84,7 @@
 
             } @empty {
             <tr>
-                <td class="sin-datos" colspan="13">No hay items para mostrar.</td>
+                <td class="sin-datos" colspan="10">No hay items para mostrar.</td>
             </tr>
             }
         </tbody>

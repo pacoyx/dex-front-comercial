@@ -27,9 +27,11 @@ import { NotificationServiceService } from '../../services/notification-service.
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { InspeccionService } from '../../services/inspeccion.service';
 import { DialogInspeccionItemComponent } from '../../components/dialog-inspeccion-item/dialog-inspeccion-item.component';
 import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-item/dialog-zapatilla-item.component';
+import { DialogAgregarFotosComponent } from '../../components/dialog-agregar-fotos/dialog-agregar-fotos.component';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -39,7 +41,7 @@ import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
     DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
     TicketVentaComponent, LoadingComponent, AlertDangerComponent,
-    RouterModule, MatSlideToggleModule
+    RouterModule, MatSlideToggleModule, MatTooltipModule
   ],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
@@ -489,6 +491,16 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   abrirZapatilla(item: IGuiaRetiroWgdDTO) {
     this.dialog.open(DialogZapatillaItemComponent, {
       data: { workGuideDetailId: item.id, productName: item.product.name }
+    });
+  }
+
+  abrirAgregarFotos(): void {
+    if (!this.guiaRetiroData?.id) {
+      return;
+    }
+    this.dialog.open(DialogAgregarFotosComponent, {
+      data: { workGuideId: this.guiaRetiroData.id },
+      width: '480px'
     });
   }
 }

@@ -235,6 +235,15 @@
     color: var(--mat-sys-primary);
 }
 
+/* ===== Panel: Inspección ===== */
+
+.inspeccion-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 /* ===== Tabla de detalle ===== */
 
 .panel-tabla .panel__header {
@@ -379,8 +388,27 @@
 
 .celda-operaciones {
     display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
+    gap: 2px;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.icono-accion {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+}
+
+.icono-accion--devolver {
+    color: #c62828;
+}
+
+.icono-accion--devolver:disabled {
+    color: var(--mat-sys-outline);
+}
+
+.icono-accion--inspeccion {
+    color: var(--mat-sys-primary);
 }
 
 /* ===== Status chip (reutilizado del patrón facturación/compras) ===== */
@@ -460,7 +488,8 @@ app-ticket-venta {
     .estado-row,
     .acciones-row,
     .cliente-row,
-    .totales-row {
+    .totales-row,
+    .inspeccion-row {
         flex-direction: column;
         align-items: stretch;
         gap: 12px;

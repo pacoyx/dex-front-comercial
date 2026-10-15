@@ -60,18 +60,17 @@
             <mat-tab-group fitInkBarToContent class="tabs-content">
 
                 <mat-tab label="Colores">
-                    <form [formGroup]="form">
-                        <div formArrayName="checkboxesColores" class="chip-grid">
-                            @for (color of checkboxesColoresFormArray.controls; track $index) {
-                            <mat-checkbox class="chip-color" [formControlName]="$index"
-                                (change)="onCheckboxChange($event, $index)">
-                                <span class="chip-color__swatch"
-                                    [style.backgroundColor]="colores[$index].valor"></span>
-                                {{colores[$index].nombre}}
-                            </mat-checkbox>
+                    <div class="color-grid">
+                        @for (color of colores; track color.nombre; let i = $index) {
+                        <button type="button" class="color-swatch" [style.background]="color.valor"
+                            [class.color-swatch--selected]="checkboxesColoresFormArray.at(i)!.value"
+                            [matTooltip]="color.nombre" (click)="toggleColor(i)">
+                            @if (checkboxesColoresFormArray.at(i)!.value) {
+                            <mat-icon class="color-swatch__check">check</mat-icon>
                             }
-                        </div>
-                    </form>
+                        </button>
+                        }
+                    </div>
                 </mat-tab>
 
                 <mat-tab label="Diseños">

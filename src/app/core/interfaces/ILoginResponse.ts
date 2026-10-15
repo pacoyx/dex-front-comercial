@@ -20,7 +20,7 @@ export interface ILoginResponseData {
     permissions: string[];
 }
 
-interface BranchSale {
+export interface BranchSale {
     id: number;
     branchSalesId: number;
     branchSalesName: string;

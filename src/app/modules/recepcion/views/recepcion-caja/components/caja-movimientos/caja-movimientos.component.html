@@ -21,8 +21,8 @@
                     <mat-icon>filter_alt_off</mat-icon>
                     Limpiar
                 </button>
-                <button mat-stroked-button color="primary" (click)="reprocesar()">
-                    <mat-icon>published_with_changes</mat-icon>
+                <button mat-stroked-button color="primary" (click)="reprocesar()" [disabled]="loading">
+                    @if(loading){<mat-icon>cached</mat-icon>}@else{<mat-icon>published_with_changes</mat-icon>}
                     Re-Procesar
                 </button>
                 <button mat-flat-button color="primary" (click)="addItem()">

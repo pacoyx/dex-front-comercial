@@ -13,6 +13,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { COLORES_PRENDA, IColorPrenda } from '../../shared/colores-prenda.util';
 
 
@@ -27,7 +28,8 @@ interface Marcas {
   imports: [
     MatFormFieldModule, FormsModule, ReactiveFormsModule,
     MatDialogModule, MatIconModule, MatInputModule, MatButtonModule,
-    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule, MatCardModule
+    MatChipsModule, MatCheckboxModule, MatTabsModule, MatListModule, MatCardModule,
+    MatTooltipModule
   ],
   templateUrl: './dialog-edit-item.component.html',
   styleUrl: './dialog-edit-item.component.css'
@@ -153,9 +155,9 @@ export class DialogEditItemComponent implements OnInit {
     return this.formMarcas.controls['checkboxesMarcas'] as FormArray;
   }
 
-  onCheckboxChange(event: any, index: number) {
-    // console.log(`Checkbox ${index + 1} changed to ${event.checked}`);
-    // console.log('Color seleccionado:', this.colores[index].nombre);
+  toggleColor(index: number): void {
+    const control = this.checkboxesColoresFormArray.at(index);
+    control.setValue(!control.value);
   }
 
   onSubmit() {

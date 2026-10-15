@@ -17,7 +17,15 @@
       </div>
       <div class="meta-chip">
         <mat-icon>storefront</mat-icon>
+        @if (bolExisteCaja) {
         <span>{{sucursalNombre}}</span>
+        } @else {
+        <mat-select class="sucursal-select-bare" [(ngModel)]="sucursalId" panelClass="sucursal-select-panel">
+          @for (s of sucursales; track s.branchSalesId) {
+          <mat-option [value]="s.branchSalesId">{{s.branchSalesName}}</mat-option>
+          }
+        </mat-select>
+        }
       </div>
     </div>
   </div>

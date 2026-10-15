@@ -47,7 +47,7 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loginTmp = this.loginService.getLoginData()!;
     this.obtenerCajaPorUsuario();
-    this.cargarMovimientos(true);
+    this.cargarMovimientos();
     this.cargarGastos();
   }
 
@@ -94,7 +94,7 @@ export class RecepcionCajaComponent implements OnInit, OnDestroy {
     });
   }
 
-  cargarMovimientos(ref: boolean): void {
+  cargarMovimientos(): void {
     this.loading = true;
     this.subscriptionListaDetalles = this.emisionService.ListarCajaDetallesPorUser(this.loginTmp.userId!).subscribe({
       next: (response) => {

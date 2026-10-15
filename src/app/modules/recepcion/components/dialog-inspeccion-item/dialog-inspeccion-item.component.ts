@@ -8,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { InspeccionService } from '../../services/inspeccion.service';
-import { CreateItemInspectionRequest, CreateItemPhotoRequest, ItemPhotoResponse } from '../../interfaces/IInspeccion';
+import { CreateItemInspectionRequest } from '../../interfaces/IInspeccion';
 import { extractErrorMessage, extractValidationErrors } from '../../shared/http-error.util';
 
 @Component({
@@ -29,16 +29,11 @@ export class DialogInspeccionItemComponent implements OnInit {
 
   cargando = false;
   guardando = false;
-  cargandoFotos = false;
-  agregandoFoto = false;
   validationErrors: string[] = [];
   errorMessage = '';
 
   /** true cuando aún no existe el WorkGuideDetail (guía en construcción, sin grabar todavía) */
   esBorrador = false;
-
-  itemInspectionId: number | null = null;
-  photoCount = 0;
 
   form: CreateItemInspectionRequest = {
     hasStains: false,
@@ -47,9 +42,6 @@ export class DialogInspeccionItemComponent implements OnInit {
     hasMissingParts: false,
     notes: ''
   };
-
-  fotos: ItemPhotoResponse[] = [];
-  nuevaFoto: CreateItemPhotoRequest = { fileName: '', originalFileName: '', blobUrl: '' };
 
   ngOnInit(): void {
     this.esBorrador = this.data.workGuideDetailId == null;
@@ -66,8 +58,6 @@ export class DialogInspeccionItemComponent implements OnInit {
       next: (resp) => {
         this.cargando = false;
         const inspection = resp.data;
-        this.itemInspectionId = inspection.id;
-        this.photoCount = inspection.photoCount;
         this.form = {
           hasStains: inspection.hasStains,
           hasTears: inspection.hasTears,
@@ -75,28 +65,12 @@ export class DialogInspeccionItemComponent implements OnInit {
           hasMissingParts: inspection.hasMissingParts,
           notes: inspection.notes ?? ''
         };
-        this.cargarFotos();
       },
       error: (err) => {
         this.cargando = false;
         if (err?.status !== 404) {
           this.errorMessage = extractErrorMessage(err, 'No se pudo cargar la inspección del ítem.');
         }
-      }
-    });
-  }
-
-  cargarFotos(): void {
-    if (!this.itemInspectionId) return;
-    this.cargandoFotos = true;
-    this.inspeccionService.listarFotosInspeccion(this.itemInspectionId).subscribe({
-      next: (resp) => {
-        this.cargandoFotos = false;
-        this.fotos = resp.data;
-      },
-      error: (err) => {
-        this.cargandoFotos = false;
-        this.errorMessage = extractErrorMessage(err, 'No se pudo cargar las fotos de la inspección.');
       }
     });
   }
@@ -112,11 +86,9 @@ export class DialogInspeccionItemComponent implements OnInit {
 
     this.guardando = true;
     this.inspeccionService.guardarInspeccion(this.data.workGuideDetailId!, this.form).subscribe({
-      next: (resp) => {
+      next: () => {
         this.guardando = false;
-        this.itemInspectionId = resp.data.id;
-        this.photoCount = resp.data.photoCount;
-        this.cargarFotos();
+        this.dialogRef.close({ saved: true });
       },
       error: (err) => {
         this.guardando = false;
@@ -128,35 +100,5 @@ export class DialogInspeccionItemComponent implements OnInit {
         }
       }
     });
-  }
-
-  agregarFoto(): void {
-    if (!this.itemInspectionId || !this.nuevaFoto.fileName || !this.nuevaFoto.blobUrl) {
-      return;
-    }
-    this.validationErrors = [];
-    this.errorMessage = '';
-    this.agregandoFoto = true;
-    this.inspeccionService.agregarFotoInspeccion(this.itemInspectionId, this.nuevaFoto).subscribe({
-      next: (resp) => {
-        this.agregandoFoto = false;
-        this.fotos.push(resp.data);
-        this.photoCount = this.fotos.length;
-        this.nuevaFoto = { fileName: '', originalFileName: '', blobUrl: '' };
-      },
-      error: (err) => {
-        this.agregandoFoto = false;
-        const validation = extractValidationErrors(err);
-        if (validation.length > 0) {
-          this.validationErrors = validation;
-        } else {
-          this.errorMessage = extractErrorMessage(err, 'Ocurrió un error al agregar la foto.');
-        }
-      }
-    });
-  }
-
-  cerrar(): void {
-    this.dialogRef.close({ itemInspectionId: this.itemInspectionId, photoCount: this.photoCount });
   }
 }

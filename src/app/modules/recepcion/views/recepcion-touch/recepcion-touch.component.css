@@ -148,6 +148,29 @@
   font-size: 18px;
 }
 
+.sucursal-select-bare {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  max-width: 220px;
+  font: inherit;
+  font-weight: 500;
+  color: inherit;
+}
+
+.sucursal-select-bare .mat-mdc-select-trigger {
+  height: auto;
+  min-height: 0;
+}
+
+.sucursal-select-bare .mat-mdc-select-value {
+  color: inherit;
+}
+
+.sucursal-select-bare .mat-mdc-select-arrow {
+  color: inherit;
+}
+
 /* ==========================================================================
    Panel catálogo (columna izquierda)
    ========================================================================== */

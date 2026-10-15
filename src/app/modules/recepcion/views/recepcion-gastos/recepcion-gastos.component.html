@@ -24,13 +24,23 @@
     <mat-card class="panel" appearance="outlined">
         <mat-card-content class="filtros-row">
 
-            <mat-form-field appearance="outline" class="campo-fecha">
-                <mat-label>Fecha</mat-label>
-                <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy"
-                    (dateChange)="cargarGastos()">
-                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
+            <div class="fecha-selector">
+                <mat-form-field appearance="outline" class="campo-fecha">
+                    <mat-label>Fecha</mat-label>
+                    <input matInput [matDatepicker]="picker" placeholder="Choose a date" [(ngModel)]="fechaHoy"
+                        (dateChange)="cargarGastos()">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+
+                <button mat-stroked-button class="btn-fecha-nav" matTooltip="Día anterior" (click)="cambiarFecha(-1)">
+                    <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <button mat-stroked-button class="btn-fecha-nav" matTooltip="Día siguiente" (click)="cambiarFecha(1)">
+                    <mat-icon>chevron_right</mat-icon>
+                </button>
+            </div>
 
         </mat-card-content>
     </mat-card>

@@ -1,0 +1,30 @@
+<h2 mat-dialog-title>
+    Foto {{index + 1}} de {{data.fotos.length}}
+</h2>
+<mat-dialog-content>
+    <div class="carrusel" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+
+        <button mat-icon-button class="carrusel__nav carrusel__nav--prev" (click)="anterior()"
+            [disabled]="!hayAnterior" aria-label="Foto anterior">
+            <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="carrusel__stage">
+            @if(urlActual){
+            <img [src]="urlActual" [alt]="fotoActual?.originalFileName || fotoActual?.fileName" class="carrusel__img">
+            }@else{
+            <div class="carrusel__placeholder">Cargando...</div>
+            }
+        </div>
+
+        <button mat-icon-button class="carrusel__nav carrusel__nav--next" (click)="siguiente()"
+            [disabled]="!haySiguiente" aria-label="Foto siguiente">
+            <mat-icon>chevron_right</mat-icon>
+        </button>
+    </div>
+
+    <div class="carrusel__nombre">{{fotoActual?.originalFileName || fotoActual?.fileName}}</div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close cdkFocusInitial>Cerrar</button>
+</mat-dialog-actions>

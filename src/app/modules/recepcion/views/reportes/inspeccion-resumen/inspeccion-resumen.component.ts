@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -8,10 +8,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { InspeccionService } from '../../../services/inspeccion.service';
 import { InspectionSummaryResponse, WorkGuidePhotoResponse } from '../../../interfaces/IInspeccion';
 import { extractErrorMessage } from '../../../shared/http-error.util';
+import { DialogVerFotosComponent } from './components/dialog-ver-fotos/dialog-ver-fotos.component';
 
 @Component({
   selector: 'app-inspeccion-resumen',
@@ -23,14 +25,16 @@ import { extractErrorMessage } from '../../../shared/http-error.util';
   templateUrl: './inspeccion-resumen.component.html',
   styleUrl: './inspeccion-resumen.component.css'
 })
-export class InspeccionResumenComponent implements OnInit {
+export class InspeccionResumenComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private inspeccionService = inject(InspeccionService);
+  private dialog = inject(MatDialog);
 
   workGuideId: number | null = null;
   resumen: InspectionSummaryResponse | null = null;
   fotos: WorkGuidePhotoResponse[] = [];
+  fotoUrls = new Map<number, string>();
 
   cargando = false;
   cargandoFotos = false;
@@ -74,6 +78,7 @@ export class InspeccionResumenComponent implements OnInit {
         this.cargandoFotos = false;
         this.fotosCargadas = true;
         this.fotos = resp.data.photos;
+        this.cargarMiniaturas();
       },
       error: (err) => {
         this.cargandoFotos = false;
@@ -82,7 +87,34 @@ export class InspeccionResumenComponent implements OnInit {
     });
   }
 
-  fotosDeDetalle(workGuideDetailId: number): WorkGuidePhotoResponse[] {
-    return this.fotos.filter(f => f.workGuideDetailId === workGuideDetailId);
+  private cargarMiniaturas(): void {
+    this.liberarFotoUrls();
+    this.fotos.forEach((foto) => {
+      this.inspeccionService.descargarFotoGuia(foto.id).subscribe({
+        next: (blob) => this.fotoUrls.set(foto.id, URL.createObjectURL(blob)),
+        error: () => { /* si falla una miniatura, simplemente no se muestra */ }
+      });
+    });
+  }
+
+  abrirFoto(index: number): void {
+    this.dialog.open(DialogVerFotosComponent, {
+      width: '440px',
+      maxWidth: '95vw',
+      data: {
+        fotos: this.fotos,
+        fotoUrls: this.fotoUrls,
+        startIndex: index
+      }
+    });
+  }
+
+  private liberarFotoUrls(): void {
+    this.fotoUrls.forEach((url) => URL.revokeObjectURL(url));
+    this.fotoUrls.clear();
+  }
+
+  ngOnDestroy(): void {
+    this.liberarFotoUrls();
   }
 }

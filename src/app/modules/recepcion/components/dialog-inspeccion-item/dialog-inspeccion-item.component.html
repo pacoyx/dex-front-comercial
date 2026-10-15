@@ -37,58 +37,9 @@
             {{esBorrador ? 'Guardar' : 'Guardar Inspección'}}
         </button>
 
-        <hr>
-
-        <div style="font-weight: bold;">Fotos ({{photoCount}})</div>
-
-        @if(!itemInspectionId){
-        @if(esBorrador){
-        <div style="color: gray; font-size: small;">Podrás agregar fotos luego de grabar el ticket, desde Retiros.</div>
-        }@else{
-        <div style="color: gray; font-size: small;">Guarda la inspección para poder agregar fotos.</div>
-        }
-        }@else{
-
-        @if(cargandoFotos){
-        <div>Cargando fotos...</div>
-        }@else{
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            @for(foto of fotos; track foto.id){
-            <div style="width: 100px; text-align: center;">
-                <img [src]="foto.blobUrl" [alt]="foto.fileName" style="width: 100px; height: 100px; object-fit: cover; border-radius: 4px;">
-                <div style="font-size: x-small; word-break: break-all;">{{foto.fileName}}</div>
-            </div>
-            }
-            @if(fotos.length === 0){
-            <div style="color: gray; font-size: small;">Sin fotos registradas.</div>
-            }
-        </div>
-        }
-
-        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
-            <mat-form-field appearance="outline">
-                <mat-label>Nombre de archivo</mat-label>
-                <input matInput maxlength="260" [(ngModel)]="nuevaFoto.fileName">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Nombre original (opcional)</mat-label>
-                <input matInput maxlength="260" [(ngModel)]="nuevaFoto.originalFileName">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>URL de la foto</mat-label>
-                <input matInput maxlength="1000" [(ngModel)]="nuevaFoto.blobUrl">
-            </mat-form-field>
-            <button mat-stroked-button (click)="agregarFoto()"
-                [disabled]="agregandoFoto || !nuevaFoto.fileName || !nuevaFoto.blobUrl">
-                @if(agregandoFoto){<mat-icon>cached</mat-icon>}
-                Agregar Foto
-            </button>
-        </div>
-        }
-
         }
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button (click)="cerrar()" cdkFocusInitial>Cerrar</button>
+    <button mat-button mat-dialog-close cdkFocusInitial>Cerrar</button>
 </mat-dialog-actions>

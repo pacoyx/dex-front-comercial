@@ -26,17 +26,16 @@ import { DialogDividirPagoComponent } from './components/dialog-dividir-pago/dia
 })
 export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
 
-  @Output() cargarData = new EventEmitter<boolean>();
+  @Output() cargarData = new EventEmitter<void>();
   @Input() userIdData: number = 0;
   @Input() movimientosData: ICashBoxDetailResponseDto[] = [];
+  @Input() loading = false;
 
 
   emisionService = inject(EmisionService);
   readonly dialog = inject(MatDialog);
 
   userId = 0;
-  loading = false;
-  subscriptionListaDetalles!: Subscription;
   filterSubscription!: Subscription;
 
   displayedColumns: string[] = [
@@ -65,8 +64,8 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
   }
 
   ngOnDestroy(): void {
-    if (this.subscriptionListaDetalles) {
-      this.subscriptionListaDetalles.unsubscribe();
+    if (this.filterSubscription) {
+      this.filterSubscription.unsubscribe();
     }
   }
 
@@ -86,24 +85,6 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
       this.dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>(this.movimientosData);
       this.listsItems = this.movimientosData;
     }
-  }
-
-  cargarMovimientos(): void {
-    this.loading = true;
-    this.subscriptionListaDetalles = this.emisionService.ListarCajaDetallesPorUser(this.userId).subscribe({
-      next: (response) => {
-        this.loading = false;
-        this.dataSource = new MatTableDataSource<ICashBoxDetailResponseDto>(response.data);
-        this.listsItems = response.data;
-      },
-      error: (err) => {
-        console.log(err);
-        this.loading = false;
-      },
-      complete: () => {
-        console.log('complete ListarCajaDetallesPorUser()');
-      }
-    });
   }
 
   getTotalAdelanto() {
@@ -130,7 +111,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
       next: (result) => {
         console.log('response dialog dividir:', result);
         if (result) {
-          this.cargarData.emit(true);
+          this.cargarData.emit();
         }
       }
     });
@@ -154,7 +135,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
             next: (response) => {
               console.log(response);
               if (response.success) {
-                this.cargarData.emit(true);
+                this.cargarData.emit();
               }
             },
             error: (err) => {
@@ -197,7 +178,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
       next: (result) => {
         console.log('dialogResponse.afterClosed()', result);
         if (result) {
-          this.cargarData.emit(true);
+          this.cargarData.emit();
         }
       }
     });
@@ -221,7 +202,7 @@ export class CajaMovimientosComponent implements OnInit, OnDestroy, OnChanges, A
   }
 
   reprocesar(): void {
-    this.cargarData.emit(true);
+    this.cargarData.emit();
   }
 
 

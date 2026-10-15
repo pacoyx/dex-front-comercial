@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Agregar Fotos de la Guía</h2>
+<mat-dialog-content>
+    <div class="agregar-fotos">
+
+        @if(errorMessage){
+        <div class="agregar-fotos__error">{{errorMessage}}</div>
+        }
+
+        <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+            (change)="onArchivosSeleccionados($event)">
+
+        <div class="agregar-fotos__acciones">
+            <button mat-stroked-button (click)="abrirCamara()">
+                <mat-icon>photo_camera</mat-icon>
+                Tomar Foto
+            </button>
+            <button mat-flat-button color="primary" (click)="subirTodo()"
+                [disabled]="subiendoTodo || pendientes === 0">
+                @if(subiendoTodo){<mat-icon>cached</mat-icon>}
+                Subir Fotos ({{pendientes}})
+            </button>
+        </div>
+
+        @if(cola.length > 0){
+        <div class="agregar-fotos__grid">
+            @for(item of cola; track item.previewUrl){
+            <div class="agregar-fotos__item">
+                <img [src]="item.previewUrl" class="agregar-fotos__img" alt="Foto en cola">
+
+                <div class="agregar-fotos__estado">
+                    @switch(item.status){
+                    @case('pendiente'){<mat-icon class="icono-pendiente" matTooltip="Pendiente">schedule</mat-icon>}
+                    @case('subiendo'){<mat-icon class="icono-subiendo">cached</mat-icon>}
+                    @case('ok'){<mat-icon class="icono-ok">check_circle</mat-icon>}
+                    @case('error'){<mat-icon class="icono-error" [matTooltip]="item.errorMessage || 'Error al subir'">error</mat-icon>}
+                    }
+                </div>
+
+                @if(item.status !== 'subiendo' && item.status !== 'ok'){
+                <button mat-icon-button class="agregar-fotos__quitar" (click)="quitar(item)" matTooltip="Quitar">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+            </div>
+            }
+        </div>
+        }@else{
+        <div class="agregar-fotos__vacio">Toca "Tomar Foto" para empezar a agregar evidencias.</div>
+        }
+
+        @if(cola.length > 0){
+        <div class="agregar-fotos__resumen">{{subidas}} de {{cola.length}} fotos subidas.</div>
+        }
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="cerrar()" cdkFocusInitial>Cerrar</button>
+</mat-dialog-actions>

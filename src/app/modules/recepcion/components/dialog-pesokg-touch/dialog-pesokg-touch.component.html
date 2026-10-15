@@ -19,7 +19,7 @@
         </button>
 
         <button type="button" class="calc-field calc-field--total" [class.active]="campoActivo === 'total'"
-            (click)="abrirTeclado('total')">
+            (click)="abrirTeclado('total')" cdkFocusInitial>
             <span class="calc-field__label">Total soles</span>
             <span class="calc-field__value">{{ total.toFixed(2) }}</span>
         </button>

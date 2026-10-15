@@ -52,10 +52,12 @@ import { DialogInspeccionItemComponent } from '../../components/dialog-inspeccio
 import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-item/dialog-zapatilla-item.component';
 import { IEmisionItem } from '../../models/IEmisionItems';
 import { isSneakerCategory } from '../../shared/sneaker-category.util';
+import { isPesoItem } from '../../shared/peso-item.util';
+import { isLavadoItem } from '../../shared/lavado-item.util';
 import { agregarItemZapatillaDirecto } from '../../shared/agregar-item-zapatilla.util';
 import { formatearZapatillaDraft } from '../../shared/zapatilla-draft-format.util';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
+import { BranchSale, ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -112,8 +114,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   sucursalId = 1;
   sucursalNombre = '[Seleccione Sucursal]';
-  idServicioPeso = 0;
-  idServicioLavado = 0;
 
   fechaHoy = Date.now();
   fechaHEntrega = Date.now() + 2 * 24 * 60 * 60 * 1000;
@@ -207,7 +207,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   clienteControl = new FormControl();
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
-  sucursales: any[] = [];
+  sucursales: BranchSale[] = [];
 
   constructor() {
     effect(() => {
@@ -241,7 +241,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     console.log('existe caja:', existeCaja);
 
     if (!existeCaja) {
-      this.obtenerSucursalCajaAbierta();
+      this.cargarSucursalesLocalStorage();
     }
 
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
@@ -267,7 +267,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.obtenerIdsServicioPesoLavado();
     this.store.resetState();
     // this.cargarNumeracion();
     this.cargarCategorias();
@@ -277,31 +276,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
   }
 
-  obtenerSucursalCajaAbierta() {
-    const storedData = localStorage.getItem('dex24Auth');
-    if (storedData == null) {
-      this.dialog.open(DialogMsgComponent, {
-        data: {
-          title: 'Error',
-          msg: 'No se encontraron datos de autenticación en el sistema.',
-          err: true,
-        },
-      });
-      return;
-    }
-    const parsedData: ILoginResponseData = JSON.parse(storedData);
-    this.sucursalId = parsedData.branchSalesCashId;
-    // this.sucursalNombre = parsedData.branchSales.map((sucursal: any) => sucursal.branchSalesName).join(', ');
-    const foundSucursal = parsedData.branchSales.find(
-      (sucursal: any) => sucursal.branchSalesId == this.sucursalId,
-    );
-    this.sucursalNombre = foundSucursal
-      ? foundSucursal.branchSalesName
-      : '[Sucursal no encontrada]';
-  }
-
   cargarSucursalesLocalStorage() {
-    // no se usa
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
       this.dialog.open(DialogMsgComponent, {
@@ -315,15 +290,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
-    this.sucursales = [
-      { id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' },
-      ...parsedData.branchSales,
-    ];
-    if (parsedData.branchSales.length == 1) {
-      this.sucursalId = parsedData.branchSales[0].branchSalesId;
-    } else {
-      this.sucursalId = 0;
-    }
+    this.sucursales = parsedData.branchSales;
+    this.sucursalId = parsedData.branchSales[0]?.branchSalesId ?? 0;
   }
 
   applyFilterSucursal(event: any) {
@@ -347,13 +315,35 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   agregarItemQuickAccess(item: IResponseServiceQuickAccess): void {
-    if (item.shortName == 'Peso KG.') {
-      this.openDialogPeso();
+    if (isPesoItem(item.isPeso)) {
+      this.subscriptionQuickAccess = this.dialog
+        .open(DialogPesokgComponent, {
+          data: {
+            inTitulo: item.shortName,
+            inIdServicio: item.prodServiceID,
+            inDesServicio: item.shortName,
+            inEsPeso: true,
+            inPrecio: item.price,
+          },
+        })
+        .afterClosed()
+        .subscribe((_) => this.actualizarPago());
       return;
     }
 
-    if (item.shortName == 'Lavado ...') {
-      this.openDialogLavado();
+    if (isLavadoItem(item.isLavado)) {
+      this.subscriptionQuickAccess = this.dialog
+        .open(DialogPesokgComponent, {
+          data: {
+            inTitulo: item.shortName,
+            inIdServicio: item.prodServiceID,
+            inDesServicio: item.shortName,
+            inEsPeso: false,
+            inPrecio: item.price,
+          },
+        })
+        .afterClosed()
+        .subscribe((_) => this.actualizarPago());
       return;
     }
 
@@ -379,22 +369,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       })
       .afterClosed()
       .subscribe((_) => this.actualizarPago());
-  }
-
-  obtenerIdsServicioPesoLavado() {
-    this.emisionService.ObtenerIdsPesoLavado().subscribe({
-      next: (resp) => {
-        console.log(resp);
-        this.idServicioPeso = resp.data.idPeso;
-        this.idServicioLavado = resp.data.idLavado;
-      },
-      error: (err) => {
-        console.log(err);
-      },
-      complete: () => {
-        console.log('complete ObtenerIdsPesoLavado()');
-      },
-    });
   }
 
   actualizarTelefonoCliente(event: any) {
@@ -627,30 +601,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       this.clienteNombre = result.nombres + ' ' + result.apellidos;
       this.clienteTelefono = result.telefono;
       this.clienteControl.setValue(result.nombres, { emitEvent: false });
-    });
-  }
-
-  openDialogPeso() {
-    this.dialog.open(DialogPesokgComponent, {
-      data: {
-        inTitulo: 'Lavado por Peso Kg.',
-        inIdServicio: this.idServicioPeso,
-        inDesServicio: 'Peso',
-        inEsPeso: true,
-        inPrecio: 3,
-      },
-    });
-  }
-
-  openDialogLavado() {
-    this.dialog.open(DialogPesokgComponent, {
-      data: {
-        inTitulo: 'Lavado',
-        inIdServicio: this.idServicioLavado,
-        inDesServicio: 'Lavado',
-        inEsPeso: false,
-        inPrecio: 1,
-      },
     });
   }
 

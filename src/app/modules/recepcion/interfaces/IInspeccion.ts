@@ -43,21 +43,15 @@ export interface ItemInspectionResponse {
     hasMissingParts: boolean;
     notes: string | null;
     createdAt: string;
-    photoCount: number;
-}
-
-export interface CreateItemPhotoRequest {
-    fileName: string;
-    originalFileName?: string | null;
-    blobUrl: string;
 }
 
 export interface ItemPhotoResponse {
     id: number;
-    itemInspectionId: number;
+    workGuideMainId: number;
     fileName: string;
     originalFileName: string | null;
-    blobUrl: string;
+    contentType: string;
+    fileSize: number;
     createdAt: string;
 }
 
@@ -88,10 +82,10 @@ export interface InspectionSummaryResponse {
 
 export interface WorkGuidePhotoResponse {
     id: number;
-    workGuideDetailId: number;
-    itemInspectionId: number;
     fileName: string;
-    blobUrl: string;
+    originalFileName: string | null;
+    contentType: string;
+    fileSize: number;
     createdAt: string;
 }
 

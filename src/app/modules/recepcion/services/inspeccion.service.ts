@@ -4,7 +4,6 @@ import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../../../core/interfaces/IShared';
 import {
   CreateItemInspectionRequest,
-  CreateItemPhotoRequest,
   InspectionSummaryResponse,
   ItemInspectionResponse,
   ItemPhotoResponse,
@@ -51,15 +50,11 @@ export class InspeccionService {
     return this.http.get<IResponseGeneric<ItemInspectionResponse>>(url);
   }
 
-  agregarFotoInspeccion(itemInspectionId: number, body: CreateItemPhotoRequest) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.apiUrl}${environment.EPInspections}/${itemInspectionId}/photos`;
-    return this.http.post<IResponseGeneric<ItemPhotoResponse>>(url, body, { headers });
-  }
-
-  listarFotosInspeccion(itemInspectionId: number) {
-    const url = `${this.apiUrl}${environment.EPInspections}/${itemInspectionId}/photos`;
-    return this.http.get<IResponseGeneric<ItemPhotoResponse[]>>(url);
+  agregarFotoGuia(workGuideId: number, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const url = `${this.apiUrl}${environment.EPWorkGuides}/${workGuideId}/photos`;
+    return this.http.post<IResponseGeneric<ItemPhotoResponse>>(url, formData);
   }
 
   obtenerResumenInspeccionPorGuia(workGuideId: number) {
@@ -70,6 +65,11 @@ export class InspeccionService {
   obtenerFotosPorGuia(workGuideId: number) {
     const url = `${this.apiUrl}${environment.EPWorkGuides}/${workGuideId}/photos`;
     return this.http.get<IResponseGeneric<WorkGuidePhotosResponse>>(url);
+  }
+
+  descargarFotoGuia(photoId: number) {
+    const url = `${this.apiUrl}${environment.EPWorkGuides}/photos/${photoId}/download`;
+    return this.http.get(url, { responseType: 'blob' });
   }
 
   obtenerReporteZapatillas(filtros: SneakerReportFilters) {

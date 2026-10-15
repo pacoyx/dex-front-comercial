@@ -154,17 +154,61 @@
     margin-top: 4px;
 }
 
-.detalle-item__fotos {
+/* ===== Fotos de la guía ===== */
+
+.fotos-guia {
+    margin-top: 16px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    padding-top: 12px;
+}
+
+.fotos-guia__titulo {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+    margin-bottom: 8px;
+}
+
+.fotos-guia__grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 8px;
 }
 
-.detalle-item__foto {
-    width: 80px;
-    height: 80px;
+.fotos-guia__item {
+    width: 100px;
+    height: 100px;
+}
+
+.fotos-guia__boton {
+    width: 100px;
+    height: 100px;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: block;
+}
+
+.fotos-guia__boton:hover .fotos-guia__img {
+    opacity: 0.85;
+}
+
+.fotos-guia__img {
+    width: 100px;
+    height: 100px;
     object-fit: cover;
+    border-radius: 8px;
+}
+
+.fotos-guia__placeholder {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: small;
+    color: var(--mat-sys-on-surface-variant);
+    background: var(--mat-sys-surface-container-low);
     border-radius: 8px;
 }
 
@@ -181,6 +225,13 @@
     .filtros-row {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .campo-guia {
+        flex: 0 0 auto;
+        width: 200px;
+        max-width: 100%;
+        align-self: flex-start;
     }
 
     .filtros-acciones {

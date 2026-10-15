@@ -29,14 +29,29 @@
 .dialog-content {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 8px;
     padding-top: 12px;
     min-width: 320px;
-    max-height: none;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
 }
 
 .panel {
     border-radius: 12px !important;
+}
+
+.panel mat-card-header {
+    padding: 8px 16px 0 !important;
+}
+
+.panel mat-card-title {
+    font-size: .95rem !important;
+    margin-bottom: 0 !important;
+}
+
+.panel mat-card-content {
+    padding-top: 6px !important;
+    padding-bottom: 10px !important;
 }
 
 .full-width {
@@ -63,26 +78,40 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    padding: 14px 4px 4px;
+    padding: 8px 4px 4px;
 }
 
-.chip-color {
+.color-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 8px 4px 4px;
+}
+
+.color-swatch {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    border: 1px solid #999;
+    cursor: pointer;
+    padding: 0;
     display: flex;
     align-items: center;
-    padding: 6px 14px;
-    border: 1px solid var(--ds-border);
-    border-radius: 999px;
-    background: #fff;
+    justify-content: center;
 }
 
-.chip-color__swatch {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    margin-right: 8px;
-    border: 1px solid rgba(0, 0, 0, .25);
-    vertical-align: middle;
+.color-swatch--selected {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+}
+
+.color-swatch__check {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, .85));
 }
 
 .chip-diseno {

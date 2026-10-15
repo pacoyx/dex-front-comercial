@@ -66,7 +66,6 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
     'acuenta',
     'saldo',
     'estadoPago',
-    'estadoRegistro',
     'estadoSituacion',
     'fechaRecojo',
     'tipoPagoCancelacion',

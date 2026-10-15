@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 import { NotificationServiceService } from '../../services/notification-service.service';
 import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-danger/alert-danger.component';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-recepcion-gastos',
@@ -28,7 +29,7 @@ import { LoadingComponent } from '../../../../core/components/loading/loading.co
   imports: [
     FormsModule, MatIconModule, MatFormFieldModule, MatInputModule,
     MatDatepickerModule, MatButtonModule, MatCardModule, MatTableModule, DatePipe,
-    DecimalPipe, AlertDangerComponent, LoadingComponent],
+    DecimalPipe, AlertDangerComponent, LoadingComponent, MatTooltipModule],
   providers: [
 
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -94,6 +95,13 @@ export class RecepcionGastosComponent implements OnInit, OnDestroy {
         console.log('complete obtenerCajaPorUsuario()');
       }
     });
+  }
+
+  cambiarFecha(dias: number) {
+    const nuevaFecha = new Date(this.fechaHoy);
+    nuevaFecha.setDate(nuevaFecha.getDate() + dias);
+    this.fechaHoy = nuevaFecha;
+    this.cargarGastos();
   }
 
   cargarGastos() {

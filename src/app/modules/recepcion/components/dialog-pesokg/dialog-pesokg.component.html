@@ -25,8 +25,8 @@
         </mat-form-field>
         <mat-form-field class="example-full-width" appearance="outline">
             <mat-label>Total soles</mat-label>
-            <input (keydown.enter)="calcularPeso()" (blur)="calcularPesoBlur()"  md-select-on-focus matInput placeholder="total" type="number"
-                [(ngModel)]="total" #publicTotalBox>
+            <input (keydown.enter)="calcularPeso()" (blur)="calcularPesoBlur()" (focus)="seleccionarTotal($event)"
+                matInput placeholder="total" type="number" [(ngModel)]="total" cdkFocusInitial>
         </mat-form-field>
     </div>
     <div>

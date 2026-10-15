@@ -126,6 +126,12 @@
     text-align: right !important;
 }
 
+.texto-anulado {
+    color: var(--mat-sys-error);
+    font-weight: 600;
+    font-size: .85rem;
+}
+
 .sin-datos {
     text-align: center;
     padding: 24px;

@@ -51,7 +51,7 @@ import { IEmisionItem } from '../../models/IEmisionItems';
 import { isSneakerCategory } from '../../shared/sneaker-category.util';
 import { agregarItemZapatillaDirecto } from '../../shared/agregar-item-zapatilla.util';
 import { formatearZapatillaDraft } from '../../shared/zapatilla-draft-format.util';
-import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
+import { BranchSale, ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
 import { DialogMsgComponent } from '../../components/dialog-msg/dialog-msg.component';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -203,7 +203,7 @@ export class RecepcionTouchComponent implements OnInit, OnDestroy {
   clienteControl = new FormControl();
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
-  sucursales: any[] = [];
+  sucursales: BranchSale[] = [];
 
   get clienteAsignado(): boolean {
     return !!this.store.selectedCliente();
@@ -241,7 +241,7 @@ export class RecepcionTouchComponent implements OnInit, OnDestroy {
     console.log('existe caja:', existeCaja);
 
     if (!existeCaja) {
-      this.obtenerSucursalCajaAbierta();
+      this.cargarSucursalesLocalStorage();
     }
 
     this.filteredClientes = this.clienteControl.valueChanges.pipe(
@@ -277,31 +277,7 @@ export class RecepcionTouchComponent implements OnInit, OnDestroy {
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
   }
 
-  obtenerSucursalCajaAbierta() {
-    const storedData = localStorage.getItem('dex24Auth');
-    if (storedData == null) {
-      this.dialog.open(DialogMsgComponent, {
-        data: {
-          title: 'Error',
-          msg: 'No se encontraron datos de autenticación en el sistema.',
-          err: true,
-        },
-      });
-      return;
-    }
-    const parsedData: ILoginResponseData = JSON.parse(storedData);
-    this.sucursalId = parsedData.branchSalesCashId;
-    // this.sucursalNombre = parsedData.branchSales.map((sucursal: any) => sucursal.branchSalesName).join(', ');
-    const foundSucursal = parsedData.branchSales.find(
-      (sucursal: any) => sucursal.branchSalesId == this.sucursalId,
-    );
-    this.sucursalNombre = foundSucursal
-      ? foundSucursal.branchSalesName
-      : '[Sucursal no encontrada]';
-  }
-
   cargarSucursalesLocalStorage() {
-    // no se usa
     const storedData = localStorage.getItem('dex24Auth');
     if (storedData == null) {
       this.dialog.open(DialogMsgComponent, {
@@ -315,15 +291,8 @@ export class RecepcionTouchComponent implements OnInit, OnDestroy {
     }
     const parsedData: ILoginResponseData = JSON.parse(storedData);
 
-    this.sucursales = [
-      { id: 0, branchSalesId: 0, branchSalesName: '[Seleccione Sucursal]' },
-      ...parsedData.branchSales,
-    ];
-    if (parsedData.branchSales.length == 1) {
-      this.sucursalId = parsedData.branchSales[0].branchSalesId;
-    } else {
-      this.sucursalId = 0;
-    }
+    this.sucursales = parsedData.branchSales;
+    this.sucursalId = parsedData.branchSales[0]?.branchSalesId ?? 0;
   }
 
   applyFilterSucursal(event: any) {

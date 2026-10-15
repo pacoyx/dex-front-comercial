@@ -48,7 +48,18 @@
     }
 
     <div class="doc-meta">
-      <span class="doc-pill"><mat-icon>storefront</mat-icon>{{ sucursalNombre }}</span>
+      <span class="doc-pill">
+        <mat-icon>storefront</mat-icon>
+        @if (bolExisteCaja) {
+        {{ sucursalNombre }}
+        } @else {
+        <mat-select class="sucursal-select-bare" [(ngModel)]="sucursalId" panelClass="sucursal-select-panel">
+          @for (s of sucursales; track s.branchSalesId) {
+          <mat-option [value]="s.branchSalesId">{{s.branchSalesName}}</mat-option>
+          }
+        </mat-select>
+        }
+      </span>
       <span class="doc-pill"><mat-icon>event</mat-icon>{{ fechaHoy | date:'dd/MM/yyyy' }}</span>
     </div>
 

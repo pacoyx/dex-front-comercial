@@ -67,7 +67,6 @@
                         @if(detalle.inspection.notes){
                         <div class="detalle-item__notas">Notas: {{detalle.inspection.notes}}</div>
                         }
-                        <div class="detalle-item__meta">Fotos: {{detalle.inspection.photoCount}}</div>
                     </div>
                     }@else{
                     <div class="detalle-item__meta">Sin inspección registrada.</div>
@@ -89,17 +88,31 @@
                         }
                     </div>
                     }
-
-                    @if(fotosCargadas){
-                    <div class="detalle-item__fotos">
-                        @for(foto of fotosDeDetalle(detalle.workGuideDetailId); track foto.id){
-                        <img [src]="foto.blobUrl" [alt]="foto.fileName" class="detalle-item__foto">
-                        }
-                    </div>
-                    }
                 </div>
                 }
             </div>
+
+            @if(fotosCargadas){
+            <div class="fotos-guia">
+                <div class="fotos-guia__titulo">Fotos de la guía ({{fotos.length}})</div>
+                <div class="fotos-guia__grid">
+                    @for(foto of fotos; track foto.id; let idx = $index){
+                    <div class="fotos-guia__item">
+                        @if(fotoUrls.get(foto.id); as url){
+                        <button type="button" class="fotos-guia__boton" (click)="abrirFoto(idx)">
+                            <img [src]="url" [alt]="foto.originalFileName || foto.fileName" class="fotos-guia__img">
+                        </button>
+                        }@else{
+                        <div class="fotos-guia__placeholder">Cargando...</div>
+                        }
+                    </div>
+                    }
+                    @if(fotos.length === 0){
+                    <span style="color: gray; font-size: small;">Sin fotos registradas.</span>
+                    }
+                </div>
+            </div>
+            }
         </mat-card-content>
     </mat-card>
     }

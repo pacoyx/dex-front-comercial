@@ -49,4 +49,8 @@ export interface IResponseServiceQuickAccess {
     status: string;
     price: number;
     categoryDescription?: string;
+    /** 'S' | 'N' — igual que el campo "Es Peso?" del maestro de servicios (mnt-prodservices). */
+    isPeso?: string;
+    /** 'S' | 'N' — igual que el campo "Es Lavado?" del maestro de servicios (mnt-prodservices). */
+    isLavado?: string;
 }
