@@ -4,7 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { LoginService } from '../../services/login.service';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
 
 @Component({
@@ -16,7 +17,16 @@ import { ToggleStoreServiceService } from '../../services/toggle-store-service.s
 })
 export class LayoutManagementComponent {
 
+  loginService = inject(LoginService);
   private toggleStore = inject(ToggleStoreServiceService);
+
+  constructor(private router: Router) { }
+
+  cerrarSesion() {
+    localStorage.setItem('dex24Auth', '');
+    this.router.navigate(['/login']);
+    this.toggleStore.setToggleState(false);
+  }
 
   toggleSidenav() {
     this.toggleStore.setToggleState(true);
