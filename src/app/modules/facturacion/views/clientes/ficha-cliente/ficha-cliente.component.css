@@ -188,6 +188,10 @@
     width: 100%;
 }
 
+.detail-table td.mat-mdc-cell {
+    vertical-align: middle;
+}
+
 .detail-table th.mat-mdc-header-cell {
     background: var(--mat-sys-surface-container-high);
     color: var(--mat-sys-on-surface-variant);
