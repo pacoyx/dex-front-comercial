@@ -57,7 +57,16 @@ export class EmployeesService {
   }
 
   agregarDocumento(employeeId: number, req: IEmployeeDocumentCreateRequest): Observable<IResponseGeneric<IEmployeeDocument>> {
-    return this.http.post<IResponseGeneric<IEmployeeDocument>>(`${this.apiUrl}${environment.EPEmployees}/${employeeId}/documents`, req, { headers: this.headers });
+    const formData = new FormData();
+    formData.append('file', req.file);
+    formData.append('documentTypeId', String(req.documentTypeId));
+    if (req.notes) formData.append('notes', req.notes);
+    // No se setea el header Content-Type: el browser debe agregar el boundary del multipart.
+    return this.http.post<IResponseGeneric<IEmployeeDocument>>(`${this.apiUrl}${environment.EPEmployees}/${employeeId}/documents`, formData);
+  }
+
+  descargarDocumento(employeeId: number, documentId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPEmployees}/${employeeId}/documents/${documentId}/download`, { responseType: 'blob' });
   }
 
   eliminarDocumento(employeeId: number, documentId: number): Observable<IResponseGeneric<null>> {

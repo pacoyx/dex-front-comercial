@@ -159,6 +159,8 @@ export class TrabajadorDetailComponent implements OnInit {
 
   // Documentos
 
+  documentosDescargando = new Set<number>();
+
   cargarDocumentos(): void {
     this.employeesService.listarDocumentos(this.employeeId).subscribe({
       next: (resp) => {
@@ -175,6 +177,30 @@ export class TrabajadorDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogDocumentoComponent, { data: { employeeId: this.employeeId } });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) this.cargarDocumentos();
+    });
+  }
+
+  iconoDocumento(doc: IEmployeeDocument): string {
+    return doc.contentType === 'application/pdf' ? 'picture_as_pdf' : 'image';
+  }
+
+  descargarDocumento(doc: IEmployeeDocument): void {
+    if (this.documentosDescargando.has(doc.id)) return;
+    this.documentosDescargando.add(doc.id);
+    this.employeesService.descargarDocumento(this.employeeId, doc.id).subscribe({
+      next: (blob) => {
+        this.documentosDescargando.delete(doc.id);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = doc.fileName;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: (err) => {
+        this.documentosDescargando.delete(doc.id);
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo descargar el documento.'));
+      }
     });
   }
 

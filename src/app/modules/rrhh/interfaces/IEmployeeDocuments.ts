@@ -5,13 +5,13 @@ export interface IEmployeeDocument {
   documentTypeName: string;
   fileName: string;
   blobUrl: string;
+  contentType: string;
   notes: string | null;
   createdAt: string;
 }
 
 export interface IEmployeeDocumentCreateRequest {
   documentTypeId: number;
-  fileName: string;
-  blobUrl: string;
   notes: string | null;
+  file: File;
 }
