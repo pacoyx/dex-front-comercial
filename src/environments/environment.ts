@@ -265,4 +265,7 @@ export const environment = {
     EPCustomerPortalAdmin: 'api/customer-portal-admin', // /customers
     // portal-enable, portal-status, portal-admin/regenerate-activation-link cuelgan de EPCustomersBase
 
+    // Cuentas de Correo (credenciales SMTP por Operacion)
+    EPEmailAccounts: 'api/email-accounts',
+
 };

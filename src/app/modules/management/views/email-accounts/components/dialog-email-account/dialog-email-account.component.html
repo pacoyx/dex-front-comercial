@@ -1,0 +1,95 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>mail</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    <form [formGroup]="form" class="form-grid">
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Operación</mat-label>
+            <mat-select formControlName="operacion">
+                @for (op of operaciones; track op.value) {
+                <mat-option [value]="op.value">{{ op.label }}</mat-option>
+                }
+            </mat-select>
+            @if (form.get('operacion')?.hasError('required')) {
+            <mat-error>La operación es obligatoria.</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Proveedor</mat-label>
+            <input matInput value="Smtp" disabled>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Puerto</mat-label>
+            <input matInput type="number" formControlName="port">
+            @if (form.get('port')?.hasError('required')) {
+            <mat-error>El puerto es obligatorio.</mat-error>
+            }
+            @if (form.get('port')?.hasError('min') || form.get('port')?.hasError('max')) {
+            <mat-error>El puerto debe estar entre 1 y 65535.</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Host</mat-label>
+            <input matInput formControlName="host" maxlength="200">
+            @if (form.get('host')?.hasError('required')) {
+            <mat-error>El host es obligatorio.</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Usuario (correo)</mat-label>
+            <input matInput formControlName="userName" maxlength="200" type="email">
+            @if (form.get('userName')?.hasError('required')) {
+            <mat-error>El usuario es obligatorio.</mat-error>
+            }
+            @if (form.get('userName')?.hasError('email')) {
+            <mat-error>Debe tener formato de email válido.</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password"
+                [placeholder]="data.esNuevo ? '' : 'Dejar en blanco para mantener la actual'">
+            @if (form.get('password')?.hasError('required')) {
+            <mat-error>El password es obligatorio.</mat-error>
+            }
+        </mat-form-field>
+
+        <div class="field--full toggle-row">
+            <mat-slide-toggle formControlName="enableSsl">Habilitar SSL</mat-slide-toggle>
+
+            @if (!data.esNuevo) {
+            <mat-slide-toggle formControlName="isActive">Cuenta activa</mat-slide-toggle>
+            }
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>save</mat-icon>
+        Grabar
+    </button>
+    }
+</mat-dialog-actions>

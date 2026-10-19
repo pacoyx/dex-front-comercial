@@ -1,0 +1,74 @@
+:host {
+    display: block;
+    min-width: 420px;
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 8px 4px 16px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.dialog-header__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dialog-header__title mat-icon {
+    color: var(--mat-sys-primary);
+}
+
+.dialog-header__title h2 {
+    margin: 0;
+    font: var(--mat-sys-title-large);
+}
+
+.dialog-content {
+    padding-top: 20px;
+    padding-bottom: 8px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 20px;
+}
+
+.form-grid mat-form-field {
+    width: 100%;
+}
+
+.field--full {
+    grid-column: 1 / -1;
+}
+
+.toggle-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 4px 0 8px;
+}
+
+mat-dialog-actions {
+    padding: 12px 24px;
+    gap: 8px;
+}
+
+mat-dialog-actions app-loading {
+    display: inline-flex;
+    margin-right: 6px;
+}
+
+@media (max-width: 480px) {
+    :host {
+        min-width: 0;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

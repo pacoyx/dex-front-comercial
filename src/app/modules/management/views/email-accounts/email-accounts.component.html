@@ -1,0 +1,105 @@
+<div class="container-email-accounts">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>mail</mat-icon>
+            <div class="page-header__heading">
+                <h1>Cuentas de Correo</h1>
+                <span class="page-header__subtitle">Administra las credenciales SMTP usadas para cada operación del
+                    sistema</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevaCuenta()">
+                <mat-icon>add</mat-icon>
+                Nueva Cuenta
+            </button>
+        </div>
+    </div>
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando cuentas de correo...</span>
+    </div>
+    }
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="cuentas" class="detail-table">
+
+                <ng-container matColumnDef="operacion">
+                    <th mat-header-cell *matHeaderCellDef> Operación </th>
+                    <td mat-cell *matCellDef="let element"> {{ getOperacionLabel(element.operacion) }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="host">
+                    <th mat-header-cell *matHeaderCellDef> Host </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.host }}:{{ element.port }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="userName">
+                    <th mat-header-cell *matHeaderCellDef> Usuario </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.userName }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="isActive">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.isActive) {
+                        <span class="status-chip status-chip--active">
+                            <span class="status-chip__dot"></span>
+                            Activo
+                        </span>
+                        } @else {
+                        <span class="status-chip status-chip--inactive">
+                            <span class="status-chip__dot"></span>
+                            Inactivo
+                        </span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hasPassword">
+                    <th mat-header-cell *matHeaderCellDef> Password </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.hasPassword) {
+                        <span class="status-chip status-chip--active">
+                            <mat-icon class="status-chip__icon">check_circle</mat-icon>
+                            Configurada
+                        </span>
+                        } @else {
+                        <span class="status-chip status-chip--warning">
+                            <mat-icon class="status-chip__icon">warning</mat-icon>
+                            Falta configurar
+                        </span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button (click)="editarCuenta(element)" aria-label="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="eliminarCuenta(element)" aria-label="Eliminar">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No se encontraron cuentas de correo registradas.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

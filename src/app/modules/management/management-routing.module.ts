@@ -11,6 +11,7 @@ import { MntImpresorasComponent } from './views/mnt-impresoras/mnt-impresoras.co
 import { MntWorkerNodesComponent } from './views/mnt-worker-nodes/mnt-worker-nodes.component';
 import { MntImpresionesPendientesComponent } from './views/mnt-impresiones-pendientes/mnt-impresiones-pendientes.component';
 import { DashboardprintersComponent } from './views/dashboardprinters/dashboardprinters.component';
+import { EmailAccountsComponent } from './views/email-accounts/email-accounts.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'workerNodes', component: MntWorkerNodesComponent },
   { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent },
   { path: 'dashboardprinters', component: DashboardprintersComponent },
+  { path: 'cuentasCorreo', component: EmailAccountsComponent },
 ];
 
 @NgModule({
