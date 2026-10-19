@@ -42,6 +42,7 @@ export class FacturaDetailComponent implements OnInit {
   paymentColumns: string[] = ['paymentDate', 'paymentMethodName', 'amount', 'operationNumber', 'observation'];
 
   formInvoice!: FormGroup;
+  imprimiendo = false;
 
   constructor(private fb: FormBuilder) {
     this.formInvoice = this.fb.group({
@@ -131,6 +132,24 @@ export class FacturaDetailComponent implements OnInit {
       error: (err) => {
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo anular la factura.'));
       }
+    });
+  }
+
+  imprimirFactura(): void {
+    if (!this.invoice || this.imprimiendo) return;
+
+    this.imprimiendo = true;
+    this.invoicesService.descargarFacturaPdf(this.invoice.id).subscribe({
+      next: (blob) => {
+        this.imprimiendo = false;
+        const url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      },
+      error: (err) => {
+        this.imprimiendo = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo generar el PDF de la factura.'));
+      },
     });
   }
 

@@ -19,6 +19,10 @@
                 {{ invoice.status | invoiceStatusLabel }}
             </span>
             }
+            <button mat-stroked-button color="primary" (click)="imprimirFactura()" [disabled]="imprimiendo">
+                @if (imprimiendo) {<mat-icon>cached</mat-icon>} @else {<mat-icon>print</mat-icon>}
+                Imprimir
+            </button>
             <button mat-stroked-button color="warn" (click)="anularFactura()" [disabled]="!canCancel">
                 <mat-icon>block</mat-icon>
                 Anular

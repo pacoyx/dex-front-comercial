@@ -64,4 +64,13 @@ export class InvoicesService {
     return this.http.get<IResponseGeneric<IAccountReceivable[]>>(`${this.apiUrl}${environment.EPAccountsReceivable}`, { headers });
   }
 
+  /**
+   * Descarga el PDF de la factura. Requiere el mismo Bearer token que el resto de la API
+   * (el interceptor lo agrega), por eso no se puede enlazar directo con <a>/<iframe>: hay
+   * que traer el blob vía HttpClient y abrirlo con una Object URL.
+   */
+  descargarFacturaPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPSalesInvoices}/${id}/pdf`, { responseType: 'blob' });
+  }
+
 }
