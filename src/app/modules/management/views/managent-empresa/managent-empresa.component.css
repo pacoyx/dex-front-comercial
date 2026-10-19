@@ -68,6 +68,26 @@
     color: #2e7d32;
 }
 
+.alert--warn {
+    background: color-mix(in srgb, #ef6c00 14%, transparent);
+    color: #ef6c00;
+}
+
+/* ===== Tabs ===== */
+
+.panel-tabs {
+    background: var(--mat-sys-surface-container-lowest);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
 /* ===== Panel ===== */
 
 .panel {

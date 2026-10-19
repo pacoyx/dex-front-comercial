@@ -73,6 +73,11 @@ export interface IGetCompaniesResponse {
   instagram: string;
 }
 
+export interface ICompanyLogoResponse {
+  companyId: number;
+  logo: string | null;
+}
+
 export interface IGetCompanyByUserResponse {
   id: number;
   nameComercial: string;

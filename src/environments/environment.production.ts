@@ -89,6 +89,7 @@ export const environment = {
     EPCreateCompany:'api/company',
     EPUpdateCompany:'api/company',
     EPDeleteCompany:'api/company',
+    EPCompanyLogo: 'api/company', // /{id}/logo
 
     //Tickets
     EPGetClothingWorkerById:'api/clothingWorker/findById',
@@ -248,4 +249,9 @@ export const environment = {
 
     // Cuentas de Correo (credenciales SMTP por Operacion)
     EPEmailAccounts: 'api/email-accounts',
+
+    // Bancos y Cuentas Bancarias de la Empresa
+    EPBanks: 'api/banks',
+    EPBankAccountTypes: 'api/bank-account-types',
+    EPCompanies: 'api/companies', // base para /{companyId}/bank-accounts
 };

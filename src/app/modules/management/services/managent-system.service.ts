@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { ICreateUserRequest, IGetUserResponse, IUpdateUserRequest } from '../interfaces/IUsers';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../../../core/interfaces/IShared';
-import { ICreateCompanyRequest, IGetCompaniesResponse, IGetCompanyByUserResponse, IGetCompanyResponse, IUpdateCompanyRequest } from '../interfaces/ICompany';
+import { ICompanyLogoResponse, ICreateCompanyRequest, IGetCompaniesResponse, IGetCompanyByUserResponse, IGetCompanyResponse, IUpdateCompanyRequest } from '../interfaces/ICompany';
 
 
 @Injectable({
@@ -81,6 +81,17 @@ export class ManagentSystemService {
   obtenerEmpresaPorUsuario(idUsuario: number) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.get<IResponseGeneric<IGetCompanyByUserResponse>>(`${this.apiUrl}${environment.EPGetCompanyByUser}/${idUsuario}`, { headers });
+  }
+
+  subirLogoEmpresa(companyId: number, file: File): Observable<IResponseGeneric<ICompanyLogoResponse>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    // No se setea el header Content-Type: el browser debe agregar el boundary del multipart.
+    return this.http.post<IResponseGeneric<ICompanyLogoResponse>>(`${this.apiUrl}${environment.EPCompanyLogo}/${companyId}/logo`, formData);
+  }
+
+  obtenerLogoEmpresa(companyId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPCompanyLogo}/${companyId}/logo`, { responseType: 'blob' });
   }
 
 }

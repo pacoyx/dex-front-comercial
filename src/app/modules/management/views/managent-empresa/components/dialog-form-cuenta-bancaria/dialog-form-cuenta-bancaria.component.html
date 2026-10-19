@@ -1,0 +1,95 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>account_balance</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (loadingLookups) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando catálogos...</span>
+    </div>
+    } @else {
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline">
+                <mat-label>Banco</mat-label>
+                <mat-select formControlName="bankId">
+                    @for (banco of bancos; track banco.id) {
+                    <mat-option [value]="banco.id">{{ banco.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo de Cuenta</mat-label>
+                <mat-select formControlName="bankAccountTypeId">
+                    @for (tipo of tiposCuenta; track tipo.id) {
+                    <mat-option [value]="tipo.id">{{ tipo.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Moneda</mat-label>
+                <mat-select formControlName="currencyId">
+                    @for (moneda of monedas; track moneda.value) {
+                    <mat-option [value]="moneda.value">{{ moneda.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Número de Cuenta</mat-label>
+                <input matInput formControlName="accountNumber" maxlength="30">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>CCI / Número Interbancario</mat-label>
+                <input matInput formControlName="interbankAccountNumber" maxlength="30">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Descripción</mat-label>
+                <input matInput formControlName="description" maxlength="200" placeholder="ej: Cuenta Principal Operativa">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Observaciones</mat-label>
+                <textarea matInput formControlName="notes" rows="2" maxlength="500"></textarea>
+            </mat-form-field>
+        </div>
+    </form>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="loadingLookups">
+        <mat-icon>check</mat-icon>
+        Grabar
+    </button>
+    }
+</mat-dialog-actions>

@@ -1,0 +1,62 @@
+<div class="logo-content">
+    <div class="logo-preview">
+        @if (previewUrl) {
+        <img [src]="previewUrl" alt="Vista previa del logo">
+        } @else if (loadingLogo) {
+        <app-loading></app-loading>
+        } @else if (logoUrl) {
+        <img [src]="logoUrl" alt="Logo de la empresa">
+        } @else {
+        <mat-icon class="logo-preview__placeholder">image</mat-icon>
+        }
+    </div>
+
+    <p class="hint-text">
+        Toma una foto con la cámara de la tablet o elige una imagen (JPG, PNG o WEBP, máx. 2MB). Este logo se
+        usará más adelante en reportes y PDFs (factura, guías, etc.).
+    </p>
+
+    <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+        (change)="onArchivoSeleccionado($event)">
+    <input #inputArchivo type="file" accept="image/jpeg,image/png,image/webp" hidden
+        (change)="onArchivoSeleccionado($event)">
+
+    <div class="logo-acciones">
+        <button type="button" mat-stroked-button (click)="abrirCamara()" [disabled]="loadingSave">
+            <mat-icon>photo_camera</mat-icon>
+            Tomar Foto
+        </button>
+        <button type="button" mat-stroked-button (click)="abrirExplorador()" [disabled]="loadingSave">
+            <mat-icon>attach_file</mat-icon>
+            Elegir Imagen
+        </button>
+    </div>
+
+    @if (errorArchivo) {
+    <div class="alert alert--error">{{ errorArchivo }}</div>
+    }
+
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (archivoSeleccionado) {
+    <div class="logo-form__acciones">
+        <button mat-stroked-button type="button" (click)="quitarArchivoSeleccionado()" [disabled]="loadingSave">Cancelar</button>
+        <button mat-flat-button color="primary" type="button" (click)="guardarLogo()" [disabled]="loadingSave">
+            @if (loadingSave) {
+            <app-loading></app-loading>
+            } @else {
+            <mat-icon>check</mat-icon>
+            }
+            Guardar Logo
+        </button>
+    </div>
+    }
+</div>

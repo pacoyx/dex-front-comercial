@@ -6,15 +6,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ILoginResponseData } from '../../../../core/interfaces/ILoginResponse';
+import { CuentasBancariasTabComponent } from './components/cuentas-bancarias-tab/cuentas-bancarias-tab.component';
+import { LogoEmpresaTabComponent } from './components/logo-empresa-tab/logo-empresa-tab.component';
 
 @Component({
   selector: 'app-managent-empresa',
   standalone: true,
   imports: [
     MatButtonModule, MatInputModule, MatFormFieldModule,
-    MatIconModule, MatSelectModule, ReactiveFormsModule
+    MatIconModule, MatSelectModule, ReactiveFormsModule, MatTabsModule,
+    MatTooltipModule, CuentasBancariasTabComponent, LogoEmpresaTabComponent,
   ],
   templateUrl: './managent-empresa.component.html',
   styleUrl: './managent-empresa.component.css'
@@ -29,6 +34,7 @@ export class ManagentEmpresaComponent implements OnInit {
   hasData = false;
   showMsgSuccess = false;
   showMsgError = false;
+  selectedTabIndex = 0;
 
   constructor() {
     this.formCompany = new FormGroup({
@@ -42,7 +48,6 @@ export class ManagentEmpresaComponent implements OnInit {
       nameCompany: new FormControl(''),
       documentType: new FormControl('DNI'),
       numberType: new FormControl(''),
-      logo: new FormControl(''),
       facebook: new FormControl(''),
       twitter: new FormControl(''),
       instagram: new FormControl(''),
@@ -105,7 +110,6 @@ export class ManagentEmpresaComponent implements OnInit {
     this.formCompany.get('nameCompany')?.setValue(this.dataCompany.nameCompany);
     this.formCompany.get('documentType')?.setValue(this.dataCompany.documentType);
     this.formCompany.get('numberType')?.setValue(this.dataCompany.numberType);
-    this.formCompany.get('logo')?.setValue(this.dataCompany.logo);
     this.formCompany.get('facebook')?.setValue(this.dataCompany.facebook);
     this.formCompany.get('twitter')?.setValue(this.dataCompany.twitter);
     this.formCompany.get('instagram')?.setValue(this.dataCompany.instagram);

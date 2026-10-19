@@ -1,0 +1,77 @@
+.tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tab-panel__header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.panel {
+    border-radius: 16px !important;
+}
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.detail-table tr.mat-mdc-row:hover {
+    background: var(--mat-sys-surface-container-low);
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .85rem;
+    white-space: nowrap;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.status-chip__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-chip--activo {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.status-chip--activo .status-chip__dot {
+    background-color: #2e7d32;
+}
+
+.status-chip--inactivo {
+    color: var(--mat-sys-error);
+    border-color: var(--mat-sys-error);
+}
+
+.status-chip--inactivo .status-chip__dot {
+    background-color: var(--mat-sys-error);
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}

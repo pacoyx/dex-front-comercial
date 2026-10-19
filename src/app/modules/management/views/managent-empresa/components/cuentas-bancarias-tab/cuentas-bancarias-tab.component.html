@@ -1,0 +1,74 @@
+<div class="tab-panel">
+    <div class="tab-panel__header">
+        <button mat-stroked-button (click)="agregarCuenta()">
+            <mat-icon>add</mat-icon> Agregar Cuenta
+        </button>
+    </div>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="banco">
+                    <th mat-header-cell *matHeaderCellDef>Banco</th>
+                    <td mat-cell *matCellDef="let el">{{ el.bankName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef>Tipo de Cuenta</th>
+                    <td mat-cell *matCellDef="let el">{{ el.bankAccountTypeName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="moneda">
+                    <th mat-header-cell *matHeaderCellDef>Moneda</th>
+                    <td mat-cell *matCellDef="let el">{{ el.currencyId }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef>N° Cuenta</th>
+                    <td mat-cell *matCellDef="let el">{{ el.accountNumber }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="cci">
+                    <th mat-header-cell *matHeaderCellDef>CCI</th>
+                    <td mat-cell *matCellDef="let el">{{ el.interbankAccountNumber || '-' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                    <td mat-cell *matCellDef="let el">{{ el.description || '-' }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let el">
+                        <button class="status-chip"
+                            [class.status-chip--activo]="el.isEnabled"
+                            [class.status-chip--inactivo]="!el.isEnabled"
+                            (click)="toggleEstado(el)"
+                            [matTooltip]="el.isEnabled ? 'Clic para deshabilitar' : 'Clic para habilitar'">
+                            <span class="status-chip__dot"></span>
+                            {{ el.isEnabled ? 'Habilitada' : 'Deshabilitada' }}
+                        </button>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let el">
+                        <button mat-icon-button (click)="editarCuenta(el)" matTooltip="Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">Sin cuentas bancarias registradas.</td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+</div>

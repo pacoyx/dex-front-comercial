@@ -12,6 +12,8 @@ import { MntWorkerNodesComponent } from './views/mnt-worker-nodes/mnt-worker-nod
 import { MntImpresionesPendientesComponent } from './views/mnt-impresiones-pendientes/mnt-impresiones-pendientes.component';
 import { DashboardprintersComponent } from './views/dashboardprinters/dashboardprinters.component';
 import { EmailAccountsComponent } from './views/email-accounts/email-accounts.component';
+import { BancosComponent } from './views/bancos/bancos.component';
+import { TiposCuentaBancariaComponent } from './views/tipos-cuenta-bancaria/tipos-cuenta-bancaria.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -27,6 +29,8 @@ const routes: Routes = [
   { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent },
   { path: 'dashboardprinters', component: DashboardprintersComponent },
   { path: 'cuentasCorreo', component: EmailAccountsComponent },
+  { path: 'bancos', component: BancosComponent },
+  { path: 'tiposCuentaBancaria', component: TiposCuentaBancariaComponent },
 ];
 
 @NgModule({
