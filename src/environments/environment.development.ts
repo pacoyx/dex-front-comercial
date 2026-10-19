@@ -190,6 +190,12 @@ export const environment = {
     EPSalesRegisterReportPdf: 'api/reports/sales-register/pdf',
     EPSalesRegisterReportExcel: 'api/reports/sales-register/excel',
 
+    // reporte valorizacion mensual
+    EPValuationReport: 'api/invoices/valuation-report',
+    EPValuationReportPhotosPdf: 'api/invoices/valuation-report/photos-pdf',
+    EPValuationReportSummaryPdf: 'api/invoices/valuation-report/summary-pdf',
+    EPValuationReportSummaryExcel: 'api/invoices/valuation-report/summary-excel',
+
     // dashboard facturacion
     EPInvoiceDashboard: 'api/invoice-dashboard',
 

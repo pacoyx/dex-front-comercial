@@ -45,6 +45,13 @@
           <mat-icon>groups</mat-icon>
           Facturación por Cliente
         </button>
+        @if (hasPermission('invoices.access')) {
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/facturacion/reportes/valorizacion-mensual']" routerLinkActive="router-link-active">
+          <mat-icon>paid</mat-icon>
+          Valorización del Mes
+        </button>
+        }
         @if (hasPermission('customers.access')) {
         <mat-divider></mat-divider>
         <button mat-menu-item [routerLink]="['/facturacion/customer-portal-admin']" routerLinkActive="router-link-active">

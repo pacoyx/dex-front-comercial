@@ -1,0 +1,221 @@
+<div class="container-valorizacion">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>paid</mat-icon>
+            <div class="page-header__heading">
+                <h1>Valorización del Mes</h1>
+                <span class="page-header__subtitle">Resumen de guías de recojo por cliente y periodo, listo para
+                    exportar</span>
+            </div>
+        </div>
+    </div>
+
+    @if (validationErrors.length > 0) {
+    <div class="alert-validacion">
+        <mat-icon>error_outline</mat-icon>
+        <ul>
+            @for (error of validationErrors; track $index) {
+            <li>{{ error }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline" class="campo-cliente">
+                <mat-label>Cliente</mat-label>
+                <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="autoCustomer"
+                    placeholder="Buscar por razón social">
+                @if (customerControl.value) {
+                <button mat-icon-button matSuffix type="button" aria-label="Limpiar cliente" (click)="clearCustomer($event)">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+                <mat-autocomplete #autoCustomer="matAutocomplete" (optionSelected)="onCustomerSelected($event)" [displayWith]="displayCustomerFn">
+                    @for (customer of filteredCustomers | async; track customer.customerId) {
+                    <mat-option [value]="customer">{{ customer.businessName }}</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Rango de fechas</mat-label>
+                <mat-date-range-input [formGroup]="rangeFrm" [rangePicker]="picker">
+                    <input matStartDate formControlName="start" placeholder="Desde">
+                    <input matEndDate formControlName="end" placeholder="Hasta">
+                </mat-date-range-input>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+
+            <div class="filtros-acciones">
+                <button mat-flat-button color="primary" (click)="consultar()" [disabled]="consultando">
+                    @if (consultando) {<app-loading></app-loading>} @else {<mat-icon>search</mat-icon>}
+                    Consultar
+                </button>
+                <button mat-stroked-button (click)="limpiar()" [disabled]="consultando">
+                    <mat-icon>restart_alt</mat-icon>
+                    Limpiar
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    @if (consultando) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Consultando valorización...</span>
+    </div>
+    }
+
+    @if (resultado) {
+
+    <!-- Guías del periodo -->
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>local_shipping</mat-icon>
+                Guías de {{ resultado.customerName }}
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="resultado.guides" class="detail-table">
+
+                <ng-container matColumnDef="guideNumber">
+                    <th mat-header-cell *matHeaderCellDef> N° Guía </th>
+                    <td mat-cell *matCellDef="let g"> {{ g.guideNumber }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="pickupDate">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let g"> {{ g.pickupDate | date:'dd/MM/yyyy' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let g">
+                        <span class="status-chip" [style.color]="estadoColor(g.status)" [style.borderColor]="estadoColor(g.status)">
+                            <span class="status-chip__dot" [style.backgroundColor]="estadoColor(g.status)"></span>
+                            {{ estadoLabel(g.status) }}
+                        </span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalAmount">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Importe </th>
+                    <td mat-cell *matCellDef="let g" class="col-numeric"> {{ g.totalAmount | currency:' ':'symbol':'0.2-2' }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="hasPhysicalGuidePhoto">
+                    <th mat-header-cell *matHeaderCellDef class="col-centro"> Foto Guía Física </th>
+                    <td mat-cell *matCellDef="let g" class="col-centro">
+                        @if (g.hasPhysicalGuidePhoto) {
+                        <mat-icon class="icono-si" matTooltip="Tiene foto">check_circle</mat-icon>
+                        } @else {
+                        <mat-icon class="icono-no" matTooltip="Sin foto">remove_circle_outline</mat-icon>
+                        }
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="guideColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: guideColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="guideColumns.length">
+                        No se encontraron guías para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Tabla pivote -->
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>table_chart</mat-icon>
+                Resumen (Fechas x Servicios)
+            </h2>
+        </div>
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="resultado.pivot.rows" class="detail-table">
+
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let row"> {{ row.date | date:'dd/MM/yyyy' }} </td>
+                    <td mat-footer-cell *matFooterCellDef> <b>TOTAL</b> </td>
+                </ng-container>
+
+                @for (service of resultado.pivot.services; track service.serviceItemId) {
+                <ng-container [matColumnDef]="'srv_' + service.serviceItemId">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">
+                        {{ service.serviceName }}@if (service.isPricedByWeight) { (kg) }
+                    </th>
+                    <td mat-cell *matCellDef="let row" class="col-numeric">
+                        {{ (row.quantitiesByServiceItemId[service.serviceItemId] ?? 0) | number:'1.2-2' }}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="col-numeric">
+                        <b>{{ (resultado.pivot.columnTotals[service.serviceItemId] ?? 0) | number:'1.2-2' }}</b>
+                    </td>
+                </ng-container>
+                }
+
+                <ng-container matColumnDef="rowTotal">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Total </th>
+                    <td mat-cell *matCellDef="let row" class="col-numeric"> {{ row.rowTotal | number:'1.2-2' }} </td>
+                    <td mat-footer-cell *matFooterCellDef class="col-numeric"> <b>{{ resultado.pivot.grandTotal | number:'1.2-2' }}</b> </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="pivotColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: pivotColumns;"></tr>
+                <tr mat-footer-row *matFooterRowDef="pivotColumns" class="fila-total"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="pivotColumns.length">
+                        No hay movimientos para los filtros aplicados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+    <!-- Exportaciones -->
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>file_download</mat-icon>
+                Exportar
+            </h2>
+        </div>
+        <mat-card-content class="exportar-row">
+
+            <button mat-stroked-button color="primary" (click)="exportarFotosPdf()"
+                [disabled]="resultado.photoCount === 0 || loadingFotosPdf"
+                [matTooltip]="resultado.photoCount === 0 ? 'No hay fotos de guía física en este rango' : ''">
+                @if (loadingFotosPdf) {<app-loading></app-loading>} @else {<mat-icon>photo_library</mat-icon>}
+                Exportar Fotos (PDF) ({{ resultado.photoCount }})
+            </button>
+
+            <button mat-stroked-button color="primary" (click)="exportarResumenPdf()" [disabled]="loadingResumenPdf">
+                @if (loadingResumenPdf) {<app-loading></app-loading>} @else {<mat-icon>picture_as_pdf</mat-icon>}
+                Exportar Resumen (PDF)
+            </button>
+
+            <button mat-stroked-button color="primary" (click)="exportarResumenExcel()" [disabled]="loadingResumenExcel">
+                @if (loadingResumenExcel) {<app-loading></app-loading>} @else {<mat-icon>grid_on</mat-icon>}
+                Exportar Resumen (Excel)
+            </button>
+
+        </mat-card-content>
+    </mat-card>
+
+    } @else if (!consultando) {
+    <div class="vacio">Selecciona un cliente y un rango de fechas, y presiona "Consultar" para ver la
+        valorización.</div>
+    }
+
+</div>
