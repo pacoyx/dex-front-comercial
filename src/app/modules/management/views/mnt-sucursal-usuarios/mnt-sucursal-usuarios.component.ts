@@ -5,10 +5,10 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IBranchSalesUserEditDto, IBranchSalesUserResponseDto } from '../../../interfaces/IBranchSales';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IBranchSalesUserEditDto, IBranchSalesUserResponseDto } from '../../../recepcion/interfaces/IBranchSales';
 import { DialogFormSucursalUsuarioComponent } from './components/dialog-form-sucursal-usuario/dialog-form-sucursal-usuario.component';
-import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { DialogQuestionComponent } from '../../../recepcion/components/dialog-question/dialog-question.component';
 
 @Component({
   selector: 'app-mnt-sucursal-usuarios',
@@ -111,6 +111,6 @@ export class MntSucursalUsuariosComponent implements OnInit {
   }
 
   regresarSucursales() {
-    this.router.navigate(['/recepcion/sucursales']);
+    this.router.navigate(['/management/sucursales']);
   }
 }

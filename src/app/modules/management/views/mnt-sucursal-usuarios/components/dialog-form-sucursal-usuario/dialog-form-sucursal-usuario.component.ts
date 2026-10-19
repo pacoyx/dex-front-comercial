@@ -2,14 +2,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
-import { MaestrosService } from '../../../../../services/maestros.service';
+import { MaestrosService } from '../../../../../recepcion/services/maestros.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { LoadingComponent } from '../../../../../../../core/components/loading/loading.component';
+import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { IBranchSalesUserCreateDto, IBranchSalesUserEditDto, IUsuarioSistema } from '../../../../../interfaces/IBranchSales';
+import { IBranchSalesUserCreateDto, IBranchSalesUserEditDto, IUsuarioSistema } from '../../../../../recepcion/interfaces/IBranchSales';
 
 @Component({
   selector: 'app-dialog-form-sucursal-usuario',

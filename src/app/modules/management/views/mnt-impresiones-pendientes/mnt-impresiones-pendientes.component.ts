@@ -6,9 +6,9 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IPrintQueueResponseDto } from '../../../interfaces/IPrintQueue';
-import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IPrintQueueResponseDto } from '../../interfaces/IPrintQueue';
+import { DialogQuestionComponent } from '../../../recepcion/components/dialog-question/dialog-question.component';
 
 @Component({
   selector: 'app-mnt-impresiones-pendientes',

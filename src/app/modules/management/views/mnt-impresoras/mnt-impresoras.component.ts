@@ -5,11 +5,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IPrinterEditDto, IPrinterResponseDto } from '../../../interfaces/IPrinter';
-import { IWorkerNodeResponseDto } from '../../../interfaces/IWorkerNode';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IPrinterEditDto, IPrinterResponseDto } from '../../../recepcion/interfaces/IPrinter';
+import { IWorkerNodeResponseDto } from '../../../recepcion/interfaces/IWorkerNode';
 import { DialogFormImpresoraComponent } from './components/dialog-form-impresora/dialog-form-impresora.component';
-import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { DialogQuestionComponent } from '../../../recepcion/components/dialog-question/dialog-question.component';
 
 @Component({
   selector: 'app-mnt-impresoras',

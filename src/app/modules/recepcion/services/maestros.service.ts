@@ -11,7 +11,7 @@ import { ISucursalesCombo } from '../interfaces/IReports';
 import { IBranchSalesCreateDto, IBranchSalesEditDto, IBranchSalesResponseDto, IBranchSalesUserCreateDto, IBranchSalesUserEditDto, IBranchSalesUserResponseDto, IUsuarioSistema } from '../interfaces/IBranchSales';
 import { IPrinterCreateDto, IPrinterEditDto, IPrinterResponseDto } from '../interfaces/IPrinter';
 import { IWorkerNodeCreateDto, IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../interfaces/IWorkerNode';
-import { IPrintQueueResponseDto } from '../interfaces/IPrintQueue';
+import { IPrintQueueResponseDto } from '../../management/interfaces/IPrintQueue';
 
 @Injectable({
   providedIn: 'root'

@@ -7,11 +7,11 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IBranchSalesEditDto, IBranchSalesResponseDto } from '../../../interfaces/IBranchSales';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IBranchSalesEditDto, IBranchSalesResponseDto } from '../../../recepcion/interfaces/IBranchSales';
 import { DialogFormRegSucursalComponent } from './components/dialog-form-reg-sucursal/dialog-form-reg-sucursal.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { DialogQuestionComponent } from '../../../recepcion/components/dialog-question/dialog-question.component';
 import { Router } from '@angular/router';
 
 
@@ -95,7 +95,7 @@ export class MntSucursalesComponent implements OnInit {
   }
 
   verUsuariosSucursal(item: IBranchSalesResponseDto) {
-    this.router.navigate(['/recepcion/sucursales', item.id, 'usuarios']);
+    this.router.navigate(['/management/sucursales', item.id, 'usuarios']);
   }
 
   deleteSucursal(item: IBranchSalesResponseDto) {

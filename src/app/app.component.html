@@ -42,18 +42,6 @@
       </a>
       }
 
-      @if (hasPermission('reception.access')) {
-      <a mat-list-item
-         [routerLink]="['/roperia']"
-         routerLinkActive #rlaRoperia="routerLinkActive"
-         [activated]="rlaRoperia.isActive"
-         (click)="toggle()"
-         matTooltip="Ropería" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
-        <mat-icon matListItemIcon>person_search</mat-icon>
-        <span matListItemTitle>Ropería</span>
-      </a>
-      }
-
       @if (hasPermission('corporate-operations.access')) {
       <a mat-list-item
          [routerLink]="['/corporate-operations']"
@@ -99,6 +87,18 @@
          matTooltip="Gastos" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
         <mat-icon matListItemIcon>account_balance</mat-icon>
         <span matListItemTitle>Gastos</span>
+      </a>
+      }
+
+      @if (hasPermission('settings.access')) {
+      <a mat-list-item
+         [routerLink]="['/management']"
+         routerLinkActive #rlaManagement="routerLinkActive"
+         [activated]="rlaManagement.isActive"
+         (click)="toggle()"
+         matTooltip="Administración" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
+        <span matListItemTitle>Administración</span>
       </a>
       }
     </mat-nav-list>

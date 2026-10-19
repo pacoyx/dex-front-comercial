@@ -5,11 +5,11 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../../../interfaces/IWorkerNode';
-import { ISucursalesCombo } from '../../../interfaces/IReports';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../../../recepcion/interfaces/IWorkerNode';
+import { ISucursalesCombo } from '../../../recepcion/interfaces/IReports';
 import { DialogFormWorkerNodeComponent } from './components/dialog-form-worker-node/dialog-form-worker-node.component';
-import { DialogQuestionComponent } from '../../../components/dialog-question/dialog-question.component';
+import { DialogQuestionComponent } from '../../../recepcion/components/dialog-question/dialog-question.component';
 
 @Component({
   selector: 'app-mnt-worker-nodes',

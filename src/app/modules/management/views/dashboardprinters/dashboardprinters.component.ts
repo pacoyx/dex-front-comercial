@@ -3,10 +3,10 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
-import { ReportesEmisionService } from '../../../services/reportes-emision.service';
-import { MaestrosService } from '../../../services/maestros.service';
-import { IPrintingStatusPrinter, IPrintingStatusResponse } from '../../../interfaces/IReports';
+import { LoadingComponent } from '../../../../core/components/loading/loading.component';
+import { ReportesEmisionService } from '../../../recepcion/services/reportes-emision.service';
+import { MaestrosService } from '../../../recepcion/services/maestros.service';
+import { IPrintingStatusPrinter, IPrintingStatusResponse } from '../../../recepcion/interfaces/IReports';
 
 interface IPrintersPorSucursal {
   branchName: string;

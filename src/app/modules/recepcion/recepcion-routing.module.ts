@@ -11,15 +11,9 @@ import { MntClientesComponent } from './views/maestros/mnt-clientes/mnt-clientes
 import { MntUsuariosComponent } from './views/maestros/mnt-usuarios/mnt-usuarios.component';
 import { MntProdservicesComponent } from './views/maestros/mnt-prodservices/mnt-prodservices.component';
 import { MntUbicacionComponent } from './views/maestros/mnt-ubicacion/mnt-ubicacion.component';
-import { MntSucursalesComponent } from './views/maestros/mnt-sucursales/mnt-sucursales.component';
-import { MntSucursalUsuariosComponent } from './views/maestros/mnt-sucursal-usuarios/mnt-sucursal-usuarios.component';
-import { MntImpresorasComponent } from './views/maestros/mnt-impresoras/mnt-impresoras.component';
-import { MntWorkerNodesComponent } from './views/maestros/mnt-worker-nodes/mnt-worker-nodes.component';
-import { MntImpresionesPendientesComponent } from './views/administracion/mnt-impresiones-pendientes/mnt-impresiones-pendientes.component';
 import { RecepcionRegUbicacionesComponent } from './views/recepcion-reg-ubicaciones/recepcion-reg-ubicaciones.component';
 import { ReporteResumenCajaComponent } from './views/reportes/reporte-resumen-caja/reporte-resumen-caja.component';
 import { DashboardcajaComponent } from './views/reportes/dashboardcaja/dashboardcaja.component';
-import { DashboardprintersComponent } from './views/reportes/dashboardprinters/dashboardprinters.component';
 import { InspeccionResumenComponent } from './views/reportes/inspeccion-resumen/inspeccion-resumen.component';
 import { ReporteSneakersComponent } from './views/reportes/reporte-sneakers/reporte-sneakers.component';
 
@@ -37,15 +31,9 @@ const routes: Routes = [
   { path: 'usuarios', component: MntUsuariosComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'servicios', component: MntProdservicesComponent },
   { path: 'ubicaciones', component: MntUbicacionComponent },
-  { path: 'sucursales', component: MntSucursalesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
-  { path: 'sucursales/:branchId/usuarios', component: MntSucursalUsuariosComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
-  { path: 'impresoras', component: MntImpresorasComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
-  { path: 'workerNodes', component: MntWorkerNodesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
-  { path: 'impresionesPendientes', component: MntImpresionesPendientesComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent },
   { path: 'resumenCaja', component: ReporteResumenCajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'dashboardcash', component: DashboardcajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
-  { path: 'dashboardprinters', component: DashboardprintersComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'inspeccion-resumen', component: InspeccionResumenComponent },
   { path: 'inspeccion-resumen/:workGuideId', component: InspeccionResumenComponent },
   { path: 'reportes/sneakers', component: ReporteSneakersComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
