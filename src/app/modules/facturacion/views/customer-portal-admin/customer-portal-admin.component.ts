@@ -11,8 +11,8 @@ import { IPortalCustomerAdminItem } from '../../interfaces/IPortal';
 import { extractErrorMessage } from '../../shared/http-error.util';
 
 const ESTADO_META: Record<string, { color: string }> = {
-  'Sin Portal': { color: '#757575' },
-  'Nunca Ingresó': { color: '#ef6c00' },
+  'Sin portal': { color: '#757575' },
+  'Nunca ingresó': { color: '#ef6c00' },
   'Activo': { color: '#2e7d32' },
 };
 
@@ -30,7 +30,7 @@ export class CustomerPortalAdminComponent implements OnInit {
 
   clientes: IPortalCustomerAdminItem[] = [];
   loading = false;
-  displayedColumns: string[] = ['customerName', 'portalEnabled', 'totalUsers', 'activeUsers', 'lastLogin', 'status'];
+  displayedColumns: string[] = ['customerName', 'portalEnabled', 'totalUsers', 'lastLogin', 'status'];
 
   ngOnInit(): void {
     this.cargar();
