@@ -1,0 +1,134 @@
+<div class="container-import">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>cloud_upload</mat-icon>
+            <div class="page-header__heading">
+                <h1>Importar Clientes Empresa</h1>
+                <span class="page-header__subtitle">Descarga la plantilla, llénala y súbela para registrar varios
+                    clientes tipo Empresa (con su perfil de facturación) de una vez</span>
+            </div>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="acciones-row">
+            <button mat-stroked-button (click)="descargarPlantilla()">
+                <mat-icon>download</mat-icon>
+                Descargar Plantilla
+            </button>
+
+            <input #inputArchivo type="file" accept=".xlsx,.xls" hidden (change)="onArchivoSeleccionado($event)">
+            <button mat-stroked-button (click)="inputArchivo.click()">
+                <mat-icon>upload_file</mat-icon>
+                Cargar Archivo
+            </button>
+
+            @if(nombreArchivo){
+            <span class="archivo-nombre">{{nombreArchivo}}</span>
+            }
+
+            <span class="acciones-row__spacer"></span>
+
+            <button mat-flat-button color="primary" (click)="procesarTodo()" [disabled]="procesando || !hayPendientes()">
+                @if(procesando){<mat-icon>cached</mat-icon>}
+                {{ huboIntentoPrevio ? 'Reintentar pendientes' : 'Procesar' }}
+            </button>
+        </mat-card-content>
+    </mat-card>
+
+    @if(errorMessage){
+    <div class="mensaje-error">{{errorMessage}}</div>
+    }
+
+    @if(filas.length > 0){
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="resumen-row">
+            <span>Total: <b>{{filas.length}}</b></span>
+            <span class="resumen-exito">Exitosos: <b>{{contarPorEstado('exito')}}</b></span>
+            <span class="resumen-error">Con error: <b>{{contarPorEstado('error')}}</b></span>
+            <span class="resumen-pendiente">Pendientes: <b>{{contarPorEstado('pendiente')}}</b></span>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="filas" class="detail-table">
+
+                <ng-container matColumnDef="numero">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> # </th>
+                    <td mat-cell *matCellDef="let f" class="col-numeric"> {{f.numero}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                    <td mat-cell *matCellDef="let f"> {{f.datosCliente.firstName}} {{f.datosCliente.lastName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="businessName">
+                    <th mat-header-cell *matHeaderCellDef> Razon Social </th>
+                    <td mat-cell *matCellDef="let f"> {{f.datosPerfil.businessName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="taxId">
+                    <th mat-header-cell *matHeaderCellDef> RUC </th>
+                    <td mat-cell *matCellDef="let f"> {{f.datosPerfil.taxId}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef> Correo </th>
+                    <td mat-cell *matCellDef="let f"> {{f.datosCliente.email}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> Resultado </th>
+                    <td mat-cell *matCellDef="let f">
+                        @switch (f.estado) {
+                        @case ('pendiente') {
+                        <span class="status-chip status-chip--pendiente">
+                            <span class="status-chip__dot"></span>
+                            Pendiente
+                        </span>
+                        }
+                        @case ('procesando') {
+                        <span class="status-chip status-chip--proceso">
+                            <mat-icon>cached</mat-icon>
+                            Procesando
+                        </span>
+                        }
+                        @case ('exito') {
+                        <span class="status-chip status-chip--activo">
+                            <span class="status-chip__dot"></span>
+                            Exitoso
+                        </span>
+                        }
+                        @case ('error') {
+                        <span class="status-chip status-chip--inactivo" [matTooltip]="f.mensaje">
+                            <span class="status-chip__dot"></span>
+                            Error
+                        </span>
+                        }
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="mensaje">
+                    <th mat-header-cell *matHeaderCellDef> Detalle </th>
+                    <td mat-cell *matCellDef="let f">
+                        @if(f.estado === 'error'){
+                        <span class="texto-error">{{f.mensaje}}</span>
+                        }
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+    }@else{
+    <div class="vacio">Descarga la plantilla, complétala con los datos de tus clientes tipo Empresa (incluyendo
+        su perfil de facturación) y súbela aquí para comenzar.</div>
+    }
+
+</div>

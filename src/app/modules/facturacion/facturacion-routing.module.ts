@@ -13,6 +13,7 @@ import { FacturacionPorClienteComponent } from './views/reportes/facturacion-por
 import { ClientesComponent } from './views/clientes/clientes.component';
 import { FichaClienteComponent } from './views/clientes/ficha-cliente/ficha-cliente.component';
 import { TarifasClienteComponent } from './views/tarifas-cliente/tarifas-cliente.component';
+import { CustomerImportComponent } from './views/clientes/customer-import/customer-import.component';
 import { CustomerPortalAdminComponent } from './views/customer-portal-admin/customer-portal-admin.component';
 import { ValorizacionMensualComponent } from './views/reportes/valorizacion-mensual/valorizacion-mensual.component';
 
@@ -20,6 +21,7 @@ const routes: Routes = [
   { path: '', redirectTo: 'facturas', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardFacturacionComponent },
   { path: 'clientes', component: ClientesComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
+  { path: 'clientes-import', component: CustomerImportComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
   { path: 'clientes/:id', component: FichaClienteComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
   { path: 'tarifas-cliente', component: TarifasClienteComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
   { path: 'tarifas-cliente/:customerId', component: TarifasClienteComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },

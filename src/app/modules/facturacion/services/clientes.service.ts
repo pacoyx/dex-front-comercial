@@ -42,6 +42,18 @@ export class ClientesService {
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarCliente}`, cliente, { headers });
   }
 
+  /**
+   * POST /api/customer devuelve el Customer creado tal cual (sin envoltorio
+   * ApiResponse), a diferencia de la mayoria de endpoints de este modulo.
+   * Se usa un tipo de retorno aparte (en vez de reusar registrarCliente) para
+   * poder leer el id del cliente recien creado, por ejemplo para encadenar la
+   * creacion de su perfil de facturacion.
+   */
+  registrarClienteObtenerId(cliente: ICustomerCreateRequest): Observable<{ id: number }> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<{ id: number }>(`${this.apiUrl}${environment.EPRegistrarCliente}`, cliente, { headers });
+  }
+
   actualizarCliente(cliente: ICustomerUpdateRequest): Observable<IResponseGeneric<string>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPActualizarCliente}/${cliente.id}`, cliente, { headers });
