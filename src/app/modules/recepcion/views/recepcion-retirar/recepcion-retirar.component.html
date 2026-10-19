@@ -247,7 +247,15 @@
                     <td mat-cell *matCellDef="let element" class="observaciones-celda">
                         {{element.observaciones}}
                         @if(element.ubicacion && element.ubicacion !== 'L'){
-                        <span class="ubicacion-destacada">({{element.ubicacion}})</span>
+                        <div class="ubicacion-info">
+                            <span class="ubicacion-chip ubicacion-chip--destacada">
+                                <mat-icon>pin_drop</mat-icon>
+                                {{ labelUbicacion(element.ubicacion) }}
+                            </span>
+                            @if(element.fechaEntregaAproxUbicacion){
+                            <span class="ubicacion-retorno">Vuelve el {{ element.fechaEntregaAproxUbicacion | date:'dd/MM/yyyy' }}</span>
+                            }
+                        </div>
                         }
                     </td>
                 </ng-container>
@@ -418,6 +426,10 @@
                             <button mat-icon-button (click)="abrirInspeccion(element)" class="icono-accion icono-accion--inspeccion"
                                 matTooltip="Inspección">
                                 <mat-icon>fact_check</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="cambiarUbicacion(element)" class="icono-accion icono-accion--ubicacion"
+                                matTooltip="Cambiar Ubicación">
+                                <mat-icon>pin_drop</mat-icon>
                             </button>
                             @if(false && esZapatilla(element)){
                             <button mat-stroked-button (click)="abrirZapatilla(element)" class="btn-block">

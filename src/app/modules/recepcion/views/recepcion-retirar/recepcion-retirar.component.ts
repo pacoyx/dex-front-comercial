@@ -37,6 +37,8 @@ import { DialogVerFotosComponent } from '../reportes/inspeccion-resumen/componen
 import { WorkGuidePhotoResponse } from '../../interfaces/IInspeccion';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { DialogCambiarUbicacionComponent } from '../../components/dialog-cambiar-ubicacion/dialog-cambiar-ubicacion.component';
+import { IWorkGuideDetailLocationResponse } from '../../interfaces/IUbicaciones';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -565,5 +567,29 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   private liberarFotoUrlsInspeccion(): void {
     this.fotoUrlsInspeccion.forEach((url) => URL.revokeObjectURL(url));
     this.fotoUrlsInspeccion.clear();
+  }
+
+  private static readonly UBICACION_LABELS: Record<string, string> = {
+    L: 'Lavandería',
+    P: 'Planta',
+    A: 'Almacén',
+  };
+
+  labelUbicacion(codigo: string | null | undefined): string {
+    if (!codigo) return '';
+    return RecepcionRetirarComponent.UBICACION_LABELS[codigo] || codigo;
+  }
+
+  cambiarUbicacion(item: IGuiaRetiroWgdDTO): void {
+    const dialogRef = this.dialog.open(DialogCambiarUbicacionComponent, {
+      data: { workGuideDetailId: item.id, productName: item.product.name, ubicacionActual: item.ubicacion }
+    });
+
+    dialogRef.afterClosed().subscribe((result: IWorkGuideDetailLocationResponse | null) => {
+      if (!result) return;
+      item.ubicacion = result.ubicacion;
+      item.fechaEnvioUbicacion = result.fechaEnvio;
+      item.fechaEntregaAproxUbicacion = result.fechaEntregaAprox;
+    });
   }
 }

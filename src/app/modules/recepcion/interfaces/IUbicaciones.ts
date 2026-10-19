@@ -36,3 +36,19 @@ interface Guia {
   referencia: string;
   isSystem: boolean;
 }
+
+export interface IAsignarUbicacionDetalleRequest {
+  locationClothesId: number;
+  fechaEntregaAprox: string | null;
+  comments: string | null;
+}
+
+export interface IWorkGuideDetailLocationResponse {
+  workGuideDetailId: number;
+  ubicacion: string;
+  locationClothesId: number;
+  locationClothesName: string;
+  fechaEnvio: string;
+  fechaEntregaAprox: string | null;
+  comments: string | null;
+}

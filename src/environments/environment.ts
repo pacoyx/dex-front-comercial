@@ -67,6 +67,7 @@ export const environment = {
     EPCrearUbicacion: 'api/locationclothes',
     EPActualizarUbicacion: 'api/locationclothes',
     EPRegistrarUbicacion: 'api/locationclothes/RegisterWorkGuide',
+    EPAsignarUbicacionDetalle: 'api/locationclothes/workguide-details', // /{workGuideDetailId}/assign
     EPObtenerCajasPorFecha: 'api/cashBox/resumeAllUser',
 
     EPDividirPago: 'api/cashBox/splitPayCash',

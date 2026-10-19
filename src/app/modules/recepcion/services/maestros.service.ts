@@ -6,7 +6,7 @@ import { IResponseGeneric } from '../interfaces/IResponseGeneric';
 import { IGetClientesPaginadoResponse } from '../interfaces/ICliente';
 import { IClienteCreate, IClienteUpdate } from '../interfaces/IClienteCreate';
 import { IActuaizarProdServicesRequest, ICrearProdServicesRequest, IGetProdServicesPaginadoResponse } from '../interfaces/IProdServices';
-import { IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto } from '../interfaces/IUbicaciones';
+import { IAsignarUbicacionDetalleRequest, IRequestRegistrarUbicacion, IUbicacionesCreateResponseDto, IUbicacionesEditDto, IUbicacionesResponseDto, IWorkGuideDetailLocationResponse } from '../interfaces/IUbicaciones';
 import { ISucursalesCombo } from '../interfaces/IReports';
 import { IBranchSalesCreateDto, IBranchSalesEditDto, IBranchSalesResponseDto, IBranchSalesUserCreateDto, IBranchSalesUserEditDto, IBranchSalesUserResponseDto, IUsuarioSistema } from '../interfaces/IBranchSales';
 import { IPrinterCreateDto, IPrinterEditDto, IPrinterResponseDto } from '../interfaces/IPrinter';
@@ -137,6 +137,12 @@ export class MaestrosService {
   registrarUbicacionPrenda(ubicacion: IRequestRegistrarUbicacion) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPRegistrarUbicacion}`, ubicacion, { headers });
+  }
+
+  asignarUbicacionDetalle(workGuideDetailId: number, req: IAsignarUbicacionDetalleRequest) {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPAsignarUbicacionDetalle}/${workGuideDetailId}/assign`;
+    return this.http.post<IResponseGeneric<IWorkGuideDetailLocationResponse>>(url, req, { headers });
   }
 
   obtenerSucursalesCombo() {
