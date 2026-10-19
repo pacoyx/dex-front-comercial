@@ -66,7 +66,7 @@ export class ManagentEmpresaComponent implements OnInit {
 
   getDataCompany() {
     this.loading = true;
-    this.managementService.obtenerEmpresaPorUsuario(1).subscribe({
+    this.managementService.obtenerEmpresaPorUsuario(this.idUser).subscribe({
       next: (resp) => {
         this.loading = false;
         this.hasData = resp.success;
@@ -123,7 +123,10 @@ export class ManagentEmpresaComponent implements OnInit {
     this.loading = true;
     this.formCompany.get('usuarioId')?.setValue(this.idUser);
 
-    const operation = this.hasData ? this.managementService.actualizarEmpresa(this.formCompany.value) : this.managementService.crearEmpresa(this.formCompany.value);
+    // El control "id" esta deshabilitado y formCompany.value lo excluye; para actualizar
+    // hace falta el id real (el backend busca la empresa por ese campo), por eso se usa
+    // getRawValue() solo en este caso.
+    const operation = this.hasData ? this.managementService.actualizarEmpresa(this.formCompany.getRawValue()) : this.managementService.crearEmpresa(this.formCompany.value);
 
     operation.subscribe({
       next: (resp) => {
