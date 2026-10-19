@@ -38,8 +38,14 @@ export class ProfileUserService {
   }
 
   actualizarFoto(req: IUpdatePhotoRequest): Observable<IResponseGeneric<IUpdatePhotoResponse>> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<IResponseGeneric<IUpdatePhotoResponse>>(`${this.apiUrl}${environment.EPUserMePhoto}`, req, { headers });
+    const formData = new FormData();
+    formData.append('file', req.file);
+    // No se setea el header Content-Type: el browser debe agregar el boundary del multipart.
+    return this.http.post<IResponseGeneric<IUpdatePhotoResponse>>(`${this.apiUrl}${environment.EPUserMePhoto}`, formData);
+  }
+
+  obtenerFoto(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPUserMePhoto}`, { responseType: 'blob' });
   }
 
   eliminarFoto(): Observable<IResponseGeneric<IUpdatePhotoResponse>> {
@@ -53,8 +59,15 @@ export class ProfileUserService {
   }
 
   subirDocumento(req: ICreateDocumentRequest): Observable<IResponseGeneric<IMyDocument>> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post<IResponseGeneric<IMyDocument>>(`${this.apiUrl}${environment.EPUserMeDocuments}`, req, { headers });
+    const formData = new FormData();
+    formData.append('file', req.file);
+    formData.append('documentName', req.documentName);
+    if (req.notes) formData.append('notes', req.notes);
+    return this.http.post<IResponseGeneric<IMyDocument>>(`${this.apiUrl}${environment.EPUserMeDocuments}`, formData);
+  }
+
+  descargarDocumento(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPUserMeDocuments}/${id}/download`, { responseType: 'blob' });
   }
 
   eliminarDocumento(id: number): Observable<IResponseGeneric<string>> {

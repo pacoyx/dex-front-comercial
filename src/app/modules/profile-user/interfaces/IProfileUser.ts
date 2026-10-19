@@ -30,8 +30,7 @@ export interface IChangePasswordRequest {
 }
 
 export interface IUpdatePhotoRequest {
-  fileName: string;
-  blobUrl: string;
+  file: File;
 }
 
 export interface IUpdatePhotoResponse {
@@ -43,13 +42,13 @@ export interface IMyDocument {
   documentName: string;
   fileName: string;
   blobUrl: string;
+  contentType: string;
   notes: string;
   createdAt: string;
 }
 
 export interface ICreateDocumentRequest {
   documentName: string;
-  fileName: string;
-  blobUrl: string;
-  notes?: string | null;
+  notes: string | null;
+  file: File;
 }

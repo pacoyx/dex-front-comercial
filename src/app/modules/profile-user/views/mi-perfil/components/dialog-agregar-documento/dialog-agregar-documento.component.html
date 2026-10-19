@@ -10,8 +10,7 @@
 
 <mat-dialog-content class="dialog-content">
     <p class="hint-text">
-        El sistema aún no cuenta con un mecanismo de subida de archivos: sube el archivo al almacenamiento que
-        corresponda y pega aquí la URL resultante (blobUrl).
+        Toma una foto con la cámara de la tablet o elige un archivo (JPG, PNG, WEBP o PDF, máx. 10MB).
     </p>
 
     @if (validationErrors.length > 0) {
@@ -28,18 +27,45 @@
         <div class="form-grid">
             <mat-form-field appearance="outline" class="field--full">
                 <mat-label>Tipo / Nombre del Documento</mat-label>
-                <input matInput formControlName="documentName" placeholder="ej: DNI, Recibo de luz">
+                <input matInput formControlName="documentName" maxlength="100" placeholder="ej: DNI, Recibo de luz">
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="field--full">
-                <mat-label>Nombre del Archivo</mat-label>
-                <input matInput formControlName="fileName" placeholder="ej: dni-frente.jpg">
-            </mat-form-field>
+            <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+                (change)="onArchivoSeleccionado($event)">
+            <input #inputArchivo type="file" accept="image/jpeg,image/png,image/webp,application/pdf" hidden
+                (change)="onArchivoSeleccionado($event)">
 
-            <mat-form-field appearance="outline" class="field--full">
-                <mat-label>URL del Archivo (blobUrl)</mat-label>
-                <input matInput formControlName="blobUrl" placeholder="https://...">
-            </mat-form-field>
+            <div class="archivo-acciones">
+                <button type="button" mat-stroked-button (click)="abrirCamara()" [disabled]="loadingSave">
+                    <mat-icon>photo_camera</mat-icon>
+                    Tomar Foto
+                </button>
+                <button type="button" mat-stroked-button (click)="abrirExplorador()" [disabled]="loadingSave">
+                    <mat-icon>attach_file</mat-icon>
+                    Elegir Archivo
+                </button>
+            </div>
+
+            @if (errorArchivo) {
+            <div class="alert alert--error">{{ errorArchivo }}</div>
+            }
+
+            @if (archivoSeleccionado) {
+            <div class="archivo-preview">
+                @if (esImagen && previewUrl) {
+                <img [src]="previewUrl" class="archivo-preview__thumb" alt="Vista previa">
+                } @else {
+                <mat-icon class="archivo-preview__icono">picture_as_pdf</mat-icon>
+                }
+                <div class="archivo-preview__info">
+                    <span class="archivo-preview__nombre">{{ archivoSeleccionado.name }}</span>
+                    <span class="archivo-preview__tamano">{{ tamanoArchivo }}</span>
+                </div>
+                <button type="button" mat-icon-button (click)="quitarArchivo()" [disabled]="loadingSave" aria-label="Quitar archivo">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+            }
 
             <mat-form-field appearance="outline" class="field--full">
                 <mat-label>Notas</mat-label>
@@ -55,7 +81,7 @@
     @if (loadingSave) {
     <button mat-flat-button color="primary" disabled>
         <app-loading></app-loading>
-        Grabando...
+        Subiendo...
     </button>
     } @else {
     <button mat-flat-button color="primary" (click)="onSubmit()">

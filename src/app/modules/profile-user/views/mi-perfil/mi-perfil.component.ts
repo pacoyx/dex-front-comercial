@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,6 +16,9 @@ import { IMyDocument, IMyProfile } from '../../interfaces/IProfileUser';
 import { extractErrorMessage, extractValidationErrors } from '../../shared/http-error.util';
 import { DialogAgregarDocumentoComponent } from './components/dialog-agregar-documento/dialog-agregar-documento.component';
 
+const TIPOS_PERMITIDOS_FOTO = ['image/jpeg', 'image/png', 'image/webp'];
+const TAMANO_MAXIMO_FOTO_MB = 5;
+
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
@@ -26,12 +29,15 @@ import { DialogAgregarDocumentoComponent } from './components/dialog-agregar-doc
   templateUrl: './mi-perfil.component.html',
   styleUrl: './mi-perfil.component.css'
 })
-export class MiPerfilComponent implements OnInit {
+export class MiPerfilComponent implements OnInit, OnDestroy {
 
   private profileUserService = inject(ProfileUserService);
   private notificationService = inject(NotificationsSystemService);
   private dialog = inject(MatDialog);
   private router = inject(Router);
+
+  @ViewChild('inputCamaraFoto') inputCamaraFoto!: ElementRef<HTMLInputElement>;
+  @ViewChild('inputArchivoFoto') inputArchivoFoto!: ElementRef<HTMLInputElement>;
 
   loading = true;
   perfil: IMyProfile | null = null;
@@ -39,8 +45,12 @@ export class MiPerfilComponent implements OnInit {
   frmDatos: FormGroup;
   savingDatos = false;
 
+  fotoUrl: string | null = null;
+  loadingFoto = false;
   editandoFoto = false;
-  frmFoto: FormGroup;
+  archivoFotoSeleccionado: File | null = null;
+  previewFotoUrl: string | null = null;
+  errorArchivoFoto = '';
   savingFoto = false;
   removingFoto = false;
 
@@ -53,6 +63,7 @@ export class MiPerfilComponent implements OnInit {
 
   documentos: IMyDocument[] = [];
   loadingDocumentos = false;
+  documentosDescargando = new Set<number>();
   documentColumns: string[] = ['documentName', 'fileName', 'createdAt', 'acciones'];
   documentsDataSource = new MatTableDataSource<IMyDocument>([]);
 
@@ -61,11 +72,6 @@ export class MiPerfilComponent implements OnInit {
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.maxLength(20)],
-    });
-
-    this.frmFoto = this.fb.group({
-      fileName: ['', Validators.required],
-      blobUrl: ['', Validators.required],
     });
 
     this.frmPassword = this.fb.group({
@@ -77,7 +83,13 @@ export class MiPerfilComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarPerfil();
+    this.cargarFoto();
     this.cargarDocumentos();
+  }
+
+  ngOnDestroy(): void {
+    if (this.fotoUrl) URL.revokeObjectURL(this.fotoUrl);
+    if (this.previewFotoUrl) URL.revokeObjectURL(this.previewFotoUrl);
   }
 
   private cargarPerfil(): void {
@@ -95,6 +107,23 @@ export class MiPerfilComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo cargar tu perfil.'));
+      }
+    });
+  }
+
+  private cargarFoto(): void {
+    this.loadingFoto = true;
+    this.profileUserService.obtenerFoto().subscribe({
+      next: (blob) => {
+        if (this.fotoUrl) URL.revokeObjectURL(this.fotoUrl);
+        this.fotoUrl = URL.createObjectURL(blob);
+        this.loadingFoto = false;
+      },
+      error: () => {
+        // 404: el usuario no tiene foto cargada todavia.
+        if (this.fotoUrl) URL.revokeObjectURL(this.fotoUrl);
+        this.fotoUrl = null;
+        this.loadingFoto = false;
       }
     });
   }
@@ -122,28 +151,65 @@ export class MiPerfilComponent implements OnInit {
   }
 
   abrirCambiarFoto(): void {
-    this.frmFoto.reset();
+    this.errorArchivoFoto = '';
     this.editandoFoto = true;
   }
 
   cancelarCambiarFoto(): void {
+    this.quitarArchivoFotoSeleccionado();
     this.editandoFoto = false;
   }
 
+  abrirCamaraFoto(): void {
+    this.inputCamaraFoto.nativeElement.click();
+  }
+
+  abrirExploradorFoto(): void {
+    this.inputArchivoFoto.nativeElement.click();
+  }
+
+  onArchivoFotoSeleccionado(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+
+    this.errorArchivoFoto = '';
+
+    if (!TIPOS_PERMITIDOS_FOTO.includes(file.type)) {
+      this.errorArchivoFoto = `"${file.name}" no es un tipo de imagen válido (jpg, png o webp).`;
+      return;
+    }
+    if (file.size > TAMANO_MAXIMO_FOTO_MB * 1024 * 1024) {
+      this.errorArchivoFoto = `"${file.name}" supera el tamaño máximo de ${TAMANO_MAXIMO_FOTO_MB}MB.`;
+      return;
+    }
+
+    if (this.previewFotoUrl) URL.revokeObjectURL(this.previewFotoUrl);
+    this.archivoFotoSeleccionado = file;
+    this.previewFotoUrl = URL.createObjectURL(file);
+  }
+
+  quitarArchivoFotoSeleccionado(): void {
+    if (this.previewFotoUrl) URL.revokeObjectURL(this.previewFotoUrl);
+    this.previewFotoUrl = null;
+    this.archivoFotoSeleccionado = null;
+    this.errorArchivoFoto = '';
+  }
+
   guardarFoto(): void {
-    if (this.frmFoto.invalid) {
-      this.notificationService.showError('Completa el nombre del archivo y la URL.');
+    if (!this.archivoFotoSeleccionado) {
+      this.errorArchivoFoto = 'Debes seleccionar una imagen o tomar una foto.';
       return;
     }
 
     this.savingFoto = true;
-    this.profileUserService.actualizarFoto(this.frmFoto.value).subscribe({
-      next: (response) => {
+    this.profileUserService.actualizarFoto({ file: this.archivoFotoSeleccionado }).subscribe({
+      next: () => {
         this.savingFoto = false;
         this.editandoFoto = false;
-        if (this.perfil) {
-          this.perfil.photoUrl = response.data.photoUrl;
-        }
+        this.quitarArchivoFotoSeleccionado();
+        this.cargarFoto();
         this.notificationService.showSuccess('Foto actualizada correctamente.');
       },
       error: (err) => {
@@ -162,9 +228,8 @@ export class MiPerfilComponent implements OnInit {
     this.profileUserService.eliminarFoto().subscribe({
       next: () => {
         this.removingFoto = false;
-        if (this.perfil) {
-          this.perfil.photoUrl = '';
-        }
+        if (this.fotoUrl) URL.revokeObjectURL(this.fotoUrl);
+        this.fotoUrl = null;
         this.notificationService.showSuccess('Foto eliminada correctamente.');
       },
       error: (err) => {
@@ -255,8 +320,28 @@ export class MiPerfilComponent implements OnInit {
     });
   }
 
+  iconoDocumento(documento: IMyDocument): string {
+    return documento.contentType === 'application/pdf' ? 'picture_as_pdf' : 'image';
+  }
+
   verDocumento(documento: IMyDocument): void {
-    window.open(documento.blobUrl, '_blank');
+    if (this.documentosDescargando.has(documento.id)) return;
+    this.documentosDescargando.add(documento.id);
+    this.profileUserService.descargarDocumento(documento.id).subscribe({
+      next: (blob) => {
+        this.documentosDescargando.delete(documento.id);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = documento.fileName;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: (err) => {
+        this.documentosDescargando.delete(documento.id);
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo descargar el documento.'));
+      }
+    });
   }
 
   eliminarDocumento(documento: IMyDocument): void {

@@ -29,8 +29,12 @@
             </div>
             <mat-card-content class="foto-content">
                 <div class="avatar">
-                    @if (perfil.photoUrl) {
-                    <img [src]="perfil.photoUrl" alt="Foto de perfil">
+                    @if (editandoFoto && previewFotoUrl) {
+                    <img [src]="previewFotoUrl" alt="Vista previa de la foto">
+                    } @else if (loadingFoto) {
+                    <app-loading></app-loading>
+                    } @else if (fotoUrl) {
+                    <img [src]="fotoUrl" alt="Foto de perfil">
                     } @else {
                     <mat-icon class="avatar__placeholder">account_circle</mat-icon>
                     }
@@ -42,7 +46,7 @@
                         <mat-icon>upload</mat-icon>
                         Cambiar Foto
                     </button>
-                    @if (perfil.photoUrl) {
+                    @if (fotoUrl) {
                     <button mat-stroked-button color="warn" (click)="quitarFoto()" [disabled]="removingFoto">
                         <mat-icon>delete</mat-icon>
                         Quitar Foto
@@ -50,24 +54,36 @@
                     }
                 </div>
                 } @else {
-                <form [formGroup]="frmFoto" class="foto-form">
+                <div class="foto-form">
                     <p class="hint-text">
-                        El sistema aún no cuenta con un mecanismo de subida de archivos: sube la imagen al
-                        almacenamiento correspondiente y pega aquí la URL resultante.
+                        Toma una foto con la cámara de la tablet o elige una imagen (JPG, PNG o WEBP, máx. 5MB).
                     </p>
-                    <mat-form-field appearance="outline">
-                        <mat-label>Nombre del Archivo</mat-label>
-                        <input matInput formControlName="fileName" placeholder="ej: perfil.jpg">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                        <mat-label>URL de la Foto (blobUrl)</mat-label>
-                        <input matInput formControlName="blobUrl" placeholder="https://...">
-                    </mat-form-field>
+
+                    <input #inputCamaraFoto type="file" accept="image/jpeg,image/png,image/webp" capture="user" hidden
+                        (change)="onArchivoFotoSeleccionado($event)">
+                    <input #inputArchivoFoto type="file" accept="image/jpeg,image/png,image/webp" hidden
+                        (change)="onArchivoFotoSeleccionado($event)">
+
+                    <div class="foto-acciones">
+                        <button type="button" mat-stroked-button (click)="abrirCamaraFoto()" [disabled]="savingFoto">
+                            <mat-icon>photo_camera</mat-icon>
+                            Tomar Foto
+                        </button>
+                        <button type="button" mat-stroked-button (click)="abrirExploradorFoto()" [disabled]="savingFoto">
+                            <mat-icon>attach_file</mat-icon>
+                            Elegir Imagen
+                        </button>
+                    </div>
+
+                    @if (errorArchivoFoto) {
+                    <div class="alert alert--error">{{ errorArchivoFoto }}</div>
+                    }
+
                     <div class="foto-form__acciones">
                         <button mat-stroked-button type="button" (click)="cancelarCambiarFoto()"
                             [disabled]="savingFoto">Cancelar</button>
                         <button mat-flat-button color="primary" type="button" (click)="guardarFoto()"
-                            [disabled]="savingFoto">
+                            [disabled]="savingFoto || !archivoFotoSeleccionado">
                             @if (savingFoto) {
                             <app-loading></app-loading>
                             } @else {
@@ -76,7 +92,7 @@
                             Guardar
                         </button>
                     </div>
-                </form>
+                </div>
                 }
             </mat-card-content>
         </mat-card>
@@ -215,7 +231,10 @@
 
                 <ng-container matColumnDef="fileName">
                     <th mat-header-cell *matHeaderCellDef> Archivo </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.fileName }} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon class="archivo-icono">{{ iconoDocumento(element) }}</mat-icon>
+                        {{ element.fileName }}
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="createdAt">
@@ -226,8 +245,8 @@
                 <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
                     <td mat-cell *matCellDef="let element" class="col-actions">
-                        <button mat-icon-button (click)="verDocumento(element)" aria-label="Ver">
-                            <mat-icon>visibility</mat-icon>
+                        <button mat-icon-button (click)="verDocumento(element)" [disabled]="documentosDescargando.has(element.id)" aria-label="Ver / Descargar">
+                            <mat-icon>download</mat-icon>
                         </button>
                         <button mat-icon-button color="warn" (click)="eliminarDocumento(element)"
                             aria-label="Eliminar">
