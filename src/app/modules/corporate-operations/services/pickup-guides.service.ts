@@ -6,8 +6,10 @@ import { IResponseGeneric } from '../interfaces/IShared';
 import {
   IChangePickupGuideStatusRequest,
   ICreatePickupGuideRequest,
+  ICreatePickupGuideRevisionRequest,
   IPickupGuide,
   IPickupGuideFilters,
+  IPickupGuideRevision,
   IPickupGuideSummary,
   IResendEmailResult,
   IUpdatePickupGuideRequest,
@@ -65,6 +67,33 @@ export class PickupGuidesService {
    */
   descargarAdjunto(attachmentId: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}${environment.EPPickupGuides}/attachments/${attachmentId}/download`, { responseType: 'blob' });
+  }
+
+  // ===== Revisiones =====
+
+  crearRevision(pickupGuideId: number, req: ICreatePickupGuideRevisionRequest): Observable<IResponseGeneric<IPickupGuideRevision>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IPickupGuideRevision>>(`${this.apiUrl}${environment.EPPickupGuides}/${pickupGuideId}/revisions`, req, { headers });
+  }
+
+  listarRevisiones(pickupGuideId: number): Observable<IResponseGeneric<IPickupGuideRevision[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IPickupGuideRevision[]>>(`${this.apiUrl}${environment.EPPickupGuides}/${pickupGuideId}/revisions`, { headers });
+  }
+
+  agregarFotoRevision(revisionId: number, file: File): Observable<IResponseGeneric<unknown>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<IResponseGeneric<unknown>>(`${this.apiUrl}${environment.EPPickupGuides}/revisions/${revisionId}/photos`, formData);
+  }
+
+  /**
+   * Descarga el binario de una foto de revisión. Requiere Bearer token (igual que
+   * descargarAdjunto), por eso se trae como blob vía HttpClient en vez de enlazarla
+   * directo en un <img>.
+   */
+  descargarFotoRevision(photoId: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}${environment.EPPickupGuides}/revisions/photos/${photoId}/download`, { responseType: 'blob' });
   }
 
 }

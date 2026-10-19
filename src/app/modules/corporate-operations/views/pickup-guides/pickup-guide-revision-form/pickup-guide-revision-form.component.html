@@ -1,0 +1,332 @@
+<div class="container-revision-form">
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando guía...</span>
+    </div>
+    } @else if (!guide || guide.status !== PickupGuideStatus.Draft) {
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <button mat-icon-button [routerLink]="['/corporate-operations/pickup-guides', guideId]" aria-label="Volver">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <mat-icon>fact_check</mat-icon>
+            <div class="page-header__heading">
+                <h1>Registrar Revisión</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="mensaje-error">{{ errorMessage || 'No se pudo cargar la guía de recojo.' }}</div>
+
+    } @else {
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <button mat-icon-button [routerLink]="['/corporate-operations/pickup-guides', guideId]" aria-label="Volver">
+                <mat-icon>arrow_back</mat-icon>
+            </button>
+            <mat-icon>fact_check</mat-icon>
+            <div class="page-header__heading">
+                <h1>Registrar Revisión</h1>
+                <span class="page-header__subtitle">Guía {{ guide.guideNumber }} · {{ guide.customerName }}</span>
+            </div>
+        </div>
+    </div>
+
+    @if (errorMessage) {
+    <div class="mensaje-error">{{ errorMessage }}</div>
+    }
+    @if (validationErrors.length > 0) {
+    <ul class="mensaje-error lista-errores">
+        @for (msg of validationErrors; track msg) {
+        <li>{{ msg }}</li>
+        }
+    </ul>
+    }
+
+    <!-- Cabecera de la guía (solo lectura) -->
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>info</mat-icon>
+                Información de la Guía
+            </h2>
+        </div>
+        <mat-card-content>
+            <div class="resumen-grid">
+                <div class="resumen-item">
+                    <span class="resumen-label">Número Guía</span>
+                    <span class="resumen-value">{{ guide.guideNumber }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Cliente</span>
+                    <span class="resumen-value">{{ guide.customerName }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Fecha</span>
+                    <span class="resumen-value">{{ guide.pickupDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Estado</span>
+                    <span class="resumen-value">{{ guide.status | pickupGuideStatusLabel }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Empleado Recolector</span>
+                    <span class="resumen-value">{{ guide.employeeName ?? '—' }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Vehículo</span>
+                    <span class="resumen-value">{{ guide.vehiclePlate ?? '—' }}</span>
+                </div>
+                <div class="resumen-item">
+                    <span class="resumen-label">Total Actual</span>
+                    <span class="resumen-value">{{ guide.totalAmount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <form [formGroup]="form">
+
+        <!-- Revisor -->
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>badge</mat-icon>
+                    Revisor
+                </h2>
+            </div>
+            <mat-card-content>
+                <mat-form-field appearance="outline" class="campo-revisor">
+                    <mat-label>Empleado que realiza la revisión</mat-label>
+                    <input type="text" matInput [formControl]="employeeControl" [matAutocomplete]="autoEmployee"
+                        placeholder="Buscar por nombre, documento o código">
+                    <mat-autocomplete #autoEmployee="matAutocomplete" [displayWith]="displayEmployeeFn">
+                        @for (employee of filteredEmployees | async; track employee.id) {
+                        <mat-option [value]="employee">
+                            {{ employee.firstName }} {{ employee.lastName }} ({{ employee.code }})
+                        </mat-option>
+                        }
+                    </mat-autocomplete>
+                    @if (employeeControl.invalid && employeeControl.touched) {
+                    <mat-error>Debes seleccionar un empleado.</mat-error>
+                    }
+                </mat-form-field>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Observación general -->
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>notes</mat-icon>
+                    Observación General
+                </h2>
+            </div>
+            <mat-card-content>
+                <mat-form-field appearance="outline" class="campo-full">
+                    <mat-label>Observación (opcional)</mat-label>
+                    <textarea matInput rows="3" maxlength="500" formControlName="observation"
+                        placeholder="Ej: Se realizó conteo físico al ingreso de planta."></textarea>
+                    <mat-hint align="end">{{ (form.value.observation || '').length }}/500</mat-hint>
+                </mat-form-field>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Detalle de la revisión -->
+        <mat-card class="panel panel-tabla" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>checklist</mat-icon>
+                    Detalle de la Revisión
+                </h2>
+                <button type="button" mat-stroked-button (click)="agregarItemNuevo()">
+                    <mat-icon>add_circle</mat-icon>
+                    Agregar Ítem no Declarado
+                </button>
+            </div>
+            <mat-card-content class="tabla-scroll">
+                <table class="detail-table-edit" formArrayName="details">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Servicio</th>
+                            <th class="col-numeric">Cant. Original</th>
+                            <th class="col-numeric">Nueva Cantidad</th>
+                            <th>Motivo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (group of detailsArray.controls; track group; let i = $index) {
+                        <tr [formGroupName]="i"
+                            [class.fila-agregada]="group.value.origin === 'added'"
+                            [class.fila-eliminada]="group.value.removed"
+                            [class.fila-modificada]="group.value.origin === 'existing' && !group.value.removed && group.value.newQuantity != group.value.originalQuantity">
+
+                            <td>
+                                @if (group.value.origin === 'added') {
+                                <span class="tipo-chip tipo-chip--agregado">
+                                    <mat-icon>add</mat-icon>
+                                    Agregado
+                                </span>
+                                } @else if (group.value.removed) {
+                                <span class="tipo-chip tipo-chip--eliminado">
+                                    <mat-icon>remove</mat-icon>
+                                    Eliminado
+                                </span>
+                                } @else if (group.value.newQuantity != group.value.originalQuantity) {
+                                <span class="tipo-chip tipo-chip--corregido">
+                                    <mat-icon>sync_alt</mat-icon>
+                                    Corrección
+                                </span>
+                                } @else {
+                                <span class="tipo-chip tipo-chip--sin-cambio">Sin cambios</span>
+                                }
+                            </td>
+
+                            <td>
+                                @if (group.value.origin === 'added') {
+                                <mat-form-field appearance="outline" class="campo-servicio">
+                                    <mat-select formControlName="serviceItemId"
+                                        (selectionChange)="onServicioSeleccionado(i, $event.value)"
+                                        placeholder="Selecciona un servicio">
+                                        @for (detail of priceListDetails; track detail.serviceItemId) {
+                                        <mat-option [value]="detail.serviceItemId">{{ detail.serviceItemName }}</mat-option>
+                                        }
+                                    </mat-select>
+                                </mat-form-field>
+                                } @else {
+                                {{ group.value.serviceItemName }}
+                                }
+                            </td>
+
+                            <td class="col-numeric">
+                                {{ group.value.origin === 'added' ? '—' : group.value.originalQuantity }}
+                            </td>
+
+                            <td class="col-numeric">
+                                @if (group.value.removed) {
+                                <span class="valor-eliminado">0</span>
+                                } @else {
+                                <mat-form-field appearance="outline" class="campo-cantidad">
+                                    <input matInput type="number" step="0.01" formControlName="newQuantity">
+                                </mat-form-field>
+                                }
+                            </td>
+
+                            <td>
+                                <mat-form-field appearance="outline" class="campo-motivo">
+                                    <input matInput maxlength="500" formControlName="reason"
+                                        placeholder="Motivo del cambio">
+                                    @if (filaInvalida(i)) {
+                                    <mat-error>El motivo es obligatorio</mat-error>
+                                    }
+                                </mat-form-field>
+                            </td>
+
+                            <td class="col-acciones">
+                                @if (group.value.origin === 'existing') {
+                                @if (group.value.removed) {
+                                <button type="button" mat-icon-button (click)="toggleRemover(i)" matTooltip="Deshacer">
+                                    <mat-icon>undo</mat-icon>
+                                </button>
+                                } @else {
+                                <button type="button" mat-icon-button color="warn" (click)="toggleRemover(i)"
+                                    matTooltip="Quitar ítem (no llegó)">
+                                    <mat-icon>remove_circle_outline</mat-icon>
+                                </button>
+                                }
+                                } @else {
+                                <button type="button" mat-icon-button color="warn" (click)="quitarFilaAgregada(i)"
+                                    matTooltip="Quitar línea">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Evidencias fotográficas -->
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>photo_camera</mat-icon>
+                    Fotos de Evidencia
+                </h2>
+            </div>
+            <mat-card-content>
+
+                @if (fotoErrorMessage) {
+                <div class="mensaje-error">{{ fotoErrorMessage }}</div>
+                }
+
+                <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+                    (change)="onArchivosSeleccionados($event)">
+                <input #inputGaleria type="file" accept="image/jpeg,image/png,image/webp" multiple hidden
+                    (change)="onArchivosSeleccionados($event)">
+
+                <div class="fotos-acciones">
+                    <button type="button" mat-stroked-button (click)="abrirCamara(inputCamara)">
+                        <mat-icon>photo_camera</mat-icon>
+                        Tomar Foto
+                    </button>
+                    <button type="button" mat-stroked-button (click)="abrirCamara(inputGaleria)">
+                        <mat-icon>folder</mat-icon>
+                        Seleccionar Foto
+                    </button>
+                </div>
+
+                @if (fotos.length > 0) {
+                <div class="fotos-grid">
+                    @for (foto of fotos; track foto.previewUrl) {
+                    <div class="foto-item">
+                        <img [src]="foto.previewUrl" [alt]="foto.file.name" class="foto-item__img">
+                        <button type="button" mat-icon-button class="foto-item__quitar" (click)="quitarFoto(foto)"
+                            matTooltip="Quitar">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        <div class="foto-item__info">
+                            <span class="foto-item__nombre" [title]="foto.file.name">{{ foto.file.name }}</span>
+                            <span class="foto-item__tamano">{{ formatearTamano(foto.file.size) }}</span>
+                        </div>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <div class="fotos-vacio">Aún no se agregaron fotos de evidencia.</div>
+                }
+
+            </mat-card-content>
+        </mat-card>
+
+        @if (guardando) {
+        <div class="progreso-row">
+            <app-loading></app-loading>
+            <span>{{ progresoTexto }}</span>
+        </div>
+        }
+
+        <div class="acciones-finales">
+            <button type="button" mat-stroked-button (click)="cancelar()" [disabled]="guardando">
+                <mat-icon>close</mat-icon>
+                Cancelar
+            </button>
+            <button type="button" mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">
+                <mat-icon>save</mat-icon>
+                Guardar Revisión
+            </button>
+        </div>
+
+    </form>
+
+    }
+
+</div>

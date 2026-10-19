@@ -1,0 +1,341 @@
+.container-revision-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 4px 2px;
+}
+
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.panel {
+    border-radius: 16px !important;
+}
+
+.panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 16px 0;
+}
+
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.resumen-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.resumen-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.resumen-label {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.resumen-value {
+    font: var(--mat-sys-title-medium);
+    font-weight: 600;
+}
+
+/* ===== Mensajes ===== */
+
+.mensaje-error {
+    color: var(--mat-sys-error);
+    padding: 8px 4px;
+}
+
+.lista-errores {
+    margin: 0;
+    padding-left: 18px;
+}
+
+/* ===== Campos ===== */
+
+.campo-revisor,
+.campo-full {
+    width: 100%;
+}
+
+/* ===== Tabla editable de detalle ===== */
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table-edit {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-table-edit th {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 12px;
+    white-space: nowrap;
+}
+
+.detail-table-edit td {
+    padding: 8px 12px;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    vertical-align: middle;
+}
+
+.detail-table-edit tr.fila-modificada td:first-child {
+    border-left: 3px solid var(--mat-sys-primary);
+}
+
+.detail-table-edit tr.fila-agregada td:first-child {
+    border-left: 3px solid #2e7d32;
+}
+
+.detail-table-edit tr.fila-eliminada {
+    opacity: .7;
+}
+
+.detail-table-edit tr.fila-eliminada td:first-child {
+    border-left: 3px solid var(--mat-sys-error);
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.col-acciones {
+    width: 48px;
+    text-align: center;
+}
+
+.campo-cantidad {
+    width: 120px;
+}
+
+.campo-servicio {
+    width: 100%;
+    min-width: 220px;
+}
+
+.campo-motivo {
+    width: 100%;
+    min-width: 220px;
+}
+
+.valor-eliminado {
+    color: var(--mat-sys-error);
+    font-weight: 600;
+    text-decoration: line-through;
+}
+
+/* ===== Chip de tipo de accion ===== */
+
+.tipo-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1.5px solid;
+    font-weight: 600;
+    font-size: .75rem;
+    white-space: nowrap;
+}
+
+.tipo-chip mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+.tipo-chip--agregado {
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.tipo-chip--eliminado {
+    color: var(--mat-sys-error);
+    border-color: var(--mat-sys-error);
+}
+
+.tipo-chip--corregido {
+    color: var(--mat-sys-primary);
+    border-color: var(--mat-sys-primary);
+}
+
+.tipo-chip--sin-cambio {
+    color: var(--mat-sys-on-surface-variant);
+    border-color: var(--mat-sys-outline-variant);
+}
+
+.campo-cantidad .mat-mdc-form-field-subscript-wrapper,
+.campo-motivo .mat-mdc-form-field-subscript-wrapper {
+    height: 0;
+}
+
+/* ===== Evidencias fotográficas ===== */
+
+.fotos-acciones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.fotos-vacio {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.fotos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.foto-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.foto-item__img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+.foto-item__quitar {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(255, 255, 255, 0.85);
+    width: 28px;
+    height: 28px;
+}
+
+.foto-item__quitar mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.foto-item__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+}
+
+.foto-item__nombre {
+    font-size: .8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.foto-item__tamano {
+    font-size: .72rem;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Progreso y acciones ===== */
+
+.progreso-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.acciones-finales {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 8px 2px 24px;
+}
+
+@media (max-width: 900px) {
+    .container-revision-form {
+        padding: 12px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .fotos-acciones button,
+    .acciones-finales button {
+        flex: 1;
+    }
+
+    .acciones-finales {
+        flex-direction: column-reverse;
+    }
+}

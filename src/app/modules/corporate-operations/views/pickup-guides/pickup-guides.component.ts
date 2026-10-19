@@ -139,6 +139,10 @@ export class PickupGuidesComponent implements OnInit {
     this.router.navigate(['/corporate-operations/pickup-guides', guide.id, 'editar']);
   }
 
+  revisar(guide: IPickupGuideSummary): void {
+    this.router.navigate(['/corporate-operations/pickup-guides', guide.id, 'revision', 'new']);
+  }
+
   canEdit(guide: IPickupGuideSummary): boolean {
     return guide.status === PickupGuideStatus.Draft;
   }

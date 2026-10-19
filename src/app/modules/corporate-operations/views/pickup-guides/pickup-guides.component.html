@@ -115,6 +115,11 @@
                         <button mat-icon-button (click)="editar(element)" [disabled]="!canEdit(element)" aria-label="Editar" matTooltip="Editar">
                             <mat-icon>edit</mat-icon>
                         </button>
+                        @if (canEdit(element)) {
+                        <button mat-icon-button (click)="revisar(element)" aria-label="Registrar Revisión" matTooltip="Registrar Revisión">
+                            <mat-icon>fact_check</mat-icon>
+                        </button>
+                        }
                         <button mat-icon-button color="warn" (click)="anular(element)" [disabled]="!canCancel(element)" aria-label="Anular" matTooltip="Anular">
                             <mat-icon>block</mat-icon>
                         </button>

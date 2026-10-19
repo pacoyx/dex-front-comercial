@@ -25,10 +25,14 @@
                 <mat-icon>edit</mat-icon>
                 Editar
             </button>
+            <button mat-stroked-button [routerLink]="['/corporate-operations/pickup-guides', guide.id, 'revision', 'new']">
+                <mat-icon>fact_check</mat-icon>
+                Registrar Revisión
+            </button>
             }
             @if (canCancel) {
-            <button mat-stroked-button color="warn" (click)="anular()">
-                <mat-icon>block</mat-icon>
+            <button mat-stroked-button color="warn" (click)="anular()" [disabled]="cambiandoEstado">
+                @if (cambiandoEstado) {<mat-icon>cached</mat-icon>} @else {<mat-icon>block</mat-icon>}
                 Anular
             </button>
             }
@@ -48,7 +52,13 @@
                         </h2>
                     </div>
                     <mat-card-content>
-                        <app-status-selector [current]="guide.status" (select)="cambiarEstado($event)"></app-status-selector>
+                        <app-status-selector [current]="guide.status" [disabled]="cambiandoEstado" (select)="cambiarEstado($event)"></app-status-selector>
+                        @if (cambiandoEstado) {
+                        <div class="loading-row loading-row--inline">
+                            <app-loading></app-loading>
+                            <span>Actualizando estado, puede tardar unos segundos (se genera el PDF y se envía el correo)...</span>
+                        </div>
+                        }
                     </mat-card-content>
                 </mat-card>
 
@@ -228,10 +238,16 @@
 
         <mat-tab label="Revisiones">
             <div class="tab-panel">
-                @if (guide.revisions.length === 0) {
+
+                @if (loadingRevisiones) {
+                <div class="loading-row">
+                    <app-loading></app-loading>
+                    <span>Cargando revisiones...</span>
+                </div>
+                } @else if (revisiones.length === 0) {
                 <p class="sin-datos">No se registraron revisiones para esta guía.</p>
                 } @else {
-                @for (rev of guide.revisions; track rev.id) {
+                @for (rev of revisiones; track rev.id) {
                 <mat-card class="panel" appearance="outlined">
                     <div class="panel__header">
                         <h2 class="panel__title">
@@ -243,7 +259,33 @@
                         @if (rev.observation) {
                         <p class="observation">{{ rev.observation }}</p>
                         }
-                        <table mat-table [dataSource]="rev.details" class="detail-table">
+        <table mat-table [dataSource]="rev.details" class="detail-table">
+
+                            <ng-container matColumnDef="actionType">
+                                <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                                <td mat-cell *matCellDef="let element">
+                                    @switch (element.actionType) {
+                                    @case ('AddedItem') {
+                                    <span class="tipo-chip tipo-chip--agregado">
+                                        <mat-icon>add</mat-icon>
+                                        Agregado
+                                    </span>
+                                    }
+                                    @case ('RemovedItem') {
+                                    <span class="tipo-chip tipo-chip--eliminado">
+                                        <mat-icon>remove</mat-icon>
+                                        Eliminado
+                                    </span>
+                                    }
+                                    @default {
+                                    <span class="tipo-chip tipo-chip--corregido">
+                                        <mat-icon>sync_alt</mat-icon>
+                                        Corrección
+                                    </span>
+                                    }
+                                    }
+                                </td>
+                            </ng-container>
 
                             <ng-container matColumnDef="serviceItemName">
                                 <th mat-header-cell *matHeaderCellDef> Servicio </th>
@@ -265,9 +307,24 @@
                                 <td mat-cell *matCellDef="let element"> {{ element.reason }} </td>
                             </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="['serviceItemName','originalQuantity','newQuantity','reason']" class="cabecera"></tr>
-                            <tr mat-row *matRowDef="let row; columns: ['serviceItemName','originalQuantity','newQuantity','reason'];"></tr>
+                            <tr mat-header-row *matHeaderRowDef="revisionDetailColumns" class="cabecera"></tr>
+                            <tr mat-row *matRowDef="let row; columns: revisionDetailColumns;"></tr>
                         </table>
+
+                        @if (rev.photos.length > 0) {
+                        <div class="revision-fotos-grid">
+                            @for (photo of rev.photos; track photo.id; let i = $index) {
+                            <div class="revision-foto-item">
+                                @if (urlFotoRevision(photo.id); as url) {
+                                <img [src]="url" [alt]="photo.originalFileName ?? photo.fileName"
+                                    (click)="abrirFotoRevision(rev, i)">
+                                } @else {
+                                <div class="revision-foto-item__placeholder">Cargando...</div>
+                                }
+                            </div>
+                            }
+                        </div>
+                        }
                     </mat-card-content>
                 </mat-card>
                 }

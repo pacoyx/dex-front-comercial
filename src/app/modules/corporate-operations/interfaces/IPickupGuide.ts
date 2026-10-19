@@ -74,13 +74,26 @@ export interface IPickupGuideAttachment {
   createdAt: string;
 }
 
+export type PickupGuideRevisionActionType = 'QuantityAdjustment' | 'AddedItem' | 'RemovedItem';
+
 export interface IPickupGuideRevisionDetail {
   id: number;
+  actionType: PickupGuideRevisionActionType;
   pickupGuideDetailId: number;
   serviceItemName: string;
   originalQuantity: number;
   newQuantity: number;
   reason: string;
+}
+
+export interface IPickupGuideRevisionPhoto {
+  id: number;
+  pickupGuideRevisionId: number;
+  fileName: string;
+  originalFileName: string | null;
+  contentType: string;
+  fileSize: number;
+  createdAt: string;
 }
 
 export interface IPickupGuideRevision {
@@ -91,6 +104,28 @@ export interface IPickupGuideRevision {
   observation: string | null;
   revisionDate: string;
   details: IPickupGuideRevisionDetail[];
+  photos: IPickupGuideRevisionPhoto[];
+}
+
+/**
+ * Cada linea tiene forma distinta segun "actionType":
+ * - QuantityAdjustment: pickupGuideDetailId + newQuantity + reason.
+ * - AddedItem: serviceItemId + newQuantity + reason (NO pickupGuideDetailId, el backend
+ *   crea el detalle automaticamente).
+ * - RemovedItem: pickupGuideDetailId + reason (NO newQuantity, el backend lo deja en 0).
+ */
+export interface ICreatePickupGuideRevisionDetailRequest {
+  actionType: PickupGuideRevisionActionType;
+  pickupGuideDetailId?: number;
+  serviceItemId?: number;
+  newQuantity?: number;
+  reason: string;
+}
+
+export interface ICreatePickupGuideRevisionRequest {
+  employeeId: number;
+  observation?: string | null;
+  details: ICreatePickupGuideRevisionDetailRequest[];
 }
 
 export interface IResendEmailResult {

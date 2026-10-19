@@ -11,7 +11,7 @@ import { LoadingComponent } from '../../../../../core/components/loading/loading
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
 import { DialogQuestionComponent } from '../../../../recepcion/components/dialog-question/dialog-question.component';
 import { PickupGuidesService } from '../../../services/pickup-guides.service';
-import { IPickupGuide, IPickupGuideAttachment, PickupGuideAttachmentType } from '../../../interfaces/IPickupGuide';
+import { IPickupGuide, IPickupGuideAttachment, IPickupGuideRevision, PickupGuideAttachmentType } from '../../../interfaces/IPickupGuide';
 import {
   PickupGuideEmailStatusColorPipe,
   PickupGuideEmailStatusLabelPipe,
@@ -19,8 +19,10 @@ import {
 } from '../../../shared/pickup-guide-status';
 import { extractErrorMessage } from '../../../shared/http-error.util';
 import { StatusSelectorComponent } from './components/status-selector/status-selector.component';
+import { DialogVerFotoRevisionComponent, IFotoLightbox } from './components/dialog-ver-foto-revision/dialog-ver-foto-revision.component';
 
 const EVIDENCIAS_TAB_INDEX = 2;
+const REVISIONES_TAB_INDEX = 3;
 
 @Component({
   selector: 'app-pickup-guide-detail',
@@ -43,8 +45,10 @@ export class PickupGuideDetailComponent implements OnInit, OnDestroy {
   guide: IPickupGuide | null = null;
   loading = true;
   resendingEmail = false;
+  cambiandoEstado = false;
 
   detailColumns: string[] = ['serviceItemName', 'quantity', 'weight', 'unitPrice', 'total', 'observation'];
+  revisionDetailColumns: string[] = ['actionType', 'serviceItemName', 'originalQuantity', 'newQuantity', 'reason'];
 
   readonly PickupGuideStatus = PickupGuideStatus;
   readonly AttachmentType = PickupGuideAttachmentType;
@@ -52,6 +56,11 @@ export class PickupGuideDetailComponent implements OnInit, OnDestroy {
   attachmentUrls = new Map<number, string>();
   loadingAttachments = false;
   private attachmentsLoaded = false;
+
+  revisiones: IPickupGuideRevision[] = [];
+  loadingRevisiones = false;
+  private revisionesLoaded = false;
+  revisionPhotoUrls = new Map<number, string>();
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -69,11 +78,15 @@ export class PickupGuideDetailComponent implements OnInit, OnDestroy {
   private liberarUrls(): void {
     this.attachmentUrls.forEach(url => URL.revokeObjectURL(url));
     this.attachmentUrls.clear();
+    this.revisionPhotoUrls.forEach(url => URL.revokeObjectURL(url));
+    this.revisionPhotoUrls.clear();
   }
 
   private cargarGuia(): void {
     this.loading = true;
     this.attachmentsLoaded = false;
+    this.revisionesLoaded = false;
+    this.revisiones = [];
     this.liberarUrls();
     this.pickupGuidesService.obtenerPorId(this.guideId).subscribe({
       next: (resp) => {
@@ -103,6 +116,60 @@ export class PickupGuideDetailComponent implements OnInit, OnDestroy {
     if (event.index === EVIDENCIAS_TAB_INDEX) {
       this.cargarEvidencias();
     }
+    if (event.index === REVISIONES_TAB_INDEX) {
+      this.cargarRevisiones();
+    }
+  }
+
+  private cargarRevisiones(): void {
+    if (this.revisionesLoaded || !this.guide) {
+      return;
+    }
+    this.revisionesLoaded = true;
+    this.loadingRevisiones = true;
+
+    this.pickupGuidesService.listarRevisiones(this.guideId).subscribe({
+      next: (resp) => {
+        this.revisiones = resp.data ?? [];
+        this.loadingRevisiones = false;
+        this.cargarFotosDeRevisiones();
+      },
+      error: (err) => {
+        this.loadingRevisiones = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo obtener el historial de revisiones.'));
+      },
+    });
+  }
+
+  private cargarFotosDeRevisiones(): void {
+    this.revisiones.forEach(revision => {
+      revision.photos.forEach(photo => {
+        this.pickupGuidesService.descargarFotoRevision(photo.id).subscribe({
+          next: (blob) => this.revisionPhotoUrls.set(photo.id, URL.createObjectURL(blob)),
+          error: () => { /* si falla una miniatura, simplemente no se muestra */ },
+        });
+      });
+    });
+  }
+
+  urlFotoRevision(photoId: number): string | null {
+    return this.revisionPhotoUrls.get(photoId) ?? null;
+  }
+
+  abrirFotoRevision(revision: IPickupGuideRevision, index: number): void {
+    const fotos: IFotoLightbox[] = revision.photos
+      .map(photo => ({ url: this.urlFotoRevision(photo.id), nombre: photo.originalFileName ?? photo.fileName }))
+      .filter((f): f is IFotoLightbox => !!f.url);
+
+    if (fotos.length === 0) {
+      return;
+    }
+
+    this.dialog.open(DialogVerFotoRevisionComponent, {
+      width: '480px',
+      maxWidth: '95vw',
+      data: { fotos, startIndex: index },
+    });
   }
 
   private cargarEvidencias(): void {
@@ -178,12 +245,15 @@ export class PickupGuideDetailComponent implements OnInit, OnDestroy {
 
   private ejecutarCambioEstado(status: PickupGuideStatus): void {
     if (!this.guide) return;
+    this.cambiandoEstado = true;
     this.pickupGuidesService.cambiarEstado(this.guide.id, { status }).subscribe({
       next: () => {
         this.notificationService.showSuccess('Estado actualizado correctamente.');
+        this.cambiandoEstado = false;
         this.cargarGuia();
       },
       error: (err) => {
+        this.cambiandoEstado = false;
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo actualizar el estado de la guía.'));
       },
     });
