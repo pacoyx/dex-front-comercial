@@ -35,7 +35,7 @@ const routes: Routes = [
   { path: 'resumenCaja', component: ReporteResumenCajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'dashboardcash', component: DashboardcajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'inspeccion-resumen', component: InspeccionResumenComponent },
-  { path: 'inspeccion-resumen/:workGuideId', component: InspeccionResumenComponent },
+  { path: 'inspeccion-resumen/:serie/:numGuia', component: InspeccionResumenComponent },
   { path: 'reportes/sneakers', component: ReporteSneakersComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
 ];
 

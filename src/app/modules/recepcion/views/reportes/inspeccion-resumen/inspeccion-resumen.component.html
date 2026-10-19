@@ -14,13 +14,18 @@
     <mat-card class="panel" appearance="outlined">
         <mat-card-content class="filtros-row">
 
+            <mat-form-field appearance="outline" class="campo-serie">
+                <mat-label>Serie</mat-label>
+                <input matInput [(ngModel)]="serieGuia" (keydown.enter)="buscar()">
+            </mat-form-field>
+
             <mat-form-field appearance="outline" class="campo-guia">
-                <mat-label>ID de Guía</mat-label>
-                <input matInput type="number" [(ngModel)]="workGuideId" (keydown.enter)="buscar()">
+                <mat-label>Número de Guía</mat-label>
+                <input matInput [(ngModel)]="numeroGuia" (keydown.enter)="buscar()">
             </mat-form-field>
 
             <div class="filtros-acciones">
-                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="!workGuideId || cargando">
+                <button mat-flat-button color="primary" (click)="buscar()" [disabled]="!serieGuia || !numeroGuia || cargando">
                     <mat-icon>search</mat-icon>
                     Buscar
                 </button>
@@ -44,11 +49,17 @@
                 <mat-icon>local_shipping</mat-icon>
                 Guía: {{resumen.workGuideNumber}}
             </h2>
-            <button mat-stroked-button color="primary" (click)="cargarFotos()"
-                [disabled]="cargandoFotos || fotosCargadas">
-                @if(cargandoFotos){<mat-icon>cached</mat-icon>}
-                Cargar Fotos
-            </button>
+            <div class="panel__acciones">
+                <a mat-stroked-button [routerLink]="['/recepcion/retiros', serieGuia, numeroGuia]">
+                    <mat-icon>arrow_back</mat-icon>
+                    Volver a Retiros
+                </a>
+                <button mat-stroked-button color="primary" (click)="cargarFotos()"
+                    [disabled]="cargandoFotos || fotosCargadas">
+                    @if(cargandoFotos){<mat-icon>cached</mat-icon>}
+                    Cargar Fotos
+                </button>
+            </div>
         </div>
         <mat-card-content>
             <div class="detalles-lista">

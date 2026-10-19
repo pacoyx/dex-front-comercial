@@ -379,6 +379,23 @@
   flex-wrap: wrap;
 }
 
+.split-btn-imprimir {
+  display: flex;
+}
+
+.split-btn-imprimir__main {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.split-btn-imprimir__preview {
+  min-width: 0 !important;
+  padding: 0 10px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+
 /* ==========================================================================
    Responsive
    ========================================================================== */
@@ -422,7 +439,15 @@
     justify-content: stretch;
   }
 
-  .actions-bar__right button {
+  .actions-bar__right > button {
+    flex: 1;
+  }
+
+  .split-btn-imprimir {
+    flex: 1;
+  }
+
+  .split-btn-imprimir__main {
     flex: 1;
   }
 }

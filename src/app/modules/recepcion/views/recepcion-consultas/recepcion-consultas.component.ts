@@ -157,7 +157,7 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
     }
 
     if (this.tipoReporte == 'F') {
-      this.guiasFecha = this.reportsService.obtenerGuiasPorFecha(this.fechaHoy.toDateString(), pageIndex, pageSize).subscribe({
+      this.guiasFecha = this.reportsService.obtenerGuiasPorFecha(this.toIsoDate(this.fechaHoy), pageIndex, pageSize).subscribe({
         next: (response) => {
           this.loading = false;
           this.dataSource.data = response.data.guias;
@@ -175,6 +175,13 @@ export class RecepcionConsultasComponent implements OnInit, AfterViewInit, OnDes
 
   BuscarGuias() {
     this.cargarGuiasPorCliente(1, this.pageSize);
+  }
+
+  private toIsoDate(date: Date): string {
+    const y = date.getFullYear();
+    const m = (date.getMonth() + 1).toString().padStart(2, '0');
+    const d = date.getDate().toString().padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   applyFilter(event: Event) {

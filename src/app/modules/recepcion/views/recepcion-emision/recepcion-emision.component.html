@@ -244,8 +244,6 @@
         <mat-card-content>
           <div class="opciones-row">
             <mat-slide-toggle [(ngModel)]="isDelivery" (change)="onChangueToggle($event)">Delivery</mat-slide-toggle>
-            <mat-slide-toggle [(ngModel)]="isEtiqueta"
-              (change)="onChangueToggleBolsa($event)">Etiqueta</mat-slide-toggle>
             <mat-slide-toggle [(ngModel)]="isSinCopia"
               (change)="onChangueToggleSinCopia($event)">Sin Copia</mat-slide-toggle>
           </div>
@@ -329,10 +327,17 @@
           </button>
           }
 
-          <button mat-flat-button color="accent" (click)="imprimirTicket()" [disabled]="!blockSave">
-            <mat-icon>print</mat-icon>
-            Imprimir
-          </button>
+          <div class="split-btn-imprimir">
+            <button mat-flat-button color="accent" class="split-btn-imprimir__main"
+              (click)="imprimirGuiaCreada()" [disabled]="!blockSave || loadingImprimir">
+              <mat-icon>print</mat-icon>
+              Imprimir
+            </button>
+            <button mat-flat-button color="accent" class="split-btn-imprimir__preview"
+              (click)="imprimirTicket()" [disabled]="!blockSave" matTooltip="Vista previa (Ctrl+P)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
 

@@ -197,6 +197,12 @@
     vertical-align: middle;
 }
 
+.accion-btn mat-spinner {
+    display: inline-block;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
 .accion-toggle {
     margin-left: 4px;
 }
@@ -283,6 +289,12 @@
 .observaciones-column {
     width: 200px !important;
     padding: 0;
+}
+
+.ubicacion-destacada {
+    color: #d32f2f;
+    font-weight: 600;
+    margin-left: 4px;
 }
 
 .precio-column {
@@ -507,7 +519,6 @@ app-ticket-venta {
     .estado-column,
     .entrega-column,
     .operaciones-column,
-    .ubicacion-column,
     .estadoSituacion-column {
         width: 100%;
         text-align: left;

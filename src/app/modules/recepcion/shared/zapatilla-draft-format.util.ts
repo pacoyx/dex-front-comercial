@@ -13,10 +13,10 @@ export function formatearZapatillaDraft(draft: UpsertSneakerDetailRequest, brand
   }
 
   if (draft.hasLaces) {
-    partes.push('Cordones');
+    partes.push('Sin Cordones');
   }
   if (draft.hasInsoles) {
-    partes.push('Plantillas');
+    partes.push('Sin Plantillas');
   }
 
   if (draft.observations) {

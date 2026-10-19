@@ -28,10 +28,15 @@ import { AlertDangerComponent } from '../../../../core/components/Alerts/alert-d
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InspeccionService } from '../../services/inspeccion.service';
 import { DialogInspeccionItemComponent } from '../../components/dialog-inspeccion-item/dialog-inspeccion-item.component';
 import { DialogZapatillaItemComponent } from '../../components/dialog-zapatilla-item/dialog-zapatilla-item.component';
 import { DialogAgregarFotosComponent } from '../../components/dialog-agregar-fotos/dialog-agregar-fotos.component';
+import { DialogVerFotosComponent } from '../reportes/inspeccion-resumen/components/dialog-ver-fotos/dialog-ver-fotos.component';
+import { WorkGuidePhotoResponse } from '../../interfaces/IInspeccion';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -41,7 +46,7 @@ import { DialogAgregarFotosComponent } from '../../components/dialog-agregar-fot
     FormsModule, MatIconModule, MatTableModule, MatCheckboxModule,
     DecimalPipe, MatBottomSheetModule, MatChipsModule, DatePipe,
     TicketVentaComponent, LoadingComponent, AlertDangerComponent,
-    RouterModule, MatSlideToggleModule, MatTooltipModule
+    RouterModule, MatSlideToggleModule, MatTooltipModule, MatProgressSpinnerModule
   ],
   templateUrl: './recepcion-retirar.component.html',
   styleUrl: './recepcion-retirar.component.css'
@@ -72,8 +77,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     'total',
     'estadoSituacion',
     // 'estadoTrabajo',
-    'operaciones',
-    'ubicacion'
+    'operaciones'
   ];
   dataSource = new MatTableDataSource<IGuiaRetiroWgdDTO>([]);
   guiaRetiroData: IGuiaRetiro | null = null;
@@ -90,12 +94,15 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   zapatillasCategoryId: number | null = null;
   loadingReimprimir = false;
+  loadingFotosInspeccion = false;
+  private fotoUrlsInspeccion = new Map<number, string>();
 
   ngOnDestroy(): void {
     if (this.guiaRetiroSubscription) this.guiaRetiroSubscription.unsubscribe();
     if (this.estadoSituacionSubscription) this.estadoSituacionSubscription.unsubscribe();
     if (this.UpdateInfoPagoSubscription) this.UpdateInfoPagoSubscription.unsubscribe();
     if (this.subscriptionConsulta) this.subscriptionConsulta.unsubscribe();
+    this.liberarFotoUrlsInspeccion();
   }
   ngOnInit(): void {
     this.validarExisteCajaPorUsuario();
@@ -502,5 +509,61 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       data: { workGuideId: this.guiaRetiroData.id },
       width: '480px'
     });
+  }
+
+  verFotosInspeccion(): void {
+    if (!this.guiaRetiroData?.id || this.loadingFotosInspeccion) {
+      return;
+    }
+
+    this.loadingFotosInspeccion = true;
+    this.inspeccionService.obtenerFotosPorGuia(this.guiaRetiroData.id).subscribe({
+      next: (resp) => {
+        const fotos = resp.data.photos;
+        if (!fotos || fotos.length === 0) {
+          this.loadingFotosInspeccion = false;
+          this.notificacionService.showError('Esta guía no tiene fotos de inspección registradas.');
+          return;
+        }
+        this.descargarYMostrarFotosInspeccion(fotos);
+      },
+      error: (err) => {
+        console.log(err);
+        this.loadingFotosInspeccion = false;
+        this.notificacionService.showError('No se pudieron cargar las fotos de inspección.');
+      }
+    });
+  }
+
+  private descargarYMostrarFotosInspeccion(fotos: WorkGuidePhotoResponse[]): void {
+    this.liberarFotoUrlsInspeccion();
+
+    forkJoin(
+      fotos.map((foto) =>
+        this.inspeccionService.descargarFotoGuia(foto.id).pipe(
+          map((blob) => ({ id: foto.id, url: URL.createObjectURL(blob) }))
+        )
+      )
+    ).subscribe({
+      next: (descargas) => {
+        descargas.forEach(({ id, url }) => this.fotoUrlsInspeccion.set(id, url));
+        this.loadingFotosInspeccion = false;
+        this.dialog.open(DialogVerFotosComponent, {
+          width: '440px',
+          maxWidth: '95vw',
+          data: { fotos, fotoUrls: this.fotoUrlsInspeccion, startIndex: 0 }
+        });
+      },
+      error: (err) => {
+        console.log(err);
+        this.loadingFotosInspeccion = false;
+        this.notificacionService.showError('No se pudieron descargar las fotos de inspección.');
+      }
+    });
+  }
+
+  private liberarFotoUrlsInspeccion(): void {
+    this.fotoUrlsInspeccion.forEach((url) => URL.revokeObjectURL(url));
+    this.fotoUrlsInspeccion.clear();
   }
 }

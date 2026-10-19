@@ -195,6 +195,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   bolExisteCaja = true;
   msgValidacion = '';
   isSinCopia = false;
+  guiaCreadaId: number | null = null;
+  loadingImprimir = false;
 
   subscriptionCategorias!: Subscription;
   subscriptionNumeracion!: Subscription;
@@ -740,6 +742,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
         next: (resp) => {
           this.loadingSave = false;
           this.blockSave = true;
+          this.guiaCreadaId = resp.data.idWorkGuide;
 
           let objDoc: IEmisionDocumento = {
             tipoDoc: resp.data.tipoDocumento,
@@ -753,7 +756,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
           this.notificacionService.showSuccessDialog(
             'Se grabó correctamente la guía de trabajo.',
             '# ' + resp.data.numeroDocumento,
-            true,
           );
 
           this.registrarInspeccionesYZapatillasPendientes(
@@ -779,6 +781,30 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
   imprimirTicket() {
     window.print();
+  }
+
+  imprimirGuiaCreada() {
+    if (!this.guiaCreadaId || this.loadingImprimir) {
+      return;
+    }
+
+    this.loadingImprimir = true;
+    const printCopy = this.store.selectedSinCopia() ? 0 : 1;
+    this.emisionService.ReimprimirGuia(this.guiaCreadaId, printCopy).subscribe({
+      next: (resp) => {
+        this.loadingImprimir = false;
+        if (!resp.success) {
+          this.notificacionService.showError(resp.message);
+          return;
+        }
+        this.notificacionService.showSuccess(resp.message || 'Ticket enviado a imprimir');
+      },
+      error: (err) => {
+        this.loadingImprimir = false;
+        const mensaje = err?.error?.message || 'No se pudo imprimir la guía.';
+        this.notificacionService.showError(mensaje);
+      }
+    });
   }
 
   searchItems() {
@@ -827,6 +853,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.clienteNombre = '';
     this.clienteTelefono = '';
     this.blockSave = false;
+    this.guiaCreadaId = null;
     this.isDelivery = false;
     this.isEtiqueta = false;
     this.actualizarPago();

@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -31,7 +32,7 @@ const DELIVERY_STATUS_LABEL: Record<string, string> = {
   selector: 'app-reporte-sneakers',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule,
+    CommonModule, RouterModule, FormsModule, MatButtonModule, MatIconModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule,
     MatTableModule, MatCardModule, LoadingComponent
   ],
@@ -52,7 +53,7 @@ export class ReporteSneakersComponent implements OnInit {
   branchId: number | null = null;
   brandId: number | null = null;
   ticketStatus: 'P' | 'E' | 'F' | null = null;
-  pendingDelivery = false;
+  pendingDelivery = true;
 
   sucursales: ISucursalesCombo[] = [];
   marcas: SneakerBrandResponse[] = [];
@@ -80,6 +81,16 @@ export class ReporteSneakersComponent implements OnInit {
 
   traducirEstadoEntrega(estado: string): string {
     return DELIVERY_STATUS_LABEL[estado] ?? estado;
+  }
+
+  serieDeGuia(workGuideNumber: string): string {
+    const idx = workGuideNumber.indexOf('-');
+    return idx >= 0 ? workGuideNumber.substring(0, idx) : workGuideNumber;
+  }
+
+  numeroDeGuia(workGuideNumber: string): string {
+    const idx = workGuideNumber.indexOf('-');
+    return idx >= 0 ? workGuideNumber.substring(idx + 1) : '';
   }
 
   private toIsoDate(date: Date | null): string | null {
@@ -133,7 +144,7 @@ export class ReporteSneakersComponent implements OnInit {
     this.branchId = null;
     this.brandId = null;
     this.ticketStatus = null;
-    this.pendingDelivery = false;
+    this.pendingDelivery = true;
     this.errorMessage = '';
     this.validationErrors = [];
     this.dataSource.data = [];

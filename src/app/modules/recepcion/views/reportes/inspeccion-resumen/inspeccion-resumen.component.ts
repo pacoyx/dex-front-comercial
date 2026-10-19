@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
 import { InspeccionService } from '../../../services/inspeccion.service';
+import { EmisionService } from '../../../services/emision.service';
 import { InspectionSummaryResponse, WorkGuidePhotoResponse } from '../../../interfaces/IInspeccion';
 import { extractErrorMessage } from '../../../shared/http-error.util';
 import { DialogVerFotosComponent } from './components/dialog-ver-fotos/dialog-ver-fotos.component';
@@ -19,7 +20,7 @@ import { DialogVerFotosComponent } from './components/dialog-ver-fotos/dialog-ve
   selector: 'app-inspeccion-resumen',
   standalone: true,
   imports: [
-    CommonModule, FormsModule, MatButtonModule, MatFormFieldModule,
+    CommonModule, RouterModule, FormsModule, MatButtonModule, MatFormFieldModule,
     MatInputModule, MatIconModule, MatChipsModule, MatCardModule, LoadingComponent
   ],
   templateUrl: './inspeccion-resumen.component.html',
@@ -29,9 +30,12 @@ export class InspeccionResumenComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private inspeccionService = inject(InspeccionService);
+  private emisionService = inject(EmisionService);
   private dialog = inject(MatDialog);
 
-  workGuideId: number | null = null;
+  serieGuia = '';
+  numeroGuia = '';
+  private workGuideId: number | null = null;
   resumen: InspectionSummaryResponse | null = null;
   fotos: WorkGuidePhotoResponse[] = [];
   fotoUrls = new Map<number, string>();
@@ -42,21 +46,43 @@ export class InspeccionResumenComponent implements OnInit, OnDestroy {
   fotosCargadas = false;
 
   ngOnInit(): void {
-    const param = this.route.snapshot.params['workGuideId'];
-    if (param) {
-      this.workGuideId = parseInt(param, 10);
+    const serie = this.route.snapshot.params['serie'];
+    const numGuia = this.route.snapshot.params['numGuia'];
+    if (serie && numGuia) {
+      this.serieGuia = serie;
+      this.numeroGuia = numGuia;
       this.buscar();
     }
   }
 
   buscar(): void {
-    if (!this.workGuideId) return;
+    if (!this.serieGuia || !this.numeroGuia) return;
 
     this.errorMessage = '';
     this.resumen = null;
     this.fotos = [];
     this.fotosCargadas = false;
     this.cargando = true;
+
+    this.emisionService.ObtenerGuiaPorDocumento(this.serieGuia, this.numeroGuia).subscribe({
+      next: (resp) => {
+        if (!resp.success || !resp.data) {
+          this.cargando = false;
+          this.errorMessage = 'No se encontró la guía de trabajo.';
+          return;
+        }
+        this.workGuideId = resp.data.id;
+        this.cargarResumen();
+      },
+      error: (err) => {
+        this.cargando = false;
+        this.errorMessage = extractErrorMessage(err, 'No se encontró la guía de trabajo.');
+      }
+    });
+  }
+
+  private cargarResumen(): void {
+    if (!this.workGuideId) return;
 
     this.inspeccionService.obtenerResumenInspeccionPorGuia(this.workGuideId).subscribe({
       next: (resp) => {

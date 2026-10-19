@@ -48,7 +48,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="campo-select">
-                <mat-label>Estado</mat-label>
+                <mat-label>Estado Trabajo</mat-label>
                 <mat-select [(ngModel)]="ticketStatus">
                     <mat-option [value]="null">Todos</mat-option>
                     <mat-option value="P">Pendiente</mat-option>
@@ -57,7 +57,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-checkbox [(ngModel)]="pendingDelivery" class="campo-checkbox">Pendientes de entrega</mat-checkbox>
+            <mat-checkbox [(ngModel)]="pendingDelivery" class="campo-checkbox" (change)="buscar()">Pendientes de entrega</mat-checkbox>
 
             <div class="filtros-acciones">
                 <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
@@ -94,7 +94,11 @@
 
                 <ng-container matColumnDef="workGuideNumber">
                     <th mat-header-cell *matHeaderCellDef> Guía </th>
-                    <td mat-cell *matCellDef="let element"> {{element.workGuideNumber}} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <a [routerLink]="['/recepcion/retiros', serieDeGuia(element.workGuideNumber), numeroDeGuia(element.workGuideNumber)]">
+                            {{element.workGuideNumber}}
+                        </a>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">
