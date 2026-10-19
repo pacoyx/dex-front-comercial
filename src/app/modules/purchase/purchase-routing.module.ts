@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { permissionGuard } from '../../core/guards/permission.guard';
 import { DashboardPurchaseComponent } from './views/dashboard-purchase/dashboard-purchase.component';
 import { SupplierComponent } from './views/maestros/supplier/supplier.component';
+import { SupplierImportComponent } from './views/maestros/supplier/supplier-import/supplier-import.component';
 import { ProductComponent } from './views/maestros/product/product.component';
 import { UnitMeasurementComponent } from './views/maestros/unit-measurement/unit-measurement.component';
 import { CategoryProdComponent } from './views/maestros/category-prod/category-prod.component';
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'invoices/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
   { path: 'cuentas-pagar', component: CuentasPorPagarComponent },
   { path: 'suppliers', component: SupplierComponent, canActivate: [permissionGuard], data: { permission: 'suppliers.access' } },
+  { path: 'suppliers/import', component: SupplierImportComponent, canActivate: [permissionGuard], data: { permission: 'suppliers.access' } },
   { path: 'products', component: ProductComponent },
   { path: 'unitmeasure', component: UnitMeasurementComponent },
   { path: 'categoriesProduct', component: CategoryProdComponent },
