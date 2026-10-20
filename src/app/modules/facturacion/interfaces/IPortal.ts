@@ -32,3 +32,24 @@ export interface IPortalCustomerAdminItem {
   lastLogin: string | null;
   status: PortalCustomerAdminStatus;
 }
+
+export interface ICustomerUserAdmin {
+  id: number;
+  fullName: string;
+  email: string;
+  userName: string;
+  customerId: number;
+  customerName: string;
+  roleName: string;
+  isActive: boolean;
+  createdAt: string;
+  lastLoginAt: string | null;
+}
+
+export interface IResetCustomerUserPasswordResponse {
+  id: number;
+  userName: string;
+  email: string;
+  customerId: number;
+  customerName: string;
+}

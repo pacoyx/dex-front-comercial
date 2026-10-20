@@ -245,6 +245,9 @@ export const environment = {
 
     // Portal Cliente (administracion desde Backoffice)
     EPCustomerPortalAdmin: 'api/customer-portal-admin', // /customers
+
+    // Reseteo de contraseña de usuarios del Portal Cliente (desde backoffice/facturacion)
+    EPCustomerUsersAdmin: 'api/corporate-operations/customer-users', // /{id}/reset-password
     // portal-enable, portal-status, portal-admin/regenerate-activation-link cuelgan de EPCustomersBase
 
     // Cuentas de Correo (credenciales SMTP por Operacion)

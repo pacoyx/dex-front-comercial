@@ -12,6 +12,7 @@ import { IPortalStatus } from '../../../../../interfaces/IPortal';
 import { extractErrorMessage } from '../../../../../shared/http-error.util';
 import { DialogHabilitarPortalComponent } from './components/dialog-habilitar-portal/dialog-habilitar-portal.component';
 import { DialogActivationLinkComponent } from './components/dialog-activation-link/dialog-activation-link.component';
+import { DialogResetPasswordUsuarioComponent } from './components/dialog-reset-password-usuario/dialog-reset-password-usuario.component';
 
 @Component({
   selector: 'app-portal-cliente-tab',
@@ -94,6 +95,19 @@ export class PortalClienteTabComponent implements OnInit, OnChanges {
           },
           error: (err) => this.notificationService.showError(extractErrorMessage(err, 'No se pudo regenerar el link de activación.')),
         });
+      }
+    });
+  }
+
+  resetearPasswordUsuario(): void {
+    const dialogRef = this.dialog.open(DialogResetPasswordUsuarioComponent, {
+      width: '480px',
+      data: { customerId: this.customerId },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cargarEstado();
       }
     });
   }
