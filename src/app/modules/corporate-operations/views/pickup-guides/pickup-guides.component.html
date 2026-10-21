@@ -77,7 +77,12 @@
 
                 <ng-container matColumnDef="guideNumber">
                     <th mat-header-cell *matHeaderCellDef> N° Guía </th>
-                    <td mat-cell *matCellDef="let element"> {{ element.guideNumber }} </td>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="guia-numero">
+                            <span class="guia-numero__fisico">GS-{{ element.physicalGuideNumber }}</span>
+                            <span class="guia-numero__correlativo">({{ element.guideNumber }})</span>
+                        </div>
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">

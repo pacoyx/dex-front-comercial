@@ -54,6 +54,7 @@ export interface IChangePickupGuideStatusRequest {
 export interface IPickupGuideSummary {
   id: number;
   guideNumber: string;
+  physicalGuideNumber: string;
   customerId: number;
   customerName: string;
   branchSalesId: number;

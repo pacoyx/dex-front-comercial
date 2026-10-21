@@ -103,6 +103,21 @@
     text-align: right !important;
 }
 
+.guia-numero {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+}
+
+.guia-numero__fisico {
+    font-weight: 600;
+}
+
+.guia-numero__correlativo {
+    font-size: .7rem;
+    color: var(--mat-sys-on-surface-variant);
+}
+
 .col-actions {
     text-align: right !important;
     white-space: nowrap;
