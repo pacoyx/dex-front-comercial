@@ -108,11 +108,16 @@
 
       <!-- CLIENTE -->
       <mat-card class="panel" appearance="outlined">
-        <div class="panel__header">
+        <div class="panel__header panel__header--cliente">
           <h2 class="panel__title">
             <mat-icon>person</mat-icon>
             Datos del cliente
           </h2>
+          <button mat-icon-button color="primary" (click)="abrirVentanaFlotanteBusqueda()"
+            [disabled]="!store.selectedCliente()"
+            [matTooltip]="store.selectedCliente() ? 'Ver prendas frecuentes del cliente' : 'Seleccione un cliente para ver su historial de prendas'">
+            <mat-icon>history</mat-icon>
+          </button>
         </div>
         <mat-card-content class="cliente-row">
           <mat-form-field appearance="outline" class="cliente-field">

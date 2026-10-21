@@ -278,4 +278,7 @@ export const environment = {
     EPBankAccountTypes: 'api/bank-account-types',
     EPCompanies: 'api/companies', // base para /{companyId}/bank-accounts
 
+    // Historial de prendas frecuentes por cliente (ventana flotante en recepcion-emision)
+    EPCustomerGarmentHistory: 'api/customerGarmentHistory', // GET /{customerId}?search=..., DELETE /{id}
+
 };

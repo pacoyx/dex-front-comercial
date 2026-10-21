@@ -136,6 +136,10 @@
   color: var(--mat-sys-on-surface-variant);
 }
 
+.panel__header--cliente {
+  padding-bottom: 8px;
+}
+
 .panel-detalle {
   display: flex;
   flex-direction: column;

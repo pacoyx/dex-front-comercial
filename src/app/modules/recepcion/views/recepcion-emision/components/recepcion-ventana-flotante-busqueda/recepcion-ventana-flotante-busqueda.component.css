@@ -1,0 +1,113 @@
+.flotante-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mat-sys-surface);
+}
+
+.flotante-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 8px 8px 14px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  cursor: move;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  flex: 0 0 auto;
+}
+
+.flotante-header__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.flotante-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.flotante-search {
+  width: 100%;
+}
+
+.flotante-loading {
+  text-align: center;
+  padding: 4px 0 2px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.flotante-tabla-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 12px;
+}
+
+.flotante-table {
+  width: 100%;
+}
+
+.flotante-table th.mat-mdc-header-cell {
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 600;
+}
+
+.flotante-cell-servicio {
+  cursor: pointer;
+  padding-left: 4px !important;
+}
+
+.flotante-servicio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flotante-servicio__texto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.flotante-chip {
+  font-size: 11px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.flotante-row-actions {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+}
+
+.flotante-sin-datos {
+  text-align: center;
+  padding: 24px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.flotante-footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.col-numeric {
+  text-align: right;
+}

@@ -1,0 +1,101 @@
+<div class="flotante-container" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragBoundary=".cdk-overlay-container">
+
+  <div class="flotante-header" cdkDragHandle>
+    <div class="flotante-header__title">
+      <mat-icon>drag_indicator</mat-icon>
+      <span>Historial de prendas del cliente</span>
+    </div>
+    <button mat-icon-button (click)="cerrar()" matTooltip="Cerrar">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="flotante-body">
+    <mat-form-field appearance="outline" class="flotante-search">
+      <mat-label>Buscar</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput type="text" [(ngModel)]="searchText" (keyup)="onSearchChange()"
+        placeholder="Nombre de la prenda">
+      @if (searchText) {
+      <button mat-icon-button matSuffix (click)="limpiarFiltro()" matTooltip="Limpiar filtro">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </mat-form-field>
+
+    @if (loading) {
+    <div class="flotante-loading">
+      <span>Cargando registros...</span>
+    </div>
+    }
+
+    <div class="flotante-tabla-scroll">
+      <table mat-table [dataSource]="dataSource" class="flotante-table">
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Prenda</th>
+          <td mat-cell *matCellDef="let element" class="flotante-cell-servicio"
+            (dblclick)="agregarAlDetalle(element)">
+            <div class="flotante-servicio">
+              <button mat-icon-button color="primary" (click)="agregarAlDetalle(element)"
+                matTooltip="Agregar al detalle">
+                <mat-icon>add_circle</mat-icon>
+              </button>
+              <span class="flotante-servicio__texto">
+                {{element.productName}}
+                @if (element.detail) {
+                <span class="flotante-chip">{{element.detail}}</span>
+                }
+              </span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Precio</th>
+          <td mat-cell *matCellDef="let element" class="col-numeric">
+            {{element.price | currency:' ':'symbol':'0.2-2'}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="usage">
+          <th mat-header-cell *matHeaderCellDef>Usos</th>
+          <td mat-cell *matCellDef="let element" class="col-numeric"
+            [matTooltip]="'Última vez: ' + (element.lastUsedAt | date:'dd/MM/yyyy')">
+            {{element.usageCount}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Quitar</th>
+          <td mat-cell *matCellDef="let element">
+            <div class="flotante-row-actions">
+              <button mat-icon-button color="warn" (click)="eliminarDeLista(element)"
+                matTooltip="Quitar de la lista">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell flotante-sin-datos" [attr.colspan]="displayedColumns.length">
+            Este cliente no tiene prendas registradas en su historial.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="flotante-footer">
+      <span>{{dataSource.data.length}} registro(s)</span>
+      <button mat-stroked-button color="primary" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

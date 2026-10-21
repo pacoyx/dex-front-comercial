@@ -19,6 +19,7 @@ import { IActualizarGastoRequest, ICreateGastoRequest, ICreateGastoResponse, ILi
 import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, IDetalleCajaRequest, IDetalleCajaRequestOtherIn, IListarCajaPorUsuarioResponse, IReqSpliPayCash } from '../interfaces/ICajaVentas';
 import { IIdsPesoLavadoResponse, IResponseServiceQuickAccess } from '../interfaces/IProdServices';
 import { IReimprimirGuiaRequest } from '../interfaces/IReimprimirGuiaRequest';
+import { ICustomerGarmentHistory } from '../interfaces/ICustomerGarmentHistory';
 
 
 @Injectable({
@@ -82,6 +83,19 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPFiltrarServiciosPorPatron}/${patron}`;
     return this.http.get<IListaItemsBusqueda[]>(url, { headers });
+  }
+
+  listarHistorialPrendasCliente(customerId: number, search?: string): Observable<IResponseGeneric<ICustomerGarmentHistory[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCustomerGarmentHistory}/${customerId}`;
+    const params: Record<string, string> = search ? { search } : {};
+    return this.http.get<IResponseGeneric<ICustomerGarmentHistory[]>>(url, { headers, params });
+  }
+
+  eliminarHistorialPrenda(id: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPCustomerGarmentHistory}/${id}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
   grabarGuiaTrabajo(guia: ICreateGuideWork): Observable<IResponseGeneric<ICreateGuiaWorkResponse>> {

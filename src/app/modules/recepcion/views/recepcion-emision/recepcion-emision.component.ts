@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { IEmisionPrevia } from '../../interfaces/IEmisionPrevia';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { DialogCategoriasComponent } from '../../components/dialog-categorias/dialog-categorias.component';
 import { IListaCategorias } from '../../interfaces/IListaCategorias';
 import { EmisionStoreService } from '../../services/emision.store.service';
@@ -70,6 +70,7 @@ import { IResponseServiceQuickAccess } from '../../interfaces/IProdServices';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RecepcionVentanaFlotanteBusquedaComponent } from './components/recepcion-ventana-flotante-busqueda/recepcion-ventana-flotante-busqueda.component';
 
 @Component({
   selector: 'app-recepcion-emision',
@@ -210,6 +211,8 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
   sucursales: BranchSale[] = [];
+
+  ventanaFlotanteRef: MatDialogRef<RecepcionVentanaFlotanteBusquedaComponent> | null = null;
 
   constructor() {
     effect(() => {
@@ -606,6 +609,29 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     });
   }
 
+  abrirVentanaFlotanteBusqueda(): void {
+    const customerId = this.store.selectedCliente()?.codigo;
+    if (!customerId || this.ventanaFlotanteRef) {
+      return;
+    }
+
+    this.ventanaFlotanteRef = this.dialog.open(RecepcionVentanaFlotanteBusquedaComponent, {
+      panelClass: 'ventana-flotante-panel',
+      hasBackdrop: false,
+      disableClose: true,
+      autoFocus: false,
+      restoreFocus: false,
+      width: '460px',
+      height: '640px',
+      position: { top: '110px', right: '32px' },
+      data: { customerId },
+    });
+
+    this.ventanaFlotanteRef.afterClosed().subscribe(() => {
+      this.ventanaFlotanteRef = null;
+    });
+  }
+
   openDialogAddItem(ele: IListaItemsBusqueda) {
     this.store.select(ele.id);
     this.dialog
@@ -845,6 +871,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   }
 
   nuevaGuia() {
+    this.ventanaFlotanteRef?.close();
     this.store.resetState();
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
     // this.cargarNumeracion();

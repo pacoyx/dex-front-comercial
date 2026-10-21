@@ -86,3 +86,16 @@ body {
   background: #F44336 !important;
   color: white !important;
 }
+
+// Ventana flotante no-modal (ej. búsqueda avanzada en recepcion-emision):
+// se arrastra con cdkDrag y no tiene backdrop (hasBackdrop:false), por lo
+// que el usuario puede seguir trabajando en la ventana principal mientras
+// la tiene abierta.
+.ventana-flotante-panel .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+.ventana-flotante-panel .mdc-dialog__surface {
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(16, 24, 40, .28);
+}
