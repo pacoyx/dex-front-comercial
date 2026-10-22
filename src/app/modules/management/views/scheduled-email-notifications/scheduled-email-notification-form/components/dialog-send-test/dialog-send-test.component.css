@@ -1,0 +1,16 @@
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 360px;
+}
+
+.dialog-hint {
+    margin: 0;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.field--full {
+    width: 100%;
+}

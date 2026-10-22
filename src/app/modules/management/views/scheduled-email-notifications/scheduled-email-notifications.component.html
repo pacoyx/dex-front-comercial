@@ -1,0 +1,103 @@
+<div class="container-scheduled-email">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>schedule_send</mat-icon>
+            <div class="page-header__heading">
+                <h1>Correos Programados</h1>
+                <span class="page-header__subtitle">Configura el envío automático de correos recurrentes (Hangfire)</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" routerLink="nueva">
+                <mat-icon>add</mat-icon>
+                Nueva Programación
+            </button>
+        </div>
+    </div>
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando correos programados...</span>
+    </div>
+    }
+
+    <mat-card class="panel panel-tabla" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="configuraciones" class="detail-table">
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="nombre-cell">
+                            <span class="nombre-cell__name">{{ element.name }}</span>
+                            <span class="nombre-cell__code">{{ element.code }}</span>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="horario">
+                    <th mat-header-cell *matHeaderCellDef> Horario </th>
+                    <td mat-cell *matCellDef="let element"> {{ horario(element) }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="isEnabled">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.isEnabled) {
+                        <span class="status-chip status-chip--active">
+                            <span class="status-chip__dot"></span>
+                            Activo
+                        </span>
+                        } @else {
+                        <span class="status-chip status-chip--inactive">
+                            <span class="status-chip__dot"></span>
+                            Inactivo
+                        </span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="recipientsCount">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Destinatarios </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.recipientsCount }} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="lastExecutionAt">
+                    <th mat-header-cell *matHeaderCellDef> Última Ejecución </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.lastExecutionAt ? (element.lastExecutionAt | date:'dd/MM/yyyy HH:mm') : '—' }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="nextExecutionAt">
+                    <th mat-header-cell *matHeaderCellDef> Próxima Ejecución </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.nextExecutionAt ? (element.nextExecutionAt | date:'dd/MM/yyyy HH:mm') : '—' }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef class="col-actions"> Acciones </th>
+                    <td mat-cell *matCellDef="let element" class="col-actions">
+                        <button mat-icon-button [routerLink]="[element.id]" aria-label="Editar" matTooltip="Ver / Editar">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No hay correos programados registrados.
+                    </td>
+                </tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+
+</div>

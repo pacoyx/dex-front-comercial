@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Vista Previa del Correo</h2>
+
+<mat-dialog-content class="dialog-content">
+    <div class="preview-field">
+        <span class="preview-field__label">Asunto</span>
+        <span class="preview-field__value">{{ data.subject }}</span>
+    </div>
+
+    <div class="preview-field">
+        <span class="preview-field__label">Cuerpo</span>
+        <div class="preview-body" [innerHTML]="data.body"></div>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-flat-button color="primary" mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

@@ -281,4 +281,7 @@ export const environment = {
     // Historial de prendas frecuentes por cliente (ventana flotante en recepcion-emision)
     EPCustomerGarmentHistory: 'api/customerGarmentHistory', // GET /{customerId}?search=..., DELETE /{id}
 
+    // Correos Programados (Hangfire) - management/Configuraciones
+    EPScheduledEmailNotifications: 'api/scheduled-email-notifications',
+
 };

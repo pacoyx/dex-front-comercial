@@ -14,6 +14,8 @@ import { DashboardprintersComponent } from './views/dashboardprinters/dashboardp
 import { EmailAccountsComponent } from './views/email-accounts/email-accounts.component';
 import { BancosComponent } from './views/bancos/bancos.component';
 import { TiposCuentaBancariaComponent } from './views/tipos-cuenta-bancaria/tipos-cuenta-bancaria.component';
+import { ScheduledEmailNotificationsComponent } from './views/scheduled-email-notifications/scheduled-email-notifications.component';
+import { ScheduledEmailNotificationFormComponent } from './views/scheduled-email-notifications/scheduled-email-notification-form/scheduled-email-notification-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -31,6 +33,9 @@ const routes: Routes = [
   { path: 'cuentasCorreo', component: EmailAccountsComponent },
   { path: 'bancos', component: BancosComponent },
   { path: 'tiposCuentaBancaria', component: TiposCuentaBancariaComponent },
+  { path: 'correosProgramados', component: ScheduledEmailNotificationsComponent },
+  { path: 'correosProgramados/nueva', component: ScheduledEmailNotificationFormComponent },
+  { path: 'correosProgramados/:id', component: ScheduledEmailNotificationFormComponent },
 ];
 
 @NgModule({
