@@ -267,6 +267,43 @@
         </mat-card-content>
     </mat-card>
 
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>notifications_active</mat-icon>
+                Recordatorio de Facturas Vencidas
+            </h2>
+        </div>
+        <mat-card-content>
+            <div class="toggle-field">
+                <mat-slide-toggle [checked]="!reminderSuppressed" [disabled]="savingReminderSuppression"
+                    (change)="onToggleReminderSuppression($event.checked)">
+                    {{ reminderSuppressed ? 'Recordatorio silenciado' : 'Recordatorio activo' }}
+                </mat-slide-toggle>
+            </div>
+            <p class="reminder-note">
+                Al silenciarlo, esta factura deja de incluirse en los recordatorios de facturas vencidas del
+                cliente (el resto de sus facturas se sigue avisando normal).
+            </p>
+
+            @if (pendingSuppressReminder) {
+            <div class="reminder-reason">
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Motivo (opcional)</mat-label>
+                    <input matInput [(ngModel)]="reasonInputReminderSuppression" [ngModelOptions]="{standalone: true}"
+                        placeholder="Ej. Factura en disputa">
+                </mat-form-field>
+                <div class="reminder-reason__actions">
+                    <button mat-button (click)="cancelarSilenciarRecordatorio()" [disabled]="savingReminderSuppression">Cancelar</button>
+                    <button mat-flat-button color="warn" (click)="confirmarSilenciarRecordatorio()" [disabled]="savingReminderSuppression">
+                        Silenciar Recordatorio
+                    </button>
+                </div>
+            </div>
+            }
+        </mat-card-content>
+    </mat-card>
+
     }
 
 </div>

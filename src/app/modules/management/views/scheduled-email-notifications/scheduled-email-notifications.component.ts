@@ -9,7 +9,7 @@ import { RouterModule } from '@angular/router';
 import { LoadingComponent } from '../../../../core/components/loading/loading.component';
 import { NotificationsSystemService } from '../../../../core/services/notifications-system.service';
 import { ScheduledEmailNotificationsService } from '../../services/scheduled-email-notifications.service';
-import { IScheduledEmailNotificationSummary } from '../../interfaces/IScheduledEmailNotification';
+import { IScheduledEmailNotificationSummary, ScheduledEmailRecipientMode } from '../../interfaces/IScheduledEmailNotification';
 import { formatScheduleText } from '../../shared/schedule-format.util';
 import { extractErrorMessage } from '../../shared/http-error.util';
 
@@ -25,10 +25,12 @@ export class ScheduledEmailNotificationsComponent implements OnInit {
   private scheduledEmailService = inject(ScheduledEmailNotificationsService);
   private notificationService = inject(NotificationsSystemService);
 
+  readonly ScheduledEmailRecipientMode = ScheduledEmailRecipientMode;
+
   configuraciones: IScheduledEmailNotificationSummary[] = [];
   loading = false;
 
-  displayedColumns: string[] = ['name', 'horario', 'isEnabled', 'recipientsCount', 'lastExecutionAt', 'nextExecutionAt', 'operaciones'];
+  displayedColumns: string[] = ['name', 'recipientMode', 'horario', 'isEnabled', 'recipientsCount', 'lastExecutionAt', 'nextExecutionAt', 'operaciones'];
 
   ngOnInit(): void {
     this.cargar();

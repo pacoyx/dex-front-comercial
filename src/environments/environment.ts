@@ -284,4 +284,9 @@ export const environment = {
     // Correos Programados (Hangfire) - management/Configuraciones
     EPScheduledEmailNotifications: 'api/scheduled-email-notifications',
 
+    // Recordatorios de Facturas Vencidas (segunda fase de Correos Programados)
+    EPInvoiceReminders: 'api/invoice-reminders', // /execute, /preview/{customerId}, /send-test, /logs
+    // EPSalesInvoices ('api/invoices') se reusa para /{id}/reminder-suppression
+    // EPCustomersBase ('api/customers') se reusa para /{id}/billing-profile/reminders
+
 };

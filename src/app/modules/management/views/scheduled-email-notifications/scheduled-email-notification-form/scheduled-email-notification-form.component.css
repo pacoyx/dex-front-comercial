@@ -163,6 +163,25 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+.tipo-destinatario {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 12px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.dialog-hint {
+    margin: 0;
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
 .placeholders-hint {
     display: flex;
     align-items: center;

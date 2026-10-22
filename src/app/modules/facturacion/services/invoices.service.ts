@@ -12,6 +12,7 @@ import {
   IInvoiceListItem,
   IInvoicePayment,
   IPaymentCreateRequest,
+  IUpdateInvoiceReminderSuppressionRequest,
 } from '../interfaces/IInvoices';
 import { IAccountReceivable } from '../interfaces/IAccountsReceivable';
 
@@ -47,6 +48,15 @@ export class InvoicesService {
   anularFactura(id: number): Observable<IResponseGeneric<IInvoiceCancelResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.post<IResponseGeneric<IInvoiceCancelResponse>>(`${this.apiUrl}${environment.EPSalesInvoices}/${id}/cancel`, {}, { headers });
+  }
+
+  /**
+   * El backend no expone el estado actual de supresion en el GET de la factura
+   * (ni detalle ni listado): este endpoint es de solo escritura.
+   */
+  actualizarSupresionRecordatorio(id: number, req: IUpdateInvoiceReminderSuppressionRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPSalesInvoices}/${id}/reminder-suppression`, req, { headers });
   }
 
   registrarPago(invoiceId: number, req: IPaymentCreateRequest): Observable<IResponseGeneric<IInvoicePayment>> {

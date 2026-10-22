@@ -117,6 +117,11 @@ export interface IInvoiceCancelResponse {
   status: number;
 }
 
+export interface IUpdateInvoiceReminderSuppressionRequest {
+  suppressed: boolean;
+  reason?: string | null;
+}
+
 export interface IPaymentCreateRequest {
   paymentMethodId: number;
   amount: number;

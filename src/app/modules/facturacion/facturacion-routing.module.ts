@@ -16,6 +16,7 @@ import { TarifasClienteComponent } from './views/tarifas-cliente/tarifas-cliente
 import { CustomerImportComponent } from './views/clientes/customer-import/customer-import.component';
 import { CustomerPortalAdminComponent } from './views/customer-portal-admin/customer-portal-admin.component';
 import { ValorizacionMensualComponent } from './views/reportes/valorizacion-mensual/valorizacion-mensual.component';
+import { RecordatoriosFacturasComponent } from './views/reportes/recordatorios-facturas/recordatorios-facturas.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'facturas', pathMatch: 'full' },
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'reportes/registro-ventas', component: RegistroVentasComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'reportes/facturacion-por-cliente', component: FacturacionPorClienteComponent },
   { path: 'reportes/valorizacion-mensual', component: ValorizacionMensualComponent, canActivate: [permissionGuard], data: { permission: 'invoices.access' } },
+  { path: 'recordatorios-facturas', component: RecordatoriosFacturasComponent, canActivate: [permissionGuard], data: { permission: 'invoices.access' } },
 ];
 
 @NgModule({

@@ -3,6 +3,11 @@ export enum RecipientType {
   Bcc = 1,
 }
 
+export enum ScheduledEmailRecipientMode {
+  Fixed = 0,
+  Dynamic = 1,
+}
+
 export enum ScheduledEmailExecutionStatus {
   Success = 0,
   Failed = 1,
@@ -29,6 +34,7 @@ export interface IScheduledEmailNotificationSummary {
   id: number;
   code: string;
   name: string;
+  recipientMode: ScheduledEmailRecipientMode;
   hour: number;
   minute: number;
   daysOfWeek: number[];
@@ -52,8 +58,8 @@ export interface IScheduledEmailRecipient {
 export interface IScheduledEmailNotification extends IScheduledEmailNotificationSummary {
   subjectTemplate: string;
   bodyTemplate: string;
-  driverName: string;
-  driverDocument: string;
+  driverName: string | null;
+  driverDocument: string | null;
   signatureName: string | null;
   signaturePosition: string | null;
   signaturePhone: string | null;
@@ -65,19 +71,21 @@ export interface IScheduledEmailNotification extends IScheduledEmailNotification
 export interface ICreateScheduledEmailNotificationRequest {
   code: string;
   name: string;
+  recipientMode: ScheduledEmailRecipientMode;
   hour: number;
   minute: number;
   daysOfWeek: number[];
   subjectTemplate: string;
   bodyTemplate: string;
-  driverName: string;
-  driverDocument: string;
+  driverName?: string | null;
+  driverDocument?: string | null;
   signatureName?: string | null;
   signaturePosition?: string | null;
   signaturePhone?: string | null;
 }
 
-export type IUpdateScheduledEmailNotificationRequest = Omit<ICreateScheduledEmailNotificationRequest, 'code'>;
+// recipientMode y code no son editables luego de creados.
+export type IUpdateScheduledEmailNotificationRequest = Omit<ICreateScheduledEmailNotificationRequest, 'code' | 'recipientMode'>;
 
 export interface IAddScheduledEmailRecipientRequest {
   email: string;
@@ -97,3 +105,8 @@ export interface IScheduledEmailPreview {
   subject: string;
   body: string;
 }
+
+export const RECIPIENT_MODE_OPTIONS: { value: ScheduledEmailRecipientMode; label: string; hint: string }[] = [
+  { value: ScheduledEmailRecipientMode.Fixed, label: 'Fijo', hint: 'Lista fija de destinatarios TO/BCC (ej. aviso de chofer)' },
+  { value: ScheduledEmailRecipientMode.Dynamic, label: 'Dinámico', hint: 'Los destinatarios se resuelven solos por cliente (ej. recordatorio de facturas vencidas)' },
+];

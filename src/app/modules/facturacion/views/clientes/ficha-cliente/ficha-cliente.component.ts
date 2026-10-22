@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +17,7 @@ import { LoadingComponent } from '../../../../../core/components/loading/loading
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
 import { ClientesService } from '../../../services/clientes.service';
 import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
-import { CustomerType, IAccountSummary, IBillingProfileRequest, ICustomer, ICustomerContact } from '../../../interfaces/ICustomer';
+import { CustomerType, IAccountSummary, IBillingProfileRequest, ICustomer, ICustomerContact, IUpdateBillingProfileRemindersRequest } from '../../../interfaces/ICustomer';
 import { DialogFormContactoComponent } from './components/dialog-form-contacto/dialog-form-contacto.component';
 import { GestionTarifasComponent } from '../../tarifas-cliente/components/gestion-tarifas/gestion-tarifas.component';
 import { PortalClienteTabComponent } from './components/portal-cliente-tab/portal-cliente-tab.component';
@@ -26,7 +26,7 @@ import { PortalClienteTabComponent } from './components/portal-cliente-tab/porta
   selector: 'app-ficha-cliente',
   standalone: true,
   imports: [
-    ReactiveFormsModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule,
+    ReactiveFormsModule, FormsModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatSlideToggleModule, MatTableModule, MatTabsModule, MatTooltipModule, CurrencyPipe, LoadingComponent,
     GestionTarifasComponent, PortalClienteTabComponent,
   ],
@@ -51,6 +51,12 @@ export class FichaClienteComponent implements OnInit {
   profileValidationErrors: string[] = [];
   frmPerfil: FormGroup;
   paymentTermOptions = [15, 30, 45];
+
+  remindersEnabled = true;
+  remindersSuppressedReason: string | null = null;
+  savingReminders = false;
+  pendingDisableReminders = false;
+  reasonInputReminders = '';
 
   contactos: ICustomerContact[] = [];
   loadingContactos = false;
@@ -137,6 +143,8 @@ export class FichaClienteComponent implements OnInit {
         }
         this.hasBillingProfile = true;
         this.frmPerfil.patchValue(resp.data);
+        this.remindersEnabled = resp.data.remindersEnabled;
+        this.remindersSuppressedReason = resp.data.remindersSuppressedReason;
       },
       error: (err) => {
         this.loadingProfile = false;
@@ -182,6 +190,43 @@ export class FichaClienteComponent implements OnInit {
           this.notificationService.showError(extractErrorMessage(err, 'No se pudo guardar el perfil de facturación.'));
         }
       }
+    });
+  }
+
+  onToggleRecordatorios(nuevoValor: boolean): void {
+    if (!nuevoValor) {
+      this.pendingDisableReminders = true;
+      this.reasonInputReminders = '';
+      return;
+    }
+    this.guardarRecordatorios(true, null);
+  }
+
+  confirmarSilenciarRecordatorios(): void {
+    this.guardarRecordatorios(false, this.reasonInputReminders.trim() || null);
+  }
+
+  cancelarSilenciarRecordatorios(): void {
+    this.pendingDisableReminders = false;
+  }
+
+  private guardarRecordatorios(enabled: boolean, reason: string | null): void {
+    this.savingReminders = true;
+    const req: IUpdateBillingProfileRemindersRequest = { remindersEnabled: enabled, reason };
+    this.clientesService.actualizarRecordatoriosCliente(this.customerId, req).subscribe({
+      next: () => {
+        this.savingReminders = false;
+        this.pendingDisableReminders = false;
+        this.remindersEnabled = enabled;
+        this.remindersSuppressedReason = enabled ? null : reason;
+        this.notificationService.showSuccess(
+          enabled ? 'Recordatorios de facturas vencidas reactivados.' : 'Recordatorios de facturas vencidas silenciados para este cliente.'
+        );
+      },
+      error: (err) => {
+        this.savingReminders = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo actualizar la configuración de recordatorios.'));
+      },
     });
   }
 

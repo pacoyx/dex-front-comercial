@@ -119,6 +119,48 @@
         </mat-card-content>
     </mat-card>
 
+    @if (hasBillingProfile) {
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>notifications_active</mat-icon>
+                Recordatorios de Facturas Vencidas
+            </h2>
+        </div>
+        <mat-card-content>
+            <div class="toggle-field">
+                <mat-slide-toggle [checked]="remindersEnabled" [disabled]="savingReminders"
+                    (change)="onToggleRecordatorios($event.checked)">
+                    {{ remindersEnabled ? 'Recordatorios activos' : 'Recordatorios silenciados' }}
+                </mat-slide-toggle>
+            </div>
+
+            @if (!remindersEnabled && remindersSuppressedReason) {
+            <div class="alert alert--info">
+                <mat-icon>info</mat-icon>
+                Motivo: {{ remindersSuppressedReason }}
+            </div>
+            }
+
+            @if (pendingDisableReminders) {
+            <div class="reminder-reason">
+                <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Motivo (opcional)</mat-label>
+                    <input matInput [(ngModel)]="reasonInputReminders" [ngModelOptions]="{standalone: true}"
+                        placeholder="Ej. Cliente en negociación de pago">
+                </mat-form-field>
+                <div class="reminder-reason__actions">
+                    <button mat-button (click)="cancelarSilenciarRecordatorios()" [disabled]="savingReminders">Cancelar</button>
+                    <button mat-flat-button color="warn" (click)="confirmarSilenciarRecordatorios()" [disabled]="savingReminders">
+                        Silenciar Recordatorios
+                    </button>
+                </div>
+            </div>
+            }
+        </mat-card-content>
+    </mat-card>
+    }
+
     <mat-card class="panel" appearance="outlined">
         <div class="panel__header">
             <h2 class="panel__title">

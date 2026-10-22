@@ -1,17 +1,18 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
 import { InvoicesService } from '../../../services/invoices.service';
-import { IInvoiceDetail, IInvoiceDetailLine, IInvoicePayment } from '../../../interfaces/IInvoices';
+import { IInvoiceDetail, IInvoiceDetailLine, IInvoicePayment, IUpdateInvoiceReminderSuppressionRequest } from '../../../interfaces/IInvoices';
 import { InvoiceStatus, InvoiceStatusColorPipe, InvoiceStatusLabelPipe } from '../../../shared/invoice-status';
 import { extractErrorMessage } from '../../../shared/http-error.util';
 import { DialogRegistrarPagoComponent } from './components/dialog-registrar-pago/dialog-registrar-pago.component';
@@ -21,7 +22,7 @@ import { DialogRegistrarPagoComponent } from './components/dialog-registrar-pago
   standalone: true,
   imports: [
     MatTableModule, CurrencyPipe, DatePipe, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule,
-    ReactiveFormsModule, MatButtonModule, RouterModule, InvoiceStatusLabelPipe, InvoiceStatusColorPipe
+    MatSlideToggleModule, ReactiveFormsModule, FormsModule, MatButtonModule, RouterModule, InvoiceStatusLabelPipe, InvoiceStatusColorPipe
   ],
   templateUrl: './factura-detail.component.html',
   styleUrl: './factura-detail.component.css'
@@ -43,6 +44,13 @@ export class FacturaDetailComponent implements OnInit {
 
   formInvoice!: FormGroup;
   imprimiendo = false;
+
+  // El backend no expone el estado actual de supresion de recordatorios en el GET de
+  // la factura: este control es de solo escritura, se asume "activo" al cargar la pantalla.
+  reminderSuppressed = false;
+  savingReminderSuppression = false;
+  pendingSuppressReminder = false;
+  reasonInputReminderSuppression = '';
 
   constructor(private fb: FormBuilder) {
     this.formInvoice = this.fb.group({
@@ -162,6 +170,43 @@ export class FacturaDetailComponent implements OnInit {
       if (result) {
         this.buscarFactura();
       }
+    });
+  }
+
+  onToggleReminderSuppression(activo: boolean): void {
+    if (!activo) {
+      this.pendingSuppressReminder = true;
+      this.reasonInputReminderSuppression = '';
+      return;
+    }
+    this.guardarSupresionRecordatorio(false, null);
+  }
+
+  confirmarSilenciarRecordatorio(): void {
+    this.guardarSupresionRecordatorio(true, this.reasonInputReminderSuppression.trim() || null);
+  }
+
+  cancelarSilenciarRecordatorio(): void {
+    this.pendingSuppressReminder = false;
+  }
+
+  private guardarSupresionRecordatorio(suppressed: boolean, reason: string | null): void {
+    if (!this.invoice) return;
+    this.savingReminderSuppression = true;
+    const req: IUpdateInvoiceReminderSuppressionRequest = { suppressed, reason };
+    this.invoicesService.actualizarSupresionRecordatorio(this.invoice.id, req).subscribe({
+      next: () => {
+        this.savingReminderSuppression = false;
+        this.pendingSuppressReminder = false;
+        this.reminderSuppressed = suppressed;
+        this.notificationService.showSuccess(
+          suppressed ? 'Recordatorio silenciado para esta factura.' : 'Recordatorio reactivado para esta factura.'
+        );
+      },
+      error: (err) => {
+        this.savingReminderSuppression = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo actualizar el recordatorio de esta factura.'));
+      },
     });
   }
 

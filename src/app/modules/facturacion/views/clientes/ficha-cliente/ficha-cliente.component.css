@@ -150,6 +150,26 @@
     align-items: center;
 }
 
+.reminder-reason {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container-low);
+}
+
+.reminder-reason mat-form-field {
+    width: 100%;
+}
+
+.reminder-reason__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
 /* ===== Resumen de cuenta ===== */
 
 .resumen-grid {

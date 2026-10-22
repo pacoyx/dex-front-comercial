@@ -48,6 +48,10 @@
           <mat-icon>paid</mat-icon>
           Valorización del Mes
         </button>
+        <button mat-menu-item [routerLink]="['/facturacion/recordatorios-facturas']" routerLinkActive="router-link-active">
+          <mat-icon>notifications_active</mat-icon>
+          Recordatorios de Facturas
+        </button>
         }
         @if (hasPermission('customers.access')) {
         <mat-divider></mat-divider>

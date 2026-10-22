@@ -92,6 +92,22 @@
                     </mat-button-toggle-group>
                 </div>
 
+                <div class="field--full tipo-destinatario">
+                    <span class="dias-semana__label">Tipo de destinatarios</span>
+                    @if (esNuevo) {
+                    <mat-radio-group [(ngModel)]="recipientMode" class="radio-group">
+                        @for (opcion of recipientModeOptions; track opcion.value) {
+                        <mat-radio-button [value]="opcion.value" [matTooltip]="opcion.hint">{{ opcion.label }}</mat-radio-button>
+                        }
+                    </mat-radio-group>
+                    } @else {
+                    <span class="status-chip" [matTooltip]="esDynamic ? 'Los destinatarios se resuelven solos por cliente' : 'Lista fija de destinatarios TO/BCC'">
+                        <span class="status-chip__dot"></span>
+                        {{ esDynamic ? 'Dinámico' : 'Fijo' }}
+                    </span>
+                    }
+                </div>
+
             </div>
         </mat-card-content>
     </mat-card>
@@ -103,10 +119,17 @@
                 Plantilla del Correo
             </h2>
             @if (!esNuevo) {
+            @if (esDynamic) {
+            <button mat-stroked-button color="primary" (click)="vistaPreviaFacturasVencidas()">
+                <mat-icon>visibility</mat-icon>
+                Vista Previa
+            </button>
+            } @else {
             <button mat-stroked-button color="primary" (click)="vistaPrevia()">
                 <mat-icon>visibility</mat-icon>
                 Vista Previa
             </button>
+            }
             }
         </div>
         <mat-card-content>
@@ -121,6 +144,18 @@
                     <textarea matInput rows="8" [(ngModel)]="bodyTemplate"></textarea>
                 </mat-form-field>
 
+                @if (esDynamic) {
+                <div class="field--full placeholders-hint">
+                    <span class="placeholders-hint__label">Placeholders disponibles:</span>
+                    <code>&#123;CustomerName&#125;</code>
+                    <code>&#123;InvoiceCount&#125;</code>
+                    <code>&#123;TotalOverdueAmount&#125;</code>
+                    <code>&#123;InvoiceList&#125;</code>
+                    <code>&#123;SignatureName&#125;</code>
+                    <code>&#123;SignaturePosition&#125;</code>
+                    <code>&#123;SignaturePhone&#125;</code>
+                </div>
+                } @else {
                 <div class="field--full placeholders-hint">
                     <span class="placeholders-hint__label">Placeholders disponibles:</span>
                     <code>&#123;Date&#125;</code>
@@ -131,6 +166,7 @@
                     <code>&#123;SignaturePosition&#125;</code>
                     <code>&#123;SignaturePhone&#125;</code>
                 </div>
+                }
             </div>
         </mat-card-content>
     </mat-card>
@@ -138,12 +174,18 @@
     <mat-card class="panel" appearance="outlined">
         <div class="panel__header">
             <h2 class="panel__title">
+                @if (esDynamic) {
+                <mat-icon>draw</mat-icon>
+                Firma
+                } @else {
                 <mat-icon>local_shipping</mat-icon>
                 Chofer y Firma
+                }
             </h2>
         </div>
         <mat-card-content>
             <div class="form-grid">
+                @if (!esDynamic) {
                 <mat-form-field appearance="outline">
                     <mat-label>Nombre del chofer</mat-label>
                     <input matInput [(ngModel)]="driverName" maxlength="150">
@@ -153,6 +195,7 @@
                     <mat-label>DNI del chofer</mat-label>
                     <input matInput [(ngModel)]="driverDocument" maxlength="20">
                 </mat-form-field>
+                }
 
                 <mat-form-field appearance="outline">
                     <mat-label>Nombre de firma</mat-label>
@@ -184,6 +227,17 @@
                 {{ detalle.isEnabled ? 'Activado' : 'Desactivado' }}
             </mat-slide-toggle>
 
+            @if (esDynamic) {
+            <button mat-stroked-button (click)="enviarPruebaFacturasVencidas()">
+                <mat-icon>send</mat-icon>
+                Correo de Prueba
+            </button>
+
+            <button mat-stroked-button color="accent" [disabled]="ejecutandoAhora" (click)="ejecutarAhoraFacturasVencidas()">
+                <mat-icon>bolt</mat-icon>
+                Ejecutar Ahora
+            </button>
+            } @else {
             <button mat-stroked-button (click)="enviarPrueba()">
                 <mat-icon>send</mat-icon>
                 Enviar Prueba
@@ -193,6 +247,7 @@
                 <mat-icon>bolt</mat-icon>
                 Ejecutar Ahora
             </button>
+            }
             }
 
             @if (saving) {
@@ -212,6 +267,28 @@
     </div>
 
     @if (!esNuevo && detalle) {
+
+    @if (esDynamic) {
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>history</mat-icon>
+                Historial de Recordatorios
+            </h2>
+            <button mat-stroked-button color="primary" (click)="irAHistorialRecordatorios()">
+                <mat-icon>open_in_new</mat-icon>
+                Ver Historial
+            </button>
+        </div>
+        <mat-card-content>
+            <p class="dialog-hint">
+                Esta configuración no usa una lista fija de destinatarios: cada ejecución resuelve los clientes
+                con facturas vencidas y les envía un correo propio. Revisa el detalle completo (por cliente,
+                con las facturas incluidas en cada envío) en la pantalla de Historial de Recordatorios.
+            </p>
+        </mat-card-content>
+    </mat-card>
+    } @else {
     <mat-card class="panel" appearance="outlined">
         <div class="panel__header">
             <h2 class="panel__title">
@@ -317,5 +394,6 @@
     </mat-card>
     }
 
+    }
     }
 </div>

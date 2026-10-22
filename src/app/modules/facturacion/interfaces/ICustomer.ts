@@ -52,6 +52,13 @@ export interface IBillingProfile {
   paymentTermDays: number;
   creditLimit: number;
   isCreditEnabled: boolean;
+  remindersEnabled: boolean;
+  remindersSuppressedReason: string | null;
+}
+
+export interface IUpdateBillingProfileRemindersRequest {
+  remindersEnabled: boolean;
+  reason?: string | null;
 }
 
 export interface IBillingProfileRequest {

@@ -15,6 +15,7 @@ import {
   ICustomerCreateRequest,
   ICustomerPaginatedResponse,
   ICustomerUpdateRequest,
+  IUpdateBillingProfileRemindersRequest,
 } from '../interfaces/ICustomer';
 
 @Injectable({
@@ -113,6 +114,15 @@ export class ClientesService {
   actualizarPerfilFacturacion(customerId: number, req: IBillingProfileRequest): Observable<IResponseGeneric<IBillingProfile>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.http.put<IResponseGeneric<IBillingProfile>>(`${this.apiUrl}${environment.EPCustomersBase}/${customerId}/billing-profile`, req, { headers });
+  }
+
+  /**
+   * Endpoint dedicado (no el PUT general de perfil de facturacion) para no resetear
+   * accidentalmente la supresion de recordatorios al guardar el formulario completo.
+   */
+  actualizarRecordatoriosCliente(customerId: number, req: IUpdateBillingProfileRemindersRequest): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPCustomersBase}/${customerId}/billing-profile/reminders`, req, { headers });
   }
 
   listarContactos(customerId: number): Observable<IResponseGeneric<ICustomerContact[]>> {

@@ -38,6 +38,15 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="recipientMode">
+                    <th mat-header-cell *matHeaderCellDef> Destinatarios </th>
+                    <td mat-cell *matCellDef="let element">
+                        <span class="tipo-chip" [class.tipo-chip--bcc]="element.recipientMode === ScheduledEmailRecipientMode.Dynamic">
+                            {{ element.recipientMode === ScheduledEmailRecipientMode.Dynamic ? 'Dinámico' : 'Fijo' }}
+                        </span>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="horario">
                     <th mat-header-cell *matHeaderCellDef> Horario </th>
                     <td mat-cell *matCellDef="let element"> {{ horario(element) }} </td>
@@ -61,8 +70,10 @@
                 </ng-container>
 
                 <ng-container matColumnDef="recipientsCount">
-                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> Destinatarios </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.recipientsCount }} </td>
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric"> N° Destinatarios </th>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        {{ element.recipientMode === ScheduledEmailRecipientMode.Dynamic ? '—' : element.recipientsCount }}
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="lastExecutionAt">

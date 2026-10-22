@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>{{ data?.title || 'Seleccionar Cliente' }}</h2>
+
+<mat-dialog-content class="dialog-content">
+    <mat-form-field appearance="outline" class="field--full">
+        <mat-label>Buscar cliente por razón social</mat-label>
+        <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+            placeholder="Escribe para buscar...">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)" [displayWith]="displayCustomerFn">
+            @for (customer of filteredCustomers | async; track customer.customerId) {
+            <mat-option [value]="customer">{{ customer.businessName }}</mat-option>
+            }
+        </mat-autocomplete>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="!selected" (click)="confirmar()">{{ data?.confirmLabel || 'Continuar' }}</button>
+</mat-dialog-actions>

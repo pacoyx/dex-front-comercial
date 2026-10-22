@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Correo de Prueba</h2>
+
+<mat-dialog-content class="dialog-content">
+    <p class="dialog-hint">
+        Se usarán las facturas vencidas reales del cliente seleccionado, pero el correo se enviará únicamente
+        a la dirección indicada (asunto con prefijo "[PRUEBA]"). No queda registrado en el historial.
+    </p>
+
+    <mat-form-field appearance="outline" class="field--full">
+        <mat-label>Cliente</mat-label>
+        <input type="text" matInput [formControl]="customerControl" [matAutocomplete]="auto"
+            placeholder="Escribe para buscar...">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onCustomerSelected($event)" [displayWith]="displayCustomerFn">
+            @for (customer of filteredCustomers | async; track customer.customerId) {
+            <mat-option [value]="customer">{{ customer.businessName }}</mat-option>
+            }
+        </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field--full">
+        <mat-label>Correo de destino</mat-label>
+        <input matInput type="email" [(ngModel)]="testEmail" placeholder="miusuario@empresa.com">
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="!esValido" (click)="enviar()">Enviar</button>
+</mat-dialog-actions>

@@ -144,6 +144,21 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+.tipo-chip {
+    display: inline-flex;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.tipo-chip--bcc {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+}
+
 @media (max-width: 900px) {
     .container-scheduled-email {
         padding: 12px;
