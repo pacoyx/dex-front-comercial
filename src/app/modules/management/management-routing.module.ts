@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { permissionGuard } from '../../core/guards/permission.guard';
 import { ManagementConfiguracionesComponent } from './views/management-configuraciones/management-configuraciones.component';
 import { ManagentEmpresaComponent } from './views/managent-empresa/managent-empresa.component';
 import { ManagentUsersComponent } from './views/managent-users/managent-users.component';
@@ -18,8 +19,12 @@ import { ScheduledEmailNotificationsComponent } from './views/scheduled-email-no
 import { ScheduledEmailNotificationFormComponent } from './views/scheduled-email-notifications/scheduled-email-notification-form/scheduled-email-notification-form.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: ManagementDashboardComponent },
+  // El dashboard requiere el permiso adicional "dashboard.access" (pensado solo para
+  // Gerencia), a diferencia del resto de pantallas que solo requieren "settings.access"
+  // (el permiso de modulo). Por eso el landing por defecto NO apunta al dashboard: la
+  // mayoria de usuarios que entran a /management no lo tendran asignado.
+  { path: '', redirectTo: 'empresa', pathMatch: 'full' },
+  { path: 'dashboard', component: ManagementDashboardComponent, canActivate: [permissionGuard], data: { permission: 'dashboard.access' } },
   { path: 'empresa', component: ManagentEmpresaComponent },
   { path: 'usuarios', component: ManagentUsersComponent },
   { path: 'configuraciones', component: ManagementConfiguracionesComponent },

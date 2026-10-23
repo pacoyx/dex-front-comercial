@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterModule } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { ToggleStoreServiceService } from '../../services/toggle-store-service.service';
+import { PermissionsStoreService } from '../../services/permissions-store.service';
 
 @Component({
   selector: 'app-layout-management',
@@ -19,8 +20,13 @@ export class LayoutManagementComponent {
 
   loginService = inject(LoginService);
   private toggleStore = inject(ToggleStoreServiceService);
+  private permissionsStore = inject(PermissionsStoreService);
 
   constructor(private router: Router) { }
+
+  hasPermission(code: string): boolean {
+    return this.permissionsStore.hasPermission(code);
+  }
 
   cerrarSesion() {
     localStorage.setItem('dex24Auth', '');

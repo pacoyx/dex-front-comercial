@@ -2,17 +2,471 @@
 
     <div class="page-header">
         <div class="page-header__title">
-            <span class="material-icons page-header__icon">dashboard</span>
+            <mat-icon>dashboard</mat-icon>
             <div class="page-header__heading">
-                <h1>Dashboard</h1>
-                <span class="page-header__subtitle">Panel general de administración del sistema</span>
+                <h1>Dashboard Ejecutivo</h1>
+                <span class="page-header__subtitle">Resumen del mes actual de todos los módulos: facturación, cobranza, operaciones, recepción, gastos, compras y RRHH</span>
             </div>
         </div>
     </div>
 
-    <div class="panel panel-placeholder">
-        <span class="material-icons placeholder-icon">construction</span>
-        <p>Este panel está en construcción.</p>
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando dashboard...</span>
     </div>
+    } @else if (data) {
+
+    <!-- ===== Resultado del negocio ===== -->
+    <mat-card class="hero-card" appearance="outlined" [class.hero-card--positive]="data.businessSummary.isProfitable"
+        [class.hero-card--negative]="!data.businessSummary.isProfitable">
+        <div class="hero-card__main">
+            <mat-icon class="hero-card__icon">{{ data.businessSummary.isProfitable ? 'trending_up' : 'trending_down' }}</mat-icon>
+            <div class="hero-card__body">
+                <span class="hero-card__label">Resultado del Negocio (Mes Actual)</span>
+                <span class="hero-card__value" [style.color]="netResultColor">
+                    {{ data.businessSummary.netResult | currency:' ':'symbol':'0.2-2' }}
+                </span>
+                <span class="hero-card__margin" [style.color]="netResultColor">
+                    Margen: {{ data.businessSummary.marginPercent | number:'1.1-1' }}%
+                    · {{ data.businessSummary.isProfitable ? 'Rentable' : 'En pérdida' }}
+                </span>
+            </div>
+        </div>
+        <div class="hero-card__side">
+            <div class="hero-card__stat">
+                <span class="hero-card__stat-label">Ingresos Totales</span>
+                <span class="hero-card__stat-value">{{ data.businessSummary.totalIncome | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+            <div class="hero-card__stat">
+                <span class="hero-card__stat-label">Egresos Totales</span>
+                <span class="hero-card__stat-value">{{ data.businessSummary.totalExpenses | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+            <div class="hero-card__stat">
+                <span class="hero-card__stat-label">Por Cobrar (Total)</span>
+                <span class="hero-card__stat-value">{{ data.businessSummary.totalPendingToCollect | currency:' ':'symbol':'0.2-2' }}</span>
+            </div>
+        </div>
+    </mat-card>
+
+    <!-- ===== KPIs por modulo ===== -->
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>receipt_long</mat-icon> Facturación</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Facturado del Mes</span>
+                    <span class="stat-card__value">{{ data.invoicing.monthInvoiced | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">payments</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Cobrado del Mes</span>
+                    <span class="stat-card__value">{{ data.invoicing.monthCollected | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">account_balance_wallet</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Cuentas por Cobrar</span>
+                    <span class="stat-card__value">{{ data.invoicing.accountsReceivable | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">description</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">N° Facturas del Mes</span>
+                    <span class="stat-card__value">{{ data.invoicing.invoiceCount }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>local_shipping</mat-icon> Operaciones (Guías de Recojo)</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">assignment</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Guías del Mes</span>
+                    <span class="stat-card__value">{{ data.operations.totalPickupGuides }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">hourglass_empty</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Pendientes</span>
+                    <span class="stat-card__value">{{ data.operations.pendingPickupGuides }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">task_alt</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Completadas</span>
+                    <span class="stat-card__value">{{ data.operations.completedPickupGuides }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">payments</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Monto Total</span>
+                    <span class="stat-card__value">{{ data.operations.totalAmount | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>storefront</mat-icon> Ingresos de Recepción</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">payments</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Ingresos del Mes</span>
+                    <span class="stat-card__value">{{ data.receptionIncome.monthIncome | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">paid</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Adelantos del Mes</span>
+                    <span class="stat-card__value">{{ data.receptionIncome.monthAdvance | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">account_balance_wallet</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Saldo Pendiente</span>
+                    <span class="stat-card__value">{{ data.receptionIncome.pendingBalance | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">description</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">N° Guías del Mes</span>
+                    <span class="stat-card__value">{{ data.receptionIncome.guideCount }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>account_balance</mat-icon> Gastos</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">account_balance</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Total Gastos del Mes</span>
+                    <span class="stat-card__value">{{ data.expenses.currentMonthExpenses | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">local_atm</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Operativo (Caja Chica)</span>
+                    <span class="stat-card__value">{{ data.expenses.currentMonthOperational | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">paid</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Administrativo (Gastos)</span>
+                    <span class="stat-card__value">{{ data.expenses.currentMonthAdministrative | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">N° Gastos del Mes</span>
+                    <span class="stat-card__value">{{ data.expenses.expenseCount }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>shopping_cart</mat-icon> Compras</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">shopping_cart</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Compras del Mes</span>
+                    <span class="stat-card__value">{{ data.purchases.monthPurchases | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">account_balance_wallet</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Cuentas por Pagar</span>
+                    <span class="stat-card__value">{{ data.purchases.accountsPayable | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">receipt_long</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">N° Compras del Mes</span>
+                    <span class="stat-card__value">{{ data.purchases.purchaseCount }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">groups</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Proveedores Activos</span>
+                    <span class="stat-card__value">{{ data.purchases.activeSuppliers }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <div class="module-section">
+        <h3 class="module-section__title"><mat-icon>groups</mat-icon> Recursos Humanos</h3>
+        <div class="stats-grid">
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">groups</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Trabajadores Activos</span>
+                    <span class="stat-card__value">{{ data.hr.activeEmployees }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">request_quote</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Costo Planilla Mensual</span>
+                    <span class="stat-card__value">{{ data.hr.monthlyPayrollCost | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">payments</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Préstamos Pendientes</span>
+                    <span class="stat-card__value">{{ data.hr.pendingLoans | currency:' ':'symbol':'0.2-2' }}</span>
+                </div>
+            </mat-card>
+            <mat-card class="stat-card" appearance="outlined">
+                <mat-icon class="stat-card__icon">more_time</mat-icon>
+                <div class="stat-card__body">
+                    <span class="stat-card__label">Horas Extra del Mes</span>
+                    <span class="stat-card__value">{{ data.hr.extraHoursMonth }}</span>
+                </div>
+            </mat-card>
+        </div>
+    </div>
+
+    <!-- ===== Graficos de negocio ===== -->
+    <div class="charts-grid">
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>bar_chart</mat-icon>
+                    Desglose de Gastos del Negocio
+                </h2>
+            </div>
+            <mat-card-content>
+                <div class="hbar-chart">
+                    @for (item of data.businessSummary.expenseBreakdown; track item.category) {
+                    <div class="hbar-chart__row">
+                        <span class="hbar-chart__label">{{ item.category }}</span>
+                        <div class="hbar-chart__track">
+                            <div class="hbar-chart__fill" [style.width.%]="(item.amount / expenseBreakdownMax) * 100"></div>
+                        </div>
+                        <span class="hbar-chart__value">
+                            {{ item.amount | currency:' ':'symbol':'0.2-2' }}
+                            <small>({{ item.percentOfTotal | number:'1.1-1' }}%)</small>
+                        </span>
+                    </div>
+                    } @empty {
+                    <p class="empty-hint">Aún no hay gastos registrados este mes.</p>
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>speed</mat-icon>
+                    Riesgo de Cobranza
+                </h2>
+            </div>
+            <mat-card-content class="gauge-wrap">
+                <div class="gauge" [style.background]="pendingRatioGradient">
+                    <div class="gauge__hole">
+                        <span class="gauge__value" [style.color]="pendingRatioColor">
+                            {{ pendingRatioValue | number:'1.1-1' }}%
+                        </span>
+                        <span class="gauge__label" [style.color]="pendingRatioColor">{{ pendingRatioLabel }}</span>
+                    </div>
+                </div>
+                <p class="gauge-hint">
+                    Porcentaje de los ingresos totales que aún está pendiente de cobro
+                    ({{ data.businessSummary.totalPendingToCollect | currency:' ':'symbol':'0.2-2' }}).
+                </p>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>pie_chart</mat-icon>
+                    Ingresos por Método de Pago (Recepción)
+                </h2>
+            </div>
+            <mat-card-content class="donut-wrap">
+                @if (paymentMethodTotal > 0) {
+                <div class="donut" [style.background]="paymentMethodGradient">
+                    <div class="donut__hole">
+                        <span class="donut__total">{{ paymentMethodTotal | currency:' ':'symbol':'0.0-0' }}</span>
+                        <span class="donut__total-label">total</span>
+                    </div>
+                </div>
+                <div class="donut-legend">
+                    @for (segment of paymentMethodSegments; track segment.label) {
+                    <div class="donut-legend__row">
+                        <span class="donut-legend__dot" [style.backgroundColor]="segment.color"></span>
+                        <span class="donut-legend__label">{{ segment.label }}</span>
+                        <span class="donut-legend__count">{{ segment.value | currency:' ':'symbol':'0.2-2' }}</span>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="empty-hint">Aún no hay ingresos registrados este mes.</p>
+                }
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="panel" appearance="outlined">
+            <div class="panel__header">
+                <h2 class="panel__title">
+                    <mat-icon>compare_arrows</mat-icon>
+                    Delivery vs Recepción
+                </h2>
+            </div>
+            <mat-card-content>
+                <div class="compare-group">
+                    <span class="compare-group__label">Cantidad</span>
+                    <div class="compare-bars">
+                        @for (item of deliveryVsReceptionCount.items; track item.label) {
+                        <div class="compare-bars__row">
+                            <span class="compare-bars__label">{{ item.label }}</span>
+                            <div class="compare-bars__track">
+                                <div class="compare-bars__fill" [style.width.%]="(item.value / deliveryVsReceptionCount.max) * 100"></div>
+                            </div>
+                            <span class="compare-bars__value">{{ item.value }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <div class="compare-group">
+                    <span class="compare-group__label">Monto</span>
+                    <div class="compare-bars">
+                        @for (item of deliveryVsReceptionAmount.items; track item.label) {
+                        <div class="compare-bars__row">
+                            <span class="compare-bars__label">{{ item.label }}</span>
+                            <div class="compare-bars__track">
+                                <div class="compare-bars__fill compare-bars__fill--alt" [style.width.%]="(item.value / deliveryVsReceptionAmount.max) * 100"></div>
+                            </div>
+                            <span class="compare-bars__value">{{ item.value | currency:' ':'symbol':'0.2-2' }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+
+    <!-- ===== Estado de procesos (donuts pequeños) ===== -->
+    <mat-card class="panel" appearance="outlined">
+        <div class="panel__header">
+            <h2 class="panel__title">
+                <mat-icon>donut_small</mat-icon>
+                Estado de Procesos del Mes
+            </h2>
+        </div>
+        <mat-card-content class="status-donuts">
+
+            <div class="status-donut">
+                <span class="status-donut__title">Recordatorios de Facturas</span>
+                @if (collectionsTotal > 0) {
+                <div class="donut-wrap donut-wrap--compact">
+                    <div class="donut donut--sm" [style.background]="collectionsGradient">
+                        <div class="donut__hole">
+                            <span class="donut__total">{{ collectionsTotal }}</span>
+                        </div>
+                    </div>
+                    <div class="donut-legend">
+                        @for (segment of collectionsSegments; track segment.label) {
+                        <div class="donut-legend__row">
+                            <span class="donut-legend__dot" [style.backgroundColor]="segment.color"></span>
+                            <span class="donut-legend__label">{{ segment.label }}</span>
+                            <span class="donut-legend__count">{{ segment.value }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <span class="status-donut__footer">
+                    Última corrida: {{ data.collections.lastRunAt ? (data.collections.lastRunAt | date:'dd/MM/yyyy HH:mm') : '—' }}
+                </span>
+                } @else {
+                <p class="empty-hint">Sin envíos este mes.</p>
+                }
+            </div>
+
+            <div class="status-donut">
+                <span class="status-donut__title">Deliverys (Pendiente / Completado)</span>
+                @if (deliveriesTotal > 0) {
+                <div class="donut-wrap donut-wrap--compact">
+                    <div class="donut donut--sm" [style.background]="deliveriesGradient">
+                        <div class="donut__hole">
+                            <span class="donut__total">{{ deliveriesTotal }}</span>
+                        </div>
+                    </div>
+                    <div class="donut-legend">
+                        @for (segment of deliveriesSegments; track segment.label) {
+                        <div class="donut-legend__row">
+                            <span class="donut-legend__dot" [style.backgroundColor]="segment.color"></span>
+                            <span class="donut-legend__label">{{ segment.label }}</span>
+                            <span class="donut-legend__count">{{ segment.value }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <p class="empty-hint">Sin deliverys este mes.</p>
+                }
+            </div>
+
+            <div class="status-donut">
+                <span class="status-donut__title">Guías de Recojo (Pendiente / Completada)</span>
+                @if (operationsTotal > 0) {
+                <div class="donut-wrap donut-wrap--compact">
+                    <div class="donut donut--sm" [style.background]="operationsGradient">
+                        <div class="donut__hole">
+                            <span class="donut__total">{{ operationsTotal }}</span>
+                        </div>
+                    </div>
+                    <div class="donut-legend">
+                        @for (segment of operationsSegments; track segment.label) {
+                        <div class="donut-legend__row">
+                            <span class="donut-legend__dot" [style.backgroundColor]="segment.color"></span>
+                            <span class="donut-legend__label">{{ segment.label }}</span>
+                            <span class="donut-legend__count">{{ segment.value }}</span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                } @else {
+                <p class="empty-hint">Sin guías este mes.</p>
+                }
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+
+    }
 
 </div>

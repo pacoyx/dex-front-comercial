@@ -9,9 +9,11 @@
     <span class="module-toolbar__title">Administración de Sistema</span>
 
     <nav class="module-toolbar__nav">
+      @if (hasPermission('dashboard.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/management/dashboard" routerLinkActive="is-active">
         <mat-icon>dashboard</mat-icon><span>Dashboard</span>
       </a>
+      }
       <a mat-button class="module-toolbar__link" routerLink="/management/empresa" routerLinkActive="is-active">
         <mat-icon>apartment</mat-icon><span>Empresa</span>
       </a>

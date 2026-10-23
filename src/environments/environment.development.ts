@@ -269,4 +269,7 @@ export const environment = {
     // EPSalesInvoices ('api/invoices') se reusa para /{id}/reminder-suppression
     // EPCustomersBase ('api/customers') se reusa para /{id}/billing-profile/reminders
 
+    // Dashboard ejecutivo de Management (agrega datos de todos los modulos)
+    EPManagementDashboard: 'api/management-dashboard',
+
 };
