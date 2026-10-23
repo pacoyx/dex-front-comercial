@@ -73,6 +73,14 @@
                 <mat-label>Observaciones</mat-label>
                 <textarea matInput formControlName="notes" rows="2" maxlength="500"></textarea>
             </mat-form-field>
+
+            <div class="field--full toggle-field">
+                <mat-slide-toggle formControlName="isDetractionAccount">Es cuenta de detracción</mat-slide-toggle>
+                <span class="toggle-field__hint">
+                    Se usa para validar las facturas importadas desde XML. Solo puede haber una por empresa:
+                    si marcas esta, se desmarca automáticamente cualquier otra.
+                </span>
+            </div>
         </div>
     </form>
     }

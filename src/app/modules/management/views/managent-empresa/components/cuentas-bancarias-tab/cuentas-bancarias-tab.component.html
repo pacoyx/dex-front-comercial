@@ -39,6 +39,20 @@
                     <td mat-cell *matCellDef="let el">{{ el.description || '-' }}</td>
                 </ng-container>
 
+                <ng-container matColumnDef="detraccion">
+                    <th mat-header-cell *matHeaderCellDef>Detracción</th>
+                    <td mat-cell *matCellDef="let el">
+                        @if (el.isDetractionAccount) {
+                        <span class="status-chip status-chip--activo" matTooltip="Cuenta de detracción configurada">
+                            <span class="status-chip__dot"></span>
+                            Sí
+                        </span>
+                        } @else {
+                        <span>-</span>
+                        }
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
                     <td mat-cell *matCellDef="let el">

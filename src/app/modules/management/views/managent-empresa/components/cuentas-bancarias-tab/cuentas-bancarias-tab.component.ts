@@ -27,7 +27,7 @@ export class CuentasBancariasTabComponent implements OnChanges {
   private dialog = inject(MatDialog);
 
   cuentas: ICompanyBankAccount[] = [];
-  displayedColumns: string[] = ['banco', 'tipo', 'moneda', 'numero', 'cci', 'descripcion', 'estado', 'acciones'];
+  displayedColumns: string[] = ['banco', 'tipo', 'moneda', 'numero', 'cci', 'descripcion', 'detraccion', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<ICompanyBankAccount>([]);
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -10,6 +10,7 @@ export interface ICompanyBankAccount {
   interbankAccountNumber: string | null;
   description: string | null;
   isEnabled: boolean;
+  isDetractionAccount: boolean;
   notes: string | null;
   createdAt: string;
   updatedAt: string | null;
@@ -23,6 +24,7 @@ export interface ICompanyBankAccountRequest {
   interbankAccountNumber: string | null;
   description: string | null;
   notes: string | null;
+  isDetractionAccount: boolean;
 }
 
 export interface ICurrencyOption {

@@ -1,0 +1,241 @@
+.container-import {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ===== Page header ===== */
+
+.page-header {
+    padding: 4px 2px;
+}
+
+.page-header__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-header__title>mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    color: var(--mat-sys-primary);
+}
+
+.page-header__heading h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+}
+
+.page-header__subtitle {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Alertas ===== */
+
+.alert {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font: var(--mat-sys-body-medium);
+}
+
+.alert ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.alert--error {
+    background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+    color: var(--mat-sys-error);
+}
+
+.alert--warning {
+    background: color-mix(in srgb, #f9a825 18%, transparent);
+    color: #8d6200;
+}
+
+/* ===== Cards ===== */
+
+.panel {
+    border-radius: 16px !important;
+}
+
+.panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 16px 16px 0;
+}
+
+.panel__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 12px;
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-on-surface);
+}
+
+.panel__title mat-icon {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ===== Zona de carga de archivo ===== */
+
+.upload-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 40px 16px;
+    text-align: center;
+}
+
+.upload-zone__icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.upload-zone__hint {
+    margin: 0;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.upload-zone__filename {
+    font-weight: 600;
+    color: var(--mat-sys-on-surface);
+}
+
+/* ===== Datos de la factura (preview) ===== */
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px 24px;
+}
+
+.preview-field {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.preview-field__label {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.preview-field__value {
+    font: var(--mat-sys-body-large);
+    color: var(--mat-sys-on-surface);
+}
+
+.preview-field__value--total {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ===== Tabla de lineas ===== */
+
+.tabla-scroll {
+    overflow-x: auto;
+}
+
+.detail-table {
+    width: 100%;
+}
+
+.detail-table th.mat-mdc-header-cell {
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+}
+
+.col-numeric {
+    text-align: right !important;
+}
+
+.seller-code {
+    display: inline-block;
+    margin-left: 6px;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.producto-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: color-mix(in srgb, #2e7d32 14%, transparent);
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: .85rem;
+}
+
+.producto-chip mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ===== Datos adicionales ===== */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 4px 20px;
+}
+
+.form-grid mat-form-field {
+    width: 100%;
+}
+
+.field--full {
+    grid-column: 1 / -1;
+}
+
+/* ===== Botonera ===== */
+
+.actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container-low);
+    border: 1px solid var(--mat-sys-outline-variant);
+}
+
+@media (max-width: 720px) {
+    .container-import {
+        padding: 12px;
+    }
+
+    .actions-bar {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+}

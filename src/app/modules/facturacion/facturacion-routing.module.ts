@@ -4,6 +4,7 @@ import { permissionGuard } from '../../core/guards/permission.guard';
 import { FacturasComponent } from './views/facturas/facturas.component';
 import { FacturaFormComponent } from './views/facturas/factura-form/factura-form.component';
 import { FacturaDetailComponent } from './views/facturas/factura-detail/factura-detail.component';
+import { ImportarFacturaXmlComponent } from './views/facturas/importar-factura-xml/importar-factura-xml.component';
 import { CuentasPorCobrarComponent } from './views/cuentas-por-cobrar/cuentas-por-cobrar.component';
 import { PlanillasComponent } from './views/planillas/planillas.component';
 import { PlanillaDetailComponent } from './views/planillas/planilla-detail/planilla-detail.component';
@@ -29,6 +30,7 @@ const routes: Routes = [
   { path: 'customer-portal-admin', component: CustomerPortalAdminComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
   { path: 'facturas', component: FacturasComponent },
   { path: 'facturas/nueva', component: FacturaFormComponent },
+  { path: 'facturas/importar-xml', component: ImportarFacturaXmlComponent },
   { path: 'facturas/:id', component: FacturaDetailComponent },
   { path: 'cuentas-cobrar', component: CuentasPorCobrarComponent },
   { path: 'planillas', component: PlanillasComponent },

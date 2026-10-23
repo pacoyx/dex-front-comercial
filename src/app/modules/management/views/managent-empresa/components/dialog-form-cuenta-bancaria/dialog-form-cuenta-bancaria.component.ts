@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { forkJoin } from 'rxjs';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
 import { NotificationsSystemService } from '../../../../../../core/services/notifications-system.service';
@@ -20,7 +21,7 @@ import { extractErrorMessage, extractValidationErrors } from '../../../../shared
   standalone: true,
   imports: [
     ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDialogActions, MatDialogTitle,
-    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule,
+    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule, MatSlideToggleModule,
   ],
   templateUrl: './dialog-form-cuenta-bancaria.component.html',
   styleUrl: './dialog-form-cuenta-bancaria.component.css'
@@ -53,6 +54,7 @@ export class DialogFormCuentaBancariaComponent implements OnInit {
       interbankAccountNumber: ['', Validators.maxLength(30)],
       description: ['', Validators.maxLength(200)],
       notes: ['', Validators.maxLength(500)],
+      isDetractionAccount: [false],
     });
   }
 
@@ -90,6 +92,7 @@ export class DialogFormCuentaBancariaComponent implements OnInit {
         interbankAccountNumber: this.data.obj.interbankAccountNumber,
         description: this.data.obj.description,
         notes: this.data.obj.notes,
+        isDetractionAccount: this.data.obj.isDetractionAccount,
       });
     }
   }
@@ -108,6 +111,7 @@ export class DialogFormCuentaBancariaComponent implements OnInit {
       interbankAccountNumber: value.interbankAccountNumber || null,
       description: value.description || null,
       notes: value.notes || null,
+      isDetractionAccount: value.isDetractionAccount,
     };
 
     const request$ = this.data.esNuevo

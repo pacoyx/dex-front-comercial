@@ -15,6 +15,7 @@ import {
   IUpdateInvoiceReminderSuppressionRequest,
 } from '../interfaces/IInvoices';
 import { IAccountReceivable } from '../interfaces/IAccountsReceivable';
+import { IConfirmImportInvoiceXmlRequest, IImportInvoiceXmlPreview } from '../interfaces/IImportInvoiceXml';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +82,21 @@ export class InvoicesService {
    */
   descargarFacturaPdf(id: number): Observable<Blob> {
     return this.http.get(`${this.apiUrl}${environment.EPSalesInvoices}/${id}/pdf`, { responseType: 'blob' });
+  }
+
+  /**
+   * No se setea Content-Type manualmente: el navegador arma el boundary del
+   * multipart/form-data automaticamente al enviar un FormData.
+   */
+  importarFacturaXmlPreview(file: File): Observable<IResponseGeneric<IImportInvoiceXmlPreview>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<IResponseGeneric<IImportInvoiceXmlPreview>>(`${this.apiUrl}${environment.EPSalesInvoices}/import-xml/preview`, formData);
+  }
+
+  importarFacturaXml(req: IConfirmImportInvoiceXmlRequest): Observable<IResponseGeneric<IInvoiceCreateResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IInvoiceCreateResponse>>(`${this.apiUrl}${environment.EPSalesInvoices}/import-xml`, req, { headers });
   }
 
 }

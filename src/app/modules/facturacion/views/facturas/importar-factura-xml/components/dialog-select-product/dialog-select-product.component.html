@@ -1,0 +1,23 @@
+<h2 mat-dialog-title>Asignar Producto / Servicio</h2>
+
+<mat-dialog-content class="dialog-content">
+    @if (data?.lineDescription) {
+    <p class="dialog-hint">Línea del XML: "{{ data!.lineDescription }}"</p>
+    }
+
+    <mat-form-field appearance="outline" class="field--full">
+        <mat-label>Buscar producto/servicio del catálogo</mat-label>
+        <input type="text" matInput [formControl]="productControl" [matAutocomplete]="auto"
+            placeholder="Escribe para buscar...">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onProductSelected($event)" [displayWith]="displayFn">
+            @for (product of filteredProducts | async; track product.id) {
+            <mat-option [value]="product">{{ product.name }}</mat-option>
+            }
+        </mat-autocomplete>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button color="primary" [disabled]="!selected" (click)="confirmar()">Asignar</button>
+</mat-dialog-actions>
