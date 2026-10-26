@@ -11,6 +11,7 @@ import { LayoutRrhhComponent } from './core/views/layout-rrhh/layout-rrhh.compon
 import { LayoutGastosComponent } from './core/views/layout-gastos/layout-gastos.component';
 import { LayoutCorporateOperationsComponent } from './core/views/layout-corporate-operations/layout-corporate-operations.component';
 import { permissionGuard } from './core/guards/permission.guard';
+import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -30,7 +31,10 @@ export const routes: Routes = [
         ]
     },
     {
-        path: 'recepcion', component: LayoutPlataformaComponent, canActivate: [permissionGuard], data: { permission: 'reception.access' }, children: [
+        // Entrar al shell de Recepcion requiere al menos uno de los 6 permisos
+        // granulares de submenu; cada submenu valida ademas el suyo propio
+        // en recepcion-routing.module.ts.
+        path: 'recepcion', component: LayoutPlataformaComponent, canActivate: [permissionGuard], data: { permission: [...RECEPTION_PERMISSIONS] }, children: [
             { path: '', loadChildren: () => import('./modules/recepcion/recepcion.module').then(m => m.RecepcionModule) }
         ]
     },

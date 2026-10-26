@@ -43,6 +43,10 @@ export class PermissionsStoreService {
     return this.permissionsSubject.value.includes(code);
   }
 
+  hasAnyPermission(codes: string[]): boolean {
+    return codes.some(code => this.hasPermission(code));
+  }
+
   setSession(roles: string[], permissions: string[]): void {
     this.rolesSubject.next(roles ?? []);
     this.permissionsSubject.next(permissions ?? []);

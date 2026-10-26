@@ -18,7 +18,7 @@
     <mat-nav-list class="app-sidenav__nav">
       <span class="app-sidenav__group-label">Módulos</span>
 
-      @if (hasPermission('reception.access')) {
+      @if (hasAnyPermission(receptionPermissions)) {
       <a mat-list-item
          [routerLink]="['/recepcion']"
          routerLinkActive #rlaRecepcion="routerLinkActive"

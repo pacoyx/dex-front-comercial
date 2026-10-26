@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToggleStoreServiceService } from './core/services/toggle-store-service.service';
 import { PermissionsStoreService } from './core/services/permissions-store.service';
 import { LoginService } from './core/services/login.service';
+import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   /** Estado puramente visual: contrae el sidebar a un riel de iconos. No afecta la logica de apertura/cierre. */
   collapsed = false;
+
+  readonly receptionPermissions = RECEPTION_PERMISSIONS;
 
   constructor(
     private router: Router,
@@ -63,6 +66,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   hasPermission(code: string): boolean {
     return this.permissionsStore.hasPermission(code);
+  }
+
+  hasAnyPermission(codes: readonly string[]): boolean {
+    return this.permissionsStore.hasAnyPermission([...codes]);
   }
 
   cerrarSesion() {

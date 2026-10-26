@@ -9,25 +9,35 @@
     <span class="module-toolbar__title">Recepción</span>
 
     <nav class="module-toolbar__nav">
+      @if (hasPermission('reception.emision.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/emision" routerLinkActive="is-active">
         <mat-icon>description</mat-icon><span>Emisión</span>
       </a>
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/touch" routerLinkActive="is-active">
         <mat-icon>touch_app</mat-icon><span>Touch</span>
       </a>
+      }
+      @if (hasPermission('reception.retiro.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/retiros" routerLinkActive="is-active">
         <mat-icon>exit_to_app</mat-icon><span>Retiros</span>
       </a>
+      }
+      @if (hasPermission('reception.gastos.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/gastos" routerLinkActive="is-active">
         <mat-icon>local_atm</mat-icon><span>Gastos</span>
       </a>
+      }
+      @if (hasPermission('reception.caja.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/recepcion/caja" routerLinkActive="is-active">
         <mat-icon>point_of_sale</mat-icon><span>Caja</span>
       </a>
+      }
 
+      @if (hasPermission('reception.consultas.access')) {
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="consMenu">
         <mat-icon>person_search</mat-icon><span>Consultas</span>
       </button>
+      }
       <mat-menu #consMenu="matMenu">
         <button mat-menu-item [routerLink]="['/recepcion/consultas']" routerLinkActive="router-link-active">
           <mat-icon>manage_accounts</mat-icon>
@@ -59,9 +69,11 @@
         }
       </mat-menu>
 
+      @if (hasPermission('reception.maestros.access')) {
       <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="mntMenu">
         <mat-icon>tab_group</mat-icon><span>Maestros</span>
       </button>
+      }
       <mat-menu #mntMenu="matMenu">
         @if (hasPermission('customers.access')) {
         <button mat-menu-item [routerLink]="['/recepcion/clientes']" routerLinkActive="router-link-active">
