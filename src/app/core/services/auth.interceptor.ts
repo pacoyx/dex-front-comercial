@@ -1,11 +1,11 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { throwError, switchMap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { ILoginResponseData } from '../interfaces/ILoginResponse';
 import { LoginService } from './login.service';
 import { NotificationsSystemService } from './notifications-system.service';
+import { ACCESS_SCHEDULE_BLOCKED_MESSAGE } from '../constants/access-schedule';
 
 
 const MAX_REFRESH_ATTEMPTS = 5;
@@ -38,7 +38,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   
 
-  const router = inject(Router);
   const authService = inject(LoginService);
   const notificationsService = inject(NotificationsSystemService);
   const authTokenString = localStorage.getItem('dex24Auth');
@@ -53,18 +52,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     });
   }
 
-  // return next(authReq).pipe(
-  //   catchError((error) => {
-  //     if (error.status === 401) {        
-  //       router.navigate(['/login']);
-  //     }
-  //     // console.log('error interceptor ==>', error.error);      
-  //     // return throwError(() => new Error(JSON.stringify(error.error)));
-
-  //     return throwError(() => new Error(error.error));
-  //   })
-  // );
-
+  const isLoginRequest = req.url.includes('api/login');
+  const isRefreshRequest = req.url.includes('refresh-token');
 
   return next(authReq).pipe(
     catchError((error) => {
@@ -72,16 +61,30 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       console.log('error interceptor ==>', error.error);
       if (error.status === 403) {
+        const message = error.error?.message as string | undefined;
+
+        if (message === ACCESS_SCHEDULE_BLOCKED_MESSAGE) {
+          // El login y el refresh-token manejan este mismo 403 en su propio
+          // flujo (mostrar mensaje en pantalla / no reintentar); aqui solo
+          // forzamos el logout cuando ocurre con una sesion ya activa.
+          if (!isLoginRequest && !isRefreshRequest) {
+            authService.logout(message);
+          }
+          return throwError(() => toClientError(error.status, error.error));
+        }
+
         // Autenticado pero sin el permiso requerido: no es un problema de
         // token, no se reintenta refresh ni se redirige.
-        notificationsService.showError('No tienes permiso para realizar esta acción.');
+        if (!isLoginRequest) {
+          notificationsService.showError('No tienes permiso para realizar esta acción.');
+        }
         return throwError(() => toClientError(error.status, error.error));
       }
 
-      if (error.status === 401 && !req.url.includes('api/login')) {
+      if (error.status === 401 && !isLoginRequest) {
         if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
           console.log('***M*** Maximum refresh attempts exceeded');
-          router.navigate(['/login']);
+          authService.logout();
           return throwError(() => new Error('Maximum refresh attempts exceeded'));
         }
         refreshAttempts++;
@@ -96,7 +99,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return next(newAuthReq);
           }),
           catchError((refreshError) => {
-            router.navigate(['/login']);
+            const refreshMessage = refreshError.error?.message as string | undefined;
+            authService.logout(refreshMessage === ACCESS_SCHEDULE_BLOCKED_MESSAGE ? refreshMessage : undefined);
             return throwError(() => toClientError(refreshError.status, refreshError.error));
           })
         );

@@ -13,6 +13,7 @@ import {
   IUpdateUserRolesRequest,
   IUserRolesResponse,
 } from '../../../core/interfaces/IRbac';
+import { IUpdateUserAccessScheduleRequest, IUserAccessScheduleResponse } from '../interfaces/IAccessSchedule';
 
 @Injectable({
   providedIn: 'root'
@@ -62,6 +63,14 @@ export class RolesService {
 
   actualizarRolesDeUsuario(userId: number, req: IUpdateUserRolesRequest): Observable<IResponseGeneric<IUserRolesResponse>> {
     return this.http.put<IResponseGeneric<IUserRolesResponse>>(`${this.apiUrl}${environment.EPUsersRoles}/${userId}/roles`, req, { headers: this.headers });
+  }
+
+  obtenerHorarioAcceso(userId: number): Observable<IResponseGeneric<IUserAccessScheduleResponse>> {
+    return this.http.get<IResponseGeneric<IUserAccessScheduleResponse>>(`${this.apiUrl}${environment.EPUsersRoles}/${userId}/access-schedule`, { headers: this.headers });
+  }
+
+  actualizarHorarioAcceso(userId: number, req: IUpdateUserAccessScheduleRequest): Observable<IResponseGeneric<IUserAccessScheduleResponse>> {
+    return this.http.put<IResponseGeneric<IUserAccessScheduleResponse>>(`${this.apiUrl}${environment.EPUsersRoles}/${userId}/access-schedule`, req, { headers: this.headers });
   }
 
 }

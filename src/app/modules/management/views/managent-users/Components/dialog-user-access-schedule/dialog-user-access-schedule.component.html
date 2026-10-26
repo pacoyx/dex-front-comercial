@@ -1,0 +1,77 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>schedule</mat-icon>
+        <h2 mat-dialog-title>Horario de acceso de "{{ data.userName }}"</h2>
+    </div>
+    <button mat-icon-button (click)="cerrar()" [disabled]="saving" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+
+    @if (loading) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando horario...</span>
+    </div>
+    } @else {
+
+    @if (sinRestriccion) {
+    <div class="no-restriction-hint">
+        <mat-icon>lock_open</mat-icon>
+        <span>Este usuario no tiene restricción de horario (acceso libre). Agrega un rango a un día para restringirlo.</span>
+    </div>
+    }
+
+    <ul class="day-list">
+        @for (day of days; track day.key) {
+        <li class="day-list__item">
+            <div class="day-list__header">
+                <span class="day-list__label">{{ day.label }}</span>
+                <button mat-icon-button (click)="agregarRango(day)" [disabled]="saving" [attr.aria-label]="'Agregar rango a ' + day.label">
+                    <mat-icon>add_circle_outline</mat-icon>
+                </button>
+            </div>
+
+            @if (day.ranges.length === 0) {
+            <span class="day-list__empty">Sin acceso este día</span>
+            } @else {
+            @for (range of day.ranges; track $index) {
+            <div class="range-row">
+                <mat-form-field appearance="outline" class="range-row__time">
+                    <mat-label>Desde</mat-label>
+                    <input matInput type="time" [(ngModel)]="range.startTime" [disabled]="saving">
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="range-row__time">
+                    <mat-label>Hasta</mat-label>
+                    <input matInput type="time" [(ngModel)]="range.endTime" [disabled]="saving">
+                </mat-form-field>
+                <button mat-icon-button color="warn" (click)="quitarRango(day, $index)" [disabled]="saving" aria-label="Quitar rango">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            }
+            }
+        </li>
+        }
+    </ul>
+    }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="cerrar()" [disabled]="saving">Cancelar</button>
+
+    @if (saving) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Guardando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" [disabled]="loading" (click)="guardar()">
+        <mat-icon>save</mat-icon>
+        Guardar Horario
+    </button>
+    }
+</mat-dialog-actions>

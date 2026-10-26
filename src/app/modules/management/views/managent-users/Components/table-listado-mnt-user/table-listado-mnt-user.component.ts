@@ -10,6 +10,7 @@ import { DialogAddUserComponent } from '../dialog-add-user/dialog-add-user.compo
 import { IGetUserResponse } from '../../../../interfaces/IUsers';
 import { DialogQuestionComponent } from '../../../../../recepcion/components/dialog-question/dialog-question.component';
 import { ManagentSystemService } from '../../../../services/managent-system.service';
+import { DialogUserAccessScheduleComponent } from '../dialog-user-access-schedule/dialog-user-access-schedule.component';
 
 
 @Component({
@@ -49,6 +50,12 @@ export class TableListadoMntUserComponent {
         }
       });
     }
+
+  horarioAccesoUser(user: IGetUserResponse) {
+    this.dialog.open(DialogUserAccessScheduleComponent, {
+      data: { userId: user.id, userName: user.name }
+    });
+  }
 
   eliminarUser(user: IGetUserResponse) {
       const dialogRef = this.dialog.open(DialogQuestionComponent, {

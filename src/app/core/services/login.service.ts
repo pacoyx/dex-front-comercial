@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
+import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { ILoginResponse, ILoginResponseData } from '../interfaces/ILoginResponse';
 import { ILoginRequest } from '../interfaces/ILoginRequest';
@@ -18,8 +19,20 @@ export class LoginService {
 
   private apiUrl = environment.apiUrlBase;
   private permissionsStore = inject(PermissionsStoreService);
+  private router = inject(Router);
 
   constructor(private http: HttpClient) { }
+
+  /**
+   * Punto unico de cierre de sesion: limpia localStorage y el store de
+   * permisos antes de redirigir, para evitar el estado inconsistente que
+   * dejaba cada componente cerrando sesion por su cuenta.
+   */
+  logout(noticeMessage?: string): void {
+    localStorage.setItem('dex24Auth', '');
+    this.permissionsStore.clear();
+    this.router.navigate(['/login'], noticeMessage ? { queryParams: { notice: noticeMessage } } : undefined);
+  }
 
   login(username: string, password: string): Observable<ILoginResponse> {
     console.log('this.apiUrl==>', this.apiUrl);

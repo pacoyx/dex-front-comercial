@@ -1,5 +1,5 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +28,6 @@ export class LayoutPlataformaComponent {
   loginService = inject(LoginService);
   private permissionsStore = inject(PermissionsStoreService);
   constructor(
-    private router: Router,
     private toggleStore: ToggleStoreServiceService
   ) { }
 
@@ -37,8 +36,7 @@ export class LayoutPlataformaComponent {
   }
 
   cerrarSesion() {
-    localStorage.setItem('dex24Auth', '');
-    this.router.navigate(['/login']);
+    this.loginService.logout();
     this.toggleStore.setToggleState(false);
   }
 

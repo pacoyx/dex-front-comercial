@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { LoadingComponent } from "../loading/loading.component";
 import { Subscription } from 'rxjs';
@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   authService = inject(LoginService);
   private permissionsStore = inject(PermissionsStoreService);
   private dialog = inject(MatDialog);
@@ -58,6 +59,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Aviso que deja el interceptor al forzar un logout (ej. horario de
+    // acceso vencido mientras la sesion seguia activa).
+    const notice = this.activatedRoute.snapshot.queryParamMap.get('notice');
+    if (notice) {
+      this.mostrarerror(notice);
+    }
   }
 
   onSubmit() {
@@ -102,6 +109,10 @@ export class LoginComponent implements OnInit, OnDestroy {
           var errMsg = 'Error en el inicio de sesión';
           if (err.status === 401) {
             errMsg = 'Usuario no autorizado, verifique sus credenciales';
+          } else if (err.status === 403 && err.error?.message) {
+            // Caso horario de acceso (u otro 403 con mensaje propio del backend):
+            // se muestra tal cual en vez del error generico de credenciales.
+            errMsg = err.error.message;
           }
           this.loading.set(false);
           this.mostrarerror(errMsg);

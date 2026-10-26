@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { environment } from '../environments/environment';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,7 +35,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   readonly receptionPermissions = RECEPTION_PERMISSIONS;
 
   constructor(
-    private router: Router,
     private toggleStore: ToggleStoreServiceService,
     private permissionsStore: PermissionsStoreService,
     private loginService: LoginService,
@@ -73,9 +72,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   cerrarSesion() {
-    localStorage.setItem('dex24Auth', '');
-    this.permissionsStore.clear();
-    this.router.navigate(['/login']);
+    this.loginService.logout();
     this.toggleStore.setToggleState(false);
   }
 
