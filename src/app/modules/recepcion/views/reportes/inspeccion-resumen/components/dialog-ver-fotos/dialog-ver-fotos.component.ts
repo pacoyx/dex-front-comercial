@@ -13,6 +13,12 @@ export interface IVerFotosData {
 
 const UMBRAL_SWIPE_PX = 40;
 
+const ETAPA_LABELS: Record<string, string> = {
+  Recojo: 'Recojo',
+  Revision: 'Revisión',
+  Entrega: 'Entrega',
+};
+
 @Component({
   selector: 'app-dialog-ver-fotos',
   standalone: true,
@@ -39,6 +45,11 @@ export class DialogVerFotosComponent {
   get urlActual(): string | undefined {
     const foto = this.fotoActual;
     return foto ? this.data.fotoUrls.get(foto.id) : undefined;
+  }
+
+  get etapaActual(): string {
+    const stage = this.fotoActual?.stage;
+    return stage ? (ETAPA_LABELS[stage] ?? stage) : '';
   }
 
   get hayAnterior(): boolean {

@@ -1,5 +1,8 @@
-<h2 mat-dialog-title>
-    Foto {{index + 1}} de {{data.fotos.length}}
+<h2 mat-dialog-title class="titulo-con-chip">
+    <span>Foto {{index + 1}} de {{data.fotos.length}}</span>
+    @if (etapaActual) {
+    <span class="chip-etapa">{{ etapaActual }}</span>
+    }
 </h2>
 <mat-dialog-content>
     <div class="carrusel" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">

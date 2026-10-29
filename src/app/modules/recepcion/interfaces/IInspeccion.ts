@@ -45,6 +45,8 @@ export interface ItemInspectionResponse {
     createdAt: string;
 }
 
+export type WorkGuideEvidenceStage = 'Recojo' | 'Revision' | 'Entrega';
+
 export interface ItemPhotoResponse {
     id: number;
     workGuideMainId: number;
@@ -52,6 +54,8 @@ export interface ItemPhotoResponse {
     originalFileName: string | null;
     contentType: string;
     fileSize: number;
+    stage: WorkGuideEvidenceStage;
+    employeeId: number | null;
     createdAt: string;
 }
 
@@ -86,6 +90,8 @@ export interface WorkGuidePhotoResponse {
     originalFileName: string | null;
     contentType: string;
     fileSize: number;
+    stage: WorkGuideEvidenceStage;
+    employeeId: number | null;
     createdAt: string;
 }
 
