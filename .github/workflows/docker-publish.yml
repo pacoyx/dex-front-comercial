@@ -1,4 +1,4 @@
-name: Build and push Docker image
+name: Build, test and push Docker image
 
 on:
   push:
@@ -6,7 +6,55 @@ on:
       - main
 
 jobs:
+  # Job 1: construye la imagen y verifica que nginx sirve el sitio correctamente.
+  # Si falla, el job "build-and-push" nunca se ejecuta.
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir imagen (solo local, no se sube)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: smoke-test-image:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Levantar contenedor de prueba
+        run: |
+          docker run -d --name smoke-test -p 8080:80 smoke-test-image:ci
+
+      - name: Esperar a que nginx responda con el index.html
+        run: |
+          for i in $(seq 1 15); do
+            if curl -sf http://localhost:8080/ | grep -qi "<html"; then
+              echo "Frontend respondio OK"
+              exit 0
+            fi
+            echo "Esperando a que nginx levante... intento $i"
+            sleep 2
+          done
+          echo "El frontend no respondio a tiempo o no devolvio HTML valido"
+          exit 1
+
+      - name: Logs del contenedor (util si fallo el paso anterior)
+        if: always()
+        run: docker logs smoke-test
+
+      - name: Detener contenedor de prueba
+        if: always()
+        run: docker rm -f smoke-test
+
+  # Job 2: solo corre si "smoke-test" paso correctamente.
   build-and-push:
+    needs: smoke-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
