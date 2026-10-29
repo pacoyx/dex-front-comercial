@@ -1,0 +1,69 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>local_shipping</mat-icon>
+        <h2 mat-dialog-title>Programar Logística — {{ data.orderNumber }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Vehículo</mat-label>
+                <mat-select formControlName="vehicleId">
+                    @for (vehiculo of vehiculos; track vehiculo.id) {
+                    <mat-option [value]="vehiculo.id">{{ vehiculo.plate }} — {{ vehiculo.description }}</mat-option>
+                    }
+                </mat-select>
+                @if (loadingVehiculos) {
+                <mat-hint>Cargando vehículos...</mat-hint>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Chofer (empleado)</mat-label>
+                <input matInput [formControl]="employeeControl" [matAutocomplete]="autoEmpleado"
+                    placeholder="Buscar por nombre o código">
+                <mat-autocomplete #autoEmpleado="matAutocomplete" [displayWith]="displayEmployeeFn">
+                    @for (empleado of (filteredEmployees | async); track empleado.id) {
+                    <mat-option [value]="empleado">{{ empleado.firstName }} {{ empleado.lastName }} ({{ empleado.code }})</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Fecha y Hora de Recojo</mat-label>
+                <input matInput type="datetime-local" formControlName="scheduledPickupDate">
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Programando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
+        Programar
+    </button>
+    }
+</mat-dialog-actions>

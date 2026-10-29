@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { IBranchSalesCreateDto, IBranchSalesEditDto } from '../../../../../recepcion/interfaces/IBranchSales';
 import { IPrinterResponseDto } from '../../../../../recepcion/interfaces/IPrinter';
 
@@ -18,7 +19,8 @@ import { IPrinterResponseDto } from '../../../../../recepcion/interfaces/IPrinte
   imports: [
     FormsModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatDialogActions, MatDialogTitle,
-    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule
+    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule,
+    MatCheckboxModule
   ],
   templateUrl: './dialog-form-reg-sucursal.component.html',
   styleUrl: './dialog-form-reg-sucursal.component.css'
@@ -44,6 +46,7 @@ export class DialogFormRegSucursalComponent implements OnInit {
       status: ['A', Validators.required],
       code: ['', Validators.required],
       defaultPrinterId: ['', Validators.required],
+      isCentral: [false],
     });
 
   }

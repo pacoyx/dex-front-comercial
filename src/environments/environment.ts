@@ -40,6 +40,13 @@ export const environment = {
     EPDevolverPrendas: 'api/workGuideMain/returnUnwashedClothes',
     EPRecogerItem: 'api/workGuideMain/pickUpItem',
     EPReimprimirGuia: 'api/workGuideMain', // POST {id}/reprint
+    EPAgregarItemGuia: 'api/workGuideMain', // POST /{id}/items
+    EPAjustarCantidadItemGuia: 'api/workGuideMain/items', // PUT /{detailId}/quantity
+    EPAnularItemGuia: 'api/workGuideMain/cancelItem', // PUT /{id}
+
+    // Pedidos Web (canal de pedidos a domicilio)
+    EPWebOrdersAdmin: 'api/web-orders/admin',
+    EPWebOrderZones: 'api/web-orders/catalog/zones',
 
     EPListarGastosPorUsuario: 'api/expenseBox/byUser',
     EPListarGastosPorFecha: 'api/expenseBox/byDate',

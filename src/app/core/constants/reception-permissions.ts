@@ -10,4 +10,5 @@ export const RECEPTION_PERMISSIONS = [
   'reception.caja.access',
   'reception.gastos.access',
   'reception.maestros.access',
+  'reception.pedidosweb.access',
 ] as const;

@@ -74,6 +74,18 @@
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="isCentral">
+                    <th mat-header-cell *matHeaderCellDef> Central </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.isCentral) {
+                        <span class="status-chip status-chip--activo">
+                            <span class="status-chip__dot"></span>
+                            Central
+                        </span>
+                        }
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="operaciones">
                     <th mat-header-cell *matHeaderCellDef> Operaciones </th>
                     <td mat-cell *matCellDef="let element">

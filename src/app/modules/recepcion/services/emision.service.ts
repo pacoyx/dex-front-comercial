@@ -20,6 +20,7 @@ import { IAperturaCajaRequest, ICashBoxDetailResponseDto, ICerrarCajaRequest, ID
 import { IIdsPesoLavadoResponse, IResponseServiceQuickAccess } from '../interfaces/IProdServices';
 import { IReimprimirGuiaRequest } from '../interfaces/IReimprimirGuiaRequest';
 import { ICustomerGarmentHistory } from '../interfaces/ICustomerGarmentHistory';
+import { IAddWorkGuideItemRequest, IAddWorkGuideItemResponse, IAdjustWorkGuideItemQuantityRequest, IAdjustWorkGuideItemQuantityResponse } from '../interfaces/IWorkGuideItemAdjust';
 
 
 @Injectable({
@@ -267,5 +268,22 @@ export class EmisionService {
     return this.http.get<IResponseGeneric<IResponseServiceQuickAccess[]>>(url, { headers });
   }
 
+  agregarItemGuia(workGuideMainId: number, req: IAddWorkGuideItemRequest): Observable<IResponseGeneric<IAddWorkGuideItemResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPAgregarItemGuia}/${workGuideMainId}/items`;
+    return this.http.post<IResponseGeneric<IAddWorkGuideItemResponse>>(url, req, { headers });
+  }
+
+  ajustarCantidadItemGuia(workGuideDetailId: number, req: IAdjustWorkGuideItemQuantityRequest): Observable<IResponseGeneric<IAdjustWorkGuideItemQuantityResponse>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPAjustarCantidadItemGuia}/${workGuideDetailId}/quantity`;
+    return this.http.put<IResponseGeneric<IAdjustWorkGuideItemQuantityResponse>>(url, req, { headers });
+  }
+
+  anularItemGuia(workGuideDetailId: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPAnularItemGuia}/${workGuideDetailId}`;
+    return this.http.put<IResponseGeneric<string>>(url, {}, { headers });
+  }
 
 }

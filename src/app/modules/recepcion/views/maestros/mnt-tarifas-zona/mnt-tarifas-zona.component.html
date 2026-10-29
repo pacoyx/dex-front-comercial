@@ -1,0 +1,94 @@
+<div class="container-mnt-tarifas-zona">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>price_change</mat-icon>
+            <div class="page-header__heading">
+                <h1>Tarifas por Zona</h1>
+                <span class="page-header__subtitle">Precios por servicio según la zona del pedido web (solo una tarifa activa por zona)</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevaVersion()" [disabled]="!zonaActual">
+                <mat-icon>add</mat-icon>
+                Nueva Versión
+            </button>
+        </div>
+    </div>
+
+    @if (!loadingZonas) {
+    <mat-tab-group (selectedIndexChange)="onZoneChange($event)">
+        @for (zona of zonas; track zona.id) {
+        <mat-tab [label]="zona.name"></mat-tab>
+        }
+    </mat-tab-group>
+    }
+
+    <div class="panel panel-tabla">
+        <div class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="version">
+                    <th mat-header-cell *matHeaderCellDef> Versión </th>
+                    <td mat-cell *matCellDef="let element"> v{{element.version}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="effectiveFrom">
+                    <th mat-header-cell *matHeaderCellDef> Vigente Desde </th>
+                    <td mat-cell *matCellDef="let element"> {{element.effectiveFrom | date:'dd/MM/yyyy'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="effectiveTo">
+                    <th mat-header-cell *matHeaderCellDef> Vigente Hasta </th>
+                    <td mat-cell *matCellDef="let element"> {{element.effectiveTo ? (element.effectiveTo | date:'dd/MM/yyyy') : '-'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="isActive">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        @if (element.isActive) {
+                        <span class="status-chip status-chip--activo"><span class="status-chip__dot"></span>Activa</span>
+                        } @else {
+                        <span class="status-chip status-chip--inactivo"><span class="status-chip__dot"></span>Inactiva</span>
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="celda-operaciones">
+                            <button mat-icon-button (click)="editarTarifa(element)" matTooltip="Ver / Editar">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            @if (element.isActive) {
+                            <button mat-icon-button (click)="desactivarTarifa(element)" matTooltip="Desactivar">
+                                <mat-icon>toggle_off</mat-icon>
+                            </button>
+                            } @else {
+                            <button mat-icon-button (click)="activarTarifa(element)" matTooltip="Activar">
+                                <mat-icon>toggle_on</mat-icon>
+                            </button>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        Esta zona no tiene tarifas registradas.
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>

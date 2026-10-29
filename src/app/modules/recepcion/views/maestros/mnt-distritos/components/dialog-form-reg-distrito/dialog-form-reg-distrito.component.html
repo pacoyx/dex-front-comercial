@@ -1,0 +1,62 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>edit_location</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Zona</mat-label>
+                <mat-select formControlName="zoneId">
+                    @for (zona of zonas; track zona.id) {
+                    <mat-option [value]="zona.id">{{ zona.name }}</mat-option>
+                    }
+                </mat-select>
+                @if (loadingZonas) {
+                <mat-hint>Cargando zonas...</mat-hint>
+                }
+            </mat-form-field>
+
+            @if (!data.esNuevo) {
+            <mat-checkbox formControlName="isActive">Activo</mat-checkbox>
+            }
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()">
+        <mat-icon>check</mat-icon>
+        Guardar
+    </button>
+    }
+</mat-dialog-actions>

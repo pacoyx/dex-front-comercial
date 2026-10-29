@@ -25,6 +25,11 @@
             </div>
             <div class="panel__content">
                 <div class="busqueda-row">
+                    <mat-form-field appearance="outline" class="campo-serie">
+                        <mat-label>Serie</mat-label>
+                        <input matInput maxlength="5" [(ngModel)]="numeroSerie" (keydown.enter)="buscarGuia()" />
+                    </mat-form-field>
+
                     <mat-form-field appearance="outline" class="campo-guia">
                         <mat-label>N° Guia</mat-label>
                         <input matInput type="number" [(ngModel)]="numeroGuia" (keydown.enter)="buscarGuia()" />
@@ -224,6 +229,12 @@
                 <mat-icon>checklist</mat-icon>
                 Detalle de Prendas
             </h2>
+            @if (puedeAjustarItems) {
+            <button mat-stroked-button class="accion-btn" (click)="agregarItem()">
+                <mat-icon>add_box</mat-icon>
+                Agregar Ítem
+            </button>
+            }
         </div>
         <div class="tabla-scroll">
             <table mat-table [dataSource]="dataSource" class="detail-table">
@@ -431,6 +442,16 @@
                                 matTooltip="Cambiar Ubicación">
                                 <mat-icon>pin_drop</mat-icon>
                             </button>
+                            @if (puedeAjustarItems) {
+                            <button mat-icon-button (click)="ajustarCantidad(element)" class="icono-accion"
+                                [disabled]="element.estadoRegistro == 'I'" matTooltip="Ajustar Cantidad">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="anularItem(element)" class="icono-accion"
+                                [disabled]="!puedeAnularItem(element)" matTooltip="Anular Ítem">
+                                <mat-icon style="color: red;">delete</mat-icon>
+                            </button>
+                            }
                             @if(false && esZapatilla(element)){
                             <button mat-stroked-button (click)="abrirZapatilla(element)" class="btn-block">
                                 <mat-icon>sports_soccer</mat-icon>

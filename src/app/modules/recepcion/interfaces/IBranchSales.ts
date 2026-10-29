@@ -6,6 +6,7 @@ export interface IBranchSalesResponseDto {
     code: string;
     defaultPrinterId: number;
     printerName: string | null;
+    isCentral: boolean;
 }
 
 export interface IBranchSalesCreateDto {
@@ -23,6 +24,7 @@ export interface IBranchSalesEditDto {
     status: string;
     code: string;
     defaultPrinterId: number;
+    isCentral: boolean;
 }
 
 export interface IBranchSalesUserResponseDto {

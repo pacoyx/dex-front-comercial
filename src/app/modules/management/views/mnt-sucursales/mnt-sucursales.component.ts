@@ -36,6 +36,7 @@ export class MntSucursalesComponent implements OnInit {
     'code',
     'printerName',
     'status',
+    'isCentral',
     'operaciones',
     'usuarios'
   ];
@@ -79,7 +80,8 @@ export class MntSucursalesComponent implements OnInit {
       address: item.address,
       status: item.status,
       code: item.code,
-      defaultPrinterId: item.defaultPrinterId
+      defaultPrinterId: item.defaultPrinterId,
+      isCentral: item.isCentral
     };
 
     const dialogRef = this.dialog.open(DialogFormRegSucursalComponent, {

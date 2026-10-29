@@ -1,0 +1,56 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>edit</mat-icon>
+        <h2 mat-dialog-title>Ajustar Cantidad</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (data.productName) {
+    <p class="hint-text">{{ data.productName }} — cantidad actual: {{ data.cantidadActual }}</p>
+    }
+
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Nueva Cantidad</mat-label>
+                <input matInput type="number" formControlName="newQuantity">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Observación (opcional)</mat-label>
+                <textarea matInput formControlName="observation" rows="2"
+                    placeholder="Ej: el cliente solo envió 1, no 3"></textarea>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">
+        <mat-icon>check</mat-icon>
+        Guardar
+    </button>
+    }
+</mat-dialog-actions>

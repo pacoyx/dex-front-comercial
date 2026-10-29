@@ -39,6 +39,9 @@ import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DialogCambiarUbicacionComponent } from '../../components/dialog-cambiar-ubicacion/dialog-cambiar-ubicacion.component';
 import { IWorkGuideDetailLocationResponse } from '../../interfaces/IUbicaciones';
+import { PermissionsStoreService } from '../../../../core/services/permissions-store.service';
+import { DialogAgregarItemGuiaComponent } from '../../components/dialog-agregar-item-guia/dialog-agregar-item-guia.component';
+import { DialogAjustarCantidadItemComponent } from '../../components/dialog-ajustar-cantidad-item/dialog-ajustar-cantidad-item.component';
 
 @Component({
   selector: 'app-recepcion-retirar',
@@ -56,7 +59,7 @@ import { IWorkGuideDetailLocationResponse } from '../../interfaces/IUbicaciones'
 export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   numeroGuia: number | null = null;
-  numeroSerie: string = '';
+  numeroSerie: string = '001';
   private _bottomSheet = inject(MatBottomSheet);
   emisionService = inject(EmisionService);
   readonly dialog = inject(MatDialog);
@@ -65,6 +68,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
   notificacionService = inject(NotificationServiceService);
   route = inject(ActivatedRoute);
   inspeccionService = inject(InspeccionService);
+  permissionsStore = inject(PermissionsStoreService);
 
   guiaRetiroSubscription!: Subscription;
   estadoSituacionSubscription!: Subscription;
@@ -527,7 +531,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
           this.notificacionService.showError('Esta guía no tiene fotos de inspección registradas.');
           return;
         }
-        this.descargarYMostrarFotosInspeccion(fotos);
+        this.descargarYMostrarFotosInspeccion(this.agruparFotosPorEtapa(fotos));
       },
       error: (err) => {
         console.log(err);
@@ -569,6 +573,20 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
     this.fotoUrlsInspeccion.clear();
   }
 
+  private static readonly ORDEN_ETAPAS: Record<string, number> = {
+    Recojo: 0,
+    Revision: 1,
+    Entrega: 2,
+  };
+
+  private agruparFotosPorEtapa(fotos: WorkGuidePhotoResponse[]): WorkGuidePhotoResponse[] {
+    return [...fotos].sort((a, b) => {
+      const ordenA = RecepcionRetirarComponent.ORDEN_ETAPAS[a.stage] ?? 99;
+      const ordenB = RecepcionRetirarComponent.ORDEN_ETAPAS[b.stage] ?? 99;
+      return ordenA - ordenB;
+    });
+  }
+
   private static readonly UBICACION_LABELS: Record<string, string> = {
     L: 'Lavandería',
     P: 'Planta',
@@ -590,6 +608,62 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
       item.ubicacion = result.ubicacion;
       item.fechaEnvioUbicacion = result.fechaEnvio;
       item.fechaEntregaAproxUbicacion = result.fechaEntregaAprox;
+    });
+  }
+
+  get puedeAjustarItems(): boolean {
+    return this.permissionsStore.hasPermission('reception.emision.access')
+      && !!this.guiaRetiroData
+      && this.guiaRetiroData.estadoPago !== 'PA'
+      && this.guiaRetiroData.estadoRegistro !== 'I';
+  }
+
+  puedeAnularItem(item: IGuiaRetiroWgdDTO): boolean {
+    return this.puedeAjustarItems && item.estadoRegistro !== 'I';
+  }
+
+  agregarItem(): void {
+    if (!this.guiaRetiroData) return;
+
+    this.dialog.open(DialogAgregarItemGuiaComponent, {
+      data: { workGuideMainId: this.guiaRetiroData.id },
+      width: '480px'
+    }).afterClosed().subscribe((result) => {
+      if (result) {
+        this.buscarGuia();
+      }
+    });
+  }
+
+  ajustarCantidad(item: IGuiaRetiroWgdDTO): void {
+    this.dialog.open(DialogAjustarCantidadItemComponent, {
+      data: { workGuideDetailId: item.id, productName: item.product.name, cantidadActual: item.cant },
+      width: '420px'
+    }).afterClosed().subscribe((result) => {
+      if (result) {
+        this.buscarGuia();
+      }
+    });
+  }
+
+  anularItem(item: IGuiaRetiroWgdDTO): void {
+    this.dialog.open(DialogQuestionComponent, {
+      data: { title: 'Anular Ítem', message: `¿Está seguro de anular el ítem "${item.product.name}"?`, msgButton: 'Anular' }
+    }).afterClosed().subscribe((result) => {
+      if (result !== 'OK') return;
+
+      this.emisionService.anularItemGuia(item.id).subscribe({
+        next: (resp) => {
+          if (!resp.success) {
+            this.notificacionService.showError(resp.message);
+            return;
+          }
+          this.buscarGuia();
+        },
+        error: (err) => {
+          this.notificacionService.showError(err?.error?.message || 'No se pudo anular el ítem.');
+        }
+      });
     });
   }
 }

@@ -1,0 +1,94 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>price_change</mat-icon>
+        <h2 mat-dialog-title>{{ titulo }}</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (loadingDatos) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando datos...</span>
+    </div>
+    } @else {
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Vigente Desde</mat-label>
+                <input matInput [matDatepicker]="pickerFrom" formControlName="effectiveFrom">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Vigente Hasta (opcional)</mat-label>
+                <input matInput [matDatepicker]="pickerTo" formControlName="effectiveTo">
+                <mat-datepicker-toggle matIconSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field>
+
+            @if (data.esNuevo) {
+            <mat-checkbox formControlName="activate" class="field--full">Activar esta tarifa al guardar</mat-checkbox>
+            }
+        </div>
+
+        <p class="hint-text">Asigna el precio por servicio para esta zona. Solo se guardarán los servicios con precio mayor a 0.</p>
+
+        <div class="detalle-scroll" formArrayName="details">
+            <table class="detalle-table">
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th class="column-right">Precio Unitario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (fila of detallesArray.controls; track $index) {
+                    <tr [formGroupName]="$index">
+                        <td>{{ fila.value.serviceItemName }}</td>
+                        <td class="column-right">
+                            <input type="number" formControlName="unitPrice" min="0" step="0.01" class="precio-input">
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </form>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="loadingDatos">
+        <mat-icon>check</mat-icon>
+        Guardar
+    </button>
+    }
+</mat-dialog-actions>

@@ -111,6 +111,10 @@
     width: 160px;
 }
 
+.campo-serie {
+    width: 90px;
+}
+
 .busqueda-loading {
     display: flex;
     align-items: center;
@@ -537,7 +541,8 @@ app-ticket-venta {
         gap: 12px;
     }
 
-    .campo-guia {
+    .campo-guia,
+    .campo-serie {
         width: 100%;
     }
 

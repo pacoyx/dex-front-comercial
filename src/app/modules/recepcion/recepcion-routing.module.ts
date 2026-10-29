@@ -16,6 +16,9 @@ import { ReporteResumenCajaComponent } from './views/reportes/reporte-resumen-ca
 import { DashboardcajaComponent } from './views/reportes/dashboardcaja/dashboardcaja.component';
 import { InspeccionResumenComponent } from './views/reportes/inspeccion-resumen/inspeccion-resumen.component';
 import { ReporteSneakersComponent } from './views/reportes/reporte-sneakers/reporte-sneakers.component';
+import { RecepcionPedidosWebComponent } from './views/recepcion-pedidos-web/recepcion-pedidos-web.component';
+import { MntDistritosComponent } from './views/maestros/mnt-distritos/mnt-distritos.component';
+import { MntTarifasZonaComponent } from './views/maestros/mnt-tarifas-zona/mnt-tarifas-zona.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -23,6 +26,7 @@ const routes: Routes = [
   { path: 'touch', component: RecepcionTouchComponent, canActivate: [permissionGuard], data: { permission: 'reception.emision.access' } },
   { path: 'retiros', component: RecepcionRetirarComponent, canActivate: [permissionGuard], data: { permission: 'reception.retiro.access' } },
   { path: 'retiros/:serie/:numGuia', component: RecepcionRetirarComponent, canActivate: [permissionGuard], data: { permission: 'reception.retiro.access' } },
+  { path: 'pedidos-web', component: RecepcionPedidosWebComponent, canActivate: [permissionGuard], data: { permission: 'reception.pedidosweb.access' } },
   { path: 'caja', component: RecepcionCajaComponent, canActivate: [permissionGuard], data: { permission: 'reception.caja.access' } },
   { path: 'consultas', component: RecepcionConsultasComponent, canActivate: [permissionGuard], data: { permission: 'reception.consultas.access' } },
   { path: 'consultas/:clienteId', component: RecepcionConsultasComponent, canActivate: [permissionGuard], data: { permission: 'reception.consultas.access' } },
@@ -32,6 +36,8 @@ const routes: Routes = [
   { path: 'servicios', component: MntProdservicesComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'ubicaciones', component: MntUbicacionComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
+  { path: 'distritos', component: MntDistritosComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
+  { path: 'tarifas-zona', component: MntTarifasZonaComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'resumenCaja', component: ReporteResumenCajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'dashboardcash', component: DashboardcajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'inspeccion-resumen', component: InspeccionResumenComponent, canActivate: [permissionGuard], data: { permission: 'reception.consultas.access' } },

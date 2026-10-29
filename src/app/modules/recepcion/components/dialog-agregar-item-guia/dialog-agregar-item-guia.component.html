@@ -1,0 +1,72 @@
+<div class="dialog-header">
+    <div class="dialog-header__title">
+        <mat-icon>add_box</mat-icon>
+        <h2 mat-dialog-title>Agregar Ítem</h2>
+    </div>
+    <button mat-icon-button (click)="onCancel()" [disabled]="loadingSave" aria-label="Cerrar">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    @if (loadingServicios) {
+    <div class="loading-row">
+        <app-loading></app-loading>
+        <span>Cargando servicios...</span>
+    </div>
+    } @else {
+    <form [formGroup]="form">
+        <div class="form-grid">
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Servicio</mat-label>
+                <mat-select formControlName="serviceItemId" (selectionChange)="onServicioSeleccionado($event.value)">
+                    @for (servicio of servicios; track servicio.id) {
+                    <mat-option [value]="servicio.id">{{ servicio.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Cantidad</mat-label>
+                <input matInput type="number" formControlName="quantity">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Precio Unitario</mat-label>
+                <input matInput type="number" formControlName="unitPrice">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Observación (opcional)</mat-label>
+                <textarea matInput formControlName="observation" rows="2"></textarea>
+            </mat-form-field>
+        </div>
+    </form>
+    }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-stroked-button (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
+
+    @if (loadingSave) {
+    <button mat-flat-button color="primary" disabled>
+        <app-loading></app-loading>
+        Grabando...
+    </button>
+    } @else {
+    <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="loadingServicios || form.invalid">
+        <mat-icon>check</mat-icon>
+        Agregar
+    </button>
+    }
+</mat-dialog-actions>

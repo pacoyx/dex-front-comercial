@@ -1,0 +1,134 @@
+<div class="container-pedidos-web">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>shopping_cart</mat-icon>
+            <div class="page-header__heading">
+                <h1>Pedidos Web</h1>
+                <span class="page-header__subtitle">Cola de pedidos del canal de delivery para clientes particulares</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="cargarPedidos()" [disabled]="loading">
+                <mat-icon>refresh</mat-icon>
+                Actualizar
+            </button>
+        </div>
+    </div>
+
+    <div class="panel filtro-row">
+        <mat-form-field appearance="outline" class="filtro-estado">
+            <mat-label>Estado</mat-label>
+            <mat-select [formControl]="filtroEstado">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (estado of estados; track estado) {
+                <mat-option [value]="estado">{{ estado }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div class="panel panel-tabla">
+        <div class="tabla-scroll">
+            <table mat-table [dataSource]="dataSource" class="detail-table">
+
+                <ng-container matColumnDef="orderNumber">
+                    <th mat-header-cell *matHeaderCellDef> N° Pedido </th>
+                    <td mat-cell *matCellDef="let element"> {{element.orderNumber}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="customerName">
+                    <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                    <td mat-cell *matCellDef="let element"> {{element.customerName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="contactPhone">
+                    <th mat-header-cell *matHeaderCellDef> Teléfono </th>
+                    <td mat-cell *matCellDef="let element"> {{element.contactPhone}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="deliveryAddress">
+                    <th mat-header-cell *matHeaderCellDef> Dirección </th>
+                    <td mat-cell *matCellDef="let element"> {{element.deliveryAddress}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="column-right"> Total </th>
+                    <td mat-cell *matCellDef="let element" class="column-right"> {{element.total | number:'1.2-2'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="createdAt">
+                    <th mat-header-cell *matHeaderCellDef> Creado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.createdAt | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="requestedPickupDate">
+                    <th mat-header-cell *matHeaderCellDef> Recojo Solicitado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.requestedPickupDate ? (element.requestedPickupDate | date:'dd/MM/yyyy HH:mm') : '-'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="scheduledPickupDate">
+                    <th mat-header-cell *matHeaderCellDef> Recojo Programado </th>
+                    <td mat-cell *matCellDef="let element"> {{element.scheduledPickupDate ? (element.scheduledPickupDate | date:'dd/MM/yyyy HH:mm') : '-'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef> Estado </th>
+                    <td mat-cell *matCellDef="let element">
+                        @switch (element.status) {
+                        @case ('Pendiente') {
+                        <span class="status-chip status-chip--activo"><span class="status-chip__dot"></span>Pendiente</span>
+                        }
+                        @case ('Confirmado') {
+                        <span class="status-chip status-chip--recepcion">Confirmado</span>
+                        }
+                        @case ('Programado') {
+                        <span class="status-chip status-chip--delivery">Programado</span>
+                        }
+                        @case ('Recogido') {
+                        <span class="status-chip status-chip--activo">Recogido</span>
+                        }
+                        @case ('Rechazado') {
+                        <span class="status-chip status-chip--inactivo">Rechazado</span>
+                        }
+                        @case ('Cancelado') {
+                        <span class="status-chip status-chip--inactivo">Cancelado</span>
+                        }
+                        }
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="operaciones">
+                    <th mat-header-cell *matHeaderCellDef> Operaciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="celda-operaciones">
+                            @if (element.status === 'Pendiente') {
+                            <button mat-icon-button (click)="confirmarPedido(element)" matTooltip="Confirmar">
+                                <mat-icon style="color: green;">check_circle</mat-icon>
+                            </button>
+                            <button mat-icon-button (click)="rechazarPedido(element)" matTooltip="Rechazar">
+                                <mat-icon style="color: red;">cancel</mat-icon>
+                            </button>
+                            }
+                            @if (element.status === 'Confirmado') {
+                            <button mat-icon-button (click)="programarPedido(element)" matTooltip="Programar Logística">
+                                <mat-icon>local_shipping</mat-icon>
+                            </button>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="filas"></tr>
+
+                <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                        No hay pedidos web para el filtro seleccionado.
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
