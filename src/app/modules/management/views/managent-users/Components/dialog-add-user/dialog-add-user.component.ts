@@ -1,8 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { Observable, debounceTime, map, of, switchMap } from 'rxjs';
 import { LoadingComponent } from '../../../../../../core/components/loading/loading.component';
 import { NotificationsSystemService } from '../../../../../../core/services/notifications-system.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +15,10 @@ import { RolesService } from '../../../../services/roles.service';
 import { ICreateUserRequest, IUpdateUserRequest } from '../../../../interfaces/IUsers';
 import { IRole } from '../../../../../../core/interfaces/IRbac';
 import { MatSelectModule } from '@angular/material/select';
+import { EmployeesService } from '../../../../../rrhh/services/employees.service';
+import { IEmployeeListItem } from '../../../../../rrhh/interfaces/IEmployees';
+
+type EmpleadoOption = Pick<IEmployeeListItem, 'id' | 'firstName' | 'lastName' | 'code'>;
 
 @Component({
   selector: 'app-dialog-add-user',
@@ -19,18 +26,20 @@ import { MatSelectModule } from '@angular/material/select';
   imports: [
     FormsModule, ReactiveFormsModule, MatFormFieldModule,
     MatInputModule, MatDialogActions, MatDialogTitle,
-    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule
+    MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule,
+    MatAutocompleteModule, AsyncPipe,
   ],
   templateUrl: './dialog-add-user.component.html',
   styleUrl: './dialog-add-user.component.css'
 })
-export class DialogAddUserComponent {
+export class DialogAddUserComponent implements OnInit {
 
 
   readonly data = inject<{ esNuevo: boolean, objUsuario: any }>(MAT_DIALOG_DATA);
   usuarioService = inject(ManagentSystemService);
   private rolesService = inject(RolesService);
   private notificationService = inject(NotificationsSystemService);
+  private employeesService = inject(EmployeesService);
   userForm: FormGroup;
 
   loadingSave = false;
@@ -42,6 +51,10 @@ export class DialogAddUserComponent {
   selectedRoleIds: number[] = [];
   loadingRoles = false;
   savingRoles = false;
+
+  // Empleado vinculado (opcional): necesario para que el usuario pueda operar como chofer en PickupMobile.
+  employeeControl = this.fb.control<EmpleadoOption | string | null>(null);
+  filteredEmployees!: Observable<EmpleadoOption[]>;
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +80,41 @@ export class DialogAddUserComponent {
       this.userForm.patchValue(this.data.objUsuario);
       this.userForm.get('password')?.setValue('');
       this.cargarRoles();
+      this.cargarEmpleadoVinculado();
     }
+
+    this.filteredEmployees = this.employeeControl.valueChanges.pipe(
+      debounceTime(300),
+      switchMap(value => {
+        if (!value || (typeof value === 'string' && value.trim() === '')) {
+          return of([]);
+        }
+        if (typeof value === 'object') {
+          return of([value]);
+        }
+        return this.employeesService.listarTrabajadores({ search: value, pageSize: 10, onlyActive: true }).pipe(
+          map(resp => resp.data.employees)
+        );
+      })
+    );
+  }
+
+  private cargarEmpleadoVinculado(): void {
+    const employeeId = this.data.objUsuario?.employeeId;
+    if (!employeeId) return;
+
+    this.employeesService.obtenerTrabajador(employeeId).subscribe({
+      next: (resp) => this.employeeControl.setValue(resp.data),
+      error: () => { },
+    });
+  }
+
+  displayEmployeeFn(employee: EmpleadoOption | string): string {
+    return typeof employee === 'string' ? employee : (employee ? `${employee.firstName} ${employee.lastName} (${employee.code})` : '');
+  }
+
+  limpiarEmpleado(): void {
+    this.employeeControl.setValue(null);
   }
 
   private cargarRoles(): void {
@@ -115,7 +162,10 @@ export class DialogAddUserComponent {
     }
 
 
-    const usuarioData = this.userForm.value;
+    const empleado = this.employeeControl.value;
+    const employeeId = empleado && typeof empleado === 'object' ? empleado.id : null;
+
+    const usuarioData = { ...this.userForm.value, employeeId };
     const usuarioDataCreate: ICreateUserRequest = usuarioData;
     const usuarioidataUpdate: IUpdateUserRequest = usuarioData;
 

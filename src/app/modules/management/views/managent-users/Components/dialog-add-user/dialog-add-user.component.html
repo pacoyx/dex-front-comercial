@@ -45,6 +45,23 @@
                 <mat-option value="I">Inactivo</mat-option>
             </mat-select>
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="field--full">
+            <mat-label>Empleado (opcional)</mat-label>
+            <input type="text" matInput [formControl]="employeeControl" [matAutocomplete]="autoEmpleado"
+                placeholder="Buscar por nombre, documento o código">
+            <mat-autocomplete #autoEmpleado="matAutocomplete" [displayWith]="displayEmployeeFn">
+                @for (empleado of (filteredEmployees | async); track empleado.id) {
+                <mat-option [value]="empleado">{{ empleado.firstName }} {{ empleado.lastName }} ({{ empleado.code }})</mat-option>
+                }
+            </mat-autocomplete>
+            @if (employeeControl.value) {
+            <button matSuffix mat-icon-button (click)="limpiarEmpleado()" aria-label="Quitar empleado vinculado">
+                <mat-icon>close</mat-icon>
+            </button>
+            }
+            <mat-hint>Necesario para que el usuario pueda operar como chofer en PickupMobile.</mat-hint>
+        </mat-form-field>
     </form>
 
     @if (!data.esNuevo) {

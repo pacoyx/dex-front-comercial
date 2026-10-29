@@ -3,6 +3,7 @@ export interface ICreateUserRequest {
     userName: string;
     password: string;
     role: string;
+    employeeId?: number | null;
 }
 
 export interface ICreateUserResponse {
@@ -21,6 +22,7 @@ export interface IUpdateUserRequest {
     email: string;
     role: string;
     status: string;
+    employeeId?: number | null;
 }
 
 
@@ -31,4 +33,5 @@ export interface IGetUserResponse {
     email: string;
     role: string;
     status: string;
+    employeeId?: number | null;
 }
