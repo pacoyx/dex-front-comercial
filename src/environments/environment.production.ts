@@ -1,9 +1,8 @@
 export const environment = {
-    apiUrlBase: 'http://64.23.253.167:8080/',
+    apiUrlBase: 'http://161.35.234.43:8080/',
     apiUrlBaseAzure: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
     EPlogin: 'api/login',
-    EPRefreshToken: 'api/refresh-token',
-    // apiUrlBase: 'http://64.23.253.167:8080/', // produccion docker DigOcean
+    EPRefreshToken: 'api/refresh-token',    
 
     // Mi Cuenta (perfil del usuario logueado)
     EPUserMe: 'api/user/me',
