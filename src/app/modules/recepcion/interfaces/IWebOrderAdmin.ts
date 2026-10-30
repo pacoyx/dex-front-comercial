@@ -11,6 +11,7 @@ export interface IWebOrderAdminSummary {
     createdAt: string;
     requestedPickupDate?: string | null;
     scheduledPickupDate?: string | null;
+    additionalItemsNote?: string | null;
 }
 
 export interface IConfirmWebOrderResponse {

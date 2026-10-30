@@ -149,6 +149,29 @@
     color: var(--mat-sys-on-surface-variant);
 }
 
+.icono-nota-adicional {
+    color: #ed6c02;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    cursor: help;
+    vertical-align: middle;
+}
+
+.detail-table tr.fila-con-nota {
+    background: #fff8e1;
+}
+
+.detail-table tr.fila-con-nota:hover {
+    background: #ffecb3;
+}
+
+::ng-deep .tooltip-nota-adicional {
+    max-width: 320px !important;
+    white-space: pre-line;
+    font-size: .8rem;
+}
+
 @media (max-width: 900px) {
     .container-pedidos-web {
         padding: 12px;

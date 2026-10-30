@@ -38,7 +38,7 @@ export class RecepcionPedidosWebComponent implements OnInit {
   filtroEstado = new FormControl<WebOrderStatus | null>(null);
 
   displayedColumns: string[] = [
-    'orderNumber', 'customerName', 'contactPhone', 'deliveryAddress', 'total',
+    'orderNumber', 'notaAdicional', 'customerName', 'contactPhone', 'deliveryAddress', 'total',
     'createdAt', 'requestedPickupDate', 'scheduledPickupDate', 'status', 'operaciones'
   ];
   dataSource = new MatTableDataSource<IWebOrderAdminSummary>([]);
