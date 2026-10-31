@@ -1,0 +1,50 @@
+.contenido {
+  min-width: 480px;
+  max-width: 640px;
+}
+
+.form-activo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+
+.form-activo .campo-ancho {
+  grid-column: 1 / -1;
+}
+
+.campo-factura {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.campo-factura__input {
+  flex: 1;
+}
+
+.factura-seleccionada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--mat-sys-surface-container-high, #f0f0f0);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.resultados-factura {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.errores {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}

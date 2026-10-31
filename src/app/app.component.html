@@ -66,6 +66,18 @@
       </a>
       }
 
+      @if (hasPermission('fixed-assets.access')) {
+      <a mat-list-item
+         [routerLink]="['/fixed-assets']"
+         routerLinkActive #rlaFixedAssets="routerLinkActive"
+         [activated]="rlaFixedAssets.isActive"
+         (click)="toggle()"
+         matTooltip="Activo Fijo" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>inventory_2</mat-icon>
+        <span matListItemTitle>Activo Fijo</span>
+      </a>
+      }
+
       @if (hasPermission('invoices.access')) {
       <a mat-list-item
          [routerLink]="['/facturacion']"

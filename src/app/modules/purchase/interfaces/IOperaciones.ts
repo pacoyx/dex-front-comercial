@@ -65,6 +65,7 @@ export interface IPurchaseInvoiceListFilters {
     dateFrom?: string;
     dateTo?: string;
     status?: string;
+    invoiceNumber?: string;
 }
 
 export interface IPurchaseInvoicePayment {

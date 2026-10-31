@@ -1,0 +1,43 @@
+<h2 mat-dialog-title>
+  <mat-icon>swap_horiz</mat-icon>
+  Reasignar activo
+</h2>
+
+<mat-dialog-content class="contenido">
+  <form [formGroup]="form" class="form-reasignar">
+    <mat-form-field appearance="outline">
+      <mat-label>Nueva sucursal</mat-label>
+      <mat-select formControlName="newBranchId">
+        @for (branch of branches; track branch.id) {
+        <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Nuevo responsable (opcional)</mat-label>
+      <mat-select formControlName="newResponsibleUserId">
+        <mat-option [value]="null">Sin responsable</mat-option>
+        @for (usuario of usuarios; track usuario.id) {
+        <mat-option [value]="usuario.id">{{ usuario.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Motivo (opcional)</mat-label>
+      <textarea matInput formControlName="reason" maxlength="300" rows="2"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">
+    @if (guardando) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <ng-container>Reasignar</ng-container>
+    }
+  </button>
+</mat-dialog-actions>

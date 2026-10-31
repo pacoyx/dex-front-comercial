@@ -1,0 +1,9 @@
+.contenido {
+  min-width: 380px;
+  max-width: 480px;
+}
+
+.form-baja {
+  display: flex;
+  flex-direction: column;
+}

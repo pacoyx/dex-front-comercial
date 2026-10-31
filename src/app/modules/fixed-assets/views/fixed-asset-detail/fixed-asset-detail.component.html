@@ -1,0 +1,129 @@
+@if (asset) {
+<div class="container-detail">
+
+    <button mat-button (click)="volver()" class="boton-volver">
+        <mat-icon>arrow_back</mat-icon>
+        Volver al listado
+    </button>
+
+    <mat-card class="panel panel-header" appearance="outlined">
+        <mat-card-content>
+            <div class="header-row">
+                <div class="header-info">
+                    <span class="codigo">{{ asset.code }}</span>
+                    <h1>{{ asset.name }}</h1>
+                    <span class="categoria">{{ asset.categoryName }}</span>
+                </div>
+                <span class="status-chip" [style.color]="asset.status | fixedAssetStatusColor"
+                    [style.borderColor]="asset.status | fixedAssetStatusColor">
+                    <span class="status-chip__dot" [style.backgroundColor]="asset.status | fixedAssetStatusColor"></span>
+                    {{ asset.status | fixedAssetStatusLabel }}
+                </span>
+            </div>
+
+            @if (asset.description) {
+            <p class="descripcion">{{ asset.description }}</p>
+            }
+
+            <div class="datos-grid">
+                <div class="dato">
+                    <span class="dato__label">Valor en libros</span>
+                    <span class="dato__valor dato__valor--destacado">{{ asset.bookValue | number:'1.2-2' }}</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__label">Costo de adquisición</span>
+                    <span class="dato__valor">{{ asset.acquisitionCost | number:'1.2-2' }}</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__label">Fecha de adquisición</span>
+                    <span class="dato__valor">{{ asset.acquisitionDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__label">Vida útil</span>
+                    <span class="dato__valor">{{ asset.usefulLifeYears }} años</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__label">Sucursal actual</span>
+                    <span class="dato__valor">{{ asset.branchName }}</span>
+                </div>
+                <div class="dato">
+                    <span class="dato__label">Responsable</span>
+                    <span class="dato__valor">{{ asset.responsibleUserName || '-' }}</span>
+                </div>
+                @if (asset.supplierName) {
+                <div class="dato">
+                    <span class="dato__label">Proveedor</span>
+                    <span class="dato__valor">{{ asset.supplierName }}</span>
+                </div>
+                }
+                @if (asset.purchaseInvoiceNumber) {
+                <div class="dato">
+                    <span class="dato__label">Factura de compra</span>
+                    <span class="dato__valor">{{ asset.purchaseInvoiceNumber }}</span>
+                </div>
+                }
+            </div>
+
+            @if (asset.notes) {
+            <p class="notas"><strong>Notas:</strong> {{ asset.notes }}</p>
+            }
+
+            @if (asset.status !== FixedAssetStatus.Disposed && asset.status !== FixedAssetStatus.Sold) {
+            <div class="acciones">
+                <button mat-stroked-button (click)="reasignar()">
+                    <mat-icon>swap_horiz</mat-icon>
+                    Reasignar
+                </button>
+                <button mat-stroked-button (click)="registrarMantenimiento()">
+                    <mat-icon>build</mat-icon>
+                    Registrar mantenimiento
+                </button>
+                <button mat-stroked-button color="warn" (click)="darDeBaja()">
+                    <mat-icon>delete_forever</mat-icon>
+                    Dar de baja
+                </button>
+            </div>
+            }
+        </mat-card-content>
+    </mat-card>
+
+    <h2 class="titulo-historial">Historial</h2>
+
+    <div class="timeline">
+        @for (evento of timeline; track evento.date + evento.title) {
+        <mat-card class="panel timeline-item" appearance="outlined">
+            <mat-card-content>
+                <div class="timeline-item__header">
+                    <mat-icon class="timeline-item__icon" [class]="'icon-' + evento.type">{{ evento.icon }}</mat-icon>
+                    <div class="timeline-item__info">
+                        <span class="timeline-item__title">{{ evento.title }}</span>
+                        <span class="timeline-item__date">{{ evento.date | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    @if (evento.cost != null) {
+                    <span class="timeline-item__cost">{{ evento.cost | number:'1.2-2' }}</span>
+                    }
+                </div>
+                @if (evento.subtitle) {
+                <p class="timeline-item__subtitle">{{ evento.subtitle }}</p>
+                }
+                @if (evento.observations) {
+                <p class="timeline-item__obs">{{ evento.observations }}</p>
+                }
+                @if (evento.attachments?.length) {
+                <div class="timeline-item__attachments">
+                    @for (attachment of evento.attachments; track attachment.id) {
+                    <button mat-stroked-button type="button" (click)="descargarAdjunto(attachment.id, attachment.originalFileName)"
+                        [disabled]="descargandoId === attachment.id">
+                        <mat-icon>attach_file</mat-icon>
+                        {{ attachment.originalFileName }}
+                    </button>
+                    }
+                </div>
+                }
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+
+</div>
+}

@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>
+  <mat-icon>delete_forever</mat-icon>
+  Dar de baja
+</h2>
+
+<mat-dialog-content class="contenido">
+  <form [formGroup]="form" class="form-baja">
+    <mat-form-field appearance="outline">
+      <mat-label>Motivo de la baja</mat-label>
+      <mat-select formControlName="status">
+        <mat-option [value]="3">De baja (obsolescencia, pérdida, robo)</mat-option>
+        <mat-option [value]="4">Vendido</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha</mat-label>
+      <input matInput type="date" formControlName="disposalDate">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Detalle del motivo</mat-label>
+      <textarea matInput formControlName="disposalReason" maxlength="300" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cancelar</button>
+  <button mat-flat-button color="warn" (click)="guardar()" [disabled]="guardando">
+    @if (guardando) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <ng-container>Dar de baja</ng-container>
+    }
+  </button>
+</mat-dialog-actions>

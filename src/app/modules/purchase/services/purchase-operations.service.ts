@@ -49,6 +49,9 @@ export class PurchaseOperationsService {
     if (filtros.status) {
       params = params.set('status', filtros.status);
     }
+    if (filtros.invoiceNumber) {
+      params = params.set('invoiceNumber', filtros.invoiceNumber);
+    }
     return this.http.get<IResponseGeneric<IPurchaseInvoiceListItem[]>>(`${this.apiUrl}${environment.EPListarInvoice}`, { headers, params });
   }
 

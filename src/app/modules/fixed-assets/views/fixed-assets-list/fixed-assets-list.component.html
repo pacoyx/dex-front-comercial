@@ -1,0 +1,128 @@
+<div class="container-fixed-assets">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>inventory_2</mat-icon>
+            <div class="page-header__heading">
+                <h1>Activo Fijo</h1>
+                <span class="page-header__subtitle">Maquinaria, equipos, mobiliario y herramientas de la empresa</span>
+            </div>
+        </div>
+
+        <div class="page-header__actions">
+            <button mat-flat-button color="primary" (click)="nuevo()">
+                <mat-icon>add</mat-icon>
+                Nuevo Activo
+            </button>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Sucursal</mat-label>
+                <mat-select [(ngModel)]="filtroBranchId">
+                    <mat-option [value]="null">Todas</mat-option>
+                    @for (branch of branches; track branch.id) {
+                    <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Categoría</mat-label>
+                <mat-select [(ngModel)]="filtroCategoryId">
+                    <mat-option [value]="null">Todas</mat-option>
+                    @for (category of categories; track category.id) {
+                    <mat-option [value]="category.id">{{ category.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="filtroStatus">
+                    @for (opt of statusOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" (click)="buscar()">
+                <mat-icon>search</mat-icon>
+                Buscar
+            </button>
+            <button mat-stroked-button (click)="limpiar()">
+                <mat-icon>close</mat-icon>
+                Limpiar
+            </button>
+
+        </mat-card-content>
+
+        <table mat-table [dataSource]="dataSource" class="detail-table">
+
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef> Código </th>
+                <td mat-cell *matCellDef="let element"> {{ element.code }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nombre </th>
+                <td mat-cell *matCellDef="let element">
+                    <a (click)="verFicha(element)" class="link-ficha">{{ element.name }}</a>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Categoría </th>
+                <td mat-cell *matCellDef="let element"> {{ element.categoryName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="branch">
+                <th mat-header-cell *matHeaderCellDef> Sucursal </th>
+                <td mat-cell *matCellDef="let element"> {{ element.branchName }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="responsible">
+                <th mat-header-cell *matHeaderCellDef> Responsable </th>
+                <td mat-cell *matCellDef="let element"> {{ element.responsibleUserName || '-' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Estado </th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="status-chip" [style.color]="element.status | fixedAssetStatusColor"
+                        [style.borderColor]="element.status | fixedAssetStatusColor">
+                        <span class="status-chip__dot" [style.backgroundColor]="element.status | fixedAssetStatusColor"></span>
+                        {{ element.status | fixedAssetStatusLabel }}
+                    </span>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="bookValue">
+                <th mat-header-cell *matHeaderCellDef class="col-numeric"> Valor en Libros </th>
+                <td mat-cell *matCellDef="let element" class="col-numeric"> {{ element.bookValue | currency:' ':'symbol':'0.2-2' }} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="acciones">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-icon-button color="primary" (click)="verFicha(element)" matTooltip="Ver ficha">
+                        <mat-icon>visibility</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell sin-datos" [attr.colspan]="displayedColumns.length">
+                    No se encontraron activos fijos para los filtros aplicados.
+                </td>
+            </tr>
+        </table>
+    </mat-card>
+
+</div>

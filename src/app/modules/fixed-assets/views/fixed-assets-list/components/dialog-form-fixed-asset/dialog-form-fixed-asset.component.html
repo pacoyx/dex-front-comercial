@@ -1,0 +1,132 @@
+<h2 mat-dialog-title>
+  <mat-icon>inventory_2</mat-icon>
+  Nuevo Activo Fijo
+</h2>
+
+<mat-dialog-content class="contenido">
+
+  @if (validationErrors.length) {
+  <div class="errores">
+    @for (error of validationErrors; track error) {
+    <div>{{ error }}</div>
+    }
+  </div>
+  }
+
+  <form [formGroup]="form" class="form-activo">
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Nombre</mat-label>
+      <input matInput formControlName="name" maxlength="200">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Descripción (opcional)</mat-label>
+      <input matInput formControlName="description" maxlength="500">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <mat-select formControlName="categoryId">
+        @for (category of data.categories; track category.id) {
+        <mat-option [value]="category.id">{{ category.name }} ({{ category.defaultUsefulLifeYears }} años)</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Vida útil (años, opcional)</mat-label>
+      <input matInput type="number" formControlName="usefulLifeYearsOverride" placeholder="Usa el de la categoría">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de adquisición</mat-label>
+      <input matInput type="date" formControlName="acquisitionDate">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Costo de adquisición</mat-label>
+      <input matInput type="number" formControlName="acquisitionCost" min="0" step="0.01">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sucursal</mat-label>
+      <mat-select formControlName="branchId">
+        @for (branch of data.branches; track branch.id) {
+        <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Responsable (opcional)</mat-label>
+      <mat-select formControlName="responsibleUserId">
+        <mat-option [value]="null">Sin responsable</mat-option>
+        @for (usuario of usuarios; track usuario.id) {
+        <mat-option [value]="usuario.id">{{ usuario.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Proveedor (opcional)</mat-label>
+      <input type="text" matInput [formControl]="proveedorControl" [matAutocomplete]="autoProveedor"
+        placeholder="Buscar proveedor">
+      @if (selectedProveedor) {
+      <button mat-icon-button matSuffix type="button" aria-label="Limpiar proveedor" (click)="limpiarProveedor($event)">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+      <mat-autocomplete #autoProveedor="matAutocomplete" (optionSelected)="onProveedorSelected($event)"
+        [displayWith]="displayProveedorFn">
+        @for (proveedor of (filteredProveedores | async); track proveedor.id) {
+        <mat-option [value]="proveedor">{{ proveedor.name }} — RUC {{ proveedor.ruc }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="campo-ancho campo-factura">
+      <mat-form-field appearance="outline" class="campo-factura__input">
+        <mat-label>Factura de compra (opcional, para trazabilidad)</mat-label>
+        <input matInput [formControl]="facturaControl" (keyup.enter)="buscarFactura()" placeholder="Número de factura">
+      </mat-form-field>
+      <button mat-stroked-button type="button" (click)="buscarFactura()" [disabled]="buscandoFactura">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+
+    @if (selectedFactura) {
+    <div class="factura-seleccionada campo-ancho">
+      <mat-icon>receipt_long</mat-icon>
+      <span>{{ selectedFactura.invoiceSerie }}-{{ selectedFactura.invoiceNumber }}</span>
+      <button mat-icon-button type="button" (click)="limpiarFactura()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+    } @else if (filteredFacturas.length) {
+    <div class="campo-ancho resultados-factura">
+      @for (factura of filteredFacturas; track factura.id) {
+      <button mat-stroked-button type="button" (click)="seleccionarFactura(factura)">
+        {{ factura.invoiceSerie }}-{{ factura.invoiceNumber }} — {{ factura.supplierName }}
+      </button>
+      }
+    </div>
+    }
+
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Notas (opcional)</mat-label>
+      <textarea matInput formControlName="notes" maxlength="500" rows="2"></textarea>
+    </mat-form-field>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">
+    @if (guardando) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <ng-container>Guardar</ng-container>
+    }
+  </button>
+</mat-dialog-actions>

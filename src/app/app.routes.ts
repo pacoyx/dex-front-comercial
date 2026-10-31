@@ -11,6 +11,7 @@ import { LayoutRrhhComponent } from './core/views/layout-rrhh/layout-rrhh.compon
 import { LayoutGastosComponent } from './core/views/layout-gastos/layout-gastos.component';
 import { LayoutCorporateOperationsComponent } from './core/views/layout-corporate-operations/layout-corporate-operations.component';
 import { LayoutSharedDocumentsComponent } from './core/views/layout-shared-documents/layout-shared-documents.component';
+import { LayoutFixedAssetsComponent } from './core/views/layout-fixed-assets/layout-fixed-assets.component';
 import { permissionGuard } from './core/guards/permission.guard';
 import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
 
@@ -74,6 +75,11 @@ export const routes: Routes = [
     {
         path: 'shared-documents', component: LayoutSharedDocumentsComponent, canActivate: [permissionGuard], data: { permission: 'shared-documents.access' }, children: [
             { path: '', loadChildren: () => import('./modules/shared-documents/shared-documents.module').then(m => m.SharedDocumentsModule) }
+        ]
+    },
+    {
+        path: 'fixed-assets', component: LayoutFixedAssetsComponent, canActivate: [permissionGuard], data: { permission: 'fixed-assets.access' }, children: [
+            { path: '', loadChildren: () => import('./modules/fixed-assets/fixed-assets.module').then(m => m.FixedAssetsModule) }
         ]
     }
 ];
