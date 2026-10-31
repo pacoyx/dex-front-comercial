@@ -185,6 +185,7 @@ export const environment = {
     EPTypeDocuments: 'api/type-documents',
     EPPaymentMethods: 'api/payment-methods',
     EPSalesInvoices: 'api/invoices',
+    EPGuiasRemision: 'api/guias-remision',
     EPAccountsReceivable: 'api/accounts-receivable',
     EPCollectionSheets: 'api/collection-sheets',
     EPBuscarClientesPorPatron: 'api/customer/search/byPatron',

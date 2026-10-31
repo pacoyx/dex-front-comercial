@@ -15,6 +15,11 @@
       <a mat-button class="module-toolbar__link" routerLink="/facturacion/facturas" routerLinkActive="is-active">
         <mat-icon>description</mat-icon><span>Facturas</span>
       </a>
+      @if (hasPermission('guia-remision.access')) {
+      <a mat-button class="module-toolbar__link" routerLink="/facturacion/guias-remision" routerLinkActive="is-active">
+        <mat-icon>local_shipping</mat-icon><span>Guías de Remisión</span>
+      </a>
+      }
       @if (hasPermission('customers.access')) {
       <a mat-button class="module-toolbar__link" routerLink="/facturacion/clientes" routerLinkActive="is-active">
         <mat-icon>groups</mat-icon><span>Clientes</span>

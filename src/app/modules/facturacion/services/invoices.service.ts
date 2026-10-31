@@ -43,6 +43,7 @@ export class InvoicesService {
     if (filtros.dateFrom) params['dateFrom'] = filtros.dateFrom;
     if (filtros.dateTo) params['dateTo'] = filtros.dateTo;
     if (filtros.status != null) params['status'] = String(filtros.status);
+    if (filtros.numero) params['numero'] = filtros.numero;
     return this.http.get<IResponseGeneric<IInvoiceListItem[]>>(`${this.apiUrl}${environment.EPSalesInvoices}`, { headers, params });
   }
 

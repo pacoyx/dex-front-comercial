@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>
+  <mat-icon>local_shipping</mat-icon>
+  Guía de Remisión — Factura {{ data.invoiceSerie }}-{{ data.invoiceNumero }}
+</h2>
+
+<mat-dialog-content class="contenido">
+
+  @if (guia) {
+  <div class="resumen-guia">
+    <div class="resumen-guia__numero">
+      <span class="resumen-guia__label">Número de guía</span>
+      <span class="resumen-guia__valor">{{ guia.serie }}-{{ guia.numero }}</span>
+    </div>
+
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Cliente</span>
+      <span>{{ guia.customerName }} — {{ guia.customerTaxId }}</span>
+    </div>
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Conductor</span>
+      <span>{{ guia.driverName }} (DNI {{ guia.driverDni }})</span>
+    </div>
+    @if (guia.vehiclePlate) {
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Placa</span>
+      <span>{{ guia.vehiclePlate }}</span>
+    </div>
+    }
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Fecha de traslado</span>
+      <span>{{ guia.fechaTraslado | date:'dd/MM/yyyy' }}</span>
+    </div>
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Punto de partida</span>
+      <span>{{ guia.originAddress }}</span>
+    </div>
+    <div class="resumen-guia__fila">
+      <span class="resumen-guia__label">Punto de llegada</span>
+      <span>{{ guia.deliveryAddress }}</span>
+    </div>
+  </div>
+  } @else {
+  <form [formGroup]="form" class="form-guia">
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre del chofer</mat-label>
+      <input matInput formControlName="driverName" maxlength="150">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>DNI del chofer</mat-label>
+      <input matInput formControlName="driverDni" maxlength="20">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Vehículo (opcional)</mat-label>
+      <mat-select formControlName="vehicleId">
+        <mat-option [value]="null">Sin vehículo registrado</mat-option>
+        @for (vehiculo of vehiculos; track vehiculo.id) {
+        <mat-option [value]="vehiculo.id">{{ vehiculo.plate }} — {{ vehiculo.description }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Fecha de traslado</mat-label>
+      <input matInput type="date" formControlName="fechaTraslado">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Motivo de traslado</mat-label>
+      <input matInput formControlName="motivoTraslado" maxlength="100">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Dirección de entrega</mat-label>
+      <input matInput formControlName="deliveryAddress" maxlength="300" placeholder="Si lo dejas vacío, se usa la dirección fiscal del cliente">
+      <mat-hint>Si lo dejas vacío, se usa la dirección fiscal del cliente.</mat-hint>
+    </mat-form-field>
+  </form>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cerrar</button>
+
+  @if (!guia) {
+  <button mat-flat-button color="primary" (click)="crear()" [disabled]="guardando">
+    @if (guardando) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <ng-container>Crear guía</ng-container>
+    }
+  </button>
+  } @else {
+  <button mat-flat-button color="primary" (click)="imprimir()" [disabled]="imprimiendo">
+    <mat-icon>print</mat-icon>
+    Imprimir
+  </button>
+  }
+</mat-dialog-actions>

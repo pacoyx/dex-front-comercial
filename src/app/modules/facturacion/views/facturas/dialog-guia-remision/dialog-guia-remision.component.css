@@ -1,0 +1,44 @@
+.contenido {
+  min-width: 420px;
+  max-width: 560px;
+}
+
+.form-guia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+
+.form-guia .campo-ancho {
+  grid-column: 1 / -1;
+}
+
+.resumen-guia {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resumen-guia__numero {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.resumen-guia__valor {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.resumen-guia__fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.resumen-guia__label {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+}

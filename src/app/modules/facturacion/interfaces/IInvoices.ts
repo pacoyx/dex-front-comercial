@@ -110,6 +110,7 @@ export interface IInvoiceListFilters {
   dateFrom?: string;
   dateTo?: string;
   status?: number;
+  numero?: string;
 }
 
 export interface IInvoiceCancelResponse {

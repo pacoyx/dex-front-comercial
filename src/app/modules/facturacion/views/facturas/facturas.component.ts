@@ -11,6 +11,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { debounceTime, map, Observable, of, switchMap } from 'rxjs';
 import { CustomDateAdapter } from '../../../../core/configGlobal/custom-date-adapter';
@@ -18,18 +20,21 @@ import { CUSTOM_DATE_FORMATS } from '../../../../core/configGlobal/custom-date-f
 import { NotificationsSystemService } from '../../../../core/services/notifications-system.service';
 import { CatalogosService } from '../../services/catalogos.service';
 import { InvoicesService } from '../../services/invoices.service';
+import { GuiasRemisionService } from '../../services/guias-remision.service';
 import { ICustomerSearchResult } from '../../interfaces/ICatalogos';
 import { IInvoiceListItem } from '../../interfaces/IInvoices';
+import { IGuiaRemision } from '../../interfaces/IGuiaRemision';
 import { InvoiceStatus, InvoiceStatusColorPipe, InvoiceStatusLabelPipe } from '../../shared/invoice-status';
 import { extractErrorMessage } from '../../shared/http-error.util';
 import { PaymentTypeLabelPipe } from '../../shared/payment-type';
+import { DialogGuiaRemisionComponent } from './dialog-guia-remision/dialog-guia-remision.component';
 
 @Component({
   selector: 'app-facturas',
   standalone: true,
   imports: [
     MatButtonModule, MatIconModule, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule,
-    MatAutocompleteModule, MatTableModule, MatDatepickerModule, ReactiveFormsModule, FormsModule,
+    MatAutocompleteModule, MatTableModule, MatDatepickerModule, MatDialogModule, MatTooltipModule, ReactiveFormsModule, FormsModule,
     RouterModule, AsyncPipe, CurrencyPipe, DatePipe, TitleCasePipe, NgFor,
     InvoiceStatusLabelPipe, InvoiceStatusColorPipe, PaymentTypeLabelPipe
   ],
@@ -44,7 +49,9 @@ export class FacturasComponent implements OnInit {
 
   private catalogosService = inject(CatalogosService);
   private invoicesService = inject(InvoicesService);
+  private guiasRemisionService = inject(GuiasRemisionService);
   private notificationService = inject(NotificationsSystemService);
+  private dialog = inject(MatDialog);
 
   customerControl = new FormControl();
   filteredCustomers!: Observable<ICustomerSearchResult[]>;
@@ -65,7 +72,7 @@ export class FacturasComponent implements OnInit {
   ];
   selectedStatus: number | null = null;
 
-  displayedColumns: string[] = ['cliente', 'factura', 'emision', 'vencimiento', 'formaPago', 'total', 'moneda', 'saldo', 'estado'];
+  displayedColumns: string[] = ['cliente', 'factura', 'emision', 'vencimiento', 'formaPago', 'total', 'moneda', 'saldo', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<IInvoiceListItem>([]);
 
   ngOnInit(): void {
@@ -126,6 +133,25 @@ export class FacturasComponent implements OnInit {
     this.rangeFrm.reset();
     this.selectedStatus = null;
     this.buscar();
+  }
+
+  crearGuiaRemision(factura: IInvoiceListItem): void {
+    this.guiasRemisionService.obtenerGuiaRemisionPorFactura(factura.id).subscribe({
+      next: (response) => this.abrirDialogGuiaRemision(factura, response.data),
+      error: (err) => {
+        if (err.status === 404) {
+          this.abrirDialogGuiaRemision(factura);
+          return;
+        }
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo verificar la guía de remisión.'));
+      },
+    });
+  }
+
+  private abrirDialogGuiaRemision(factura: IInvoiceListItem, guia?: IGuiaRemision): void {
+    this.dialog.open(DialogGuiaRemisionComponent, {
+      data: { invoiceId: factura.id, invoiceSerie: factura.serie, invoiceNumero: factura.numero, guia },
+    });
   }
 
 }

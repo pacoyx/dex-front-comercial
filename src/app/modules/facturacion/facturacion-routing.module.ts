@@ -18,6 +18,7 @@ import { CustomerImportComponent } from './views/clientes/customer-import/custom
 import { CustomerPortalAdminComponent } from './views/customer-portal-admin/customer-portal-admin.component';
 import { ValorizacionMensualComponent } from './views/reportes/valorizacion-mensual/valorizacion-mensual.component';
 import { RecordatoriosFacturasComponent } from './views/reportes/recordatorios-facturas/recordatorios-facturas.component';
+import { GuiasRemisionComponent } from './views/guias-remision/guias-remision.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'facturas', pathMatch: 'full' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'facturas/nueva', component: FacturaFormComponent },
   { path: 'facturas/importar-xml', component: ImportarFacturaXmlComponent },
   { path: 'facturas/:id', component: FacturaDetailComponent },
+  { path: 'guias-remision', component: GuiasRemisionComponent, canActivate: [permissionGuard], data: { permission: 'guia-remision.access' } },
   { path: 'cuentas-cobrar', component: CuentasPorCobrarComponent },
   { path: 'planillas', component: PlanillasComponent },
   { path: 'planillas/:id', component: PlanillaDetailComponent },

@@ -1,0 +1,24 @@
+.contenido {
+  min-width: 480px;
+  max-width: 680px;
+}
+
+.fila-busqueda {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.campo-numero {
+  flex: 1;
+}
+
+.tabla-resultados {
+  width: 100%;
+}
+
+.sin-resultados {
+  color: rgba(0, 0, 0, 0.6);
+  padding: 16px 0;
+  text-align: center;
+}
