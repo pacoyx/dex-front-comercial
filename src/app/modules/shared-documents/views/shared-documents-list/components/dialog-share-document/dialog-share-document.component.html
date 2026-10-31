@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>
+  <mat-icon>upload_file</mat-icon>
+  Compartir documento
+</h2>
+
+<mat-dialog-content class="contenido">
+
+  @if (validationErrors.length) {
+  <div class="errores">
+    @for (error of validationErrors; track error) {
+    <div>{{ error }}</div>
+    }
+  </div>
+  }
+
+  <form [formGroup]="form" class="form-compartir">
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" maxlength="200">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría</mat-label>
+      <input matInput formControlName="category" maxlength="100" [matAutocomplete]="autoCategoria">
+      <mat-autocomplete #autoCategoria="matAutocomplete">
+        @for (categoria of categoriasSugeridas; track categoria) {
+        <mat-option [value]="categoria">{{ categoria }}</mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Compartir con</mat-label>
+      <mat-select formControlName="recipientUserIds" multiple>
+        @for (usuario of usuarios; track usuario.id) {
+        <mat-option [value]="usuario.id">{{ usuario.name }} ({{ usuario.userName }})</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Notas (opcional)</mat-label>
+      <textarea matInput formControlName="notes" maxlength="500" rows="2"></textarea>
+    </mat-form-field>
+
+    <div class="campo-archivo campo-ancho">
+      <input type="file" id="archivoPdf" accept="application/pdf" (change)="onArchivoSeleccionado($event)" hidden>
+      <label for="archivoPdf" class="campo-archivo__boton">
+        <mat-icon>attach_file</mat-icon>
+        {{ nombreArchivo || 'Seleccionar archivo PDF' }}
+      </label>
+      @if (errorArchivo) {
+      <span class="campo-archivo__error">{{ errorArchivo }}</span>
+      }
+    </div>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cerrar()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="guardar()" [disabled]="!puedeGuardar">
+    @if (guardando) {
+    <mat-spinner diameter="18"></mat-spinner>
+    } @else {
+    <ng-container>Compartir</ng-container>
+    }
+  </button>
+</mat-dialog-actions>

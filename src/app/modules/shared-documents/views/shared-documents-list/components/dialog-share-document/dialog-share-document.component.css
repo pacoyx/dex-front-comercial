@@ -1,0 +1,46 @@
+.contenido {
+  min-width: 420px;
+  max-width: 560px;
+}
+
+.form-compartir {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+}
+
+.form-compartir .campo-ancho {
+  grid-column: 1 / -1;
+}
+
+.campo-archivo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.campo-archivo__boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px dashed var(--mat-sys-outline, #c4c4c4);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--mat-sys-primary, #006494);
+}
+
+.campo-archivo__error {
+  color: var(--mat-sys-error, #b3261e);
+  font-size: 0.8rem;
+}
+
+.errores {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}

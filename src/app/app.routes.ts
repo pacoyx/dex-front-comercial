@@ -10,6 +10,7 @@ import { LayoutFacturacionComponent } from './core/views/layout-facturacion/layo
 import { LayoutRrhhComponent } from './core/views/layout-rrhh/layout-rrhh.component';
 import { LayoutGastosComponent } from './core/views/layout-gastos/layout-gastos.component';
 import { LayoutCorporateOperationsComponent } from './core/views/layout-corporate-operations/layout-corporate-operations.component';
+import { LayoutSharedDocumentsComponent } from './core/views/layout-shared-documents/layout-shared-documents.component';
 import { permissionGuard } from './core/guards/permission.guard';
 import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
 
@@ -68,6 +69,11 @@ export const routes: Routes = [
     {
         path: 'corporate-operations', component: LayoutCorporateOperationsComponent, canActivate: [permissionGuard], data: { permission: 'corporate-operations.access' }, children: [
             { path: '', loadChildren: () => import('./modules/corporate-operations/corporate-operations.module').then(m => m.CorporateOperationsModule) }
+        ]
+    },
+    {
+        path: 'shared-documents', component: LayoutSharedDocumentsComponent, canActivate: [permissionGuard], data: { permission: 'shared-documents.access' }, children: [
+            { path: '', loadChildren: () => import('./modules/shared-documents/shared-documents.module').then(m => m.SharedDocumentsModule) }
         ]
     }
 ];

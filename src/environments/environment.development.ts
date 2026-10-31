@@ -186,6 +186,7 @@ export const environment = {
     EPPaymentMethods: 'api/payment-methods',
     EPSalesInvoices: 'api/invoices',
     EPGuiasRemision: 'api/guias-remision',
+    EPSharedDocuments: 'api/shared-documents',
     EPAccountsReceivable: 'api/accounts-receivable',
     EPCollectionSheets: 'api/collection-sheets',
     EPBuscarClientesPorPatron: 'api/customer/search/byPatron',

@@ -54,6 +54,18 @@
       </a>
       }
 
+      @if (hasPermission('shared-documents.access')) {
+      <a mat-list-item
+         [routerLink]="['/shared-documents']"
+         routerLinkActive #rlaSharedDocuments="routerLinkActive"
+         [activated]="rlaSharedDocuments.isActive"
+         (click)="toggle()"
+         matTooltip="Documentos Compartidos" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>folder_shared</mat-icon>
+        <span matListItemTitle>Documentos Compartidos</span>
+      </a>
+      }
+
       @if (hasPermission('invoices.access')) {
       <a mat-list-item
          [routerLink]="['/facturacion']"
