@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { IBranchSalesCreateDto, IBranchSalesEditDto } from '../../../../../recepcion/interfaces/IBranchSales';
 import { IPrinterResponseDto } from '../../../../../recepcion/interfaces/IPrinter';
+import { NotificationsSystemService } from '../../../../../../core/services/notifications-system.service';
+import { extractErrorMessage } from '../../../../shared/http-error.util';
 
 @Component({
   selector: 'app-dialog-form-reg-sucursal',
@@ -28,6 +30,7 @@ import { IPrinterResponseDto } from '../../../../../recepcion/interfaces/IPrinte
 export class DialogFormRegSucursalComponent implements OnInit {
   readonly data = inject<{ esNuevo: boolean, objSucursal: IBranchSalesEditDto }>(MAT_DIALOG_DATA);
   maestroService = inject(MaestrosService);
+  notificationService = inject(NotificationsSystemService);
   sucursalForm: FormGroup;
 
   loadingSave = false;
@@ -74,7 +77,13 @@ export class DialogFormRegSucursalComponent implements OnInit {
 
 
   onSubmit(): void {
+    if (this.loadingSave) {
+      return;
+    }
+
     if (this.sucursalForm.invalid) {
+      this.sucursalForm.markAllAsTouched();
+      this.notificationService.showError('Debe completar todos los campos obligatorios.');
       return;
     }
 
@@ -94,8 +103,8 @@ export class DialogFormRegSucursalComponent implements OnInit {
         this.dialogRef.close(resp);
       },
       error: (err) => {
-        console.log(err);
         this.loadingSave = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo guardar la sucursal.'));
       }
     });
   }
