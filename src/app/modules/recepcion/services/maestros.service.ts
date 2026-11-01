@@ -12,6 +12,7 @@ import { IBranchSalesCreateDto, IBranchSalesEditDto, IBranchSalesResponseDto, IB
 import { IPrinterCreateDto, IPrinterEditDto, IPrinterResponseDto } from '../interfaces/IPrinter';
 import { IWorkerNodeCreateDto, IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../interfaces/IWorkerNode';
 import { IPrintQueueResponseDto } from '../../management/interfaces/IPrintQueue';
+import { ICatService, ICatServiceCreateDto, ICatServiceEditDto } from '../interfaces/ICatService';
 
 @Injectable({
   providedIn: 'root'
@@ -233,6 +234,27 @@ export class MaestrosService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPReimprimirImpresionPendiente}/${idImpresionPendiente}/reprint`;
     return this.http.post<IResponseGeneric<string>>(url, {}, { headers });
+  }
+
+  obtenerCategoriasServicio(): Observable<ICatService[]> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<ICatService[]>(`${this.apiUrl}${environment.EPListarCategoriasServicios}`, { headers });
+  }
+
+  crearCategoriaServicio(categoria: ICatServiceCreateDto): Observable<IResponseGeneric<ICatService>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<ICatService>>(`${this.apiUrl}${environment.EPListarCategoriasServicios}`, categoria, { headers });
+  }
+
+  actualizarCategoriaServicio(categoria: ICatServiceEditDto): Observable<IResponseGeneric<ICatService>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<ICatService>>(`${this.apiUrl}${environment.EPListarCategoriasServicios}/${categoria.id}`, categoria, { headers });
+  }
+
+  eliminarCategoriaServicio(idCategoria: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const url = `${this.apiUrl}${environment.EPListarCategoriasServicios}/${idCategoria}`;
+    return this.http.delete<IResponseGeneric<string>>(url, { headers });
   }
 
 }

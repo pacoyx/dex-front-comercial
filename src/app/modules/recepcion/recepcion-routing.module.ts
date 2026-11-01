@@ -19,6 +19,7 @@ import { ReporteSneakersComponent } from './views/reportes/reporte-sneakers/repo
 import { RecepcionPedidosWebComponent } from './views/recepcion-pedidos-web/recepcion-pedidos-web.component';
 import { MntDistritosComponent } from './views/maestros/mnt-distritos/mnt-distritos.component';
 import { MntTarifasZonaComponent } from './views/maestros/mnt-tarifas-zona/mnt-tarifas-zona.component';
+import { MntCategoriasServicioComponent } from './views/maestros/mnt-categorias-servicio/mnt-categorias-servicio.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'clientes', component: MntClientesComponent, canActivate: [permissionGuard], data: { permission: 'customers.access' } },
   { path: 'usuarios', component: MntUsuariosComponent, canActivate: [permissionGuard], data: { permission: 'settings.access' } },
   { path: 'servicios', component: MntProdservicesComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
+  { path: 'categorias-servicio', component: MntCategoriasServicioComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'ubicaciones', component: MntUbicacionComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'distritos', component: MntDistritosComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
