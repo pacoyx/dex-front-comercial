@@ -135,8 +135,8 @@
             </mat-card>
 
             <div class="form-acciones">
-                <button mat-fab extended (click)="registrarUbicacion()">
-                    <mat-icon>save</mat-icon>
+                <button mat-fab extended (click)="registrarUbicacion()" [disabled]="guardando">
+                    @if (guardando) {<mat-icon class="spin">cached</mat-icon>} @else {<mat-icon>save</mat-icon>}
                     Registrar
                 </button>
             </div>

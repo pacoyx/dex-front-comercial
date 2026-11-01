@@ -20,7 +20,7 @@
             </span>
             }
             <button mat-stroked-button color="primary" (click)="imprimirFactura()" [disabled]="imprimiendo">
-                @if (imprimiendo) {<mat-icon>cached</mat-icon>} @else {<mat-icon>print</mat-icon>}
+                @if (imprimiendo) {<mat-icon class="spin">cached</mat-icon>} @else {<mat-icon>print</mat-icon>}
                 Imprimir
             </button>
             <button mat-stroked-button color="warn" (click)="anularFactura()" [disabled]="!canCancel">

@@ -288,7 +288,7 @@
                         <th mat-header-cell *matHeaderCellDef></th>
                         <td mat-cell *matCellDef="let el">
                             @if (!el.approved) {
-                            <button mat-stroked-button color="primary" (click)="aprobarHoraExtra(el)">Aprobar</button>
+                            <button mat-stroked-button color="primary" (click)="aprobarHoraExtra(el)" [disabled]="aprobandoHoraExtraIds.has(el.id)">Aprobar</button>
                             }
                         </td>
                     </ng-container>

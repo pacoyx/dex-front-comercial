@@ -105,6 +105,10 @@ export class DialogUserAccessScheduleComponent implements OnInit {
   }
 
   guardar(): void {
+    if (this.saving) {
+      return;
+    }
+
     for (const day of this.days) {
       for (const range of day.ranges) {
         if (!range.startTime || !range.endTime) {

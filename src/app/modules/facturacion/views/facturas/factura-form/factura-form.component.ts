@@ -92,6 +92,7 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
 
   frmInvoice: FormGroup;
   saved = false;
+  guardando = false;
 
   constructor(private fb: FormBuilder) {
     this.frmInvoice = this.fb.group({
@@ -227,6 +228,10 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
   }
 
   guardarFactura() {
+    if (this.guardando) {
+      return;
+    }
+
     if (this.frmInvoice.invalid) {
       this.notificationService.showError(
         'Debe completar todos los campos obligatorios.',
@@ -266,8 +271,10 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
       })),
     };
 
+    this.guardando = true;
     this.invoicesService.crearFactura(req).subscribe({
       next: (response) => {
+        this.guardando = false;
         this.notificationService.showSuccessDialog(
           `Factura ${response.data.serie}-${response.data.numero} registrada. Total: ${response.data.total}`,
           '# ' + response.data.id,
@@ -277,6 +284,7 @@ export class FacturaFormComponent implements OnInit, OnDestroy {
         this.router.navigate(['/facturacion/facturas', response.data.id]);
       },
       error: (err) => {
+        this.guardando = false;
         this.notificationService.showError(
           extractErrorMessage(err, 'Ocurrió un error al registrar la factura.'),
         );

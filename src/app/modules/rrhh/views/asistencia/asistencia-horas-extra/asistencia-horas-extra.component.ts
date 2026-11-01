@@ -60,6 +60,7 @@ export class AsistenciaHorasExtraComponent implements OnInit {
 
   displayedColumns = ['fecha', 'trabajador', 'horas', 'observacion', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<IExtraHour>([]);
+  aprobandoIds = new Set<number>();
 
   ngOnInit(): void {
     this.filteredEmployees = this.employeeControl.valueChanges.pipe(
@@ -124,12 +125,21 @@ export class AsistenciaHorasExtraComponent implements OnInit {
   }
 
   aprobar(item: IExtraHour): void {
+    if (this.aprobandoIds.has(item.id)) {
+      return;
+    }
+
+    this.aprobandoIds.add(item.id);
     this.attendanceService.aprobarHoraExtra(item.id).subscribe({
       next: () => {
+        this.aprobandoIds.delete(item.id);
         this.notificationService.showSuccess('Hora extra aprobada correctamente.');
         this.buscar();
       },
-      error: (err) => this.notificationService.showError(extractErrorMessage(err, 'No se pudo aprobar la hora extra.'))
+      error: (err) => {
+        this.aprobandoIds.delete(item.id);
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo aprobar la hora extra.'));
+      }
     });
   }
 

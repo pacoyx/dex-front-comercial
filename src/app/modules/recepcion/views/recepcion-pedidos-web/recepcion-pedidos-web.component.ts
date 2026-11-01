@@ -43,6 +43,7 @@ export class RecepcionPedidosWebComponent implements OnInit {
   ];
   dataSource = new MatTableDataSource<IWebOrderAdminSummary>([]);
   loading = false;
+  confirmandoIds = new Set<number>();
 
   ngOnInit(): void {
     this.cargarPedidos();
@@ -65,19 +66,29 @@ export class RecepcionPedidosWebComponent implements OnInit {
   }
 
   confirmarPedido(pedido: IWebOrderAdminSummary): void {
+    if (this.confirmandoIds.has(pedido.id)) {
+      return;
+    }
+
+    this.confirmandoIds.add(pedido.id);
     this.dialog.open(DialogQuestionComponent, {
       data: { title: 'Confirmar Pedido', message: `¿Confirmar el pedido ${pedido.orderNumber}? Se generará una guía de trabajo.`, msgButton: 'Confirmar' }
     }).afterClosed().subscribe((result) => {
-      if (result !== 'OK') return;
+      if (result !== 'OK') {
+        this.confirmandoIds.delete(pedido.id);
+        return;
+      }
 
       this.webOrdersService.confirmarPedido(pedido.id).subscribe({
         next: (resp) => {
+          this.confirmandoIds.delete(pedido.id);
           this.cargarPedidos();
           this.notificationService.showSuccessDialog(
             `Pedido confirmado. Guía generada: ${resp.data.serieGuia}-${resp.data.numeroGuia}. Comunícala al chofer.`
           );
         },
         error: (err) => {
+          this.confirmandoIds.delete(pedido.id);
           this.notificationService.showError(extractErrorMessage(err, 'No se pudo confirmar el pedido.'));
         }
       });

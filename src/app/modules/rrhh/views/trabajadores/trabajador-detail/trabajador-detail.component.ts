@@ -88,6 +88,7 @@ export class TrabajadorDetailComponent implements OnInit {
   horasExtra: IExtraHour[] = [];
   horasExtraColumns = ['fecha', 'horas', 'observacion', 'estado', 'acciones'];
   horasExtraDataSource = new MatTableDataSource<IExtraHour>([]);
+  aprobandoHoraExtraIds = new Set<number>();
 
   prestamos: ILoan[] = [];
   prestamosColumns = ['tipo', 'fecha', 'monto', 'saldo', 'estado', 'observacion'];
@@ -274,12 +275,19 @@ export class TrabajadorDetailComponent implements OnInit {
   }
 
   aprobarHoraExtra(item: IExtraHour): void {
+    if (this.aprobandoHoraExtraIds.has(item.id)) {
+      return;
+    }
+
+    this.aprobandoHoraExtraIds.add(item.id);
     this.attendanceService.aprobarHoraExtra(item.id).subscribe({
       next: () => {
+        this.aprobandoHoraExtraIds.delete(item.id);
         this.notificationService.showSuccess('Hora extra aprobada correctamente.');
         this.cargarHorasExtra();
       },
       error: (err) => {
+        this.aprobandoHoraExtraIds.delete(item.id);
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo aprobar la hora extra.'));
       }
     });

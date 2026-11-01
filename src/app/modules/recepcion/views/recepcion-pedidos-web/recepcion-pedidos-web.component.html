@@ -118,7 +118,7 @@
                     <td mat-cell *matCellDef="let element">
                         <div class="celda-operaciones">
                             @if (element.status === 'Pendiente') {
-                            <button mat-icon-button (click)="confirmarPedido(element)" matTooltip="Confirmar">
+                            <button mat-icon-button (click)="confirmarPedido(element)" [disabled]="confirmandoIds.has(element.id)" matTooltip="Confirmar">
                                 <mat-icon style="color: green;">check_circle</mat-icon>
                             </button>
                             <button mat-icon-button (click)="rechazarPedido(element)" matTooltip="Rechazar">

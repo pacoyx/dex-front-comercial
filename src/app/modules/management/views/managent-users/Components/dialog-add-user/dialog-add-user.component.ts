@@ -135,6 +135,10 @@ export class DialogAddUserComponent implements OnInit {
   }
 
   guardarRoles(): void {
+    if (this.savingRoles) {
+      return;
+    }
+
     this.savingRoles = true;
     this.rolesService.actualizarRolesDeUsuario(this.data.objUsuario.id, { roleIds: this.selectedRoleIds }).subscribe({
       next: () => {
@@ -150,6 +154,10 @@ export class DialogAddUserComponent implements OnInit {
 
 
   onSubmit(): void {
+    if (this.loadingSave) {
+      return;
+    }
+
     if (this.userForm.invalid) {
       return;
     }

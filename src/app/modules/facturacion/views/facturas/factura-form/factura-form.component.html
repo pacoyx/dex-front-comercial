@@ -15,8 +15,8 @@
                 <mat-icon>restart_alt</mat-icon>
                 Nuevo
             </button>
-            <button mat-flat-button color="primary" (click)="guardarFactura()" [disabled]="frmInvoice.disabled">
-                <mat-icon>save</mat-icon>
+            <button mat-flat-button color="primary" (click)="guardarFactura()" [disabled]="frmInvoice.disabled || guardando">
+                @if (guardando) {<mat-icon class="spin">cached</mat-icon>} @else {<mat-icon>save</mat-icon>}
                 Registrar Factura
             </button>
         </div>

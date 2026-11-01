@@ -64,6 +64,10 @@ export class DialogExpenseAttachmentsComponent implements OnInit {
   }
 
   agregar(): void {
+    if (this.loadingSave) {
+      return;
+    }
+
     if (this.form.invalid) {
       return;
     }

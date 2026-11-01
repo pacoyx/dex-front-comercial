@@ -45,6 +45,7 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
   guiasdetailsSubscription!: Subscription;
   dataSource = new MatTableDataSource<Guide>();
   bolNoExisteCliente: boolean = false;
+  guardando: boolean = false;
 
   constructor() {
     this.frmUbicacion = new FormGroup({
@@ -144,8 +145,12 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
 
   registrarUbicacion() {
 
+    if (this.guardando) {
+      return;
+    }
+
     if(this.frmUbicacion.invalid){
-      console.log('Formulario invalido');      
+      console.log('Formulario invalido');
       return;
     }
 
@@ -158,14 +163,16 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
       reqRegUbi.guias.push({ numeroGuia: item.numero, referencia: item.descripcion, isSystem: item.nativo });
     });
 
+    this.guardando = true;
     this.maestrosService.registrarUbicacionPrenda(reqRegUbi).subscribe({
       next: (resp) => {
+        this.guardando = false;
         console.log(resp);
         if (resp.success) {
           this.frmUbicacion.reset();
           this.listGuides = [];
           this.updateTable();
-          
+
           this.bolOk = true;
           setTimeout(() => {
             this.bolOk = false;
@@ -173,6 +180,7 @@ export class RecepcionRegUbicacionesComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
+        this.guardando = false;
         console.log(error.message);
         this.bolError = true;
         setTimeout(() => {

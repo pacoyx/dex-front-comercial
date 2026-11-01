@@ -62,6 +62,10 @@ export class DialogRolePermissionsComponent implements OnInit {
   }
 
   guardar(): void {
+    if (this.loadingSave) {
+      return;
+    }
+
     const permissionIds = this.items.filter(i => i.checked).map(i => i.permission.id);
     this.loadingSave = true;
     this.rolesService.actualizarPermisosDeRol(this.data.roleId, { permissionIds }).subscribe({

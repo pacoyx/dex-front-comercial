@@ -50,6 +50,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
   supplierControl = new FormControl();
   filteredSuppliers!: Observable<ISupplierListarPorPatronResponse[]>;
   frmInvoice: FormGroup;
+  guardando = false;
 
   constructor(private fb: FormBuilder) {
     this.frmInvoice = this.fb.group({
@@ -186,6 +187,10 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
 
 
   saveInvoice() {
+    if (this.guardando) {
+      return;
+    }
+
     // Logic to save the invoice
     console.log('Invoice saved');
 
@@ -248,8 +253,10 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
     // Call the service to create the invoice
     console.log('IInvoiceCreateRequest', IInvoiceCreateRequest);
 
+    this.guardando = true;
     this.operacionesService.crearInvoice(IInvoiceCreateRequest).subscribe({
       next: (response) => {
+        this.guardando = false;
         console.log('Invoice created successfully:', response);
 
         this.notificationService.showSuccessDialog('Se grabó correctamente la guía de trabajo.', '# ' + response.data.id, true);
@@ -259,6 +266,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
 
       },
       error: (error) => {
+        this.guardando = false;
         console.error('Error creating invoice:', error);
         this.notificationService.showErrorDialog('Ocurrio un error al intentar grabar la guia');
       }
