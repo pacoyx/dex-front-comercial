@@ -91,6 +91,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
         return authService.refreshToken().pipe(
           switchMap((newAuthData) => {
+            // Reseteamos el contador apenas el refresh tiene exito: MAX_REFRESH_ATTEMPTS
+            // debe frenar rafagas de fallos seguidos, no acumularse durante todo el turno
+            // del usuario (sin este reset, a las ~6 horas de sesion continua se agotaban
+            // los 5 intentos y se forzaba el logout aunque el refresh token siguiera siendo
+            // valido).
+            refreshAttempts = 0;
+
             const newAuthReq = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${newAuthData.token}`
