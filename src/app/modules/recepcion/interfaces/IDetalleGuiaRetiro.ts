@@ -67,4 +67,6 @@ interface IGuiaRetiroWgdDTOProduct {
     price: number;
     status: string;
     catServiceId: number;
+    /** 'S' | 'N' — si el servicio se cobra por peso (kilos) o por unidad. */
+    isPeso: string;
 }

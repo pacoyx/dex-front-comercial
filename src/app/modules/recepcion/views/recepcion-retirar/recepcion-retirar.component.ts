@@ -637,7 +637,14 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
   ajustarCantidad(item: IGuiaRetiroWgdDTO): void {
     this.dialog.open(DialogAjustarCantidadItemComponent, {
-      data: { workGuideDetailId: item.id, productName: item.product.name, cantidadActual: item.cant },
+      data: {
+        workGuideDetailId: item.id,
+        productName: item.product.name,
+        cantidadActual: item.cant,
+        precioActual: item.precio,
+        totalActual: item.total,
+        esPorPeso: item.product.isPeso === 'S',
+      },
       width: '420px'
     }).afterClosed().subscribe((result) => {
       if (result) {
