@@ -1,5 +1,5 @@
 export const environment = {
-    apiUrlBase: 'http://161.35.234.43:8080/',
+    apiUrlBase: 'https://api.lavanderiakyo.com/',
     apiUrlBaseAzure: 'https://back-comercial-dexter24-cbhbfpagcpckefb2.canadacentral-01.azurewebsites.net/',
     EPlogin: 'api/login',
     EPRefreshToken: 'api/refresh-token',    
