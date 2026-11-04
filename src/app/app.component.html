@@ -78,6 +78,18 @@
       </a>
       }
 
+      @if (hasPermission('driver-tracking.access')) {
+      <a mat-list-item
+         [routerLink]="['/driver-tracking']"
+         routerLinkActive #rlaDriverTracking="routerLinkActive"
+         [activated]="rlaDriverTracking.isActive"
+         (click)="toggle()"
+         matTooltip="Seguimiento de Choferes" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>map</mat-icon>
+        <span matListItemTitle>Seguimiento de Choferes</span>
+      </a>
+      }
+
       @if (hasPermission('invoices.access')) {
       <a mat-list-item
          [routerLink]="['/facturacion']"

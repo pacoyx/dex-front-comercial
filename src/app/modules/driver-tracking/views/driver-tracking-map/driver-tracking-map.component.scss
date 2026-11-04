@@ -1,0 +1,16 @@
+@import 'leaflet/dist/leaflet.css';
+
+.map-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.map-container {
+    flex: 1 1 auto;
+    min-height: 420px;
+    border-radius: 8px;
+    overflow: hidden;
+}
