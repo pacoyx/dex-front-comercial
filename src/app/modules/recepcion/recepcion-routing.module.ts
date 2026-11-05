@@ -20,6 +20,7 @@ import { RecepcionPedidosWebComponent } from './views/recepcion-pedidos-web/rece
 import { MntDistritosComponent } from './views/maestros/mnt-distritos/mnt-distritos.component';
 import { MntTarifasZonaComponent } from './views/maestros/mnt-tarifas-zona/mnt-tarifas-zona.component';
 import { MntCategoriasServicioComponent } from './views/maestros/mnt-categorias-servicio/mnt-categorias-servicio.component';
+import { MntAccesosRapidosComponent } from './views/maestros/mnt-accesos-rapidos/mnt-accesos-rapidos.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'emision', pathMatch: 'full' },
@@ -40,6 +41,7 @@ const routes: Routes = [
   { path: 'registroUbicaciones', component: RecepcionRegUbicacionesComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'distritos', component: MntDistritosComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'tarifas-zona', component: MntTarifasZonaComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
+  { path: 'accesos-rapidos', component: MntAccesosRapidosComponent, canActivate: [permissionGuard], data: { permission: 'reception.maestros.access' } },
   { path: 'resumenCaja', component: ReporteResumenCajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'dashboardcash', component: DashboardcajaComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },
   { path: 'inspeccion-resumen', component: InspeccionResumenComponent, canActivate: [permissionGuard], data: { permission: 'reception.consultas.access' } },

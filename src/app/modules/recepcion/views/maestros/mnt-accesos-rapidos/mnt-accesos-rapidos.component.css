@@ -1,0 +1,89 @@
+.container-accesos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hint {
+    color: var(--mat-sys-on-surface-variant, #5f6368);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.lista-accesos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fila-acceso {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+    border-radius: 8px;
+    background: var(--mat-sys-surface, #fff);
+}
+
+.drag-handle {
+    cursor: move;
+    color: var(--mat-sys-on-surface-variant, #9e9e9e);
+}
+
+.fila-icono {
+    color: var(--mat-sys-primary, #006494);
+}
+
+.fila-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.fila-producto {
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant, #757575);
+}
+
+.fila-estado {
+    font-size: 0.8rem;
+    color: #2e7d32;
+    white-space: nowrap;
+}
+
+.fila-estado.inactivo {
+    color: var(--mat-sys-error, #c62828);
+}
+
+.fila-acciones {
+    display: flex;
+}
+
+.cdk-drag-preview {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .2);
+}
+
+.cdk-drag-placeholder {
+    opacity: 0.4;
+}
+
+.cdk-drop-list-dragging .fila-acceso:not(.cdk-drag-placeholder) {
+    transition: transform 200ms ease;
+}
+
+.sin-datos {
+    text-align: center;
+    padding: 24px;
+    color: var(--mat-sys-on-surface-variant, #757575);
+}

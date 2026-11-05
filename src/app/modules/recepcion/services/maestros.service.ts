@@ -13,6 +13,7 @@ import { IPrinterCreateDto, IPrinterEditDto, IPrinterResponseDto } from '../inte
 import { IWorkerNodeCreateDto, IWorkerNodeEditDto, IWorkerNodeResponseDto } from '../interfaces/IWorkerNode';
 import { IPrintQueueResponseDto } from '../../management/interfaces/IPrintQueue';
 import { ICatService, ICatServiceCreateDto, ICatServiceEditDto } from '../interfaces/ICatService';
+import { IServiceAccessFastAdmin, IServiceAccessFastCreateRequest, IServiceAccessFastUpdateRequest } from '../interfaces/IServiceAccessFast';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +87,33 @@ export class MaestrosService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPREliminarProdServices}/${idProdService}`;
     return this.http.delete<IResponseGeneric<string>>(url, { headers });
+  }
+
+  obtenerAccesosRapidos(): Observable<IResponseGeneric<IServiceAccessFastAdmin[]>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.get<IResponseGeneric<IServiceAccessFastAdmin[]>>(`${this.apiUrl}${environment.EPServiceAccessFastAdmin}`, { headers });
+  }
+
+  crearAccesoRapido(req: IServiceAccessFastCreateRequest): Observable<IResponseGeneric<IServiceAccessFastAdmin>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<IResponseGeneric<IServiceAccessFastAdmin>>(`${this.apiUrl}${environment.EPServiceAccessFastAdmin}`, req, { headers });
+  }
+
+  actualizarAccesoRapido(id: number, req: IServiceAccessFastUpdateRequest): Observable<IResponseGeneric<IServiceAccessFastAdmin>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<IServiceAccessFastAdmin>>(`${this.apiUrl}${environment.EPServiceAccessFastAdmin}/${id}`, req, { headers });
+  }
+
+  eliminarAccesoRapido(id: number): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.delete<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPServiceAccessFastAdmin}/${id}`, { headers });
+  }
+
+  // El backend recalcula el Order de cada Id segun su posicion en orderedIds (ver
+  // ReorderServiceAccessFastEndpoint): no hay que calcular gaps/swaps en el cliente.
+  reordenarAccesosRapidos(orderedIds: number[]): Observable<IResponseGeneric<string>> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put<IResponseGeneric<string>>(`${this.apiUrl}${environment.EPServiceAccessFastAdmin}/reorder`, { orderedIds }, { headers });
   }
 
 

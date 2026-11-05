@@ -78,6 +78,7 @@ export const environment = {
     
     EPDividirPago: 'api/cashBox/splitPayCash',
     EPListarServiciosAccesoRapido: 'api/prodService/getServicesQuickAccess',
+    EPServiceAccessFastAdmin: 'api/prodService/access-fast',
     EPdashboardcash: 'api/reports/dashboardcash',
     EPdashboardcashSemana: 'api/reports/dashboardcash/week',
     EPdashboardcashMes: 'api/reports/dashboardcash/month',
