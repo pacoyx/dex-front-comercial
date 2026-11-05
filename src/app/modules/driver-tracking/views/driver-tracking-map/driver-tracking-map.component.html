@@ -1,4 +1,24 @@
 <div class="map-page">
-    <h1>Ubicación de Choferes</h1>
+    <div class="map-header">
+        <h1>Ubicación de Choferes</h1>
+        <a mat-stroked-button routerLink="/driver-tracking/recorrido">
+            <mat-icon>route</mat-icon>
+            Ver recorrido por día
+        </a>
+    </div>
+
+    <form [formGroup]="filtroForm" class="filtros-row">
+        <mat-checkbox formControlName="todos" class="campo-todos">Todos los choferes</mat-checkbox>
+
+        <mat-form-field appearance="outline" class="campo-chofer">
+            <mat-label>Chofer(es)</mat-label>
+            <mat-select formControlName="employeeIds" multiple>
+                @for (d of drivers; track d.employeeId) {
+                <mat-option [value]="d.employeeId">{{ d.employeeName }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </form>
+
     <div id="driver-tracking-map" class="map-container"></div>
 </div>

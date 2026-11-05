@@ -1,0 +1,61 @@
+<div class="route-page">
+    <div class="route-header">
+        <h1>Recorrido de Chofer</h1>
+        <a mat-stroked-button routerLink="/driver-tracking">
+            <mat-icon>map</mat-icon>
+            Ver mapa en vivo
+        </a>
+    </div>
+
+    <form [formGroup]="filtroForm" class="filtros-row" (ngSubmit)="buscar()">
+        <mat-checkbox formControlName="todos" class="campo-todos">Todos los choferes</mat-checkbox>
+
+        <mat-form-field appearance="outline" class="campo-chofer">
+            <mat-label>Chofer(es)</mat-label>
+            <mat-select formControlName="employeeIds" multiple>
+                @for (d of drivers; track d.employeeId) {
+                <mat-option [value]="d.employeeId">{{ d.employeeName }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="campo-fecha">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="fecha">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="campo-hora">
+            <mat-label>Desde (opcional)</mat-label>
+            <input matInput type="time" formControlName="horaInicio">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="campo-hora">
+            <mat-label>Hasta (opcional)</mat-label>
+            <input matInput type="time" formControlName="horaFin">
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" [disabled]="loading">
+            <mat-icon>search</mat-icon>
+            Buscar
+        </button>
+    </form>
+
+    @if (searched && !loading && routes.length === 0) {
+    <div class="sin-datos">No se encontraron registros de ubicación para ese rango.</div>
+    }
+
+    @if (legend.length > 0) {
+    <div class="leyenda">
+        @for (item of legend; track item.employeeId) {
+        <span class="leyenda-item">
+            <span class="leyenda-color" [style.background-color]="item.color"></span>
+            {{ item.employeeName }} ({{ item.points }} puntos)
+        </span>
+        }
+    </div>
+    }
+
+    <div id="driver-route-map" class="map-container"></div>
+</div>

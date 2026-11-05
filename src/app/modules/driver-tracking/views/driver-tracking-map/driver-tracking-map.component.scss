@@ -1,11 +1,39 @@
-@import 'leaflet/dist/leaflet.css';
-
 .map-page {
     display: flex;
     flex-direction: column;
     height: 100%;
     padding: 16px;
     box-sizing: border-box;
+    gap: 12px;
+}
+
+.map-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.map-header h1 {
+    margin: 0;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.campo-todos {
+    flex: 0 0 auto;
+    padding-top: 12px;
+}
+
+.campo-chofer {
+    flex: 1 1 280px;
+    min-width: 220px;
 }
 
 .map-container {

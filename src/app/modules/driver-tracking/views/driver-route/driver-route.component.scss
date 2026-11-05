@@ -1,0 +1,76 @@
+.route-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.route-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.filtros-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.campo-todos {
+    flex: 0 0 auto;
+    padding-top: 12px;
+}
+
+.campo-chofer {
+    flex: 1 1 240px;
+    min-width: 220px;
+}
+
+.campo-fecha {
+    flex: 0 1 180px;
+    min-width: 160px;
+}
+
+.campo-hora {
+    flex: 0 1 160px;
+    min-width: 140px;
+}
+
+.sin-datos,
+.resumen {
+    font: var(--mat-sys-body-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.leyenda-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: var(--mat-sys-body-medium);
+}
+
+.leyenda-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.map-container {
+    flex: 1 1 auto;
+    min-height: 420px;
+    border-radius: 8px;
+    overflow: hidden;
+}

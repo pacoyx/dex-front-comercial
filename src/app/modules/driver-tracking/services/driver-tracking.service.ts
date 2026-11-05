@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { LoginService } from '../../../core/services/login.service';
-import { IDriverLocation } from '../interfaces/IDriverLocation';
+import { IDriverLocation, IDriverLookup, IDriverRouteResponse } from '../interfaces/IDriverLocation';
 
 @Injectable({ providedIn: 'root' })
 export class DriverTrackingService {
@@ -49,5 +49,25 @@ export class DriverTrackingService {
   disconnect(): void {
     this.hubConnection?.stop();
     this.hubConnection = undefined;
+  }
+
+  getDrivers(): Observable<{ data: IDriverLookup[] }> {
+    return this.http.get<{ data: IDriverLookup[] }>(`${environment.apiUrlBase}api/driver-tracking/drivers`);
+  }
+
+  // employeeIds vacio o no enviado = todos los choferes con registros en el rango.
+  getRoute(employeeIds: number[], date: string, startTime?: string, endTime?: string): Observable<{ data: IDriverRouteResponse[] }> {
+    let params = new HttpParams().set('date', date);
+    employeeIds.forEach((id) => {
+      params = params.append('employeeId', id);
+    });
+    if (startTime) {
+      params = params.set('startTime', startTime);
+    }
+    if (endTime) {
+      params = params.set('endTime', endTime);
+    }
+
+    return this.http.get<{ data: IDriverRouteResponse[] }>(`${environment.apiUrlBase}api/driver-tracking/route`, { params });
   }
 }
