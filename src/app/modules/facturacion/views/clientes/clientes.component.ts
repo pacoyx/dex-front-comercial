@@ -119,6 +119,17 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.cargarClientes(1, 10);
   }
 
+  // Recarga la vista que el usuario tenia activa (filtrada o no) en vez de siempre volver al
+  // listado sin filtro: si se edita/crea/elimina un cliente mientras hay una busqueda activa,
+  // el cambio debe reflejarse ahi mismo, no "saltar" a una pagina distinta del listado completo.
+  private recargarListaActual(): void {
+    if (this.bolFiltro) {
+      this.cargarClientesFiltro(this.paginator.pageIndex + 1, this.paginator.pageSize, this.filterControl.value);
+    } else {
+      this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+    }
+  }
+
   nuevoCliente(): void {
     const dialogRef = this.dialog.open(DialogFormRegClienteComponent, {
       data: { esNuevo: true, objCliente: null }
@@ -126,7 +137,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+        this.recargarListaActual();
       }
     });
   }
@@ -138,7 +149,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+        this.recargarListaActual();
       }
     });
   }
@@ -160,7 +171,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
       next: (response) => {
         if (response.success) {
           this.notificationService.showSuccess('Cliente eliminado correctamente.');
-          this.cargarClientes(this.paginator.pageIndex + 1, this.paginator.pageSize);
+          this.recargarListaActual();
         }
       },
       error: (err) => {
