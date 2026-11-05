@@ -25,6 +25,15 @@
                 <input matInput [formControl]="filterControl" placeholder="Buscar por nombre">
             </mat-form-field>
 
+            <mat-form-field appearance="outline" class="campo-tipo-cliente">
+                <mat-label>Tipo de Cliente</mat-label>
+                <mat-select [value]="tipoFiltro" (selectionChange)="onTipoClienteChange($event.value)">
+                    @for (opt of tipoClienteOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
             <div class="filtros-acciones">
                 <button mat-stroked-button (click)="limpiaFiltro()" [disabled]="!bolFiltro">
                     <mat-icon>filter_alt_off</mat-icon>

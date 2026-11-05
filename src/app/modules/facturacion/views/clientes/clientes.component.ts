@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -12,7 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router, RouterModule } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import { ClientesService } from '../../services/clientes.service';
-import { CustomerType, ICustomer } from '../../interfaces/ICustomer';
+import { CUSTOMER_TYPE_OPTIONS, CustomerType, ICustomer } from '../../interfaces/ICustomer';
 import { NotificationsSystemService } from '../../../../core/services/notifications-system.service';
 import { extractErrorMessage } from '../../shared/http-error.util';
 import { DialogFormRegClienteComponent } from './components/dialog-form-reg-cliente/dialog-form-reg-cliente.component';
@@ -21,7 +22,7 @@ import { DialogFormRegClienteComponent } from './components/dialog-form-reg-clie
   selector: 'app-clientes',
   standalone: true,
   imports: [
-    MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatCardModule,
+    MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatCardModule,
     MatPaginatorModule, MatSortModule, MatButtonModule, FormsModule, ReactiveFormsModule, RouterModule
   ],
   templateUrl: './clientes.component.html',
@@ -41,6 +42,12 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   bolFiltro = false;
   filterControl = new FormControl();
 
+  readonly CustomerType = CustomerType;
+  tipoClienteOptions = CUSTOMER_TYPE_OPTIONS;
+  // Facturacion trabaja principalmente con clientes Empresa (RUC, perfil de facturacion);
+  // Individual se deja disponible pero no es el caso de uso por defecto de esta pantalla.
+  tipoFiltro: CustomerType = CustomerType.Company;
+
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -55,7 +62,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
           if (!value || (typeof value === 'string' && value.trim() === '')) {
             return of(null);
           }
-          return this.clientesService.obtenerClientesFiltrarPaginator(1, 10, value).pipe(
+          return this.clientesService.obtenerClientesFiltrarPaginator(1, 10, value, this.tipoFiltro).pipe(
             map(response => response.data)
           );
         })
@@ -88,7 +95,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   }
 
   cargarClientes(pageIndex: number, pageSize: number): void {
-    this.clientesService.obtenerClientes(pageIndex, pageSize).subscribe({
+    this.clientesService.obtenerClientes(pageIndex, pageSize, this.tipoFiltro).subscribe({
       next: (response) => {
         this.dataSource.data = response.data.customers;
         this.totalClientes = response.data.totalCount;
@@ -101,7 +108,7 @@ export class ClientesComponent implements OnInit, AfterViewInit {
   }
 
   cargarClientesFiltro(pageIndex: number, pageSize: number, textoFiltro: string): void {
-    this.clientesService.obtenerClientesFiltrarPaginator(pageIndex, pageSize, textoFiltro).subscribe({
+    this.clientesService.obtenerClientesFiltrarPaginator(pageIndex, pageSize, textoFiltro, this.tipoFiltro).subscribe({
       next: (response) => {
         this.dataSource.data = response.data.customers;
         this.totalClientes = response.data.totalCount;
@@ -117,6 +124,16 @@ export class ClientesComponent implements OnInit, AfterViewInit {
     this.bolFiltro = false;
     this.filterControl.setValue('', { emitEvent: false });
     this.cargarClientes(1, 10);
+  }
+
+  onTipoClienteChange(tipo: CustomerType): void {
+    this.tipoFiltro = tipo;
+    this.paginator.pageIndex = 0;
+    if (this.bolFiltro && this.filterControl.value) {
+      this.cargarClientesFiltro(1, this.paginator.pageSize, this.filterControl.value);
+    } else {
+      this.cargarClientes(1, this.paginator.pageSize);
+    }
   }
 
   // Recarga la vista que el usuario tenia activa (filtrada o no) en vez de siempre volver al

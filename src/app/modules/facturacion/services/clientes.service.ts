@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/ICatalogos';
 import {
+  CustomerType,
   IAccountSummary,
   IBillingProfile,
   IBillingProfileRequest,
@@ -27,14 +28,21 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerClientes(pagina: number, numFilas: number): Observable<IResponseGeneric<ICustomerPaginatedResponse>> {
+  obtenerClientes(pagina: number, numFilas: number, customerType?: CustomerType): Observable<IResponseGeneric<ICustomerPaginatedResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.get<IResponseGeneric<ICustomerPaginatedResponse>>(`${this.apiUrl}${environment.EPListarClientes}/${pagina}/${numFilas}`, { headers });
+    let params = new HttpParams();
+    if (customerType != null) {
+      params = params.set('customerType', customerType);
+    }
+    return this.http.get<IResponseGeneric<ICustomerPaginatedResponse>>(`${this.apiUrl}${environment.EPListarClientes}/${pagina}/${numFilas}`, { headers, params });
   }
 
-  obtenerClientesFiltrarPaginator(pagina: number, numFilas: number, nombreFiltro: string): Observable<IResponseGeneric<ICustomerPaginatedResponse>> {
+  obtenerClientesFiltrarPaginator(pagina: number, numFilas: number, nombreFiltro: string, customerType?: CustomerType): Observable<IResponseGeneric<ICustomerPaginatedResponse>> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const params = { name: nombreFiltro };
+    let params = new HttpParams().set('name', nombreFiltro);
+    if (customerType != null) {
+      params = params.set('customerType', customerType);
+    }
     return this.http.get<IResponseGeneric<ICustomerPaginatedResponse>>(`${this.apiUrl}${environment.EPListarClientesPaginator}/${pagina}/${numFilas}`, { headers, params });
   }
 
