@@ -1,8 +1,9 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { throwError, switchMap } from 'rxjs';
+import { Observable, throwError, switchMap, finalize, shareReplay } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { ILoginResponseData } from '../interfaces/ILoginResponse';
+import { IRefreshTokenResponse } from '../interfaces/IRefreshTokenResponse';
 import { LoginService } from './login.service';
 import { NotificationsSystemService } from './notifications-system.service';
 import { ACCESS_SCHEDULE_BLOCKED_MESSAGE } from '../constants/access-schedule';
@@ -10,6 +11,23 @@ import { ACCESS_SCHEDULE_BLOCKED_MESSAGE } from '../constants/access-schedule';
 
 const MAX_REFRESH_ATTEMPTS = 5;
 let refreshAttempts = 0;
+
+// Comparte un unico refresh en vuelo entre todas las peticiones que fallan con 401 casi al mismo
+// tiempo (ej. una pantalla que dispara varias llamadas en paralelo justo cuando expira el token).
+// Sin esto, cada peticion dispara su propio POST /refresh-token: la primera gana y rota el
+// refresh token en el backend, las demas llegan con el refresh token ya viejo, reciben 401 de
+// vuelta y terminan forzando un logout aunque la sesion siga siendo valida.
+let refreshInFlight$: Observable<IRefreshTokenResponse> | null = null;
+
+function getSharedRefresh(authService: LoginService): Observable<IRefreshTokenResponse> {
+  if (!refreshInFlight$) {
+    refreshInFlight$ = authService.refreshToken().pipe(
+      finalize(() => { refreshInFlight$ = null; }),
+      shareReplay(1)
+    );
+  }
+  return refreshInFlight$;
+}
 
 
 const whitelistUrls = [
@@ -89,7 +107,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         }
         refreshAttempts++;
 
-        return authService.refreshToken().pipe(
+        return getSharedRefresh(authService).pipe(
           switchMap((newAuthData) => {
             // Reseteamos el contador apenas el refresh tiene exito: MAX_REFRESH_ATTEMPTS
             // debe frenar rafagas de fallos seguidos, no acumularse durante todo el turno
