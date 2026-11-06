@@ -5,7 +5,7 @@
             <mat-icon>sports_soccer</mat-icon>
             <div class="page-header__heading">
                 <h1>Reporte de Zapatillas</h1>
-                <span class="page-header__subtitle">Consulta y filtra las zapatillas registradas en inspección</span>
+                <span class="page-header__subtitle">Consulta y filtra las zapatillas registradas en inspección, agrupadas por guía</span>
             </div>
         </div>
     </div>
@@ -47,14 +47,19 @@
                 </mat-select>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="campo-select">
-                <mat-label>Estado Trabajo</mat-label>
-                <mat-select [(ngModel)]="ticketStatus">
-                    <mat-option [value]="null">Todos</mat-option>
-                    <mat-option value="P">Pendiente</mat-option>
-                    <mat-option value="E">En Proceso</mat-option>
-                    <mat-option value="F">Finalizado</mat-option>
-                </mat-select>
+            <mat-form-field appearance="outline" class="campo-cliente">
+                <mat-label>Cliente</mat-label>
+                <input type="text" matInput [formControl]="clienteControl" [matAutocomplete]="autoCliente" placeholder="Buscar cliente">
+                @if (customerId) {
+                <button matSuffix mat-icon-button aria-label="Quitar cliente" (click)="limpiarCliente()">
+                    <mat-icon>close</mat-icon>
+                </button>
+                }
+                <mat-autocomplete #autoCliente="matAutocomplete" (optionSelected)="onClienteSelected($event)" [displayWith]="displayFn">
+                    @for (cliente of filteredClientes | async; track cliente.id) {
+                    <mat-option [value]="cliente">{{ cliente.nombres | titlecase }} {{ cliente.apellidos | titlecase }}</mat-option>
+                    }
+                </mat-autocomplete>
             </mat-form-field>
 
             <mat-checkbox [(ngModel)]="pendingDelivery" class="campo-checkbox" (change)="buscar()">Pendientes de entrega</mat-checkbox>
@@ -90,15 +95,20 @@
 
     <mat-card class="panel panel-tabla" appearance="outlined">
         <mat-card-content class="tabla-scroll">
-            <table mat-table [dataSource]="dataSource" class="detail-table">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="detail-table">
 
                 <ng-container matColumnDef="workGuideNumber">
                     <th mat-header-cell *matHeaderCellDef> Guía </th>
                     <td mat-cell *matCellDef="let element">
-                        <a [routerLink]="['/recepcion/retiros', serieDeGuia(element.workGuideNumber), numeroDeGuia(element.workGuideNumber)]">
+                        <a [routerLink]="['/recepcion/retiros', serieDeGuia(element.workGuideNumber), numeroDeGuia(element.workGuideNumber)]" (click)="$event.stopPropagation()">
                             {{element.workGuideNumber}}
                         </a>
                     </td>
+                </ng-container>
+
+                <ng-container matColumnDef="workGuideDate">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{element.workGuideDate | date:'dd/MM/yyyy HH:mm'}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">
@@ -106,34 +116,17 @@
                     <td mat-cell *matCellDef="let element"> {{element.customerName}} </td>
                 </ng-container>
 
-                <ng-container matColumnDef="brand">
-                    <th mat-header-cell *matHeaderCellDef> Marca </th>
-                    <td mat-cell *matCellDef="let element"> {{element.brand || '-'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="primaryColor">
-                    <th mat-header-cell *matHeaderCellDef> Color </th>
-                    <td mat-cell *matCellDef="let element"> {{element.primaryColor || '-'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="hasLaces">
-                    <th mat-header-cell *matHeaderCellDef> Cordones </th>
-                    <td mat-cell *matCellDef="let element"> {{element.hasLaces ? 'Sí' : 'No'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="hasInsoles">
-                    <th mat-header-cell *matHeaderCellDef> Plantillas </th>
-                    <td mat-cell *matCellDef="let element"> {{element.hasInsoles ? 'Sí' : 'No'}} </td>
+                <ng-container matColumnDef="sneakerCount">
+                    <th mat-header-cell *matHeaderCellDef> Cantidad </th>
+                    <td mat-cell *matCellDef="let element"> {{element.sneakerCount}} </td>
                 </ng-container>
 
                 <ng-container matColumnDef="deliveryStatus">
                     <th mat-header-cell *matHeaderCellDef> Estado Entrega </th>
                     <td mat-cell *matCellDef="let element">
-                        <span class="status-chip"
-                            [ngClass]="{
+                        <span class="status-chip" [ngClass]="{
                                 'status-chip--activo': element.deliveryStatus === 'Delivered',
-                                'status-chip--pendiente': element.deliveryStatus === 'Pending',
-                                'status-chip--inactivo': element.deliveryStatus !== 'Delivered' && element.deliveryStatus !== 'Pending'
+                                'status-chip--pendiente': element.deliveryStatus === 'Pending'
                             }">
                             <span class="status-chip__dot"></span>
                             {{traducirEstadoEntrega(element.deliveryStatus)}}
@@ -146,8 +139,68 @@
                     <td mat-cell *matCellDef="let element"> {{element.photoCount}} </td>
                 </ng-container>
 
+                <ng-container matColumnDef="expand">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon class="icono-expandir">{{ expandedGroup?.workGuideId === element.workGuideId ? 'expand_less' : 'expand_more' }}</mat-icon>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length" class="celda-detalle">
+                        <div class="detalle-expandido" [@detailExpand]="element === expandedGroup ? 'expanded' : 'collapsed'">
+                            @if (element === expandedGroup) {
+                            <div class="detalle-contenido">
+                                <table class="tabla-items">
+                                    <thead>
+                                        <tr>
+                                            <th>Marca</th>
+                                            <th>Color</th>
+                                            <th>Cordones</th>
+                                            <th>Plantillas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (item of element.items; track item.sneakerDetailId) {
+                                        <tr>
+                                            <td>{{item.brand || '-'}}</td>
+                                            <td>{{item.primaryColor || '-'}}</td>
+                                            <td>{{item.hasLaces ? 'Sí' : 'No'}}</td>
+                                            <td>{{item.hasInsoles ? 'Sí' : 'No'}}</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                                @if (element.photoCount > 0) {
+                                <div class="fotos-seccion">
+                                    <span class="fotos-titulo">Fotos ({{element.photoCount}})</span>
+                                    @if (cargandoFotosGuiaId === element.workGuideId) {
+                                    <app-loading></app-loading>
+                                    } @else {
+                                    <div class="fotos-miniaturas">
+                                        @for (foto of fotosPorGuia.get(element.workGuideId) ?? []; track foto.id; let i = $index) {
+                                        <button type="button" class="foto-miniatura" (click)="abrirFoto(element.workGuideId, i)">
+                                            @if (fotoUrlsPorGuia.get(element.workGuideId)?.get(foto.id); as url) {
+                                            <img [src]="url" [alt]="foto.originalFileName || 'Foto'">
+                                            } @else {
+                                            <mat-icon>image</mat-icon>
+                                            }
+                                        </button>
+                                        }
+                                    </div>
+                                    }
+                                </div>
+                                }
+                            </div>
+                            }
+                        </div>
+                    </td>
+                </ng-container>
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumns" class="cabecera"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="fila-clickeable" (click)="toggleFila(row)"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="fila-detalle"></tr>
             </table>
 
             @if(dataSource.data.length === 0 && !loading){

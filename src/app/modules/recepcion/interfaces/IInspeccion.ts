@@ -105,17 +105,26 @@ export interface SneakerReportFilters {
     dateTo?: string | null;
     branchId?: number | null;
     brandId?: number | null;
+    customerId?: number | null;
     ticketStatus?: 'P' | 'E' | 'F' | null;
     pendingDelivery?: boolean | null;
 }
 
-export interface SneakerReportRowResponse {
-    workGuideNumber: string;
-    customerName: string;
+export interface SneakerReportItemResponse {
+    sneakerDetailId: number;
     brand: string | null;
     primaryColor: string | null;
     hasLaces: boolean;
     hasInsoles: boolean;
-    deliveryStatus: 'Pending' | 'Delivered' | 'Returned' | 'Unknown';
+}
+
+export interface SneakerReportGroupResponse {
+    workGuideId: number;
+    workGuideNumber: string;
+    workGuideDate: string;
+    customerName: string;
+    sneakerCount: number;
+    deliveryStatus: 'Pending' | 'Delivered';
     photoCount: number;
+    items: SneakerReportItemResponse[];
 }

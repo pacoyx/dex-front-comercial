@@ -10,7 +10,7 @@ import {
   SneakerBrandResponse,
   SneakerDetailResponse,
   SneakerReportFilters,
-  SneakerReportRowResponse,
+  SneakerReportGroupResponse,
   UpsertSneakerDetailRequest,
   WorkGuidePhotosResponse
 } from '../interfaces/IInspeccion';
@@ -78,10 +78,11 @@ export class InspeccionService {
     if (filtros.dateTo) params = params.set('dateTo', filtros.dateTo);
     if (filtros.branchId) params = params.set('branchId', filtros.branchId);
     if (filtros.brandId) params = params.set('brandId', filtros.brandId);
+    if (filtros.customerId) params = params.set('customerId', filtros.customerId);
     if (filtros.ticketStatus) params = params.set('ticketStatus', filtros.ticketStatus);
     if (filtros.pendingDelivery) params = params.set('pendingDelivery', filtros.pendingDelivery);
 
     const url = `${this.apiUrl}${environment.EPReporteSneakers}`;
-    return this.http.get<IResponseGeneric<SneakerReportRowResponse[]>>(url, { params });
+    return this.http.get<IResponseGeneric<SneakerReportGroupResponse[]>>(url, { params });
   }
 }
