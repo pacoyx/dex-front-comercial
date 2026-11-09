@@ -77,6 +77,37 @@
   font-size: 18px;
 }
 
+.meta-chip--printer {
+  padding-right: 2px;
+}
+
+.meta-chip--printer button {
+  width: 28px;
+  height: 28px;
+  line-height: 28px;
+}
+
+.meta-chip--printer button mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.printer-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.printer-status-dot--online {
+  background-color: #2e7d32;
+}
+
+.printer-status-dot--offline {
+  background-color: var(--mat-sys-error);
+}
+
 .sucursal-select-bare {
   display: inline-flex;
   align-items: center;

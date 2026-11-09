@@ -27,6 +27,13 @@
         </mat-select>
         }
       </div>
+      <div class="meta-chip meta-chip--printer" [matTooltip]="printerStatusTooltip">
+        <span class="printer-status-dot" [class.printer-status-dot--online]="printerConnected" [class.printer-status-dot--offline]="!printerConnected"></span>
+        <span>{{ printerConnected ? 'Impresora OK' : 'Impresora desconectada' }}</span>
+        <button mat-icon-button (click)="probarImpresion()" [disabled]="!printerConnected || testingPrint" matTooltip="Probar impresión">
+          <mat-icon>{{ testingPrint ? 'hourglass_empty' : 'print' }}</mat-icon>
+        </button>
+      </div>
     </div>
   </div>
 

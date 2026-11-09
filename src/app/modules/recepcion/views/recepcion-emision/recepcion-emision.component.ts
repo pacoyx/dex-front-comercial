@@ -116,6 +116,12 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   sucursalId = 1;
   sucursalNombre = '[Seleccione Sucursal]';
 
+  printerConnected = false;
+  printerId: number | null = null;
+  printerStatusTooltip = 'Verificando conexión con la impresora...';
+  testingPrint = false;
+  private printerStatusIntervalId?: ReturnType<typeof setInterval>;
+
   fechaHoy = Date.now();
   fechaHEntrega = Date.now() + 2 * 24 * 60 * 60 * 1000;
   tipoPago = 'SP';
@@ -238,6 +244,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       this.subscriptionIdsPesoLavado.unsubscribe();
     if (this.subscriptionQuickAccess)
       this.subscriptionQuickAccess.unsubscribe();
+    if (this.printerStatusIntervalId) clearInterval(this.printerStatusIntervalId);
   }
 
   async ngOnInit(): Promise<void> {
@@ -279,6 +286,48 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     let objPago: IEmisionPago = { tipo: 'SP', monto: 0 };
     this.store.addPago(objPago);
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
+
+    this.checkPrinterStatus();
+    this.printerStatusIntervalId = setInterval(() => this.checkPrinterStatus(), 30000);
+  }
+
+  checkPrinterStatus(): void {
+    if (!this.sucursalId) {
+      return;
+    }
+
+    this.emisionService.GetPrinterConnectionStatus(this.sucursalId).subscribe({
+      next: (res) => {
+        this.printerConnected = res.data.isConnected;
+        this.printerId = res.data.printerId;
+        this.printerStatusTooltip =
+          res.data.message ?? (this.printerConnected ? 'Impresora conectada' : 'Impresora desconectada');
+      },
+      error: () => {
+        this.printerConnected = false;
+        this.printerId = null;
+        this.printerStatusTooltip = 'No se pudo verificar el estado de la impresora.';
+      }
+    });
+  }
+
+  probarImpresion(): void {
+    if (!this.printerId || this.testingPrint) {
+      return;
+    }
+
+    this.testingPrint = true;
+    this.emisionService.TestPrint(this.printerId).subscribe({
+      next: (res) => {
+        this.testingPrint = false;
+        this.notificacionService.showSuccess(res.message || 'Comando de prueba enviado. Revisa la impresora.');
+      },
+      error: (err) => {
+        this.testingPrint = false;
+        const msg = Array.isArray(err?.error) ? err.error[0] : (err?.error?.message || 'No se pudo enviar la prueba de impresión.');
+        this.notificacionService.showError(msg);
+      }
+    });
   }
 
   cargarSucursalesLocalStorage() {

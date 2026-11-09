@@ -131,6 +131,10 @@ export const environment = {
     //dashboard printers
     EPPrintingStatus: 'api/admin/printing/status',
 
+    // Estado de conexion e impresion de prueba (permiso de recepcion.emision, no admin/Settings)
+    EPPrinterConnectionStatus: 'api/printing/connection-status',
+    EPTestPrint: 'api/printing/test-print',
+
     //impresiones pendientes
     EPListarImpresionesPendientes: 'api/admin/print-queues/pending',
     EPCancelarImpresionPendiente: 'api/admin/print-queues',

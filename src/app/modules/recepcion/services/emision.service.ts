@@ -21,6 +21,7 @@ import { IIdsPesoLavadoResponse, IResponseServiceQuickAccess } from '../interfac
 import { IReimprimirGuiaRequest } from '../interfaces/IReimprimirGuiaRequest';
 import { ICustomerGarmentHistory } from '../interfaces/ICustomerGarmentHistory';
 import { IAddWorkGuideItemRequest, IAddWorkGuideItemResponse, IAdjustWorkGuideItemQuantityRequest, IAdjustWorkGuideItemQuantityResponse } from '../interfaces/IWorkGuideItemAdjust';
+import { IPrinterConnectionStatus } from '../interfaces/IPrinterConnectionStatus';
 
 
 @Injectable({
@@ -133,6 +134,16 @@ export class EmisionService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     const url = `${this.apiUrl}${environment.EPAnularGuia}/${idGuia}`;
     return this.http.put<IResponseGeneric<string>>(url, {}, { headers });
+  }
+
+  GetPrinterConnectionStatus(branchId: number): Observable<IResponseGeneric<IPrinterConnectionStatus>> {
+    const url = `${this.apiUrl}${environment.EPPrinterConnectionStatus}?branchId=${branchId}`;
+    return this.http.get<IResponseGeneric<IPrinterConnectionStatus>>(url);
+  }
+
+  TestPrint(printerId: number): Observable<IResponseGeneric<any>> {
+    const url = `${this.apiUrl}${environment.EPTestPrint}?printerId=${printerId}`;
+    return this.http.post<IResponseGeneric<any>>(url, {});
   }
 
   ReimprimirGuia(idGuia: number, printCopy: number): Observable<IResponseGeneric<number>> {
