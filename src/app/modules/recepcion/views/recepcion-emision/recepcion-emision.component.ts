@@ -883,6 +883,7 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.guiaCreadaId = null;
     this.isDelivery = false;
     this.isEtiqueta = false;
+    this.isSinCopia = false;
     this.actualizarPago();
     this.clienteControl.setValue('');
   }

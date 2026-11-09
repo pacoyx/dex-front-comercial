@@ -916,6 +916,7 @@ export class RecepcionTouchComponent implements OnInit, OnDestroy {
     this.blockSave = false;
     this.isDelivery = false;
     this.isEtiqueta = false;
+    this.isSinCopia = false;
     this.actualizarPago();
     this.clienteControl.setValue('');
     this.activeCategoryId = 'favoritos';
