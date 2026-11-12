@@ -18,6 +18,15 @@
     padding: 4px 2px;
 }
 
+/* En >tablet el boton flotante de adjuntar foto (fixed, arriba a la derecha del viewport)
+   puede quedar encima de "Agregar Gasto" cuando el contenedor no tiene margen propio
+   todavia (antes de llegar al max-width). Se corre el header para dejarle el espacio. */
+@media (min-width: 901px) {
+    .page-header {
+        padding-right: 100px;
+    }
+}
+
 .page-header__title {
     display: flex;
     align-items: center;

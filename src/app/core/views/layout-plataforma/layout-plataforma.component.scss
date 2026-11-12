@@ -73,6 +73,19 @@
   background: var(--mat-sys-surface);
 }
 
+.module-shell__fab-fotos {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 1000;
+}
+
+@media print {
+  .module-shell__fab-fotos {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .module-toolbar__title {
     display: none;

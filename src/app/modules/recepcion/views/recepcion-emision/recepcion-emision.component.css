@@ -16,15 +16,16 @@
    Page header
    ========================================================================== */
 .page-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
   padding: 4px 2px;
 }
 
 .page-header__title {
+  grid-column: 1;
+  justify-self: start;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -54,7 +55,10 @@
 }
 
 .page-header__meta {
+  grid-column: 2;
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
@@ -77,35 +81,28 @@
   font-size: 18px;
 }
 
-.meta-chip--printer {
-  padding-right: 2px;
+.printer-btn__icon-wrap {
+  position: relative;
+  display: inline-flex;
 }
 
-.meta-chip--printer button {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-}
-
-.meta-chip--printer button mat-icon {
-  width: 16px;
-  height: 16px;
-  font-size: 16px;
-}
-
-.printer-status-dot {
-  width: 8px;
-  height: 8px;
+.printer-btn__badge {
+  position: absolute;
+  bottom: -2px;
+  right: -4px;
+  font-size: 12px !important;
+  width: 12px !important;
+  height: 12px !important;
   border-radius: 50%;
-  flex-shrink: 0;
+  background: white;
 }
 
-.printer-status-dot--online {
-  background-color: #2e7d32;
+.printer-btn__badge--ok {
+  color: #2e7d32;
 }
 
-.printer-status-dot--offline {
-  background-color: var(--mat-sys-error);
+.printer-btn__badge--error {
+  color: var(--mat-sys-error);
 }
 
 .sucursal-select-bare {
@@ -450,8 +447,17 @@
   }
 
   .page-header {
-    flex-direction: column;
-    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .page-header__title {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .page-header__meta {
+    grid-column: 1;
+    justify-self: stretch;
   }
 }
 
@@ -459,6 +465,11 @@
   .cliente-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .cliente-field,
+  .telefono-field {
+    flex: 1 1 auto;
   }
 
   .cliente-add-btn {

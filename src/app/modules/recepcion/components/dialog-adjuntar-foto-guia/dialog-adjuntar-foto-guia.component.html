@@ -1,0 +1,68 @@
+<h2 mat-dialog-title>Adjuntar Foto a Guía</h2>
+<mat-dialog-content>
+    <div class="adjuntar-foto-guia">
+
+        @if(guiaSeleccionada){
+        <div class="adjuntar-foto-guia__guia-chip">
+            <mat-icon>description</mat-icon>
+            <div class="adjuntar-foto-guia__guia-info">
+                <span class="adjuntar-foto-guia__guia-numero">{{guiaSeleccionada.serieGuia}}-{{guiaSeleccionada.numeroGuia}}</span>
+                <span class="adjuntar-foto-guia__guia-detalle">{{guiaSeleccionada.customerName}} · {{guiaSeleccionada.fecha | date:'dd/MM/yyyy hh:mm:ss'}}</span>
+            </div>
+            <button mat-button (click)="cambiarGuia()">Cambiar guía</button>
+        </div>
+        }@else{
+        <div class="adjuntar-foto-guia__busqueda">
+            <mat-form-field appearance="outline" class="adjuntar-foto-guia__campo">
+                <mat-label>Buscar por cliente o N° de guía</mat-label>
+                <input matInput [ngModel]="filtroTexto" (ngModelChange)="onInputBusqueda($event)"
+                    placeholder="Ej. Juan Pérez o 1234" [disabled]="!!clienteSeleccionado">
+                @if(buscando){<mat-spinner matSuffix diameter="18"></mat-spinner>}
+            </mat-form-field>
+
+            @if(mensajeBusqueda){
+            <div class="adjuntar-foto-guia__mensaje">{{mensajeBusqueda}}</div>
+            }
+
+            @if(guiaDirectaEncontrada){
+            <button mat-stroked-button class="adjuntar-foto-guia__resultado-guia" (click)="seleccionarGuiaDirecta()">
+                <mat-icon>description</mat-icon>
+                <span>{{guiaDirectaEncontrada.serieGuia}}-{{guiaDirectaEncontrada.numeroGuia}} · {{guiaDirectaEncontrada.customerName}} · {{guiaDirectaEncontrada.fecha | date:'dd/MM/yyyy hh:mm:ss'}}</span>
+            </button>
+            }
+
+            @if(!clienteSeleccionado && clientesEncontrados.length > 0){
+            <div class="adjuntar-foto-guia__lista">
+                @for(cliente of clientesEncontrados; track cliente.id){
+                <button mat-button class="adjuntar-foto-guia__item" (click)="seleccionarCliente(cliente)">
+                    <mat-icon>person</mat-icon>
+                    <span>{{cliente.nombres}} {{cliente.apellidos}} <small>{{cliente.telefono}}</small></span>
+                </button>
+                }
+            </div>
+            }
+
+            @if(clienteSeleccionado){
+            <div class="adjuntar-foto-guia__subtitulo">
+                <span>Guías de {{clienteSeleccionado.nombres}} {{clienteSeleccionado.apellidos}}</span>
+                <button mat-button (click)="volverABuscarClientes()">Buscar otro cliente</button>
+            </div>
+            <div class="adjuntar-foto-guia__lista">
+                @for(guia of guiasDelCliente; track guia.id){
+                <button mat-button class="adjuntar-foto-guia__item" (click)="seleccionarGuiaDeCliente(guia)">
+                    <mat-icon>description</mat-icon>
+                    <span>{{guia.serieGuia}}-{{guia.numeroGuia}} · {{guia.fechaOperacion | date:'dd/MM/yyyy hh:mm:ss'}}</span>
+                </button>
+                }
+            </div>
+            }
+        </div>
+        }
+
+        <app-foto-queue [workGuideId]="guiaSeleccionada?.id ?? null"></app-foto-queue>
+
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="cerrar()" cdkFocusInitial>Cerrar</button>
+</mat-dialog-actions>

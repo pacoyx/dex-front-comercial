@@ -116,11 +116,9 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
   sucursalId = 1;
   sucursalNombre = '[Seleccione Sucursal]';
 
-  printerConnected = false;
   printerId: number | null = null;
-  printerStatusTooltip = 'Verificando conexión con la impresora...';
+  printerConnected = false;
   testingPrint = false;
-  private printerStatusIntervalId?: ReturnType<typeof setInterval>;
 
   fechaHoy = Date.now();
   fechaHEntrega = Date.now() + 2 * 24 * 60 * 60 * 1000;
@@ -244,7 +242,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
       this.subscriptionIdsPesoLavado.unsubscribe();
     if (this.subscriptionQuickAccess)
       this.subscriptionQuickAccess.unsubscribe();
-    if (this.printerStatusIntervalId) clearInterval(this.printerStatusIntervalId);
   }
 
   async ngOnInit(): Promise<void> {
@@ -288,7 +285,6 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
     this.store.addUser(this.dataLogin.getLoginData()?.userName!);
 
     this.checkPrinterStatus();
-    this.printerStatusIntervalId = setInterval(() => this.checkPrinterStatus(), 30000);
   }
 
   checkPrinterStatus(): void {
@@ -298,15 +294,12 @@ export class RecepcionEmisionComponent implements OnInit, OnDestroy {
 
     this.emisionService.GetPrinterConnectionStatus(this.sucursalId).subscribe({
       next: (res) => {
-        this.printerConnected = res.data.isConnected;
         this.printerId = res.data.printerId;
-        this.printerStatusTooltip =
-          res.data.message ?? (this.printerConnected ? 'Impresora conectada' : 'Impresora desconectada');
+        this.printerConnected = res.data.isConnected;
       },
       error: () => {
-        this.printerConnected = false;
         this.printerId = null;
-        this.printerStatusTooltip = 'No se pudo verificar el estado de la impresora.';
+        this.printerConnected = false;
       }
     });
   }

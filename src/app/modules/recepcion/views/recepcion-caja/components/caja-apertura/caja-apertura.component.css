@@ -124,6 +124,11 @@
         flex-direction: column;
     }
 
+    .campo-info,
+    .campo-mitad {
+        flex: 1 1 auto;
+    }
+
     .panel__actions button {
         width: 100%;
     }

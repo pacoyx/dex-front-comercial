@@ -154,6 +154,11 @@
         align-items: stretch;
     }
 
+    .campo-busqueda,
+    .campo-tipo-pago {
+        flex: 1 1 auto;
+    }
+
     .section-filters__buttons {
         margin-left: 0;
         justify-content: stretch;

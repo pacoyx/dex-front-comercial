@@ -1,0 +1,56 @@
+<div class="foto-queue">
+
+    @if(errorMessage){
+    <div class="foto-queue__error">{{errorMessage}}</div>
+    }
+
+    <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+        multiple (change)="onArchivosSeleccionados($event)">
+
+    <div class="foto-queue__header">
+        <span class="foto-queue__titulo">Fotos ({{cola.length}})</span>
+        <button mat-stroked-button (click)="abrirCamara()">
+            <mat-icon>add_a_photo</mat-icon>
+            Tomar otra foto
+        </button>
+    </div>
+
+    @if(cola.length > 0){
+    <div class="foto-queue__grid">
+        @for(item of cola; track item.previewUrl){
+        <div class="foto-queue__item">
+            <img [src]="item.previewUrl" class="foto-queue__img" alt="Foto en cola">
+
+            <div class="foto-queue__estado">
+                @switch(item.status){
+                @case('pendiente'){<mat-icon class="icono-pendiente" matTooltip="Pendiente">schedule</mat-icon>}
+                @case('subiendo'){<mat-icon class="icono-subiendo">cached</mat-icon>}
+                @case('ok'){<mat-icon class="icono-ok">check_circle</mat-icon>}
+                @case('error'){<mat-icon class="icono-error" [matTooltip]="item.errorMessage || 'Error al subir'">error</mat-icon>}
+                }
+            </div>
+
+            @if(item.status !== 'subiendo' && item.status !== 'ok'){
+            <button mat-icon-button class="foto-queue__quitar" (click)="quitar(item)" matTooltip="Quitar">
+                <mat-icon>close</mat-icon>
+            </button>
+            }
+        </div>
+        }
+    </div>
+    }@else{
+    <div class="foto-queue__vacio">Toca "Tomar otra foto" para empezar a agregar evidencias.</div>
+    }
+
+    @if(cola.length > 0){
+    <div class="foto-queue__resumen">{{subidas}} de {{cola.length}} fotos subidas.</div>
+    }
+
+    <button mat-flat-button color="primary" class="foto-queue__guardar" (click)="subirTodo()"
+        [disabled]="subiendoTodo || pendientes === 0 || !workGuideId"
+        [matTooltip]="!workGuideId ? 'Selecciona una guía para poder guardar' : ''">
+        @if(subiendoTodo){<mat-icon>cached</mat-icon>}
+        Guardar Fotos ({{pendientes}})
+    </button>
+
+</div>

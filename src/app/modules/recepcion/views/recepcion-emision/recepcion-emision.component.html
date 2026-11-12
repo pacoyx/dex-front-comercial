@@ -20,20 +20,26 @@
         @if (bolExisteCaja) {
         <span>{{sucursalNombre}}</span>
         } @else {
-        <mat-select class="sucursal-select-bare" [(ngModel)]="sucursalId" panelClass="sucursal-select-panel">
+        <mat-select class="sucursal-select-bare" [(ngModel)]="sucursalId" panelClass="sucursal-select-panel"
+          (selectionChange)="checkPrinterStatus()">
           @for (s of sucursales; track s.branchSalesId) {
           <mat-option [value]="s.branchSalesId">{{s.branchSalesName}}</mat-option>
           }
         </mat-select>
         }
       </div>
-      <div class="meta-chip meta-chip--printer" [matTooltip]="printerStatusTooltip">
-        <span class="printer-status-dot" [class.printer-status-dot--online]="printerConnected" [class.printer-status-dot--offline]="!printerConnected"></span>
-        <span>{{ printerConnected ? 'Impresora OK' : 'Impresora desconectada' }}</span>
-        <button mat-icon-button (click)="probarImpresion()" [disabled]="!printerConnected || testingPrint" matTooltip="Probar impresión">
+      <button mat-icon-button (click)="probarImpresion()" [disabled]="!printerId || testingPrint"
+        [matTooltip]="(printerConnected ? 'Impresora conectada' : 'Impresora desconectada') + ' · Probar impresión'">
+        <span class="printer-btn__icon-wrap">
           <mat-icon>{{ testingPrint ? 'hourglass_empty' : 'print' }}</mat-icon>
-        </button>
-      </div>
+          @if(!testingPrint){
+          <mat-icon class="printer-btn__badge" [class.printer-btn__badge--ok]="printerConnected"
+            [class.printer-btn__badge--error]="!printerConnected">
+            {{ printerConnected ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          }
+        </span>
+      </button>
     </div>
   </div>
 

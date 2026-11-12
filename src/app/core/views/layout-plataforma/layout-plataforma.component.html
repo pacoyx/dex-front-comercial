@@ -149,4 +149,12 @@
     <router-outlet></router-outlet>
   </div>
 
+  <input #inputCamaraFab type="file" accept="image/jpeg,image/png,image/webp" capture="environment" multiple hidden
+    (change)="onFotoCapturada($event)">
+
+  <button mat-fab color="primary" class="module-shell__fab-fotos" (click)="abrirAdjuntarFoto()"
+    matTooltip="Adjuntar foto a guía" aria-label="Adjuntar foto a guía">
+    <mat-icon>photo_camera</mat-icon>
+  </button>
+
 </div>

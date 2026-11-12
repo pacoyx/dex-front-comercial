@@ -1,0 +1,81 @@
+.adjuntar-foto-guia {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 420px;
+}
+
+.adjuntar-foto-guia__guia-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 8px;
+    background: var(--mat-sys-surface-container);
+}
+
+.adjuntar-foto-guia__guia-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.adjuntar-foto-guia__guia-numero {
+    font-weight: 600;
+}
+
+.adjuntar-foto-guia__guia-detalle {
+    font-size: small;
+    color: var(--mat-sys-on-surface-variant);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adjuntar-foto-guia__busqueda {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.adjuntar-foto-guia__campo {
+    width: 100%;
+}
+
+.adjuntar-foto-guia__mensaje {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: small;
+}
+
+.adjuntar-foto-guia__resultado-guia {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.adjuntar-foto-guia__lista {
+    display: flex;
+    flex-direction: column;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.adjuntar-foto-guia__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.adjuntar-foto-guia__subtitulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: small;
+    color: var(--mat-sys-on-surface-variant);
+}
