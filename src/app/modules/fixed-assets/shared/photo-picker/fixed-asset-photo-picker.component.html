@@ -1,0 +1,51 @@
+<div class="photo-picker">
+  <input #inputCamara type="file" accept="image/jpeg,image/png,image/webp" capture="environment" hidden
+    (change)="onArchivoSeleccionado($event)">
+  <input #inputGaleria type="file" accept="image/jpeg,image/png,image/webp" hidden
+    (change)="onArchivoSeleccionado($event)">
+
+  @if (camaraAbierta) {
+  <div class="photo-picker__camara">
+    <video #video autoplay playsinline muted></video>
+    <div class="photo-picker__acciones">
+      <button mat-button type="button" (click)="cerrarCamara()">Cancelar</button>
+      <button mat-flat-button color="primary" type="button" (click)="capturar()">
+        <mat-icon>photo_camera</mat-icon>
+        Capturar
+      </button>
+    </div>
+  </div>
+  } @else {
+  <div class="photo-picker__contenido">
+    <div class="photo-picker__preview">
+      @if (fotoMostrada) {
+      <img [src]="fotoMostrada" alt="Foto del activo">
+      } @else {
+      <mat-icon class="photo-picker__placeholder">add_a_photo</mat-icon>
+      }
+    </div>
+
+    <div class="photo-picker__botones">
+      <span class="photo-picker__titulo">Foto del activo (opcional)</span>
+      <button mat-stroked-button type="button" (click)="abrirCamara()" [disabled]="iniciandoCamara">
+        <mat-icon>photo_camera</mat-icon>
+        Tomar foto
+      </button>
+      <button mat-stroked-button type="button" (click)="inputGaleria.click()">
+        <mat-icon>upload</mat-icon>
+        Subir imagen
+      </button>
+      @if (fotoMostrada) {
+      <button mat-button color="warn" type="button" (click)="quitar()">
+        <mat-icon>delete</mat-icon>
+        Quitar foto
+      </button>
+      }
+    </div>
+  </div>
+  }
+
+  @if (errorMessage) {
+  <span class="photo-picker__error">{{ errorMessage }}</span>
+  }
+</div>

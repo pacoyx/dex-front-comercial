@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,7 +15,17 @@ import { extractErrorMessage, extractValidationErrors } from '../../../../shared
 
 export interface DialogMaintenanceData {
   assetId: number;
+  /** false si el activo ya está En Mantenimiento: no se permite abrir otra parada */
+  puedePonerEnMantenimiento: boolean;
 }
+
+/** fecha fin estimada >= fecha de inicio (comparando strings yyyy-MM-dd) */
+const fechaFinValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const inicio = group.get('date')?.value;
+  const fin = group.get('estimatedEndDate')?.value;
+  if (!group.get('putAssetOutOfService')?.value || !inicio || !fin) return null;
+  return fin < inicio ? { fechaFinAnterior: true } : null;
+};
 
 interface ArchivoAdjunto {
   file: File;
@@ -28,12 +40,13 @@ const TAMANO_MAXIMO_MB = 10;
   standalone: true,
   imports: [
     ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule,
-    MatSelectModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule,
+    MatSelectModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatSlideToggleModule,
   ],
   templateUrl: './dialog-maintenance.component.html',
   styleUrl: './dialog-maintenance.component.css',
 })
-export class DialogMaintenanceComponent {
+export class DialogMaintenanceComponent implements OnInit {
+  private destroyRef = inject(DestroyRef);
   readonly dialogRef = inject(MatDialogRef<DialogMaintenanceComponent>);
   readonly data = inject<DialogMaintenanceData>(MAT_DIALOG_DATA);
 
@@ -54,7 +67,40 @@ export class DialogMaintenanceComponent {
     cost: new FormControl<number | null>(0, [Validators.required, Validators.min(0)]),
     observations: new FormControl('', [Validators.maxLength(500)]),
     nextMaintenanceDate: new FormControl(''),
-  });
+    serviceProvider: new FormControl('', [Validators.maxLength(150)]),
+    putAssetOutOfService: new FormControl(false, { nonNullable: true }),
+    outOfServiceReason: new FormControl('', [Validators.maxLength(300)]),
+    estimatedEndDate: new FormControl(''),
+  }, { validators: fechaFinValidator });
+
+  get enMantenimiento(): boolean {
+    return this.form.controls.putAssetOutOfService.value;
+  }
+
+  ngOnInit(): void {
+    if (!this.data.puedePonerEnMantenimiento) {
+      this.form.controls.putAssetOutOfService.disable();
+    }
+
+    // Motivo y fecha fin solo son obligatorios si se deja el activo En Mantenimiento.
+    this.form.controls.putAssetOutOfService.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(activo => {
+        const motivo = this.form.controls.outOfServiceReason;
+        const fin = this.form.controls.estimatedEndDate;
+        if (activo) {
+          motivo.addValidators(Validators.required);
+          fin.addValidators(Validators.required);
+        } else {
+          motivo.removeValidators(Validators.required);
+          fin.removeValidators(Validators.required);
+          motivo.reset('');
+          fin.reset('');
+        }
+        motivo.updateValueAndValidity();
+        fin.updateValueAndValidity();
+      });
+  }
 
   onArchivosSeleccionados(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -104,6 +150,10 @@ export class DialogMaintenanceComponent {
       cost: valor.cost!,
       observations: valor.observations || undefined,
       nextMaintenanceDate: valor.nextMaintenanceDate || null,
+      serviceProvider: valor.serviceProvider || null,
+      putAssetOutOfService: valor.putAssetOutOfService,
+      outOfServiceReason: valor.putAssetOutOfService ? valor.outOfServiceReason : null,
+      estimatedEndDate: valor.putAssetOutOfService ? valor.estimatedEndDate : null,
     }).subscribe({
       next: (resp) => this.subirArchivos(resp.data.id),
       error: (err) => {
@@ -146,7 +196,9 @@ export class DialogMaintenanceComponent {
     if (archivosFallidos > 0) {
       this.notificationService.showError(`Mantenimiento registrado, pero ${archivosFallidos} archivo(s) no se pudieron subir.`);
     } else {
-      this.notificationService.showSuccess('Mantenimiento registrado correctamente.');
+      this.notificationService.showSuccess(this.enMantenimiento
+        ? 'Mantenimiento registrado. El activo quedó En Mantenimiento.'
+        : 'Mantenimiento registrado correctamente.');
     }
     this.dialogRef.close(true);
   }

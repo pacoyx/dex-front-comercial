@@ -19,6 +19,8 @@ export interface IFixedAssetListItem {
   acquisitionDate: string;
   acquisitionCost: number;
   bookValue: number;
+  hasPhoto: boolean;
+  photoUpdatedAt: string | null;
 }
 
 export interface IFixedAssetMaintenanceAttachment {
@@ -38,6 +40,14 @@ export interface IFixedAssetMaintenance {
   observations: string | null;
   nextMaintenanceDate: string | null;
   attachments: IFixedAssetMaintenanceAttachment[];
+  serviceProvider: string | null;
+  /** true si al registrarlo el activo pasó a "En Mantenimiento" */
+  putsAssetOutOfService: boolean;
+  outOfServiceReason: string | null;
+  estimatedEndDate: string | null;
+  /** null mientras el mantenimiento sigue en curso */
+  actualEndDate: string | null;
+  closingNotes: string | null;
 }
 
 export interface IFixedAssetReassignment {
@@ -79,6 +89,13 @@ export interface IFixedAssetDetail {
   bookValue: number;
   maintenances: IFixedAssetMaintenance[];
   reassignments: IFixedAssetReassignment[];
+  hasPhoto: boolean;
+  photoUpdatedAt: string | null;
+}
+
+export interface IFixedAssetPhoto {
+  fixedAssetId: number;
+  photoUpdatedAt: string;
 }
 
 export interface ICreateFixedAssetRequest {
@@ -126,10 +143,86 @@ export interface ICreateFixedAssetMaintenanceRequest {
   cost: number;
   observations?: string;
   nextMaintenanceDate?: string | null;
+  serviceProvider?: string | null;
+  putAssetOutOfService?: boolean;
+  outOfServiceReason?: string | null;
+  estimatedEndDate?: string | null;
+}
+
+export interface IFinishFixedAssetMaintenanceRequest {
+  actualEndDate: string;
+  finalCost?: number | null;
+  closingNotes?: string | null;
 }
 
 export interface IFixedAssetListFilters {
   branchId?: number;
   categoryId?: number;
   status?: number;
+}
+
+// ---- Reporte de historial ----
+
+export interface IFixedAssetHistoryFilters {
+  fromDate?: string | null;
+  toDate?: string | null;
+  branchId?: number | null;
+  categoryId?: number | null;
+  status?: number | null;
+  fixedAssetId?: number | null;
+}
+
+export type FixedAssetHistoryEventType = 'acquisition' | 'reassignment' | 'maintenance' | 'out-of-service' | 'disposal';
+
+export interface IFixedAssetHistoryEvent {
+  date: string;
+  fixedAssetId: number;
+  assetCode: string;
+  assetName: string;
+  categoryName: string;
+  branchName: string;
+  eventType: FixedAssetHistoryEventType;
+  eventLabel: string;
+  description: string;
+  detail: string | null;
+  cost: number | null;
+  endDate: string | null;
+  daysOutOfService: number | null;
+  inProgress: boolean;
+}
+
+export interface IFixedAssetHistorySummary {
+  fixedAssetId: number;
+  code: string;
+  name: string;
+  categoryName: string;
+  branchName: string;
+  responsibleUserName: string | null;
+  status: number;
+  acquisitionDate: string;
+  acquisitionCost: number;
+  bookValue: number;
+  maintenanceCount: number;
+  maintenanceCost: number;
+  outOfServiceCount: number;
+  daysOutOfService: number;
+  reassignmentCount: number;
+  lastMaintenanceDate: string | null;
+  nextMaintenanceDate: string | null;
+}
+
+export interface IFixedAssetHistoryTotals {
+  assetCount: number;
+  totalAcquisitionCost: number;
+  totalBookValue: number;
+  maintenanceCount: number;
+  totalMaintenanceCost: number;
+  totalDaysOutOfService: number;
+  assetsCurrentlyInMaintenance: number;
+}
+
+export interface IFixedAssetHistoryReport {
+  assets: IFixedAssetHistorySummary[];
+  events: IFixedAssetHistoryEvent[];
+  totals: IFixedAssetHistoryTotals;
 }

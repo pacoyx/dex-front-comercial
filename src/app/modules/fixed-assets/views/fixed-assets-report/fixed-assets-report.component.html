@@ -1,0 +1,244 @@
+<div class="container-report">
+
+  <button mat-button (click)="volver()" class="boton-volver">
+    <mat-icon>arrow_back</mat-icon>
+    Volver al listado
+  </button>
+
+  <div class="page-header">
+    <div class="page-header__title">
+      <mat-icon>history</mat-icon>
+      <div class="page-header__heading">
+        <h1>Reporte de historial de activos</h1>
+        <span class="page-header__subtitle">Adquisiciones, reasignaciones, mantenimientos, paradas y bajas</span>
+      </div>
+    </div>
+    <div class="page-header__actions">
+      <button mat-flat-button color="primary" (click)="exportarExcel()" [disabled]="exportando || cargando">
+        @if (exportando) {
+        <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+        <mat-icon>download</mat-icon>
+        }
+        Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <mat-card class="panel" appearance="outlined">
+    <mat-card-content class="filtros">
+      <mat-form-field appearance="outline">
+        <mat-label>Desde</mat-label>
+        <input matInput type="date" [(ngModel)]="filtros.fromDate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Hasta</mat-label>
+        <input matInput type="date" [(ngModel)]="filtros.toDate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Sucursal</mat-label>
+        <mat-select [(ngModel)]="filtros.branchId">
+          <mat-option [value]="null">Todas</mat-option>
+          @for (branch of branches; track branch.id) {
+          <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Categoría</mat-label>
+        <mat-select [(ngModel)]="filtros.categoryId">
+          <mat-option [value]="null">Todas</mat-option>
+          @for (category of categories; track category.id) {
+          <mat-option [value]="category.id">{{ category.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Estado</mat-label>
+        <mat-select [(ngModel)]="filtros.status">
+          <mat-option [value]="null">Todos</mat-option>
+          @for (estado of estados; track estado.value) {
+          <mat-option [value]="estado.value">{{ estado.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filtro-activo">
+        <mat-label>Activo</mat-label>
+        <mat-select [(ngModel)]="filtros.fixedAssetId">
+          <mat-option [value]="null">Todos</mat-option>
+          @for (activo of activos; track activo.id) {
+          <mat-option [value]="activo.id">{{ activo.code }} — {{ activo.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <div class="filtros__botones">
+        <button mat-flat-button color="primary" (click)="buscar()" [disabled]="cargando">
+          <mat-icon>search</mat-icon>
+          Buscar
+        </button>
+        <button mat-button (click)="limpiar()" [disabled]="cargando">Limpiar</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Indicadores -->
+  @if (totals) {
+  <div class="kpis">
+    <div class="kpi">
+      <span class="kpi__label">Activos</span>
+      <span class="kpi__valor">{{ totals.assetCount }}</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi__label">Costo de adquisición</span>
+      <span class="kpi__valor">{{ totals.totalAcquisitionCost | number:'1.2-2' }}</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi__label">Valor en libros</span>
+      <span class="kpi__valor">{{ totals.totalBookValue | number:'1.2-2' }}</span>
+    </div>
+    <div class="kpi">
+      <span class="kpi__label">Mantenimientos</span>
+      <span class="kpi__valor">{{ totals.maintenanceCount }}
+        <small>({{ totals.totalMaintenanceCost | number:'1.2-2' }})</small></span>
+    </div>
+    <div class="kpi">
+      <span class="kpi__label">Días fuera de servicio</span>
+      <span class="kpi__valor">{{ totals.totalDaysOutOfService }}</span>
+    </div>
+    <div class="kpi" [class.kpi--alerta]="totals.assetsCurrentlyInMaintenance > 0">
+      <span class="kpi__label">En mantenimiento ahora</span>
+      <span class="kpi__valor">{{ totals.assetsCurrentlyInMaintenance }}</span>
+    </div>
+  </div>
+  }
+
+  @if (cargando) {
+  <div class="cargando"><mat-spinner diameter="36"></mat-spinner></div>
+  } @else {
+  <mat-card class="panel" appearance="outlined">
+    <mat-tab-group animationDuration="0ms">
+
+      <!-- Resumen por activo -->
+      <mat-tab label="Resumen por activo ({{ resumen.data.length }})">
+        <div class="tabla-scroll">
+          <table mat-table [dataSource]="resumen" matSort class="tabla">
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Código</th>
+              <td mat-cell *matCellDef="let a"><strong>{{ a.code }}</strong></td>
+            </ng-container>
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Activo</th>
+              <td mat-cell *matCellDef="let a">
+                {{ a.name }}
+                <div class="sub">{{ a.categoryName }}</div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="branchName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Sucursal</th>
+              <td mat-cell *matCellDef="let a">{{ a.branchName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+              <td mat-cell *matCellDef="let a">
+                <span class="estado" [style.color]="a.status | fixedAssetStatusColor">{{ a.status | fixedAssetStatusLabel }}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="acquisitionCost">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="num">Costo adq.</th>
+              <td mat-cell *matCellDef="let a" class="num">{{ a.acquisitionCost | number:'1.2-2' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="bookValue">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="num">Valor libros</th>
+              <td mat-cell *matCellDef="let a" class="num">{{ a.bookValue | number:'1.2-2' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="maintenanceCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="num">Mant.</th>
+              <td mat-cell *matCellDef="let a" class="num">{{ a.maintenanceCount }}</td>
+            </ng-container>
+            <ng-container matColumnDef="maintenanceCost">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="num">Costo mant.</th>
+              <td mat-cell *matCellDef="let a" class="num">{{ a.maintenanceCost | number:'1.2-2' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="daysOutOfService">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="num">Días parado</th>
+              <td mat-cell *matCellDef="let a" class="num">{{ a.daysOutOfService }}</td>
+            </ng-container>
+            <ng-container matColumnDef="nextMaintenanceDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Próx. mant.</th>
+              <td mat-cell *matCellDef="let a">{{ a.nextMaintenanceDate ? (a.nextMaintenanceDate | date:'dd/MM/yyyy') : '-' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let a">
+                <button mat-icon-button matTooltip="Ficha PDF" (click)="descargarFicha($event, a)"
+                  [disabled]="descargandoFichaId === a.fixedAssetId">
+                  <mat-icon>picture_as_pdf</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnasResumen; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnasResumen" class="fila-clic" (click)="verActivo(row.fixedAssetId)"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="sin-datos" [attr.colspan]="columnasResumen.length">No hay activos para los filtros seleccionados.</td>
+            </tr>
+          </table>
+        </div>
+      </mat-tab>
+
+      <!-- Historial de eventos -->
+      <mat-tab label="Historial de eventos ({{ eventosFiltrados.length }})">
+        <div class="chips">
+          <mat-chip-set>
+            @for (tipo of tiposEvento; track tipo.type) {
+            <mat-chip-option [selected]="tiposSeleccionados.has(tipo.type)" (click)="toggleTipo(tipo.type)">
+              <mat-icon matChipAvatar>{{ tipo.icon }}</mat-icon>
+              {{ tipo.label }} ({{ contarTipo(tipo.type) }})
+            </mat-chip-option>
+            }
+          </mat-chip-set>
+        </div>
+
+        <div class="eventos">
+          @for (e of eventosFiltrados; track $index) {
+          <div class="evento" [class]="'evento evento--' + e.eventType" [class.evento--en-curso]="e.inProgress"
+            (click)="verActivo(e.fixedAssetId)">
+            <mat-icon class="evento__icono">{{ icono(e.eventType) }}</mat-icon>
+            <div class="evento__fecha">{{ e.date | date:'dd/MM/yyyy' }}</div>
+            <div class="evento__cuerpo">
+              <div class="evento__titulo">
+                <strong>{{ e.eventLabel }}</strong>
+                <span class="evento__activo">{{ e.assetCode }} — {{ e.assetName }}</span>
+                @if (e.inProgress) {
+                <span class="badge-en-curso">En curso</span>
+                }
+              </div>
+              <div>{{ e.description }}</div>
+              @if (e.detail) {
+              <div class="sub">{{ e.detail }}</div>
+              }
+            </div>
+            <div class="evento__costo">
+              @if (e.cost != null) { {{ e.cost | number:'1.2-2' }} }
+              @if (e.daysOutOfService != null) {
+              <div class="sub">{{ e.daysOutOfService }} día(s)</div>
+              }
+            </div>
+          </div>
+          } @empty {
+          <div class="sin-datos">No hay eventos para los filtros seleccionados.</div>
+          }
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </mat-card>
+  }
+</div>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,13 +7,18 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FixedAssetsService } from '../../services/fixed-assets.service';
-import { IFixedAssetDetail } from '../../interfaces/IFixedAsset';
+import { IFixedAssetCategory, IFixedAssetDetail, IFixedAssetMaintenance } from '../../interfaces/IFixedAsset';
 import { FixedAssetStatus, FixedAssetStatusColorPipe, FixedAssetStatusLabelPipe } from '../../shared/fixed-asset-status';
 import { NotificationsSystemService } from '../../../../core/services/notifications-system.service';
 import { extractErrorMessage } from '../../shared/http-error.util';
 import { DialogReassignFixedAssetComponent } from './components/dialog-reassign/dialog-reassign.component';
 import { DialogDisposeFixedAssetComponent } from './components/dialog-dispose/dialog-dispose.component';
 import { DialogMaintenanceComponent } from './components/dialog-maintenance/dialog-maintenance.component';
+import { DialogFinishMaintenanceComponent } from './components/dialog-finish-maintenance/dialog-finish-maintenance.component';
+import { DialogFormFixedAssetComponent } from '../fixed-assets-list/components/dialog-form-fixed-asset/dialog-form-fixed-asset.component';
+import { CatalogosService } from '../../../facturacion/services/catalogos.service';
+import { IBranchSales } from '../../../facturacion/interfaces/ICatalogos';
+import { descargarArchivo } from '../../../gastos/shared/file-download.util';
 
 export interface TimelineEvent {
   date: string;
@@ -36,8 +41,9 @@ export interface TimelineEvent {
   templateUrl: './fixed-asset-detail.component.html',
   styleUrl: './fixed-asset-detail.component.css'
 })
-export class FixedAssetDetailComponent implements OnInit {
+export class FixedAssetDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
+  private catalogosService = inject(CatalogosService);
   private router = inject(Router);
   private fixedAssetsService = inject(FixedAssetsService);
   private notificationService = inject(NotificationsSystemService);
@@ -49,6 +55,14 @@ export class FixedAssetDetailComponent implements OnInit {
   timeline: TimelineEvent[] = [];
   cargando = false;
   descargandoId: number | null = null;
+  descargandoFicha = false;
+
+  /** Object URL de la foto del activo (se pide como blob porque el endpoint requiere token). */
+  fotoUrl: string | null = null;
+  private fotoCargadaVersion: string | null = null;
+
+  private branches: IBranchSales[] = [];
+  private categories: IFixedAssetCategory[] = [];
 
   get assetId(): number {
     return Number(this.route.snapshot.paramMap.get('id'));
@@ -56,6 +70,12 @@ export class FixedAssetDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargar();
+    this.catalogosService.obtenerSucursales().subscribe({ next: (resp) => this.branches = resp.data });
+    this.fixedAssetsService.listarCategorias().subscribe({ next: (resp) => this.categories = resp.data });
+  }
+
+  ngOnDestroy(): void {
+    this.liberarFoto();
   }
 
   cargar(): void {
@@ -65,6 +85,7 @@ export class FixedAssetDetailComponent implements OnInit {
         this.asset = resp.data;
         this.timeline = this.construirTimeline(resp.data);
         this.cargando = false;
+        this.cargarFoto(resp.data);
       },
       error: (err) => {
         this.cargando = false;
@@ -98,15 +119,26 @@ export class FixedAssetDetailComponent implements OnInit {
       });
     }
 
+    const fmt = (iso: string | null) => iso ? new Date(iso).toLocaleDateString('es-PE') : '';
+
     for (const m of asset.maintenances) {
+      const partes: (string | null)[] = [m.type === 1 ? 'Preventivo' : 'Correctivo'];
+      if (m.serviceProvider) partes.push(`Proveedor/técnico: ${m.serviceProvider}`);
+      if (m.putsAssetOutOfService) {
+        partes.push(m.actualEndDate
+          ? `Fuera de servicio del ${fmt(m.date)} al ${fmt(m.actualEndDate)}`
+          : `En mantenimiento desde ${fmt(m.date)} (fin estimado ${fmt(m.estimatedEndDate)})`);
+        partes.push(`Motivo: ${m.outOfServiceReason}`);
+      }
+
       events.push({
         date: m.date,
         type: 'maintenance',
-        icon: 'build',
+        icon: m.putsAssetOutOfService && !m.actualEndDate ? 'engineering' : 'build',
         title: m.description,
-        subtitle: m.type === 1 ? 'Preventivo' : 'Correctivo',
+        subtitle: partes.filter(Boolean).join(' · '),
         cost: m.cost,
-        observations: m.observations,
+        observations: [m.observations, m.closingNotes ? `Cierre: ${m.closingNotes}` : null].filter(Boolean).join('\n') || null,
         attachments: m.attachments.map(a => ({ id: a.id, originalFileName: a.originalFileName })),
       });
     }
@@ -124,6 +156,65 @@ export class FixedAssetDetailComponent implements OnInit {
     return events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
+  private cargarFoto(asset: IFixedAssetDetail): void {
+    if (!asset.hasPhoto) {
+      this.liberarFoto();
+      return;
+    }
+    // Solo se vuelve a descargar si la foto cambió
+    if (this.fotoUrl && this.fotoCargadaVersion === asset.photoUpdatedAt) return;
+
+    this.fixedAssetsService.obtenerFoto(asset.id).subscribe({
+      next: (blob) => {
+        this.liberarFoto();
+        this.fotoUrl = URL.createObjectURL(blob);
+        this.fotoCargadaVersion = asset.photoUpdatedAt;
+      },
+      error: () => this.liberarFoto(),
+    });
+  }
+
+  private liberarFoto(): void {
+    if (this.fotoUrl) URL.revokeObjectURL(this.fotoUrl);
+    this.fotoUrl = null;
+    this.fotoCargadaVersion = null;
+  }
+
+  descargarFicha(): void {
+    if (!this.asset) return;
+    const code = this.asset.code;
+    this.descargandoFicha = true;
+    this.fixedAssetsService.descargarFichaPdf(this.asset.id).subscribe({
+      next: (resp) => {
+        this.descargandoFicha = false;
+        descargarArchivo(resp, `FichaActivo_${code}.pdf`);
+      },
+      error: (err) => {
+        this.descargandoFicha = false;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo generar la ficha PDF.'));
+      },
+    });
+  }
+
+  verFoto(): void {
+    if (this.fotoUrl) window.open(this.fotoUrl, '_blank');
+  }
+
+  editar(): void {
+    if (!this.asset) return;
+    this.dialog.open(DialogFormFixedAssetComponent, {
+      width: '640px',
+      data: {
+        branches: this.branches,
+        categories: this.categories,
+        asset: this.asset,
+        currentPhotoUrl: this.fotoUrl,
+      },
+    }).afterClosed().subscribe(result => {
+      if (result) this.cargar();
+    });
+  }
+
   reasignar(): void {
     if (!this.asset) return;
     this.dialog.open(DialogReassignFixedAssetComponent, {
@@ -138,7 +229,34 @@ export class FixedAssetDetailComponent implements OnInit {
     if (!this.asset) return;
     this.dialog.open(DialogMaintenanceComponent, {
       width: '560px',
-      data: { assetId: this.asset.id },
+      data: {
+        assetId: this.asset.id,
+        puedePonerEnMantenimiento: this.asset.status === FixedAssetStatus.Active,
+      },
+    }).afterClosed().subscribe(result => {
+      if (result) this.cargar();
+    });
+  }
+
+  /** Mantenimiento que dejó el activo fuera de servicio y aún no se finaliza. */
+  get mantenimientoEnCurso(): IFixedAssetMaintenance | null {
+    return this.asset?.maintenances.find(m => m.putsAssetOutOfService && !m.actualEndDate) ?? null;
+  }
+
+  get mantenimientoVencido(): boolean {
+    const m = this.mantenimientoEnCurso;
+    if (!m?.estimatedEndDate) return false;
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return new Date(m.estimatedEndDate) < hoy;
+  }
+
+  finalizarMantenimiento(): void {
+    const maintenance = this.mantenimientoEnCurso;
+    if (!maintenance) return;
+    this.dialog.open(DialogFinishMaintenanceComponent, {
+      width: '480px',
+      data: { maintenance },
     }).afterClosed().subscribe(result => {
       if (result) this.cargar();
     });

@@ -11,7 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, Observable, of, switchMap } from 'rxjs';
 import { FixedAssetsService } from '../../../../services/fixed-assets.service';
-import { IFixedAssetCategory } from '../../../../interfaces/IFixedAsset';
+import { IFixedAssetCategory, IFixedAssetDetail } from '../../../../interfaces/IFixedAsset';
+import { FixedAssetPhotoPickerComponent } from '../../../../shared/photo-picker/fixed-asset-photo-picker.component';
 import { IBranchSales } from '../../../../../facturacion/interfaces/ICatalogos';
 import { ManagentSystemService } from '../../../../../management/services/managent-system.service';
 import { IGetUserResponse } from '../../../../../management/interfaces/IUsers';
@@ -25,6 +26,10 @@ import { extractErrorMessage, extractValidationErrors } from '../../../../shared
 export interface DialogFormFixedAssetData {
   branches: IBranchSales[];
   categories: IFixedAssetCategory[];
+  /** Si viene, el diálogo trabaja en modo edición sobre este activo. */
+  asset?: IFixedAssetDetail;
+  /** Object URL de la foto actual del activo (modo edición). */
+  currentPhotoUrl?: string | null;
 }
 
 @Component({
@@ -33,6 +38,7 @@ export interface DialogFormFixedAssetData {
   imports: [
     CommonModule, ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule,
     MatSelectModule, MatAutocompleteModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule,
+    FixedAssetPhotoPickerComponent,
   ],
   templateUrl: './dialog-form-fixed-asset.component.html',
   styleUrl: './dialog-form-fixed-asset.component.css',
@@ -50,6 +56,11 @@ export class DialogFormFixedAssetComponent implements OnInit {
   usuarios: IGetUserResponse[] = [];
   guardando = false;
   validationErrors: string[] = [];
+
+  readonly esEdicion = !!this.data.asset;
+
+  /** undefined = la foto no se tocó; File = foto nueva; null = se quitó la foto. */
+  private fotoCambio: File | null | undefined = undefined;
 
   proveedorControl = new FormControl<ISupplierListarPorPatronResponse | string | null>(null);
   filteredProveedores!: Observable<ISupplierListarPorPatronResponse[]>;
@@ -73,6 +84,10 @@ export class DialogFormFixedAssetComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.data.asset) {
+      this.precargarActivo(this.data.asset);
+    }
+
     this.managentSystemService.listarUsuarios().subscribe({
       next: (resp) => (this.usuarios = resp.data ?? []),
       error: () => (this.usuarios = []),
@@ -89,12 +104,46 @@ export class DialogFormFixedAssetComponent implements OnInit {
     );
   }
 
+  private precargarActivo(asset: IFixedAssetDetail): void {
+    this.form.patchValue({
+      name: asset.name,
+      description: asset.description ?? '',
+      categoryId: asset.categoryId,
+      acquisitionDate: asset.acquisitionDate?.substring(0, 10) ?? '',
+      acquisitionCost: asset.acquisitionCost,
+      branchId: asset.branchId,
+      responsibleUserId: asset.responsibleUserId,
+      notes: asset.notes ?? '',
+    });
+    // La sucursal y el responsable se cambian con "Reasignar" (queda en el historial)
+    this.form.controls.branchId.disable();
+    this.form.controls.responsibleUserId.disable();
+
+    if (asset.supplierId) {
+      this.selectedProveedor = { id: asset.supplierId, name: asset.supplierName ?? '', ruc: '' };
+      this.proveedorControl.setValue(this.selectedProveedor);
+    }
+    if (asset.purchaseInvoiceId && asset.purchaseInvoiceNumber) {
+      const [serie, ...resto] = asset.purchaseInvoiceNumber.split('-');
+      this.selectedFactura = {
+        id: asset.purchaseInvoiceId,
+        invoiceSerie: serie,
+        invoiceNumber: resto.join('-'),
+      } as IPurchaseInvoiceListItem;
+    }
+  }
+
+  onFotoChange(file: File | null): void {
+    this.fotoCambio = file;
+  }
+
   onProveedorSelected(event: any): void {
     this.selectedProveedor = event.option.value;
   }
 
   displayProveedorFn(proveedor: ISupplierListarPorPatronResponse): string {
-    return proveedor ? `${proveedor.name} — RUC ${proveedor.ruc}` : '';
+    if (!proveedor) return '';
+    return proveedor.ruc ? `${proveedor.name} — RUC ${proveedor.ruc}` : proveedor.name;
   }
 
   limpiarProveedor(event: Event): void {
@@ -140,7 +189,7 @@ export class DialogFormFixedAssetComponent implements OnInit {
     this.guardando = true;
     const valor = this.form.getRawValue();
 
-    this.fixedAssetsService.crear({
+    const datosComunes = {
       name: valor.name!,
       description: valor.description || undefined,
       categoryId: valor.categoryId!,
@@ -148,26 +197,60 @@ export class DialogFormFixedAssetComponent implements OnInit {
       acquisitionCost: valor.acquisitionCost!,
       supplierId: this.selectedProveedor?.id ?? null,
       purchaseInvoiceId: this.selectedFactura?.id ?? null,
-      branchId: valor.branchId!,
-      responsibleUserId: valor.responsibleUserId ?? null,
       usefulLifeYearsOverride: valor.usefulLifeYearsOverride ?? null,
       notes: valor.notes || undefined,
-    }).subscribe({
-      next: (resp) => {
-        this.guardando = false;
-        this.notificationService.showSuccess('Activo fijo registrado correctamente.');
-        this.dialogRef.close(resp.data);
-      },
+    };
+
+    const request$ = this.data.asset
+      ? this.fixedAssetsService.actualizar(this.data.asset.id, datosComunes)
+      : this.fixedAssetsService.crear({
+        ...datosComunes,
+        branchId: valor.branchId!,
+        responsibleUserId: valor.responsibleUserId ?? null,
+      });
+
+    request$.subscribe({
+      next: (resp) => this.guardarFoto(resp.data.id, resp.data),
       error: (err) => {
         this.guardando = false;
         const validation = extractValidationErrors(err);
         if (validation.length > 0) {
           this.validationErrors = validation;
         } else {
-          this.notificationService.showError(extractErrorMessage(err, 'No se pudo registrar el activo fijo.'));
+          this.notificationService.showError(extractErrorMessage(err,
+            this.esEdicion ? 'No se pudo actualizar el activo fijo.' : 'No se pudo registrar el activo fijo.'));
         }
       },
     });
+  }
+
+  /** Paso 2: con el activo ya guardado (y su Id), sube/quita la foto si cambió. */
+  private guardarFoto(assetId: number, resultado: unknown): void {
+    const mensajeOk = this.esEdicion ? 'Activo fijo actualizado correctamente.' : 'Activo fijo registrado correctamente.';
+
+    const terminar = (errorFoto?: string) => {
+      this.guardando = false;
+      if (errorFoto) {
+        this.notificationService.showError(`${mensajeOk.replace('.', '')}, pero ${errorFoto}`);
+      } else {
+        this.notificationService.showSuccess(mensajeOk);
+      }
+      this.dialogRef.close(resultado);
+    };
+
+    if (this.fotoCambio instanceof File) {
+      this.fixedAssetsService.subirFoto(assetId, this.fotoCambio, this.fotoCambio.name).subscribe({
+        next: () => terminar(),
+        error: (err) => terminar(extractErrorMessage(err, 'no se pudo guardar la foto.')),
+      });
+    } else if (this.fotoCambio === null && this.data.asset?.hasPhoto) {
+      this.fixedAssetsService.eliminarFoto(assetId).subscribe({
+        next: () => terminar(),
+        error: () => terminar('no se pudo quitar la foto.'),
+      });
+    } else {
+      terminar();
+    }
   }
 
   cerrar(): void {

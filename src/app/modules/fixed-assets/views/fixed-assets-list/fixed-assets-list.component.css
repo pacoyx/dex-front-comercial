@@ -119,3 +119,9 @@
         align-items: stretch;
     }
 }
+
+.page-header__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}

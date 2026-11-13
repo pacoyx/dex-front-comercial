@@ -81,3 +81,35 @@
   margin-bottom: 12px;
   font-size: 0.85rem;
 }
+
+.bloque-estado {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+  border-radius: 8px;
+}
+
+.bloque-estado--activo {
+  border-color: #ef6c00;
+  background: rgba(239, 108, 0, 0.06);
+}
+
+.bloque-estado__hint {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.bloque-estado__campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 12px;
+  margin-top: 8px;
+}
+
+.bloque-estado__error {
+  color: var(--mat-sys-error, #b3261e);
+  font-size: 0.8rem;
+}

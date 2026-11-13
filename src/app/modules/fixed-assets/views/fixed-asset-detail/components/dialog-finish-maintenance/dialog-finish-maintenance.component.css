@@ -1,0 +1,36 @@
+.contenido {
+  min-width: 380px;
+  max-width: 480px;
+}
+
+.resumen {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: rgba(239, 108, 0, 0.06);
+  border: 1px solid #ef6c00;
+  font-size: 0.85rem;
+}
+
+.form-finalizar {
+  display: flex;
+  flex-direction: column;
+}
+
+.nota {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin: 0;
+}
+
+.errores {
+  background: #fdecea;
+  color: #b3261e;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}

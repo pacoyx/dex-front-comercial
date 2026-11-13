@@ -1,6 +1,10 @@
 <h2 mat-dialog-title>
-  <mat-icon>inventory_2</mat-icon>
+  <mat-icon>{{ esEdicion ? 'edit' : 'inventory_2' }}</mat-icon>
+  @if (esEdicion) {
+  Editar Activo Fijo — {{ data.asset!.code }}
+  } @else {
   Nuevo Activo Fijo
+  }
 </h2>
 
 <mat-dialog-content class="contenido">
@@ -14,6 +18,9 @@
   }
 
   <form [formGroup]="form" class="form-activo">
+    <app-fixed-asset-photo-picker class="campo-ancho" [currentPhotoUrl]="data.currentPhotoUrl ?? null"
+      (photoChange)="onFotoChange($event)"></app-fixed-asset-photo-picker>
+
     <mat-form-field appearance="outline" class="campo-ancho">
       <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" maxlength="200">
@@ -55,6 +62,9 @@
         <mat-option [value]="branch.id">{{ branch.description }}</mat-option>
         }
       </mat-select>
+      @if (esEdicion) {
+      <mat-hint>Para cambiarla usa "Reasignar"</mat-hint>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -121,7 +131,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cerrar()">Cancelar</button>
+  <button mat-button (click)="cerrar()" [disabled]="guardando">Cancelar</button>
   <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando">
     @if (guardando) {
     <mat-spinner diameter="18"></mat-spinner>

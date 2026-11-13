@@ -23,17 +23,55 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>Fecha</mat-label>
+      <mat-label>{{ enMantenimiento ? 'Fecha de inicio' : 'Fecha' }}</mat-label>
       <input matInput type="date" formControlName="date">
     </mat-form-field>
+
+    <div class="bloque-estado campo-ancho" [class.bloque-estado--activo]="enMantenimiento">
+      <mat-slide-toggle formControlName="putAssetOutOfService">
+        Dejar el activo <strong>En Mantenimiento</strong> (fuera de servicio)
+      </mat-slide-toggle>
+      @if (!data.puedePonerEnMantenimiento) {
+      <span class="bloque-estado__hint">El activo ya está En Mantenimiento. Finaliza el mantenimiento en curso para iniciar otra parada.</span>
+      }
+
+      @if (enMantenimiento) {
+      <div class="bloque-estado__campos">
+        <mat-form-field appearance="outline" class="campo-ancho">
+          <mat-label>Motivo</mat-label>
+          <input matInput formControlName="outOfServiceReason" maxlength="300"
+            placeholder="Ej. No enciende, falla en el motor">
+          @if (form.controls.outOfServiceReason.hasError('required')) {
+          <mat-error>El motivo es obligatorio.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha fin estimada</mat-label>
+          <input matInput type="date" formControlName="estimatedEndDate" [min]="form.controls.date.value">
+          @if (form.controls.estimatedEndDate.hasError('required')) {
+          <mat-error>La fecha fin estimada es obligatoria.</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      @if (form.hasError('fechaFinAnterior')) {
+      <span class="bloque-estado__error">La fecha fin estimada no puede ser anterior a la fecha de inicio.</span>
+      }
+      }
+    </div>
 
     <mat-form-field appearance="outline" class="campo-ancho">
       <mat-label>Descripción</mat-label>
       <input matInput formControlName="description" maxlength="300" placeholder="Ej. Cambio de teclado">
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="campo-ancho">
+      <mat-label>Proveedor / técnico (opcional)</mat-label>
+      <input matInput formControlName="serviceProvider" maxlength="150" placeholder="Quién realiza el mantenimiento">
+    </mat-form-field>
+
     <mat-form-field appearance="outline">
-      <mat-label>Costo</mat-label>
+      <mat-label>{{ enMantenimiento ? 'Costo estimado' : 'Costo' }}</mat-label>
       <input matInput type="number" formControlName="cost" min="0" step="0.01">
     </mat-form-field>
 

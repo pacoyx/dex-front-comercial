@@ -1,14 +1,28 @@
 @if (asset) {
 <div class="container-detail">
 
-    <button mat-button (click)="volver()" class="boton-volver">
-        <mat-icon>arrow_back</mat-icon>
-        Volver al listado
-    </button>
+    <div class="barra-superior">
+        <button mat-button (click)="volver()" class="boton-volver">
+            <mat-icon>arrow_back</mat-icon>
+            Volver al listado
+        </button>
+        <button mat-stroked-button (click)="descargarFicha()" [disabled]="descargandoFicha">
+            <mat-icon>picture_as_pdf</mat-icon>
+            Ficha PDF
+        </button>
+    </div>
 
     <mat-card class="panel panel-header" appearance="outlined">
         <mat-card-content>
             <div class="header-row">
+                <button type="button" class="foto-activo" (click)="fotoUrl ? verFoto() : editar()"
+                    [matTooltip]="fotoUrl ? 'Ver foto en tamaño completo' : 'Agregar foto'">
+                    @if (fotoUrl) {
+                    <img [src]="fotoUrl" alt="Foto de {{ asset.name }}">
+                    } @else {
+                    <mat-icon>add_a_photo</mat-icon>
+                    }
+                </button>
                 <div class="header-info">
                     <span class="codigo">{{ asset.code }}</span>
                     <h1>{{ asset.name }}</h1>
@@ -68,8 +82,31 @@
             <p class="notas"><strong>Notas:</strong> {{ asset.notes }}</p>
             }
 
+            @if (mantenimientoEnCurso; as m) {
+            <div class="aviso-mantenimiento" [class.aviso-mantenimiento--vencido]="mantenimientoVencido">
+                <mat-icon>engineering</mat-icon>
+                <div class="aviso-mantenimiento__info">
+                    <strong>En mantenimiento desde {{ m.date | date:'dd/MM/yyyy' }}</strong>
+                    <span>Motivo: {{ m.outOfServiceReason }}</span>
+                    <span>
+                        Fin estimado: {{ m.estimatedEndDate | date:'dd/MM/yyyy' }}
+                        @if (mantenimientoVencido) { <em>(vencido)</em> }
+                        @if (m.serviceProvider) { · {{ m.serviceProvider }} }
+                    </span>
+                </div>
+                <button mat-flat-button color="primary" (click)="finalizarMantenimiento()">
+                    <mat-icon>task_alt</mat-icon>
+                    Finalizar mantenimiento
+                </button>
+            </div>
+            }
+
             @if (asset.status !== FixedAssetStatus.Disposed && asset.status !== FixedAssetStatus.Sold) {
             <div class="acciones">
+                <button mat-stroked-button (click)="editar()">
+                    <mat-icon>edit</mat-icon>
+                    Editar
+                </button>
                 <button mat-stroked-button (click)="reasignar()">
                     <mat-icon>swap_horiz</mat-icon>
                     Reasignar
