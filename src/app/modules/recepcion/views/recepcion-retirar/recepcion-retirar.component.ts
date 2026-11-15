@@ -546,7 +546,7 @@ export class RecepcionRetirarComponent implements OnInit, OnDestroy {
 
     forkJoin(
       fotos.map((foto) =>
-        this.inspeccionService.descargarFotoGuia(foto.id).pipe(
+        this.inspeccionService.descargarFotoGuia(foto.id, true).pipe(
           map((blob) => ({ id: foto.id, url: URL.createObjectURL(blob) }))
         )
       )

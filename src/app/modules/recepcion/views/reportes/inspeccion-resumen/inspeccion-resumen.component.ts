@@ -116,7 +116,7 @@ export class InspeccionResumenComponent implements OnInit, OnDestroy {
   private cargarMiniaturas(): void {
     this.liberarFotoUrls();
     this.fotos.forEach((foto) => {
-      this.inspeccionService.descargarFotoGuia(foto.id).subscribe({
+      this.inspeccionService.descargarFotoGuia(foto.id, true).subscribe({
         next: (blob) => this.fotoUrls.set(foto.id, URL.createObjectURL(blob)),
         error: () => { /* si falla una miniatura, simplemente no se muestra */ }
       });

@@ -74,9 +74,14 @@ export class InspeccionService {
     return this.http.get<IResponseGeneric<WorkGuidePhotosResponse>>(url);
   }
 
-  descargarFotoGuia(photoId: number) {
+  /**
+   * Descarga una foto de la guía. Con `miniatura = true` devuelve la versión pequeña (~320 px) para
+   * listados; la foto completa solo se pide al verla en grande.
+   */
+  descargarFotoGuia(photoId: number, miniatura = false) {
     const url = `${this.apiUrl}${environment.EPWorkGuides}/photos/${photoId}/download`;
-    return this.http.get(url, { responseType: 'blob' });
+    const params = miniatura ? new HttpParams().set('thumbnail', 'true') : undefined;
+    return this.http.get(url, { responseType: 'blob', params });
   }
 
   obtenerReporteZapatillas(filtros: SneakerReportFilters) {

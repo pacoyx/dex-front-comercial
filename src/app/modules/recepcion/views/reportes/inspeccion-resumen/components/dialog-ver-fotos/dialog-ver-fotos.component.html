@@ -15,6 +15,9 @@
         <div class="carrusel__stage">
             @if(urlActual){
             <img [src]="urlActual" [alt]="fotoActual?.originalFileName || fotoActual?.fileName" class="carrusel__img">
+            @if(cargandoCompleta){
+            <span class="carrusel__cargando">Cargando foto completa...</span>
+            }
             }@else{
             <div class="carrusel__placeholder">Cargando...</div>
             }

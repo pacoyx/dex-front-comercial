@@ -257,7 +257,7 @@ export class ReporteSneakersComponent implements OnInit, OnDestroy {
         const urls = new Map<number, string>();
         this.fotoUrlsPorGuia.set(workGuideId, urls);
         fotos.forEach((foto) => {
-          this.inspeccionService.descargarFotoGuia(foto.id).subscribe({
+          this.inspeccionService.descargarFotoGuia(foto.id, true).subscribe({
             next: (blob) => urls.set(foto.id, URL.createObjectURL(blob)),
             error: () => { /* si falla una miniatura, simplemente no se muestra */ }
           });
