@@ -13,6 +13,7 @@ import { LayoutCorporateOperationsComponent } from './core/views/layout-corporat
 import { LayoutSharedDocumentsComponent } from './core/views/layout-shared-documents/layout-shared-documents.component';
 import { LayoutFixedAssetsComponent } from './core/views/layout-fixed-assets/layout-fixed-assets.component';
 import { LayoutInventarioComponent } from './core/views/layout-inventario/layout-inventario.component';
+import { LayoutVentasComponent } from './core/views/layout-ventas/layout-ventas.component';
 import { LayoutDriverTrackingComponent } from './core/views/layout-driver-tracking/layout-driver-tracking.component';
 import { permissionGuard } from './core/guards/permission.guard';
 import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
@@ -87,6 +88,11 @@ export const routes: Routes = [
     {
         path: 'inventario', component: LayoutInventarioComponent, canActivate: [permissionGuard], data: { permission: 'inventory.access' }, children: [
             { path: '', loadChildren: () => import('./modules/inventario/inventario.module').then(m => m.InventarioModule) }
+        ]
+    },
+    {
+        path: 'ventas', component: LayoutVentasComponent, canActivate: [permissionGuard], data: { permission: 'sales.access' }, children: [
+            { path: '', loadChildren: () => import('./modules/ventas/ventas.module').then(m => m.VentasModule) }
         ]
     },
     {

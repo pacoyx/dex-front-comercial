@@ -1,0 +1,171 @@
+<div class="inv-page pos-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>point_of_sale</mat-icon>
+            <div class="page-header__heading">
+                <h1>Punto de venta</h1>
+                @if (contexto?.cashBoxOpen) {
+                <span class="page-header__subtitle">{{ contexto?.branchName }} · Caja #{{ contexto?.cashBoxId }} · precios con IGV</span>
+                }
+            </div>
+        </div>
+        @if (contexto?.cashBoxOpen && (contexto?.warehouses?.length ?? 0) > 1) {
+        <mat-form-field appearance="outline" class="almacen">
+            <mat-label>Almacén</mat-label>
+            <mat-select [(ngModel)]="warehouseId" (selectionChange)="cambiarAlmacen()">
+                @for (w of contexto?.warehouses ?? []; track w.id) {
+                <mat-option [value]="w.id">{{ w.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        }
+    </div>
+
+    @if (cargandoContexto) {
+    <app-loading></app-loading>
+    }
+    @if (errorContexto) {
+    <div class="alert-error">{{ errorContexto }}</div>
+    }
+
+    @if (contexto && !contexto.cashBoxOpen) {
+    <mat-card class="panel sin-caja" appearance="outlined">
+        <mat-card-content>
+            <mat-icon>lock</mat-icon>
+            <h2>No tienes una caja abierta</h2>
+            <p>Para vender, abre tu caja: los cobros de las ventas se registran en ella.</p>
+            <div class="sin-caja__acciones">
+                <a mat-flat-button color="primary" routerLink="/recepcion/caja"><mat-icon>account_balance_wallet</mat-icon> Ir a Caja</a>
+                <button mat-stroked-button (click)="cargarContexto()"><mat-icon>refresh</mat-icon> Ya la abrí</button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    }
+
+    @if (contexto?.cashBoxOpen) {
+    <div class="pos-grid">
+
+        <!-- Productos -->
+        <mat-card class="panel" appearance="outlined">
+            <mat-card-content>
+                <mat-form-field appearance="outline" class="buscador">
+                    <mat-label>Buscar producto</mat-label>
+                    <mat-icon matPrefix>search</mat-icon>
+                    <input matInput [(ngModel)]="busqueda" (ngModelChange)="buscar($event)" placeholder="Nombre o código" autocomplete="off">
+                </mat-form-field>
+                @if (buscando) { <app-loading></app-loading> }
+                <div class="productos">
+                    @for (p of resultados; track p.id) {
+                    <button type="button" class="producto" (click)="agregar(p)" [class.agotado]="p.tracksStock && p.stock <= 0"
+                        [disabled]="p.tracksStock && p.stock <= 0">
+                        <span class="producto__nombre">{{ p.name }}</span>
+                        @if (p.code) { <span class="producto__codigo">{{ p.code }}</span> }
+                        <span class="producto__precio">S/ {{ p.price | number:'1.2-2' }}</span>
+                        <span class="producto__stock">
+                            {{ p.tracksStock ? ('Stock: ' + (p.stock | number:'1.0-4') + ' ' + p.unitMeasurementDescription) : 'Sin control de stock' }}
+                        </span>
+                    </button>
+                    } @empty {
+                    @if (!buscando) {
+                    <div class="sin-datos">No hay productos vendibles que coincidan. Marca "Se puede vender" en el maestro de productos.</div>
+                    }
+                    }
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Venta -->
+        <mat-card class="panel carrito" appearance="outlined">
+            <mat-card-content>
+                <div class="cliente">
+                    <mat-icon>person</mat-icon>
+                    <span class="cliente__nombre">{{ nombreCliente }}</span>
+                    @if (cliente) {
+                    <button mat-icon-button (click)="quitarCliente()" matTooltip="Volver a Clientes varios"><mat-icon>close</mat-icon></button>
+                    }
+                    <button mat-stroked-button (click)="elegirCliente()">{{ cliente ? 'Cambiar' : 'Elegir cliente' }}</button>
+                </div>
+
+                <div class="lineas">
+                    @for (l of lineas; track l.product.id) {
+                    <div class="linea" [class.linea--error]="excedeStock(l)">
+                        <div class="linea__info">
+                            <span class="linea__nombre">{{ l.product.name }}</span>
+                            @if (excedeStock(l)) {
+                            <span class="linea__aviso">Stock disponible: {{ l.product.stock | number:'1.0-4' }}</span>
+                            }
+                        </div>
+                        <div class="linea__cantidad">
+                            <button mat-icon-button (click)="cambiarCantidad(l, -1)" aria-label="Menos"><mat-icon>remove</mat-icon></button>
+                            <input type="number" min="0" step="any" [(ngModel)]="l.quantity" class="input-num" aria-label="Cantidad">
+                            <button mat-icon-button (click)="cambiarCantidad(l, 1)" aria-label="Más"><mat-icon>add</mat-icon></button>
+                        </div>
+                        <input type="number" min="0" step="0.01" [(ngModel)]="l.unitPrice" class="input-num input-precio" aria-label="Precio unitario" matTooltip="Precio unitario con IGV">
+                        <span class="linea__total">{{ totalLinea(l) | number:'1.2-2' }}</span>
+                        <button mat-icon-button color="warn" (click)="quitar(l)" aria-label="Quitar"><mat-icon>delete</mat-icon></button>
+                    </div>
+                    } @empty {
+                    <div class="sin-datos">Toca un producto para agregarlo.</div>
+                    }
+                </div>
+
+                <div class="totales">
+                    <div><span>Op. gravada</span><span>{{ subtotal | number:'1.2-2' }}</span></div>
+                    <div><span>IGV</span><span>{{ igv | number:'1.2-2' }}</span></div>
+                    <div class="totales__total"><span>TOTAL</span><span>S/ {{ total | number:'1.2-2' }}</span></div>
+                </div>
+
+                <mat-button-toggle-group [(ngModel)]="paymentType" class="pagos" aria-label="Medio de pago">
+                    @for (p of pagos; track p.value) {
+                    <mat-button-toggle [value]="p.value"><mat-icon>{{ p.icon }}</mat-icon> {{ p.label }}</mat-button-toggle>
+                    }
+                </mat-button-toggle-group>
+
+                @if (paymentType === 'EF') {
+                <div class="efectivo">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Recibido</mat-label>
+                        <input matInput type="number" min="0" step="0.10" [(ngModel)]="amountReceived" [placeholder]="(total | number:'1.2-2') ?? ''">
+                    </mat-form-field>
+                    <div class="rapidos">
+                        @for (m of montosRapidos; track m) {
+                        <button mat-stroked-button (click)="amountReceived = m">{{ m | number:'1.2-2' }}</button>
+                        }
+                    </div>
+                    <div class="vuelto">Vuelto: <strong>S/ {{ vuelto | number:'1.2-2' }}</strong></div>
+                </div>
+                } @else {
+                <mat-form-field appearance="outline" class="detalle-pago">
+                    <mat-label>{{ paymentType === 'QR' ? 'Yape, Plin, N° de operación…' : 'Visa, Mastercard, N° de operación…' }}</mat-label>
+                    <input matInput [(ngModel)]="paymentDescription" maxlength="50">
+                </mat-form-field>
+                }
+
+                <mat-form-field appearance="outline" class="detalle-pago">
+                    <mat-label>Observación (opcional)</mat-label>
+                    <input matInput [(ngModel)]="notes" maxlength="300">
+                </mat-form-field>
+
+                @if (errores.length > 0) {
+                <div class="alert-error">
+                    <ul>
+                        @for (e of errores; track e) { <li>{{ e }}</li> }
+                    </ul>
+                </div>
+                }
+
+                <div class="acciones">
+                    <button mat-stroked-button (click)="nuevaVenta()" [disabled]="cobrando || lineas.length === 0">
+                        <mat-icon>restart_alt</mat-icon> Limpiar
+                    </button>
+                    <button mat-flat-button color="primary" class="cobrar" (click)="cobrar()" [disabled]="cobrando || lineas.length === 0">
+                        @if (cobrando) { <app-loading></app-loading> } @else { <mat-icon>check</mat-icon> }
+                        Cobrar S/ {{ total | number:'1.2-2' }}
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    }
+</div>

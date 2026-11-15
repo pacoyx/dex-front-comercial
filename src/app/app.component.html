@@ -54,6 +54,18 @@
       </a>
       }
 
+      @if (hasPermission('sales.access')) {
+      <a mat-list-item
+         [routerLink]="['/ventas']"
+         routerLinkActive #rlaVentas="routerLinkActive"
+         [activated]="rlaVentas.isActive"
+         (click)="toggle()"
+         matTooltip="Ventas" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>shopping_bag</mat-icon>
+        <span matListItemTitle>Ventas</span>
+      </a>
+      }
+
       @if (hasPermission('corporate-operations.access')) {
       <a mat-list-item
          [routerLink]="['/corporate-operations']"

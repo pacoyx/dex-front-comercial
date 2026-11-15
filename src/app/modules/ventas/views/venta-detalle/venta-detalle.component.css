@@ -1,0 +1,43 @@
+.resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.dato {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.dato--ancho {
+    grid-column: 1 / -1;
+}
+
+.dato__label {
+    font: var(--mat-sys-label-medium);
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.totales {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 420px;
+    margin: 12px 0 0 auto;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface-container);
+}
+
+.totales div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.totales__total {
+    font: var(--mat-sys-title-large);
+    color: var(--mat-sys-primary);
+}

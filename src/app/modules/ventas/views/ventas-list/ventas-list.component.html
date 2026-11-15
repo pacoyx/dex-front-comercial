@@ -1,0 +1,122 @@
+<div class="inv-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>receipt_long</mat-icon>
+            <div class="page-header__heading">
+                <h1>Ventas</h1>
+                <span class="page-header__subtitle">Notas de venta registradas; el reporte exporta el período con totales y margen</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="exportar('excel')" [disabled]="exportando !== null">
+                <mat-icon>table_view</mat-icon> {{ exportando === 'excel' ? 'Exportando...' : 'Excel' }}
+            </button>
+            <button mat-stroked-button (click)="exportar('pdf')" [disabled]="exportando !== null">
+                <mat-icon>picture_as_pdf</mat-icon> {{ exportando === 'pdf' ? 'Exportando...' : 'PDF' }}
+            </button>
+            <a mat-flat-button color="primary" routerLink="/ventas/pos">
+                <mat-icon>point_of_sale</mat-icon> Nueva venta
+            </a>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Desde</mat-label>
+                <input matInput [matDatepicker]="pDesde" [(ngModel)]="desde">
+                <mat-datepicker-toggle matIconSuffix [for]="pDesde"></mat-datepicker-toggle>
+                <mat-datepicker #pDesde></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Hasta</mat-label>
+                <input matInput [matDatepicker]="pHasta" [(ngModel)]="hasta">
+                <mat-datepicker-toggle matIconSuffix [for]="pHasta"></mat-datepicker-toggle>
+                <mat-datepicker #pHasta></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Medio de pago</mat-label>
+                <mat-select [(ngModel)]="medioPago">
+                    <mat-option [value]="null">Todos</mat-option>
+                    @for (p of pagos; track p.value) {
+                    <mat-option [value]="p.value">{{ p.label }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select [(ngModel)]="estado">
+                    <mat-option [value]="null">Todos</mat-option>
+                    <mat-option [value]="1">Vigente</mat-option>
+                    <mat-option [value]="2">Anulada</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                <mat-icon>search</mat-icon> Buscar
+            </button>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="kpis">
+        <div class="kpi">
+            <span class="kpi__label">Ventas vigentes</span>
+            <span class="kpi__value">{{ cantidadVigente }}</span>
+        </div>
+        <div class="kpi">
+            <span class="kpi__label">Total vendido</span>
+            <span class="kpi__value">S/ {{ totalVigente | number:'1.2-2' }}</span>
+        </div>
+    </div>
+
+    @if (errorMessage) { <div class="alert-error">{{ errorMessage }}</div> }
+    @if (loading) { <app-loading></app-loading> }
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="ventas" class="detail-table">
+                <ng-container matColumnDef="number">
+                    <th mat-header-cell *matHeaderCellDef>N°</th>
+                    <td mat-cell *matCellDef="let v"><span class="link">{{ v.number }}</span></td>
+                </ng-container>
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let v">{{ v.saleDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="customer">
+                    <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                    <td mat-cell *matCellDef="let v">{{ v.customerName }}</td>
+                </ng-container>
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef>Atendió</th>
+                    <td mat-cell *matCellDef="let v">{{ v.userName }}</td>
+                </ng-container>
+                <ng-container matColumnDef="payment">
+                    <th mat-header-cell *matHeaderCellDef>Pago</th>
+                    <td mat-cell *matCellDef="let v">{{ paymentLabel(v.paymentType) }}</td>
+                </ng-container>
+                <ng-container matColumnDef="items">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Ítems</th>
+                    <td mat-cell *matCellDef="let v" class="col-numeric">{{ v.itemCount }}</td>
+                </ng-container>
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Total</th>
+                    <td mat-cell *matCellDef="let v" class="col-numeric">{{ v.total | number:'1.2-2' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let v">
+                        <span class="chip" [class.chip--ok]="v.status !== Cancelled" [class.chip--warn]="v.status === Cancelled">
+                            {{ v.status === Cancelled ? 'Anulada' : 'Vigente' }}
+                        </span>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnas;" class="fila-clic" [class.fila-anulada]="row.status === Cancelled" (click)="abrir(row)"></tr>
+            </table>
+            @if (!loading && ventas.length === 0) {
+            <div class="sin-datos">No hay ventas en el período.</div>
+            }
+        </mat-card-content>
+    </mat-card>
+</div>

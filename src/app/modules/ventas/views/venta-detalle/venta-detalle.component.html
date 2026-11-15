@@ -1,0 +1,98 @@
+<div class="inv-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>receipt</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ venta?.number || 'Venta' }}</h1>
+                @if (venta) {
+                <span class="page-header__subtitle">Nota de venta · {{ venta.saleDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                }
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <a mat-stroked-button routerLink="/ventas/historial"><mat-icon>arrow_back</mat-icon> Ventas</a>
+            @if (venta) {
+            <button mat-stroked-button (click)="reimprimir()"><mat-icon>print</mat-icon> Reimprimir</button>
+            }
+            @if (puedeAnular) {
+            <button mat-flat-button color="warn" (click)="anular()" [disabled]="anulando"><mat-icon>undo</mat-icon> Anular</button>
+            }
+        </div>
+    </div>
+
+    @if (loading) { <app-loading></app-loading> }
+    @if (errorMessage) { <div class="alert-error">{{ errorMessage }}</div> }
+
+    @if (venta) {
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="resumen">
+            <div class="dato">
+                <span class="dato__label">Estado</span>
+                <span class="chip" [class.chip--ok]="venta.status !== Cancelled" [class.chip--warn]="venta.status === Cancelled">
+                    {{ venta.status === Cancelled ? 'Anulada' : 'Vigente' }}
+                </span>
+            </div>
+            <div class="dato"><span class="dato__label">Cliente</span><span>{{ venta.customerName }}</span></div>
+            <div class="dato"><span class="dato__label">Atendió</span><span>{{ venta.userName }}</span></div>
+            <div class="dato"><span class="dato__label">Sucursal / almacén</span><span>{{ venta.branchName }} · {{ venta.warehouseName }}</span></div>
+            <div class="dato">
+                <span class="dato__label">Pago</span>
+                <span>{{ paymentLabel(venta.paymentType) }}{{ venta.paymentDescription ? ' · ' + venta.paymentDescription : '' }}</span>
+            </div>
+            @if (venta.paymentType === 'EF') {
+            <div class="dato"><span class="dato__label">Recibido / vuelto</span><span>{{ venta.amountReceived | number:'1.2-2' }} / {{ venta.change | number:'1.2-2' }}</span></div>
+            }
+            <div class="dato"><span class="dato__label">Caja</span><span>#{{ venta.cashBoxMainId }} {{ venta.cashBoxOpen ? '(abierta)' : '(cerrada)' }}</span></div>
+            @if (venta.inventoryMovementId) {
+            <div class="dato">
+                <span class="dato__label">Salida de inventario</span>
+                <a class="link" [routerLink]="['/inventario/movimientos', venta.inventoryMovementId]">{{ venta.inventoryMovementNumber }}</a>
+            </div>
+            }
+            @if (venta.notes) {
+            <div class="dato dato--ancho"><span class="dato__label">Observación</span><span>{{ venta.notes }}</span></div>
+            }
+            @if (venta.status === Cancelled) {
+            <div class="dato dato--ancho">
+                <span class="dato__label">Anulada</span>
+                <span>{{ venta.cancelledAt | date:'dd/MM/yyyy HH:mm' }} por {{ venta.cancelledByUserName }} · {{ venta.cancelReason }}</span>
+            </div>
+            } @else if (!venta.cashBoxOpen) {
+            <div class="dato dato--ancho hint">La caja de esta venta ya se cerró: no se puede anular desde aquí.</div>
+            }
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="venta.lines" class="detail-table">
+                <ng-container matColumnDef="product">
+                    <th mat-header-cell *matHeaderCellDef>Producto</th>
+                    <td mat-cell *matCellDef="let l">{{ l.productCode ? l.productCode + ' · ' : '' }}{{ l.description }}</td>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Cantidad</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ l.quantity | number:'1.0-4' }} <span class="hint">{{ l.unitName }}</span></td>
+                </ng-container>
+                <ng-container matColumnDef="unitPrice">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Precio</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ l.unitPrice | number:'1.2-2' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Total</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ l.total | number:'1.2-2' }}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+            </table>
+            <div class="totales">
+                <div><span>Op. gravada</span><span>{{ venta.subtotal | number:'1.2-2' }}</span></div>
+                <div><span>IGV</span><span>{{ venta.igv | number:'1.2-2' }}</span></div>
+                <div class="totales__total"><span>TOTAL</span><span>S/ {{ venta.total | number:'1.2-2' }}</span></div>
+                <div class="hint"><span>Costo de lo vendido / margen (sin IGV)</span><span>{{ venta.totalCost | number:'1.2-2' }} / {{ margen | number:'1.2-2' }}</span></div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+    }
+</div>
