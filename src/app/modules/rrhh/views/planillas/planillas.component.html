@@ -53,10 +53,15 @@
                         <button mat-icon-button (click)="verDetalle(el)" matTooltip="Ver detalle">
                             <mat-icon>visibility</mat-icon>
                         </button>
-                        <button mat-icon-button color="warn" (click)="eliminar(el)"
+                        <button mat-icon-button (click)="eliminarPlanilla(el)"
                             [disabled]="el.isClosed || eliminandoId === el.id || generandoId === el.id"
-                            [matTooltip]="el.isClosed ? 'El periodo está cerrado' : 'Eliminar planilla completa'">
-                            <mat-icon>delete</mat-icon>
+                            [matTooltip]="el.isClosed ? 'El periodo está cerrado' : 'Eliminar planilla generada (conserva el periodo para regenerar)'">
+                            <mat-icon>delete_sweep</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="eliminarPeriodo(el)"
+                            [disabled]="el.isClosed || eliminandoId === el.id || generandoId === el.id"
+                            [matTooltip]="el.isClosed ? 'El periodo está cerrado' : 'Eliminar periodo completo (planillas, descuentos y periodo)'">
+                            <mat-icon>delete_forever</mat-icon>
                         </button>
                     </td>
                 </ng-container>

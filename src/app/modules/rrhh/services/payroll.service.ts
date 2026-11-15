@@ -35,6 +35,11 @@ export class PayrollService {
     return this.http.delete<IResponseGeneric<IDeletePayrollResponse>>(`${this.apiUrl}${environment.EPPayrollPeriods}/${periodId}/payroll`, { headers: this.headers });
   }
 
+  /** Elimina el periodo completo: planillas generadas (revirtiendo cuotas), descuentos y el periodo. */
+  eliminarPeriodo(periodId: number): Observable<IResponseGeneric<IDeletePayrollResponse>> {
+    return this.http.delete<IResponseGeneric<IDeletePayrollResponse>>(`${this.apiUrl}${environment.EPPayrollPeriods}/${periodId}`, { headers: this.headers });
+  }
+
   exportarPlanillaExcel(periodId: number): Observable<HttpResponse<Blob>> {
     return this.http.get(`${this.apiUrl}${environment.EPPayrollPeriods}/${periodId}/payroll/excel`, { observe: 'response', responseType: 'blob' });
   }

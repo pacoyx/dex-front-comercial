@@ -69,4 +69,8 @@ export interface IDeletePayrollResponse {
   deletedPayrolls: number;
   revertedInstallments: number;
   reopenedLoans: number;
+  /** Descuentos eliminados (solo al eliminar el periodo completo). */
+  deletedDiscounts: number;
+  /** True cuando también se eliminó el periodo. */
+  periodDeleted: boolean;
 }
