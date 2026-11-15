@@ -38,3 +38,33 @@ export interface IGeneratePayrollResponse {
   totalNetAmount: number;
   payrolls: IPayrollSummary[];
 }
+
+export interface IPayrollDiscount {
+  id: number;
+  payrollPeriodId: number;
+  employeeId: number;
+  employeeName: string;
+  description: string;
+  amount: number;
+  created: string;
+  createdBy: string | null;
+}
+
+export interface IPayrollDiscountCreateRequest {
+  employeeId: number;
+  description: string;
+  amount: number;
+}
+
+export interface IPayrollDiscountChangeResponse {
+  discount: IPayrollDiscount | null;
+  /** Planilla recalculada del trabajador; null si aún no se generó (el descuento se aplicará al generarla). */
+  payroll: IPayrollSummary | null;
+}
+
+export interface IDeletePayrollResponse {
+  payrollPeriodId: number;
+  deletedPayrolls: number;
+  revertedInstallments: number;
+  reopenedLoans: number;
+}

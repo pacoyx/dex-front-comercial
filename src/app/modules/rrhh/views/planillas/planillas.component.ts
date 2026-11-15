@@ -34,6 +34,7 @@ export class PlanillasComponent implements OnInit {
   displayedColumns = ['name', 'frequency', 'inicio', 'fin', 'acciones'];
   dataSource = new MatTableDataSource<IPayrollPeriod>([]);
   generandoId: number | null = null;
+  eliminandoId: number | null = null;
 
   ngOnInit(): void {
     this.cargar();
@@ -69,6 +70,32 @@ export class PlanillasComponent implements OnInit {
       error: (err) => {
         this.generandoId = null;
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo generar la planilla.'));
+      }
+    });
+  }
+
+  eliminar(periodo: IPayrollPeriod): void {
+    if (periodo.isClosed) {
+      this.notificationService.showError('No se puede eliminar la planilla de un periodo cerrado.');
+      return;
+    }
+    if (!confirm(`¿Eliminar la planilla completa del periodo "${periodo.name}"? Se borrarán las planillas generadas de todos los trabajadores y las cuotas de préstamos descontadas volverán a quedar pendientes. Esta acción no se puede deshacer.`)) {
+      return;
+    }
+    this.eliminandoId = periodo.id;
+    this.payrollService.eliminarPlanilla(periodo.id).subscribe({
+      next: (resp) => {
+        this.eliminandoId = null;
+        const d = resp.data;
+        const detalleCuotas = d?.revertedInstallments
+          ? ` Se revirtieron ${d.revertedInstallments} cuota(s) de préstamos/adelantos, que se descontarán en la próxima planilla.`
+          : '';
+        this.notificationService.showSuccess(`Planilla del periodo "${periodo.name}" eliminada correctamente.${detalleCuotas}`);
+        this.cargar();
+      },
+      error: (err) => {
+        this.eliminandoId = null;
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo eliminar la planilla.'));
       }
     });
   }

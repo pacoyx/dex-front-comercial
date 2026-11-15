@@ -10,8 +10,12 @@
 
 <mat-dialog-content class="dialog-content">
     <p class="hint-text">
-        El saldo se descontará íntegramente en la siguiente planilla que se genere para este trabajador. No existen
-        cuotas parciales.
+        @if (esPrestamo) {
+        El préstamo se divide en cuotas y se descuenta <strong>una cuota en cada planilla</strong> (quincenal o mensual)
+        que se genere desde la fecha del préstamo. Si se elimina una planilla, su cuota vuelve a quedar pendiente.
+        } @else {
+        El adelanto se descontará íntegramente en la siguiente planilla que se genere para este trabajador.
+        }
     </p>
 
     @if (validationErrors.length > 0) {
@@ -46,6 +50,28 @@
                 <mat-label>Monto</mat-label>
                 <input matInput type="number" step="0.01" formControlName="amount">
             </mat-form-field>
+
+            @if (esPrestamo) {
+            <mat-form-field appearance="outline">
+                <mat-label>N° de cuotas</mat-label>
+                <input matInput type="number" step="1" min="1" [max]="maxCuotas" formControlName="installmentCount">
+                <mat-hint>1 cuota por planilla</mat-hint>
+                @if (form.get('installmentCount')?.invalid) {
+                <mat-error>Entre 1 y {{ maxCuotas }} cuotas</mat-error>
+                }
+            </mat-form-field>
+
+            <div class="cuota-resumen">
+                @if (cronograma.length > 0) {
+                <span class="cuota-resumen__valor">{{ cronograma.length }} × {{ cronograma[0] | number:'1.2-2' }}</span>
+                @if (cronograma[cronograma.length - 1] !== cronograma[0]) {
+                <span class="cuota-resumen__nota">Última cuota: {{ cronograma[cronograma.length - 1] | number:'1.2-2' }}</span>
+                }
+                } @else {
+                <span class="cuota-resumen__nota">Ingrese monto y cuotas</span>
+                }
+            </div>
+            }
 
             <mat-form-field appearance="outline" class="field--full">
                 <mat-label>Observación</mat-label>

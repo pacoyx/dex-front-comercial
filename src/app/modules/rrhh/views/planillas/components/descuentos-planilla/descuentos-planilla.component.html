@@ -1,0 +1,92 @@
+<div class="descuentos">
+
+    <div class="descuentos__header">
+        <span class="descuentos__titulo">
+            <mat-icon>remove_circle_outline</mat-icon>
+            Otros descuentos
+        </span>
+        <span class="descuentos__total">Total: {{ total | currency:' ':'symbol':'0.2-2' }}</span>
+    </div>
+
+    @if (periodoCerrado) {
+    <p class="descuentos__aviso">El periodo está cerrado; los descuentos no se pueden modificar.</p>
+    } @else {
+    @if (validationErrors.length > 0) {
+    <div class="alert alert--error">
+        <ul>
+            @for (e of validationErrors; track e) {
+            <li>{{ e }}</li>
+            }
+        </ul>
+    </div>
+    }
+
+    <form [formGroup]="form" class="descuentos__form" (ngSubmit)="agregar()">
+        @if (modoPeriodo) {
+        <mat-form-field appearance="outline" class="campo-trabajador">
+            <mat-label>Trabajador</mat-label>
+            <mat-select formControlName="employeeId">
+                @for (t of trabajadores; track t.id) {
+                <mat-option [value]="t.id">{{ t.lastName }}, {{ t.firstName }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        }
+
+        <mat-form-field appearance="outline" class="campo-descripcion">
+            <mat-label>Descripción</mat-label>
+            <input matInput formControlName="description" maxlength="200" placeholder="Ej. Uniforme, faltante de caja">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="campo-monto">
+            <mat-label>Monto</mat-label>
+            <input matInput type="number" step="0.01" min="0.01" formControlName="amount">
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" [disabled]="guardando" class="boton-agregar">
+            <mat-icon>add</mat-icon>
+            {{ guardando ? 'Grabando...' : 'Agregar' }}
+        </button>
+    </form>
+    }
+
+    <table class="descuentos__tabla">
+        <thead>
+            <tr>
+                @if (modoPeriodo) {
+                <th>Trabajador</th>
+                }
+                <th>Descripción</th>
+                <th class="col-numeric">Monto</th>
+                <th>Registrado</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (d of descuentos; track d.id) {
+            <tr>
+                @if (modoPeriodo) {
+                <td>{{ d.employeeName }}</td>
+                }
+                <td>{{ d.description }}</td>
+                <td class="col-numeric monto-negativo">-{{ d.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                <td>{{ d.created | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="col-accion">
+                    @if (!periodoCerrado) {
+                    <button mat-icon-button color="warn" (click)="eliminar(d)" [disabled]="eliminandoId === d.id" matTooltip="Eliminar descuento">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    }
+                </td>
+            </tr>
+            } @empty {
+            <tr>
+                <td [attr.colspan]="modoPeriodo ? 5 : 4" class="sin-datos">
+                    {{ cargando ? 'Cargando...' : 'Sin descuentos registrados.' }}
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

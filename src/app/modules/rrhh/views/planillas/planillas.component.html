@@ -53,6 +53,11 @@
                         <button mat-icon-button (click)="verDetalle(el)" matTooltip="Ver detalle">
                             <mat-icon>visibility</mat-icon>
                         </button>
+                        <button mat-icon-button color="warn" (click)="eliminar(el)"
+                            [disabled]="el.isClosed || eliminandoId === el.id || generandoId === el.id"
+                            [matTooltip]="el.isClosed ? 'El periodo está cerrado' : 'Eliminar planilla completa'">
+                            <mat-icon>delete</mat-icon>
+                        </button>
                     </td>
                 </ng-container>
 

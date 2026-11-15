@@ -91,8 +91,13 @@ export class TrabajadorDetailComponent implements OnInit {
   aprobandoHoraExtraIds = new Set<number>();
 
   prestamos: ILoan[] = [];
-  prestamosColumns = ['tipo', 'fecha', 'monto', 'saldo', 'estado', 'observacion'];
+  prestamosColumns = ['expandir', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion'];
   prestamosDataSource = new MatTableDataSource<ILoan>([]);
+  prestamoExpandido: ILoan | null = null;
+
+  togglePrestamo(prestamo: ILoan): void {
+    this.prestamoExpandido = this.prestamoExpandido?.id === prestamo.id ? null : prestamo;
+  }
 
   ngOnInit(): void {
     this.catalogosService.listarAreas(true).subscribe({ next: (r) => this.areas = r.data });

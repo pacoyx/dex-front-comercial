@@ -49,7 +49,7 @@ export class PrestamosComponent implements OnInit {
   ];
   selectedClosed: boolean | null = null;
 
-  displayedColumns = ['trabajador', 'tipo', 'fecha', 'monto', 'saldo', 'estado', 'observacion'];
+  displayedColumns = ['trabajador', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion'];
   dataSource = new MatTableDataSource<ILoan>([]);
 
   ngOnInit(): void {

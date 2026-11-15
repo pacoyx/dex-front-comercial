@@ -308,7 +308,15 @@
                         <mat-icon>add</mat-icon> Nuevo Préstamo / Adelanto
                     </button>
                 </div>
-                <table mat-table [dataSource]="prestamosDataSource" class="detail-table">
+                <table mat-table [dataSource]="prestamosDataSource" multiTemplateDataRows class="detail-table">
+                    <ng-container matColumnDef="expandir">
+                        <th mat-header-cell *matHeaderCellDef class="col-expandir"></th>
+                        <td mat-cell *matCellDef="let el" class="col-expandir">
+                            <button mat-icon-button (click)="togglePrestamo(el); $event.stopPropagation()" matTooltip="Ver cronograma de cuotas">
+                                <mat-icon>{{ prestamoExpandido?.id === el.id ? 'expand_less' : 'expand_more' }}</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
                     <ng-container matColumnDef="tipo">
                         <th mat-header-cell *matHeaderCellDef>Tipo</th>
                         <td mat-cell *matCellDef="let el">{{ el.loanType | loanTypeLabel }}</td>
@@ -320,6 +328,10 @@
                     <ng-container matColumnDef="monto">
                         <th mat-header-cell *matHeaderCellDef class="col-numeric">Monto</th>
                         <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="cuotas">
+                        <th mat-header-cell *matHeaderCellDef>Cuotas</th>
+                        <td mat-cell *matCellDef="let el">{{ el.paidInstallments }}/{{ el.installmentCount }} pagadas</td>
                     </ng-container>
                     <ng-container matColumnDef="saldo">
                         <th mat-header-cell *matHeaderCellDef class="col-numeric">Saldo</th>
@@ -338,8 +350,50 @@
                         <th mat-header-cell *matHeaderCellDef>Observación</th>
                         <td mat-cell *matCellDef="let el">{{ el.observation || '-' }}</td>
                     </ng-container>
+                    <ng-container matColumnDef="cronograma">
+                        <td mat-cell *matCellDef="let el" [attr.colspan]="prestamosColumns.length" class="cronograma-cell">
+                            @if (prestamoExpandido?.id === el.id) {
+                            <div class="cronograma">
+                                <table class="cronograma__tabla">
+                                    <thead>
+                                        <tr>
+                                            <th>Cuota</th>
+                                            <th class="col-numeric">Monto</th>
+                                            <th>Estado</th>
+                                            <th>Planilla</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (c of el.installments; track c.id) {
+                                        <tr>
+                                            <td>{{ c.installmentNumber }}/{{ el.installmentCount }}</td>
+                                            <td class="col-numeric">{{ c.amount | currency:' ':'symbol':'0.2-2' }}</td>
+                                            <td>
+                                                <span class="status-chip" [class.status-chip--activo]="c.isPaid" [class.status-chip--inactivo]="!c.isPaid">
+                                                    <span class="status-chip__dot"></span>
+                                                    {{ c.isPaid ? 'Pagada' : 'Pendiente' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (c.isPaid) {
+                                                {{ c.payrollPeriodName || 'Registro anterior' }}
+                                                } @else {
+                                                Próxima planilla
+                                                }
+                                            </td>
+                                        </tr>
+                                        } @empty {
+                                        <tr><td colspan="4">Sin cuotas registradas.</td></tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            }
+                        </td>
+                    </ng-container>
                     <tr mat-header-row *matHeaderRowDef="prestamosColumns" class="cabecera"></tr>
-                    <tr mat-row *matRowDef="let row; columns: prestamosColumns;"></tr>
+                    <tr mat-row *matRowDef="let row; columns: prestamosColumns;" class="fila-prestamo" (click)="togglePrestamo(row)"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['cronograma']" class="fila-cronograma" [class.fila-cronograma--abierta]="prestamoExpandido?.id === row.id"></tr>
                     <tr class="mat-row" *matNoDataRow>
                         <td class="mat-cell sin-datos" [attr.colspan]="prestamosColumns.length">Sin préstamos ni adelantos registrados.</td>
                     </tr>

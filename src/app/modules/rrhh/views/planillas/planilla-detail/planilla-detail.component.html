@@ -18,6 +18,10 @@
                 <mat-icon>play_arrow</mat-icon>
                 {{ generando ? 'Generando...' : 'Generar Planilla' }}
             </button>
+            <button mat-stroked-button (click)="descuentos()" [disabled]="!periodo">
+                <mat-icon>remove_circle_outline</mat-icon>
+                Descuentos
+            </button>
             <button mat-stroked-button (click)="volver()">
                 <mat-icon>arrow_back</mat-icon>
                 Volver
@@ -28,7 +32,17 @@
     <mat-card class="panel panel-tabla" appearance="outlined">
         <div class="panel__header">
             <h2 class="panel__title"><mat-icon>groups</mat-icon> Planillas Generadas</h2>
-            <span class="panel__total">Total Neto: {{ totalNeto | currency:' ':'symbol':'0.2-2' }}</span>
+            <div class="panel__acciones">
+                <span class="panel__total">Total Neto: {{ totalNeto | currency:' ':'symbol':'0.2-2' }}</span>
+                <button mat-stroked-button (click)="exportar('excel')" [disabled]="dataSource.data.length === 0 || exportando !== null">
+                    <mat-icon>table_view</mat-icon>
+                    {{ exportando === 'excel' ? 'Exportando...' : 'Excel' }}
+                </button>
+                <button mat-stroked-button (click)="exportar('pdf')" [disabled]="dataSource.data.length === 0 || exportando !== null">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    {{ exportando === 'pdf' ? 'Exportando...' : 'PDF' }}
+                </button>
+            </div>
         </div>
         <mat-card-content class="tabla-scroll">
             <table mat-table [dataSource]="dataSource" class="detail-table">

@@ -208,3 +208,50 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Préstamos: cronograma de cuotas */
+.col-expandir {
+    width: 48px;
+    padding-right: 0 !important;
+}
+
+.fila-prestamo {
+    cursor: pointer;
+}
+
+.fila-cronograma {
+    height: 0 !important;
+}
+
+.fila-cronograma:not(.fila-cronograma--abierta) .cronograma-cell {
+    padding: 0;
+    border-bottom-width: 0;
+}
+
+.cronograma {
+    padding: 8px 8px 16px 48px;
+}
+
+.cronograma__tabla {
+    width: 100%;
+    max-width: 640px;
+    border-collapse: collapse;
+    font: var(--mat-sys-body-medium);
+}
+
+.cronograma__tabla th {
+    text-align: left;
+    font: var(--mat-sys-label-medium);
+    color: var(--mat-sys-on-surface-variant);
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.cronograma__tabla td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--mat-sys-surface-container-high);
+}
+
+.cronograma__tabla .col-numeric {
+    text-align: right;
+}

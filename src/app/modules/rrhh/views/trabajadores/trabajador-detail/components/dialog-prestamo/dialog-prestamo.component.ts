@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,10 +16,12 @@ import { LoadingComponent } from '../../../../../../../core/components/loading/l
 import { NotificationsSystemService } from '../../../../../../../core/services/notifications-system.service';
 import { LoansService } from '../../../../../services/loans.service';
 import { LoanType } from '../../../../../interfaces/IShared';
-import { ILoan } from '../../../../../interfaces/ILoans';
+import { ILoan, ILoanCreateRequest } from '../../../../../interfaces/ILoans';
 import { IResponseGeneric } from '../../../../../interfaces/IShared';
 import { LOAN_TYPE_OPTIONS } from '../../../../../shared/loan-type';
 import { extractErrorMessage, extractValidationErrors } from '../../../../../shared/http-error.util';
+
+const MAX_CUOTAS = 48;
 
 @Component({
   selector: 'app-dialog-prestamo',
@@ -26,6 +29,7 @@ import { extractErrorMessage, extractValidationErrors } from '../../../../../sha
   imports: [
     ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDialogActions, MatDialogTitle,
     MatDialogContent, LoadingComponent, MatIconModule, MatButtonModule, MatSelectModule, MatDatepickerModule,
+    DecimalPipe,
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -54,19 +58,48 @@ export class DialogPrestamoComponent {
       loanType: [LoanType.Loan, Validators.required],
       loanDate: [new Date(), Validators.required],
       amount: [0, [Validators.required, Validators.min(0.01)]],
+      installmentCount: [1, [Validators.required, Validators.min(1), Validators.max(MAX_CUOTAS)]],
       observation: [''],
     });
+
+    // Los adelantos de sueldo se descuentan completos en una sola planilla.
+    this.form.get('loanType')!.valueChanges.subscribe((tipo) => {
+      const cuotas = this.form.get('installmentCount')!;
+      if (tipo === LoanType.SalaryAdvance) {
+        cuotas.setValue(1);
+        cuotas.disable();
+      } else {
+        cuotas.enable();
+      }
+    });
+  }
+
+  readonly maxCuotas = MAX_CUOTAS;
+
+  get esPrestamo(): boolean {
+    return this.form.get('loanType')!.value === LoanType.Loan;
+  }
+
+  /** Vista previa de las cuotas: iguales a 2 decimales; la última absorbe el redondeo (misma regla que el backend). */
+  get cronograma(): number[] {
+    const amount = Number(this.form.get('amount')!.value) || 0;
+    const n = Math.floor(Number(this.form.get('installmentCount')!.value) || 0);
+    if (amount <= 0 || n < 1 || n > MAX_CUOTAS) return [];
+    const regular = Math.round((amount / n) * 100) / 100;
+    const ultima = Math.round((amount - regular * (n - 1)) * 100) / 100;
+    return Array.from({ length: n }, (_, i) => (i < n - 1 ? regular : ultima));
   }
 
   onSubmit(): void {
     if (this.form.invalid) return;
     this.validationErrors = [];
     this.loadingSave = true;
-    const value = this.form.value;
-    const req = {
+    const value = this.form.getRawValue();
+    const req: ILoanCreateRequest = {
       loanDate: (value.loanDate as Date).toISOString(),
       amount: value.amount,
       observation: value.observation || null,
+      installmentCount: value.loanType === LoanType.SalaryAdvance ? 1 : Number(value.installmentCount),
     };
 
     const request$: Observable<IResponseGeneric<ILoan>> = value.loanType === LoanType.SalaryAdvance

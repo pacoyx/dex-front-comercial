@@ -82,3 +82,21 @@
         grid-template-columns: 1fr;
     }
 }
+
+.cuota-resumen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 0 4px 20px;
+}
+
+.cuota-resumen__valor {
+    font: var(--mat-sys-title-medium);
+    color: var(--mat-sys-primary);
+}
+
+.cuota-resumen__nota {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+}

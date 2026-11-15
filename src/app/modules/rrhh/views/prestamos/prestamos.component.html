@@ -84,6 +84,11 @@
                     <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.amount | currency:' ':'symbol':'0.2-2' }}</td>
                 </ng-container>
 
+                <ng-container matColumnDef="cuotas">
+                    <th mat-header-cell *matHeaderCellDef>Cuotas</th>
+                    <td mat-cell *matCellDef="let el">{{ el.paidInstallments }}/{{ el.installmentCount }}</td>
+                </ng-container>
+
                 <ng-container matColumnDef="saldo">
                     <th mat-header-cell *matHeaderCellDef class="col-numeric">Saldo</th>
                     <td mat-cell *matCellDef="let el" class="col-numeric">{{ el.balance | currency:' ':'symbol':'0.2-2' }}</td>

@@ -12,6 +12,8 @@ import { IPayrollPeriod, IPayrollSummary } from '../../../interfaces/IPayroll';
 import { PayrollFrequencyLabelPipe } from '../../../shared/payroll-frequency';
 import { extractErrorMessage } from '../../../shared/http-error.util';
 import { DialogDetallePlanillaEmpleadoComponent } from './components/dialog-detalle-planilla-empleado/dialog-detalle-planilla-empleado.component';
+import { DialogDescuentosPeriodoComponent } from './components/dialog-descuentos-periodo/dialog-descuentos-periodo.component';
+import { descargarArchivo } from '../../../../gastos/shared/file-download.util';
 
 @Component({
   selector: 'app-planilla-detail',
@@ -34,6 +36,7 @@ export class PlanillaDetailComponent implements OnInit {
   periodId = 0;
   periodo: IPayrollPeriod | null = null;
   generando = false;
+  exportando: 'excel' | 'pdf' | null = null;
 
   displayedColumns = ['trabajador', 'bruto', 'descuentos', 'neto', 'generado', 'acciones'];
   dataSource = new MatTableDataSource<IPayrollSummary>([]);
@@ -85,7 +88,43 @@ export class PlanillaDetailComponent implements OnInit {
   }
 
   verDetalle(payroll: IPayrollSummary): void {
-    this.dialog.open(DialogDetallePlanillaEmpleadoComponent, { data: { payroll } });
+    const dialogRef = this.dialog.open(DialogDetallePlanillaEmpleadoComponent, {
+      maxWidth: '95vw',
+      data: { payroll, periodId: this.periodId, periodoCerrado: this.periodo?.isClosed ?? false }
+    });
+    dialogRef.afterClosed().subscribe((huboCambios) => {
+      if (huboCambios) this.cargarPlanilla();
+    });
+  }
+
+  descuentos(): void {
+    const dialogRef = this.dialog.open(DialogDescuentosPeriodoComponent, {
+      maxWidth: '95vw',
+      data: { periodId: this.periodId, periodName: this.periodo?.name ?? '', periodoCerrado: this.periodo?.isClosed ?? false }
+    });
+    dialogRef.afterClosed().subscribe((huboCambios) => {
+      if (huboCambios) this.cargarPlanilla();
+    });
+  }
+
+  exportar(formato: 'excel' | 'pdf'): void {
+    if (this.exportando) return;
+    this.exportando = formato;
+    const request$ = formato === 'excel'
+      ? this.payrollService.exportarPlanillaExcel(this.periodId)
+      : this.payrollService.exportarPlanillaPdf(this.periodId);
+    const nombre = `Planilla_${(this.periodo?.name ?? this.periodId).toString().replace(/\s+/g, '_')}.${formato === 'excel' ? 'xlsx' : 'pdf'}`;
+
+    request$.subscribe({
+      next: (resp) => {
+        this.exportando = null;
+        descargarArchivo(resp, nombre);
+      },
+      error: (err) => {
+        this.exportando = null;
+        this.notificationService.showError(extractErrorMessage(err, `No se pudo exportar la planilla a ${formato === 'excel' ? 'Excel' : 'PDF'}.`));
+      }
+    });
   }
 
   volver(): void {

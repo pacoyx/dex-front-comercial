@@ -9,6 +9,7 @@ export const PAYROLL_CONCEPT_TYPE_META: Record<number, { label: string }> = {
   [PayrollConceptType.AdvanceDiscount]: { label: 'Descuento por Adelanto' },
   [PayrollConceptType.AbsenceDiscount]: { label: 'Descuento por Falta' },
   [PayrollConceptType.LateArrivalDiscount]: { label: 'Descuento por Tardanza' },
+  [PayrollConceptType.OtherDiscount]: { label: 'Otros Descuentos' },
 };
 
 export function getPayrollConceptTypeLabel(value: number): string {
