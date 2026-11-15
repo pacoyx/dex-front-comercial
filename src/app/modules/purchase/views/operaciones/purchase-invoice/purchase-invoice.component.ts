@@ -23,6 +23,11 @@ import { DialogAddItemInvoicePurchaseComponent } from './components/dialog-add-i
 import { PurchaseInvoiceStoreService } from '../../../services/purchase-invoice-store.service';
 import { IInvoiceCreateRequest } from '../../../interfaces/IOperaciones';
 import { NotificationsSystemService } from '../../../../../core/services/notifications-system.service';
+import { LoginService } from '../../../../../core/services/login.service';
+import { PermissionsStoreService } from '../../../../../core/services/permissions-store.service';
+import { InventarioService } from '../../../../inventario/services/inventario.service';
+import { IWarehouse } from '../../../../inventario/interfaces/IInventario';
+import { extractErrorMessage } from '../../../shared/http-error.util';
 
 @Component({
   selector: 'app-purchase-invoice',
@@ -52,6 +57,12 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
   frmInvoice: FormGroup;
   guardando = false;
 
+  private inventarioService = inject(InventarioService);
+  private loginService = inject(LoginService);
+  private permissionsStore = inject(PermissionsStoreService);
+  almacenes: IWarehouse[] = [];
+  private almacenPorDefecto: number | null = null;
+
   constructor(private fb: FormBuilder) {
     this.frmInvoice = this.fb.group({
       supplierId: [null, Validators.required], // Use null as the initial value for supplierId
@@ -69,6 +80,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
       igv: [0, Validators.required],
       subtotal: [0, Validators.required],
       total: [0, Validators.required],
+      warehouseId: [null as number | null],
     });
 
     // Link the supplierControl to the supplierId FormControl
@@ -118,6 +130,31 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
 
       this.invoiceStoreService.setStateEmit(false);
 
+      this.cargarAlmacenes();
+  }
+
+  /**
+   * Almacenes activos para el ingreso de la compra. Se propone el almacén por defecto de la sucursal del
+   * usuario. Si el usuario no tiene acceso a Inventarios, la lista queda vacía y la compra se graba sin
+   * ingreso a almacén (como antes).
+   */
+  private cargarAlmacenes(): void {
+    // Sin permiso de Inventarios no se consulta (evita el aviso de "sin permiso" del interceptor).
+    if (!this.permissionsStore.hasPermission('inventory.access')) {
+      return;
+    }
+    this.inventarioService.listarAlmacenes(true).subscribe({
+      next: (resp) => {
+        this.almacenes = resp.data;
+        const branchId = this.loginService.getLoginData()?.branchSales?.[0]?.branchSalesId;
+        const porDefecto = resp.data.find(a => a.isDefault && a.branchSalesId === branchId)
+          ?? resp.data.find(a => a.isDefault)
+          ?? null;
+        this.almacenPorDefecto = porDefecto?.id ?? null;
+        this.frmInvoice.get('warehouseId')?.setValue(this.almacenPorDefecto);
+      },
+      error: () => this.almacenes = []
+    });
   }
 
   private actualizarFormaPagoPorVencimiento(): void {
@@ -248,6 +285,7 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
         price: item.price,
         total: item.total,
       })),
+      warehouseId: this.frmInvoice.get('warehouseId')?.value ?? null,
 
     }
     // Call the service to create the invoice
@@ -268,7 +306,8 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
       error: (error) => {
         this.guardando = false;
         console.error('Error creating invoice:', error);
-        this.notificationService.showErrorDialog('Ocurrio un error al intentar grabar la guia');
+        // Muestra el motivo del backend (p. ej. almacén inactivo); si no hay, el mensaje genérico.
+        this.notificationService.showErrorDialog(extractErrorMessage(error, 'Ocurrio un error al intentar grabar la compra'));
       }
     });
 
@@ -290,7 +329,8 @@ export class PurchaseInvoiceComponent implements OnInit, OnDestroy {
       paymentMethod: 'EF',
       invoiceCurrency: 'PEN',
       exchangeRate: 1.00,
-      invoiceComments: ''
+      invoiceComments: '',
+      warehouseId: this.almacenPorDefecto
     });
 
 

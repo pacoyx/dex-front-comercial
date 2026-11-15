@@ -155,3 +155,13 @@
         flex: 1;
     }
 }
+
+.bajo-minimo {
+    color: var(--mat-sys-error);
+    font-weight: 600;
+}
+
+.sin-control {
+    color: var(--mat-sys-on-surface-variant);
+    font-size: .8rem;
+}

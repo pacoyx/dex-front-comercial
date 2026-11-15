@@ -214,6 +214,7 @@ export const environment = {
     EPSharedDocuments: 'api/shared-documents',
     EPFixedAssetCategories: 'api/fixed-asset-categories',
     EPFixedAssets: 'api/fixed-assets',
+    EPInventory: 'api/inventory',
     EPAccountsReceivable: 'api/accounts-receivable',
     EPCollectionSheets: 'api/collection-sheets',
     EPBuscarClientesPorPatron: 'api/customer/search/byPatron',

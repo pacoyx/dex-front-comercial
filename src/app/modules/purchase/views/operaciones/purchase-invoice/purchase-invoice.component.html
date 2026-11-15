@@ -105,6 +105,17 @@
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="field--full">
+                    <mat-label>Almacén de ingreso</mat-label>
+                    <mat-select formControlName="warehouseId">
+                        <mat-option [value]="null">Sin ingreso a almacén</mat-option>
+                        @for (a of almacenes; track a.id) {
+                        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+                        }
+                    </mat-select>
+                    <mat-hint>Los productos que controlan stock ingresan a este almacén al grabar la compra</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="field--full">
                     <mat-label>Vencimiento</mat-label>
                     <input matInput [matDatepicker]="pickerv" placeholder="selecciona una fecha"
                         formControlName="invoiceExpirationDate">

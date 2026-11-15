@@ -84,6 +84,8 @@ export class DialogAddItemInvoicePurchaseComponent implements OnInit {
     this.productoId = product.id;
     this.productoNombre = product.name;
     this.unidadMedida = product.unitMeasurementDescription;
+    // Antes quedaba en 0: la línea se guardaba sin la unidad de medida del producto.
+    this.unidadMedidaId = product.unitMeasurementId;
   }
 
   clearProduct(event: Event): void {

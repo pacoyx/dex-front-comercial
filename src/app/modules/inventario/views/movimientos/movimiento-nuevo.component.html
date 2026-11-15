@@ -1,0 +1,154 @@
+<div class="inv-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>add_box</mat-icon>
+            <div class="page-header__heading">
+                <h1>Nuevo movimiento</h1>
+                <span class="page-header__subtitle">El stock se actualiza al grabar; un movimiento no se edita, se anula</span>
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <a mat-stroked-button routerLink="/inventario/movimientos">
+                <mat-icon>arrow_back</mat-icon> Volver
+            </a>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="cabecera">
+            <mat-button-toggle-group [(ngModel)]="tipo" (change)="cambiarTipo()" class="tipos" aria-label="Tipo de movimiento">
+                @for (t of tipos; track t.value) {
+                <mat-button-toggle [value]="t.value">
+                    <mat-icon>{{ t.icon }}</mat-icon> {{ t.label }}
+                </mat-button-toggle>
+                }
+            </mat-button-toggle-group>
+
+            <div class="filtros-row">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ tipo === T.Transfer ? 'Almacén origen' : 'Almacén' }}</mat-label>
+                    <mat-select [(ngModel)]="warehouseId" (selectionChange)="cambiarAlmacen()">
+                        @for (a of almacenes; track a.id) {
+                        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                @if (tipo === T.Transfer) {
+                <mat-form-field appearance="outline">
+                    <mat-label>Almacén destino</mat-label>
+                    <mat-select [(ngModel)]="targetWarehouseId">
+                        @for (a of destinos; track a.id) {
+                        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                }
+
+                @if (tipo === T.Consumption) {
+                <mat-form-field appearance="outline">
+                    <mat-label>Área que consume</mat-label>
+                    <mat-select [(ngModel)]="areaId">
+                        @for (a of areas; track a.id) {
+                        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                }
+
+                <mat-form-field appearance="outline" class="campo-ancho">
+                    <mat-label>{{ tipo === T.AdjustmentIn || tipo === T.AdjustmentOut ? 'Motivo del ajuste (obligatorio)' : 'Motivo / observación' }}</mat-label>
+                    <input matInput [(ngModel)]="reason" maxlength="300">
+                </mat-form-field>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content>
+            <div class="captura">
+                <div class="captura__producto">
+                    <app-product-picker [warehouseId]="warehouseId" [seleccionado]="productoNuevo"
+                        (productoSeleccionado)="productoNuevo = $event"></app-product-picker>
+                </div>
+                <mat-form-field appearance="outline" class="captura__num">
+                    <mat-label>Cantidad</mat-label>
+                    <input matInput type="number" min="0" step="any" [(ngModel)]="cantidadNueva" (keyup.enter)="agregarLinea()">
+                    @if (productoNuevo) {
+                    <mat-hint>Disponible: {{ (productoNuevo.stock ?? 0) | number:'1.0-4' }} {{ productoNuevo.unitMeasurementDescription }}</mat-hint>
+                    }
+                </mat-form-field>
+                @if (pideCosto) {
+                <mat-form-field appearance="outline" class="captura__num">
+                    <mat-label>Costo unit. (sin IGV)</mat-label>
+                    <input matInput type="number" min="0" step="any" [(ngModel)]="costoNuevo" (keyup.enter)="agregarLinea()">
+                    @if (tipo === T.AdjustmentIn) {
+                    <mat-hint>Vacío = costo promedio actual</mat-hint>
+                    }
+                </mat-form-field>
+                }
+                <button mat-stroked-button color="primary" (click)="agregarLinea()">
+                    <mat-icon>add</mat-icon> Agregar
+                </button>
+            </div>
+
+            @if (errores.length > 0) {
+            <div class="alert-error">
+                <ul>
+                    @for (e of errores; track e) {
+                    <li>{{ e }}</li>
+                    }
+                </ul>
+            </div>
+            }
+
+            <table mat-table [dataSource]="lineas" class="detail-table">
+                <ng-container matColumnDef="product">
+                    <th mat-header-cell *matHeaderCellDef>Producto</th>
+                    <td mat-cell *matCellDef="let l">{{ l.product.code ? l.product.code + ' · ' : '' }}{{ l.product.name }}</td>
+                </ng-container>
+                <ng-container matColumnDef="available">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Disponible</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ (l.product.stock ?? 0) | number:'1.0-4' }} {{ l.product.unitMeasurementDescription }}</td>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Cantidad</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric" [class.cantidad-in]="esIngreso" [class.cantidad-out]="!esIngreso">
+                        {{ esIngreso ? '+' : '−' }}{{ l.quantity | number:'1.0-4' }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="unitCost">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Costo unit.</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">
+                        {{ l.unitCost !== null ? (l.unitCost | number:'1.2-4') : (pideCosto ? 'Promedio' : 'Al costo promedio') }}
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">
+                        <button mat-icon-button color="warn" (click)="quitarLinea(l)" matTooltip="Quitar">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+            </table>
+            @if (lineas.length === 0) {
+            <div class="sin-datos">Agregue los productos del movimiento.</div>
+            }
+
+            <div class="pie">
+                @if (pideCosto && valorEstimado > 0) {
+                <span class="hint">Valor del ingreso: {{ valorEstimado | number:'1.2-2' }}</span>
+                }
+                <span class="pie__espacio"></span>
+                <button mat-flat-button color="primary" (click)="grabar()" [disabled]="guardando || lineas.length === 0">
+                    @if (guardando) { <app-loading></app-loading> } @else { <mat-icon>check</mat-icon> }
+                    Grabar movimiento
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

@@ -49,6 +49,11 @@
                 </ng-container>
 
 
+                <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Código </th>
+                    <td mat-cell *matCellDef="let element"> {{element.code || '-'}} </td>
+                </ng-container>
+
                 <ng-container matColumnDef="name">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
                     <td mat-cell *matCellDef="let element"> {{element.name}} </td>
@@ -63,7 +68,13 @@
 
                 <ng-container matColumnDef="stock">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-numeric"> Stock </th>
-                    <td mat-cell *matCellDef="let element" class="col-numeric"> {{element.stock}} </td>
+                    <td mat-cell *matCellDef="let element" class="col-numeric">
+                        @if (element.tracksStock === false) {
+                        <span class="sin-control">No controla</span>
+                        } @else {
+                        <span [class.bajo-minimo]="element.minStock > 0 && element.stock < element.minStock">{{ element.stock | number:'1.0-4' }}</span>
+                        }
+                    </td>
                 </ng-container>
 
                 <ng-container matColumnDef="status">

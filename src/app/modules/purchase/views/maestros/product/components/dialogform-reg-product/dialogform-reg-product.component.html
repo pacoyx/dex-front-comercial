@@ -9,9 +9,26 @@
 </div>
 
 <mat-dialog-content class="dialog-content">
+    @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+    }
+
     <form [formGroup]="productForm">
 
         <div class="form-grid">
+
+            <mat-form-field appearance="outline">
+                <mat-label>Código / SKU</mat-label>
+                <input matInput formControlName="code" maxlength="30" placeholder="Opcional">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A"> Activo </mat-option>
+                    <mat-option value="I"> Inactivo </mat-option>
+                </mat-select>
+            </mat-form-field>
 
             <mat-form-field appearance="outline" class="field--full">
                 <mat-label>Nombre</mat-label>
@@ -47,17 +64,23 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-                <mat-label>Stock</mat-label>
-                <input matInput formControlName="stock" type="number" min="0" step="1">
+                <mat-label>Stock actual</mat-label>
+                <input matInput formControlName="stock" type="number">
+                <mat-hint>Se actualiza con los movimientos de inventario</mat-hint>
             </mat-form-field>
 
+            <div class="toggle-row field--full">
+                <mat-slide-toggle formControlName="tracksStock">Controla stock</mat-slide-toggle>
+                <mat-slide-toggle formControlName="isSellable">Se puede vender</mat-slide-toggle>
+            </div>
+
+            @if (productForm.get('tracksStock')?.value) {
             <mat-form-field appearance="outline">
-                <mat-label>Estado</mat-label>
-                <mat-select formControlName="status">
-                    <mat-option value="A"> Activo </mat-option>
-                    <mat-option value="I"> Inactivo </mat-option>
-                </mat-select>
+                <mat-label>Stock mínimo</mat-label>
+                <input matInput formControlName="minStock" type="number" min="0" step="1">
+                <mat-hint>Aviso de reposición al bajar de este valor</mat-hint>
             </mat-form-field>
+            }
 
         </div>
 

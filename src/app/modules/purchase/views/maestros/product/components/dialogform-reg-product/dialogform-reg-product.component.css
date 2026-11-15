@@ -63,3 +63,19 @@
         grid-template-columns: 1fr;
     }
 }
+
+.toggle-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 4px 4px 16px;
+}
+
+.alert-error {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--mat-sys-error) 12%, transparent);
+    color: var(--mat-sys-error);
+    font: var(--mat-sys-body-medium);
+}

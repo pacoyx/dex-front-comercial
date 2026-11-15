@@ -12,6 +12,7 @@ import { LayoutGastosComponent } from './core/views/layout-gastos/layout-gastos.
 import { LayoutCorporateOperationsComponent } from './core/views/layout-corporate-operations/layout-corporate-operations.component';
 import { LayoutSharedDocumentsComponent } from './core/views/layout-shared-documents/layout-shared-documents.component';
 import { LayoutFixedAssetsComponent } from './core/views/layout-fixed-assets/layout-fixed-assets.component';
+import { LayoutInventarioComponent } from './core/views/layout-inventario/layout-inventario.component';
 import { LayoutDriverTrackingComponent } from './core/views/layout-driver-tracking/layout-driver-tracking.component';
 import { permissionGuard } from './core/guards/permission.guard';
 import { RECEPTION_PERMISSIONS } from './core/constants/reception-permissions';
@@ -81,6 +82,11 @@ export const routes: Routes = [
     {
         path: 'fixed-assets', component: LayoutFixedAssetsComponent, canActivate: [permissionGuard], data: { permission: 'fixed-assets.access' }, children: [
             { path: '', loadChildren: () => import('./modules/fixed-assets/fixed-assets.module').then(m => m.FixedAssetsModule) }
+        ]
+    },
+    {
+        path: 'inventario', component: LayoutInventarioComponent, canActivate: [permissionGuard], data: { permission: 'inventory.access' }, children: [
+            { path: '', loadChildren: () => import('./modules/inventario/inventario.module').then(m => m.InventarioModule) }
         ]
     },
     {

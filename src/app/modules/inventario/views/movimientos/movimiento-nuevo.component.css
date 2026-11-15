@@ -1,0 +1,49 @@
+.cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tipos {
+    flex-wrap: wrap;
+}
+
+.tipos mat-icon {
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.captura {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.captura__producto {
+    flex: 1 1 320px;
+}
+
+.captura__num {
+    width: 170px;
+}
+
+.captura > button {
+    margin-top: 8px;
+}
+
+.alert-error {
+    margin-bottom: 12px;
+}
+
+.pie {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.pie__espacio {
+    flex: 1;
+}

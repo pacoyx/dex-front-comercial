@@ -1,0 +1,146 @@
+<div class="inv-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>timeline</mat-icon>
+            <div class="page-header__heading">
+                <h1>Kardex</h1>
+                <span class="page-header__subtitle">Entradas, salidas y saldo valorizado de un producto en un almacén (costo promedio)</span>
+            </div>
+        </div>
+        @if (kardex) {
+        <div class="page-header__actions">
+            <button mat-stroked-button (click)="exportar('excel')" [disabled]="exportando !== null">
+                <mat-icon>table_view</mat-icon> {{ exportando === 'excel' ? 'Exportando...' : 'Excel' }}
+            </button>
+            <button mat-stroked-button (click)="exportar('pdf')" [disabled]="exportando !== null">
+                <mat-icon>picture_as_pdf</mat-icon> {{ exportando === 'pdf' ? 'Exportando...' : 'PDF' }}
+            </button>
+        </div>
+        }
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="filtros-row">
+            <div class="campo-ancho">
+                <app-product-picker [seleccionado]="producto" [warehouseId]="warehouseId"
+                    (productoSeleccionado)="producto = $event"></app-product-picker>
+            </div>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Almacén</mat-label>
+                <mat-select [(ngModel)]="warehouseId">
+                    @for (a of almacenes; track a.id) {
+                    <mat-option [value]="a.id">{{ a.name }}</mat-option>
+                    }
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Desde</mat-label>
+                <input matInput [matDatepicker]="pDesde" [(ngModel)]="desde">
+                <mat-datepicker-toggle matIconSuffix [for]="pDesde"></mat-datepicker-toggle>
+                <mat-datepicker #pDesde></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Hasta</mat-label>
+                <input matInput [matDatepicker]="pHasta" [(ngModel)]="hasta">
+                <mat-datepicker-toggle matIconSuffix [for]="pHasta"></mat-datepicker-toggle>
+                <mat-datepicker #pHasta></mat-datepicker>
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" (click)="buscar()" [disabled]="loading">
+                <mat-icon>search</mat-icon> Ver kardex
+            </button>
+        </mat-card-content>
+    </mat-card>
+
+    @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+    }
+    @if (loading) {
+    <app-loading></app-loading>
+    }
+
+    @if (kardex) {
+    <div class="kpis">
+        <div class="kpi">
+            <span class="kpi__label">Saldo inicial</span>
+            <span class="kpi__value">{{ kardex.openingQuantity | number:'1.0-4' }}</span>
+            <span class="hint">Valor {{ kardex.openingValue | number:'1.2-2' }}</span>
+        </div>
+        <div class="kpi">
+            <span class="kpi__label">Entradas</span>
+            <span class="kpi__value cantidad-in">+{{ kardex.totalIn | number:'1.0-4' }}</span>
+        </div>
+        <div class="kpi">
+            <span class="kpi__label">Salidas</span>
+            <span class="kpi__value cantidad-out">−{{ kardex.totalOut | number:'1.0-4' }}</span>
+        </div>
+        <div class="kpi">
+            <span class="kpi__label">Saldo final</span>
+            <span class="kpi__value">{{ kardex.closingQuantity | number:'1.0-4' }} <span class="hint">{{ kardex.unitName }}</span></span>
+            <span class="hint">Costo prom. {{ kardex.closingAverageCost | number:'1.2-4' }} · Valor {{ kardex.closingValue | number:'1.2-2' }}</span>
+        </div>
+    </div>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table class="kardex-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Documento</th>
+                        <th>Detalle</th>
+                        <th class="col-numeric">Entrada</th>
+                        <th class="col-numeric">Salida</th>
+                        <th class="col-numeric">Costo unit.</th>
+                        <th class="col-numeric">Costo total</th>
+                        <th class="col-numeric">Saldo</th>
+                        <th class="col-numeric">Costo prom.</th>
+                        <th class="col-numeric">Valor saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="fila-saldo">
+                        <td colspan="7">Saldo inicial al {{ kardex.from | date:'dd/MM/yyyy' }}</td>
+                        <td class="col-numeric">{{ kardex.openingQuantity | number:'1.0-4' }}</td>
+                        <td class="col-numeric">{{ kardex.openingAverageCost | number:'1.2-4' }}</td>
+                        <td class="col-numeric">{{ kardex.openingValue | number:'1.2-2' }}</td>
+                    </tr>
+                    @for (l of kardex.lines; track $index) {
+                    <tr [class.anulado]="l.status === Cancelled">
+                        <td>{{ l.movementDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                        <td><a class="link" [routerLink]="['/inventario/movimientos', l.movementId]">{{ l.movementNumber }}</a></td>
+                        <td>{{ l.detail }}@if (l.status === Cancelled) { <span class="chip chip--warn">anulado</span> }</td>
+                        <td class="col-numeric cantidad-in">{{ l.quantityIn ? (l.quantityIn | number:'1.0-4') : '' }}</td>
+                        <td class="col-numeric cantidad-out">{{ l.quantityOut ? (l.quantityOut | number:'1.0-4') : '' }}</td>
+                        <td class="col-numeric">{{ l.unitCost | number:'1.2-4' }}</td>
+                        <td class="col-numeric">{{ l.totalCost | number:'1.2-2' }}</td>
+                        <td class="col-numeric"><strong>{{ l.balanceQuantity | number:'1.0-4' }}</strong></td>
+                        <td class="col-numeric">{{ l.balanceAverageCost | number:'1.2-4' }}</td>
+                        <td class="col-numeric">{{ l.balanceValue | number:'1.2-2' }}</td>
+                    </tr>
+                    }
+                    @if (kardex.lines.length === 0) {
+                    <tr>
+                        <td colspan="10" class="sin-datos">Sin movimientos en el período.</td>
+                    </tr>
+                    }
+                    <tr class="fila-saldo">
+                        <td colspan="3">Totales del período</td>
+                        <td class="col-numeric">{{ kardex.totalIn | number:'1.0-4' }}</td>
+                        <td class="col-numeric">{{ kardex.totalOut | number:'1.0-4' }}</td>
+                        <td colspan="2"></td>
+                        <td class="col-numeric">{{ kardex.closingQuantity | number:'1.0-4' }}</td>
+                        <td class="col-numeric">{{ kardex.closingAverageCost | number:'1.2-4' }}</td>
+                        <td class="col-numeric">{{ kardex.closingValue | number:'1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="hint nota">Un movimiento anulado se mantiene en el kardex y su anulación aparece como un movimiento inverso.</p>
+        </mat-card-content>
+    </mat-card>
+    }
+</div>

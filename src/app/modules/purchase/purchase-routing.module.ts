@@ -4,9 +4,6 @@ import { permissionGuard } from '../../core/guards/permission.guard';
 import { DashboardPurchaseComponent } from './views/dashboard-purchase/dashboard-purchase.component';
 import { SupplierComponent } from './views/maestros/supplier/supplier.component';
 import { SupplierImportComponent } from './views/maestros/supplier/supplier-import/supplier-import.component';
-import { ProductComponent } from './views/maestros/product/product.component';
-import { UnitMeasurementComponent } from './views/maestros/unit-measurement/unit-measurement.component';
-import { CategoryProdComponent } from './views/maestros/category-prod/category-prod.component';
 import { PurchaseInvoiceComponent } from './views/operaciones/purchase-invoice/purchase-invoice.component';
 import { PurchaseInvoicesComponent } from './views/operaciones/purchase-invoices/purchase-invoices.component';
 import { PurchaseReportesFacturasxparamsComponent } from './views/reports/purchase-reportes-facturasxparams/purchase-reportes-facturasxparams.component';
@@ -24,9 +21,10 @@ const routes: Routes = [
   { path: 'cuentas-pagar', component: CuentasPorPagarComponent },
   { path: 'suppliers', component: SupplierComponent, canActivate: [permissionGuard], data: { permission: 'suppliers.access' } },
   { path: 'suppliers/import', component: SupplierImportComponent, canActivate: [permissionGuard], data: { permission: 'suppliers.access' } },
-  { path: 'products', component: ProductComponent },
-  { path: 'unitmeasure', component: UnitMeasurementComponent },
-  { path: 'categoriesProduct', component: CategoryProdComponent },
+  // Los maestros de productos se trasladaron al módulo de Inventarios (rutas antiguas redirigen).
+  { path: 'products', redirectTo: '/inventario/productos', pathMatch: 'full' },
+  { path: 'unitmeasure', redirectTo: '/inventario/unidades', pathMatch: 'full' },
+  { path: 'categoriesProduct', redirectTo: '/inventario/categorias', pathMatch: 'full' },
   { path: 'consultas/facturas', component:  PurchaseReportesFacturasxparamsComponent},
   { path: 'consultas/facturas/view/:invoiceId', component: PurchaseInvoiceDetailViewComponent },
   { path: 'reportes/registro-compras', component: PurchaseRegistroComprasComponent, canActivate: [permissionGuard], data: { permission: 'reports.access' } },

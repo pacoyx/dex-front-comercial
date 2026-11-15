@@ -72,7 +72,15 @@ export interface IPaymentMethod {
 }
 
 
-export interface IProductCreateRequest {
+/** Campos de inventario del producto (el stock ya no se edita: sale de los movimientos). */
+export interface IProductInventoryFields {
+  code?: string | null;
+  tracksStock?: boolean;
+  minStock?: number;
+  isSellable?: boolean;
+}
+
+export interface IProductCreateRequest extends IProductInventoryFields {
   name: string;
   description: string;
   price: number;
@@ -82,7 +90,7 @@ export interface IProductCreateRequest {
   status: string;
 }
 
-export interface IProductCreateResponse {
+export interface IProductCreateResponse extends IProductInventoryFields {
   id: number;
   name: string;
   description: string;
@@ -94,7 +102,7 @@ export interface IProductCreateResponse {
 }
 
 
-export interface IProductUpdateRequest {
+export interface IProductUpdateRequest extends IProductInventoryFields {
   id: number;
   name: string;
   description: string;
@@ -111,7 +119,7 @@ export interface IGetProductsPaginadoResponse {
   products: IProductListarResponse[];
 }
 
-export interface IProductListarResponse {
+export interface IProductListarResponse extends IProductInventoryFields {
   id: number;
   name: string;
   description: string;
@@ -139,6 +147,10 @@ export interface IProductListarPatronResponse {
   price: number;
   unitMeasurementId: number;
   unitMeasurementDescription: string;
+  code?: string | null;
+  tracksStock?: boolean;
+  /** Stock total en almacenes activos. */
+  stock?: number;
 }
 
 export interface ICategoryProd {

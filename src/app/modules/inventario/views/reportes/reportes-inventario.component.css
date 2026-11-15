@@ -1,0 +1,34 @@
+.tab-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.espacio {
+    flex: 1;
+}
+
+.tabla-simple {
+    width: 100%;
+    border-collapse: collapse;
+    font: var(--mat-sys-body-medium);
+}
+
+.tabla-simple th {
+    text-align: left;
+    padding: 8px;
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-label-large);
+}
+
+.tabla-simple td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.tabla-simple .fila-total td {
+    font-weight: 600;
+    background: var(--mat-sys-surface-container);
+}

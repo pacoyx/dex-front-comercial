@@ -1,0 +1,73 @@
+<div class="module-shell">
+
+  <mat-toolbar class="module-toolbar">
+
+    <button mat-icon-button class="module-toolbar__menu-btn" (click)="toggleSidenav()" aria-label="Abrir menú principal">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <span class="module-toolbar__title">Inventarios</span>
+
+    <nav class="module-toolbar__nav">
+      <a mat-button class="module-toolbar__link" routerLink="/inventario/stock" routerLinkActive="is-active">
+        <mat-icon>inventory_2</mat-icon><span>Stock</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/inventario/movimientos" routerLinkActive="is-active">
+        <mat-icon>sync_alt</mat-icon><span>Movimientos</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/inventario/kardex" routerLinkActive="is-active">
+        <mat-icon>timeline</mat-icon><span>Kardex</span>
+      </a>
+      <a mat-button class="module-toolbar__link" routerLink="/inventario/reportes" routerLinkActive="is-active">
+        <mat-icon>assessment</mat-icon><span>Reportes</span>
+      </a>
+
+      <button mat-button class="module-toolbar__link" [matMenuTriggerFor]="maestrosMenu">
+        <mat-icon>tab_group</mat-icon><span>Maestros</span>
+      </button>
+      <mat-menu #maestrosMenu="matMenu">
+        <button mat-menu-item [routerLink]="['/inventario/productos']">
+          <mat-icon>category</mat-icon>
+          Productos
+        </button>
+        <button mat-menu-item [routerLink]="['/inventario/categorias']">
+          <mat-icon>inventory_2</mat-icon>
+          Categorías de productos
+        </button>
+        <button mat-menu-item [routerLink]="['/inventario/unidades']">
+          <mat-icon>straighten</mat-icon>
+          Unidades de medida
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item [routerLink]="['/inventario/almacenes']">
+          <mat-icon>warehouse</mat-icon>
+          Almacenes
+        </button>
+      </mat-menu>
+    </nav>
+
+    <span class="module-toolbar__spacer"></span>
+
+    <button mat-button class="module-toolbar__user" [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ loginService.getLoginData()?.userName }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item [routerLink]="['/profileUser']" routerLinkActive="router-link-active">
+        <mat-icon>settings</mat-icon>
+        Profile
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="cerrarSesion()">
+        <mat-icon>logout</mat-icon>
+        Cerrar Sesion
+      </button>
+    </mat-menu>
+
+  </mat-toolbar>
+
+  <div class="module-shell__content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

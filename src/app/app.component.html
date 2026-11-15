@@ -42,6 +42,18 @@
       </a>
       }
 
+      @if (hasPermission('inventory.access')) {
+      <a mat-list-item
+         [routerLink]="['/inventario']"
+         routerLinkActive #rlaInventario="routerLinkActive"
+         [activated]="rlaInventario.isActive"
+         (click)="toggle()"
+         matTooltip="Inventarios" matTooltipPosition="right" [matTooltipDisabled]="!collapsed">
+        <mat-icon matListItemIcon>warehouse</mat-icon>
+        <span matListItemTitle>Inventarios</span>
+      </a>
+      }
+
       @if (hasPermission('corporate-operations.access')) {
       <a mat-list-item
          [routerLink]="['/corporate-operations']"

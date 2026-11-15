@@ -1,0 +1,136 @@
+<div class="inv-page">
+
+    <div class="page-header">
+        <div class="page-header__title">
+            <mat-icon>receipt_long</mat-icon>
+            <div class="page-header__heading">
+                <h1>{{ movimiento?.number || 'Movimiento' }}</h1>
+                @if (movimiento) {
+                <span class="page-header__subtitle">{{ movimiento.type | movementTypeLabel }} · {{ movimiento.movementDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                }
+            </div>
+        </div>
+        <div class="page-header__actions">
+            <a mat-stroked-button routerLink="/inventario/movimientos">
+                <mat-icon>arrow_back</mat-icon> Movimientos
+            </a>
+            @if (puedeAnular) {
+            <button mat-flat-button color="warn" (click)="anular()" [disabled]="anulando">
+                <mat-icon>undo</mat-icon> Anular
+            </button>
+            }
+        </div>
+    </div>
+
+    @if (loading) {
+    <app-loading></app-loading>
+    }
+    @if (errorMessage) {
+    <div class="alert-error">{{ errorMessage }}</div>
+    }
+
+    @if (movimiento) {
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="resumen">
+            <div class="dato">
+                <span class="dato__label">Tipo</span>
+                <span class="chip chip--neutral"><mat-icon>{{ movimiento.type | movementTypeIcon }}</mat-icon>{{ movimiento.type | movementTypeLabel }}</span>
+            </div>
+            <div class="dato">
+                <span class="dato__label">Estado</span>
+                <span class="chip" [class.chip--ok]="movimiento.status !== Cancelled" [class.chip--warn]="movimiento.status === Cancelled">
+                    {{ movimiento.status | movementStatusLabel }}
+                </span>
+            </div>
+            <div class="dato">
+                <span class="dato__label">{{ movimiento.targetWarehouseName ? 'Origen' : 'Almacén' }}</span>
+                <span>{{ movimiento.warehouseName }}</span>
+            </div>
+            @if (movimiento.targetWarehouseName) {
+            <div class="dato">
+                <span class="dato__label">Destino</span>
+                <span>{{ movimiento.targetWarehouseName }}</span>
+            </div>
+            }
+            @if (movimiento.areaName) {
+            <div class="dato">
+                <span class="dato__label">Área</span>
+                <span>{{ movimiento.areaName }}</span>
+            </div>
+            }
+            @if (movimiento.purchaseInvoiceRef) {
+            <div class="dato">
+                <span class="dato__label">Compra</span>
+                <a class="link" [routerLink]="['/purchase/invoices/view', movimiento.purchaseInvoiceId]">{{ movimiento.purchaseInvoiceRef }}</a>
+            </div>
+            }
+            <div class="dato">
+                <span class="dato__label">Valor</span>
+                <span>{{ movimiento.totalCost | number:'1.2-2' }}</span>
+            </div>
+            <div class="dato">
+                <span class="dato__label">Registrado por</span>
+                <span>{{ movimiento.createdByUserName || '-' }}</span>
+            </div>
+            @if (movimiento.reason) {
+            <div class="dato dato--ancho">
+                <span class="dato__label">Motivo</span>
+                <span>{{ movimiento.reason }}</span>
+            </div>
+            }
+            @if (movimiento.reversalMovementNumber) {
+            <div class="dato dato--ancho">
+                <span class="dato__label">Anulado por</span>
+                <a class="link" (click)="irA(movimiento.reversalMovementId)">{{ movimiento.reversalMovementNumber }}</a>
+            </div>
+            }
+            @if (movimiento.reversedMovementNumber) {
+            <div class="dato dato--ancho">
+                <span class="dato__label">Anula a</span>
+                <a class="link" (click)="irA(movimiento.reversedMovementId)">{{ movimiento.reversedMovementNumber }}</a>
+            </div>
+            }
+            @if (esCompra && movimiento.status !== Cancelled) {
+            <div class="dato dato--ancho hint">Este ingreso viene de una compra: para revertirlo, anula la compra.</div>
+            }
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="panel" appearance="outlined">
+        <mat-card-content class="tabla-scroll">
+            <table mat-table [dataSource]="movimiento.lines" class="detail-table">
+                <ng-container matColumnDef="product">
+                    <th mat-header-cell *matHeaderCellDef>Producto</th>
+                    <td mat-cell *matCellDef="let l">{{ l.productCode ? l.productCode + ' · ' : '' }}{{ l.productName }}</td>
+                </ng-container>
+                <ng-container matColumnDef="warehouse">
+                    <th mat-header-cell *matHeaderCellDef>Almacén</th>
+                    <td mat-cell *matCellDef="let l">{{ l.warehouseName }}</td>
+                </ng-container>
+                <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Cantidad</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric" [class.cantidad-in]="l.quantity > 0" [class.cantidad-out]="l.quantity < 0">
+                        {{ l.quantity > 0 ? '+' : '' }}{{ l.quantity | number:'1.0-4' }} <span class="hint">{{ l.unitName }}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="unitCost">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Costo unit.</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ l.unitCost | number:'1.2-4' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="totalCost">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Costo total</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">{{ l.totalCost | number:'1.2-2' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="balance">
+                    <th mat-header-cell *matHeaderCellDef class="col-numeric">Saldo resultante</th>
+                    <td mat-cell *matCellDef="let l" class="col-numeric">
+                        {{ l.balanceQuantity | number:'1.0-4' }} <span class="hint">&#64; {{ l.balanceAverageCost | number:'1.2-4' }}</span>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columnas"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnas;"></tr>
+            </table>
+        </mat-card-content>
+    </mat-card>
+    }
+</div>

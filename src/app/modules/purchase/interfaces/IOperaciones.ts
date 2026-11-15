@@ -15,6 +15,8 @@ export interface IInvoiceCreateRequest {
     igv: number;
     total: number;
     purchaseInvoiceDetails: PurchaseInvoiceDetail[];
+    /** Almacén de ingreso; null = la compra no genera movimiento de inventario. */
+    warehouseId?: number | null;
 }
 
 interface PurchaseInvoiceDetail {

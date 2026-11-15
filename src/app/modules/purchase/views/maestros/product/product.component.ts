@@ -13,14 +13,14 @@ import { IGetCategoriaProductoShortResponse, IGetUniMedidaShortResponse, IProduc
 import { MatDialog } from '@angular/material/dialog';
 import { PurchaseSettingServiceService } from '../../../services/purchase-setting-service.service';
 import { DialogformRegProductComponent } from './components/dialogform-reg-product/dialogform-reg-product.component';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-product',
   standalone: true,
   imports: [
     MatIconModule, MatTableModule, MatInputModule, MatFormFieldModule,
-    MatPaginatorModule, MatSortModule, MatButtonModule, MatCardModule, FormsModule, ReactiveFormsModule, CurrencyPipe
+    MatPaginatorModule, MatSortModule, MatButtonModule, MatCardModule, FormsModule, ReactiveFormsModule, CurrencyPipe, DecimalPipe
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.css'
@@ -30,6 +30,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   dialog = inject(MatDialog);
   displayedColumns: string[] = [
     'actions',
+    'code',
     'name',
     'price',
     'stock',

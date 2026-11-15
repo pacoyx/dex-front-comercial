@@ -1,0 +1,36 @@
+.kardex-table {
+    width: 100%;
+    border-collapse: collapse;
+    font: var(--mat-sys-body-medium);
+}
+
+.kardex-table th {
+    text-align: left;
+    padding: 8px;
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-label-large);
+    white-space: nowrap;
+}
+
+.kardex-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.kardex-table .fila-saldo td {
+    background: var(--mat-sys-surface-container);
+    font-weight: 600;
+}
+
+.kardex-table tr.anulado td {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.kardex-table .chip {
+    margin-left: 6px;
+}
+
+.nota {
+    margin: 12px 0 0;
+}
