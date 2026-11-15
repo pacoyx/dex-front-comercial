@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../../../core/interfaces/IShared';
+import { from, switchMap } from 'rxjs';
+import { comprimirImagen } from '../../../core/utils/image-compression.util';
 import {
   CreateItemInspectionRequest,
   InspectionSummaryResponse,
@@ -50,11 +52,16 @@ export class InspeccionService {
     return this.http.get<IResponseGeneric<ItemInspectionResponse>>(url);
   }
 
+  /** Sube una foto a la guía. Se comprime antes en el navegador (~1600 px, JPEG) para acelerar la subida. */
   agregarFotoGuia(workGuideId: number, file: File) {
-    const formData = new FormData();
-    formData.append('file', file);
     const url = `${this.apiUrl}${environment.EPWorkGuides}/${workGuideId}/photos`;
-    return this.http.post<IResponseGeneric<ItemPhotoResponse>>(url, formData);
+    return from(comprimirImagen(file)).pipe(
+      switchMap((archivo) => {
+        const formData = new FormData();
+        formData.append('file', archivo);
+        return this.http.post<IResponseGeneric<ItemPhotoResponse>>(url, formData);
+      })
+    );
   }
 
   obtenerResumenInspeccionPorGuia(workGuideId: number) {

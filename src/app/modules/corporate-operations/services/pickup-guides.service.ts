@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from, switchMap } from 'rxjs';
+import { comprimirImagen } from '../../../core/utils/image-compression.util';
 import { environment } from '../../../../environments/environment';
 import { IResponseGeneric } from '../interfaces/IShared';
 import {
@@ -81,10 +82,15 @@ export class PickupGuidesService {
     return this.http.get<IResponseGeneric<IPickupGuideRevision[]>>(`${this.apiUrl}${environment.EPPickupGuides}/${pickupGuideId}/revisions`, { headers });
   }
 
+  /** Sube una foto de revisión. Se comprime antes en el navegador (~1600 px, JPEG) para acelerar la subida. */
   agregarFotoRevision(revisionId: number, file: File): Observable<IResponseGeneric<unknown>> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<IResponseGeneric<unknown>>(`${this.apiUrl}${environment.EPPickupGuides}/revisions/${revisionId}/photos`, formData);
+    return from(comprimirImagen(file)).pipe(
+      switchMap((archivo) => {
+        const formData = new FormData();
+        formData.append('file', archivo);
+        return this.http.post<IResponseGeneric<unknown>>(`${this.apiUrl}${environment.EPPickupGuides}/revisions/${revisionId}/photos`, formData);
+      })
+    );
   }
 
   /**
