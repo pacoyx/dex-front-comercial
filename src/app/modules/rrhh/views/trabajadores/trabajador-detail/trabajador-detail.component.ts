@@ -25,7 +25,7 @@ import { ILoan } from '../../../interfaces/ILoans';
 import { EMPLOYEE_CONTRACT_TYPE_OPTIONS, EmployeeContractTypeLabelPipe, esAdHonorem } from '../../../shared/employee-contract-type';
 import { IncidentTypeColorPipe, IncidentTypeLabelPipe } from '../../../shared/attendance-incident-type';
 import { LoanTypeLabelPipe } from '../../../shared/loan-type';
-import { extractErrorMessage } from '../../../shared/http-error.util';
+import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
 import { DialogTerminarTrabajadorComponent } from './components/dialog-terminar-trabajador/dialog-terminar-trabajador.component';
 import { DialogDocumentoComponent } from './components/dialog-documento/dialog-documento.component';
 import { DialogIncidenciaComponent } from './components/dialog-incidencia/dialog-incidencia.component';
@@ -159,7 +159,10 @@ export class TrabajadorDetailComponent implements OnInit {
       },
       error: (err) => {
         this.guardandoDatos = false;
-        this.notificationService.showError(extractErrorMessage(err, 'No se pudo actualizar el trabajador.'));
+        const validation = extractValidationErrors(err);
+        this.notificationService.showError(validation.length > 0
+          ? validation.join(' ')
+          : extractErrorMessage(err, 'No se pudo actualizar el trabajador.'));
       }
     });
   }
