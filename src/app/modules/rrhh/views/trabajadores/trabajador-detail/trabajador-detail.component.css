@@ -255,3 +255,11 @@
 .cronograma__tabla .col-numeric {
     text-align: right;
 }
+
+.hint-ad-honorem {
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+    background: var(--mat-sys-surface-container-high);
+    padding: 8px 12px;
+    border-radius: 8px;
+}

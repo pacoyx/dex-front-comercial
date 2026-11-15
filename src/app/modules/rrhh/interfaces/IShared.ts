@@ -12,6 +12,7 @@ export enum EmployeeContractType {
   Monthly = 3,
   Payroll = 4,
   Services = 5,
+  AdHonorem = 6,
 }
 
 export enum AttendanceIncidentType {

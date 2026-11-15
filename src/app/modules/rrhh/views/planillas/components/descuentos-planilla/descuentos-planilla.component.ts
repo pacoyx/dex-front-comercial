@@ -13,6 +13,7 @@ import { EmployeesService } from '../../../../services/employees.service';
 import { IPayrollDiscount, IPayrollSummary } from '../../../../interfaces/IPayroll';
 import { IEmployeeListItem } from '../../../../interfaces/IEmployees';
 import { extractErrorMessage, extractValidationErrors } from '../../../../shared/http-error.util';
+import { esAdHonorem } from '../../../../shared/employee-contract-type';
 
 /**
  * Gestión de "Otros descuentos" de un periodo de planilla.
@@ -70,7 +71,8 @@ export class DescuentosPlanillaComponent implements OnInit {
   ngOnInit(): void {
     if (this.modoPeriodo) {
       this.employeesService.listarTrabajadores({ onlyActive: true, pageNumber: 1, pageSize: 1000 }).subscribe({
-        next: (resp) => this.trabajadores = resp.data.employees,
+        // Los ad honorem no tienen planilla: no se les registran descuentos.
+        next: (resp) => this.trabajadores = resp.data.employees.filter(t => !esAdHonorem(t.contractType)),
         error: (err) => this.notificationService.showError(extractErrorMessage(err, 'No se pudieron cargar los trabajadores.'))
       });
     } else {

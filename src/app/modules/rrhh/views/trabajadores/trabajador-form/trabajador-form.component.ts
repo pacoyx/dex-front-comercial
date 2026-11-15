@@ -15,7 +15,7 @@ import { NotificationsSystemService } from '../../../../../core/services/notific
 import { EmployeesService } from '../../../services/employees.service';
 import { CatalogosService } from '../../../services/catalogos.service';
 import { IArea, IPosition } from '../../../interfaces/ICatalogos';
-import { EMPLOYEE_CONTRACT_TYPE_OPTIONS } from '../../../shared/employee-contract-type';
+import { EMPLOYEE_CONTRACT_TYPE_OPTIONS, esAdHonorem } from '../../../shared/employee-contract-type';
 import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
 
 function toDateOnly(value: Date | null): string {
@@ -84,6 +84,21 @@ export class TrabajadorFormComponent implements OnInit {
   ngOnInit(): void {
     this.catalogosService.listarAreas(true).subscribe({ next: (r) => this.areas = r.data });
     this.catalogosService.listarCargos(true).subscribe({ next: (r) => this.cargos = r.data });
+
+    // Ad honorem: sin pago, el sueldo base queda en 0 y no se puede editar.
+    this.form.get('contractType')!.valueChanges.subscribe((tipo) => {
+      const sueldo = this.form.get('baseSalary')!;
+      if (esAdHonorem(tipo)) {
+        sueldo.setValue(0);
+        sueldo.disable();
+      } else {
+        sueldo.enable();
+      }
+    });
+  }
+
+  get adHonorem(): boolean {
+    return esAdHonorem(this.form.get('contractType')!.value);
   }
 
   nuevoContacto(): void {
@@ -119,7 +134,7 @@ export class TrabajadorFormComponent implements OnInit {
       return;
     }
 
-    const value = this.form.value;
+    const value = this.form.getRawValue();
 
     if (value.hireDate && value.birthDate && new Date(value.hireDate) < new Date(value.birthDate)) {
       this.errorMessage = 'La fecha de ingreso no puede ser anterior a la fecha de nacimiento.';

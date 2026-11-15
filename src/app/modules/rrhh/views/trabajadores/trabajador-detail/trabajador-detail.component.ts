@@ -22,7 +22,7 @@ import { IEmployeeDetail } from '../../../interfaces/IEmployees';
 import { IEmployeeDocument } from '../../../interfaces/IEmployeeDocuments';
 import { IAttendanceIncident, IAttendanceRecord, IExtraHour } from '../../../interfaces/IAttendance';
 import { ILoan } from '../../../interfaces/ILoans';
-import { EMPLOYEE_CONTRACT_TYPE_OPTIONS, EmployeeContractTypeLabelPipe } from '../../../shared/employee-contract-type';
+import { EMPLOYEE_CONTRACT_TYPE_OPTIONS, EmployeeContractTypeLabelPipe, esAdHonorem } from '../../../shared/employee-contract-type';
 import { IncidentTypeColorPipe, IncidentTypeLabelPipe } from '../../../shared/attendance-incident-type';
 import { LoanTypeLabelPipe } from '../../../shared/loan-type';
 import { extractErrorMessage } from '../../../shared/http-error.util';
@@ -103,6 +103,17 @@ export class TrabajadorDetailComponent implements OnInit {
     this.catalogosService.listarAreas(true).subscribe({ next: (r) => this.areas = r.data });
     this.catalogosService.listarCargos(true).subscribe({ next: (r) => this.cargos = r.data });
 
+    // Ad honorem: sin pago, el sueldo base queda en 0 y no se puede editar.
+    this.formDatos.get('contractType')!.valueChanges.subscribe((tipo) => {
+      const sueldo = this.formDatos.get('baseSalary')!;
+      if (esAdHonorem(tipo)) {
+        sueldo.setValue(0, { emitEvent: false });
+        sueldo.disable({ emitEvent: false });
+      } else {
+        sueldo.enable({ emitEvent: false });
+      }
+    });
+
     this.route.params.subscribe(params => {
       if (params['id']) {
         this.employeeId = Number(params['id']);
@@ -140,7 +151,7 @@ export class TrabajadorDetailComponent implements OnInit {
   guardarDatos(): void {
     if (this.formDatos.invalid) return;
     this.guardandoDatos = true;
-    this.employeesService.actualizarTrabajador(this.employeeId, this.formDatos.value).subscribe({
+    this.employeesService.actualizarTrabajador(this.employeeId, this.formDatos.getRawValue()).subscribe({
       next: () => {
         this.guardandoDatos = false;
         this.notificationService.showSuccess('Datos actualizados correctamente.');
@@ -310,6 +321,16 @@ export class TrabajadorDetailComponent implements OnInit {
         this.notificationService.showError(extractErrorMessage(err, 'No se pudieron cargar los préstamos.'));
       }
     });
+  }
+
+  /** Ad honorem según el tipo de contrato elegido en el formulario de datos. */
+  get formAdHonorem(): boolean {
+    return esAdHonorem(this.formDatos.get('contractType')!.value);
+  }
+
+  /** Ad honorem según los datos guardados del trabajador (no según el formulario en edición). */
+  get adHonorem(): boolean {
+    return esAdHonorem(this.trabajador?.contractType);
   }
 
   agregarPrestamo(): void {

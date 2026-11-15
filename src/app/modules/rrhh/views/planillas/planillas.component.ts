@@ -12,6 +12,7 @@ import { PayrollService } from '../../services/payroll.service';
 import { IPayrollPeriod } from '../../interfaces/IPayroll';
 import { PayrollFrequencyLabelPipe } from '../../shared/payroll-frequency';
 import { extractErrorMessage } from '../../shared/http-error.util';
+import { mensajePlanillaGenerada } from '../../shared/payroll-generation-message';
 import { DialogNuevoPeriodoComponent } from './components/dialog-nuevo-periodo/dialog-nuevo-periodo.component';
 
 @Component({
@@ -63,7 +64,7 @@ export class PlanillasComponent implements OnInit {
       next: (resp) => {
         this.generandoId = null;
         this.notificationService.showSuccess(
-          `Planilla generada: ${resp.data.generatedCount} trabajador(es) procesados, ${resp.data.skippedCount} omitidos.`
+          mensajePlanillaGenerada(resp.data)
         );
         this.verDetalle(periodo);
       },

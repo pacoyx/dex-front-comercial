@@ -35,6 +35,8 @@ export interface IGeneratePayrollResponse {
   payrollPeriodId: number;
   generatedCount: number;
   skippedCount: number;
+  /** Trabajadores ad honorem omitidos (no se les genera planilla). */
+  adHonoremSkippedCount: number;
   totalNetAmount: number;
   payrolls: IPayrollSummary[];
 }

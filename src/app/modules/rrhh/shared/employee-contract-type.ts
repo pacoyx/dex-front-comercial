@@ -7,6 +7,7 @@ export const EMPLOYEE_CONTRACT_TYPE_META: Record<number, { label: string }> = {
   [EmployeeContractType.Monthly]: { label: 'Mensual' },
   [EmployeeContractType.Payroll]: { label: 'Planilla' },
   [EmployeeContractType.Services]: { label: 'Recibo por Honorarios' },
+  [EmployeeContractType.AdHonorem]: { label: 'Ad honorem' },
 };
 
 export function getEmployeeContractTypeLabel(value: number): string {
@@ -19,6 +20,7 @@ export const EMPLOYEE_CONTRACT_TYPE_OPTIONS = [
   { value: EmployeeContractType.Monthly, label: 'Mensual' },
   { value: EmployeeContractType.Payroll, label: 'Planilla' },
   { value: EmployeeContractType.Services, label: 'Recibo por Honorarios / Servicios' },
+  { value: EmployeeContractType.AdHonorem, label: 'Ad honorem (sin pago)' },
 ];
 
 @Pipe({
@@ -29,4 +31,9 @@ export class EmployeeContractTypeLabelPipe implements PipeTransform {
   transform(value: number): string {
     return getEmployeeContractTypeLabel(value);
   }
+}
+
+/** Ad honorem: se registra para control pero no recibe pago (sueldo 0, sin planilla). */
+export function esAdHonorem(contractType: number | null | undefined): boolean {
+  return contractType === EmployeeContractType.AdHonorem;
 }

@@ -11,6 +11,7 @@ import { PayrollService } from '../../../services/payroll.service';
 import { IPayrollPeriod, IPayrollSummary } from '../../../interfaces/IPayroll';
 import { PayrollFrequencyLabelPipe } from '../../../shared/payroll-frequency';
 import { extractErrorMessage } from '../../../shared/http-error.util';
+import { mensajePlanillaGenerada } from '../../../shared/payroll-generation-message';
 import { DialogDetallePlanillaEmpleadoComponent } from './components/dialog-detalle-planilla-empleado/dialog-detalle-planilla-empleado.component';
 import { DialogDescuentosPeriodoComponent } from './components/dialog-descuentos-periodo/dialog-descuentos-periodo.component';
 import { descargarArchivo } from '../../../../gastos/shared/file-download.util';
@@ -76,7 +77,7 @@ export class PlanillaDetailComponent implements OnInit {
       next: (resp) => {
         this.generando = false;
         this.notificationService.showSuccess(
-          `Planilla generada: ${resp.data.generatedCount} trabajador(es) procesados, ${resp.data.skippedCount} omitidos.`
+          mensajePlanillaGenerada(resp.data)
         );
         this.cargarPlanilla();
       },
