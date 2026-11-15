@@ -139,6 +139,15 @@
                     <td mat-cell *matCellDef="let element"> {{element.photoCount}} </td>
                 </ng-container>
 
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button color="primary" (click)="tomarFoto(element, $event)" matTooltip="Tomar foto y cargarla a la guía">
+                            <mat-icon>add_a_photo</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="expand">
                     <th mat-header-cell *matHeaderCellDef></th>
                     <td mat-cell *matCellDef="let element">
@@ -172,11 +181,18 @@
                                     </tbody>
                                 </table>
 
-                                @if (element.photoCount > 0) {
                                 <div class="fotos-seccion">
-                                    <span class="fotos-titulo">Fotos ({{element.photoCount}})</span>
+                                    <div class="fotos-encabezado">
+                                        <span class="fotos-titulo">Fotos ({{element.photoCount}})</span>
+                                        <button mat-stroked-button color="primary" (click)="tomarFoto(element, $event)">
+                                            <mat-icon>add_a_photo</mat-icon>
+                                            Tomar foto
+                                        </button>
+                                    </div>
                                     @if (cargandoFotosGuiaId === element.workGuideId) {
                                     <app-loading></app-loading>
+                                    } @else if (element.photoCount === 0) {
+                                    <span class="fotos-vacio">Esta guía aún no tiene fotos. Usa "Tomar foto" para agregarlas.</span>
                                     } @else {
                                     <div class="fotos-miniaturas">
                                         @for (foto of fotosPorGuia.get(element.workGuideId) ?? []; track foto.id; let i = $index) {
@@ -191,7 +207,6 @@
                                     </div>
                                     }
                                 </div>
-                                }
                             </div>
                             }
                         </div>

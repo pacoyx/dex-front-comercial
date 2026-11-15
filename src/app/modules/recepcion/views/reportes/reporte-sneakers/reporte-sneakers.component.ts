@@ -17,6 +17,7 @@ import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { CustomDateAdapter } from '../../../config/custom-date-adapter';
 import { CUSTOM_DATE_FORMATS } from '../../../config/custom-date-formats';
 import { LoadingComponent } from '../../../../../core/components/loading/loading.component';
@@ -28,6 +29,7 @@ import { ISucursalesCombo } from '../../../interfaces/IReports';
 import { IClienteBusqueda } from '../../../components/dialog-cliente/dialog-cliente.component';
 import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
 import { DialogVerFotosComponent } from '../inspeccion-resumen/components/dialog-ver-fotos/dialog-ver-fotos.component';
+import { DialogAgregarFotosComponent } from '../../../components/dialog-agregar-fotos/dialog-agregar-fotos.component';
 
 const DELIVERY_STATUS_LABEL: Record<string, string> = {
   Pending: 'Pendiente',
@@ -40,7 +42,7 @@ const DELIVERY_STATUS_LABEL: Record<string, string> = {
   imports: [
     CommonModule, RouterModule, FormsModule, ReactiveFormsModule, MatButtonModule, MatIconModule, MatFormFieldModule,
     MatInputModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule, MatAutocompleteModule,
-    MatTableModule, MatCardModule, LoadingComponent
+    MatTableModule, MatCardModule, MatTooltipModule, LoadingComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: CustomDateAdapter },
@@ -78,7 +80,7 @@ export class ReporteSneakersComponent implements OnInit, OnDestroy {
   filteredClientes!: Observable<IClienteBusqueda[]>;
 
   displayedColumns: string[] = [
-    'workGuideNumber', 'workGuideDate', 'customerName', 'sneakerCount', 'deliveryStatus', 'photoCount', 'expand'
+    'workGuideNumber', 'workGuideDate', 'customerName', 'sneakerCount', 'deliveryStatus', 'photoCount', 'acciones', 'expand'
   ];
   dataSource = new MatTableDataSource<SneakerReportGroupResponse>([]);
   expandedGroup: SneakerReportGroupResponse | null = null;
@@ -216,17 +218,42 @@ export class ReporteSneakersComponent implements OnInit, OnDestroy {
     this.expandedGroup = yaExpandida ? null : grupo;
 
     if (!yaExpandida && grupo.photoCount > 0 && !this.fotosPorGuia.has(grupo.workGuideId)) {
-      this.cargarFotos(grupo.workGuideId);
+      this.cargarFotos(grupo);
     }
   }
 
-  private cargarFotos(workGuideId: number): void {
+  /**
+   * Abre la cámara/cola de fotos (mismo flujo que en Retiros) y sube las imágenes a la guía del cliente.
+   * Al cerrar, expande la fila y recarga sus fotos para ver lo recién subido.
+   */
+  tomarFoto(grupo: SneakerReportGroupResponse, event?: Event): void {
+    event?.stopPropagation();
+    const dialogRef = this.dialog.open(DialogAgregarFotosComponent, {
+      data: { workGuideId: grupo.workGuideId },
+      width: '480px',
+      maxWidth: '95vw'
+    });
+
+    dialogRef.afterClosed().subscribe((result?: { subidas: number }) => {
+      // Si se cerró con clic fuera (result undefined) pudo haber subidas: se recarga igual.
+      if (result && result.subidas === 0) {
+        return;
+      }
+      this.expandedGroup = grupo;
+      this.cargarFotos(grupo);
+    });
+  }
+
+  private cargarFotos(grupo: SneakerReportGroupResponse): void {
+    const workGuideId = grupo.workGuideId;
     this.cargandoFotosGuiaId = workGuideId;
     this.inspeccionService.obtenerFotosPorGuia(workGuideId).subscribe({
       next: (resp) => {
         this.cargandoFotosGuiaId = null;
         const fotos = resp.data.photos;
+        this.fotoUrlsPorGuia.get(workGuideId)?.forEach((url) => URL.revokeObjectURL(url));
         this.fotosPorGuia.set(workGuideId, fotos);
+        grupo.photoCount = fotos.length;
         const urls = new Map<number, string>();
         this.fotoUrlsPorGuia.set(workGuideId, urls);
         fotos.forEach((foto) => {
