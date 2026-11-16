@@ -9,13 +9,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, map, Observable, of, switchMap } from 'rxjs';
 import { NotificationsSystemService } from '../../../../core/services/notifications-system.service';
 import { EmployeesService } from '../../services/employees.service';
 import { LoansService } from '../../services/loans.service';
 import { IEmployeeListItem } from '../../interfaces/IEmployees';
 import { ILoan } from '../../interfaces/ILoans';
-import { LOAN_TYPE_OPTIONS, LoanTypeLabelPipe } from '../../shared/loan-type';
+import { LOAN_NO_MODIFICABLE_MSG, LOAN_TYPE_OPTIONS, LoanTypeLabelPipe, getLoanTypeLabel, loanTieneCuotasCobradas } from '../../shared/loan-type';
+import { DialogPrestamoComponent } from '../trabajadores/trabajador-detail/components/dialog-prestamo/dialog-prestamo.component';
 import { extractErrorMessage } from '../../shared/http-error.util';
 
 @Component({
@@ -23,7 +26,7 @@ import { extractErrorMessage } from '../../shared/http-error.util';
   standalone: true,
   imports: [
     FormsModule, ReactiveFormsModule, MatAutocompleteModule, MatButtonModule, MatCardModule,
-    MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule,
+    MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, MatTableModule, MatTooltipModule,
     CurrencyPipe, DatePipe, AsyncPipe, LoanTypeLabelPipe,
   ],
   templateUrl: './prestamos.component.html',
@@ -34,6 +37,7 @@ export class PrestamosComponent implements OnInit {
   private employeesService = inject(EmployeesService);
   private loansService = inject(LoansService);
   private notificationService = inject(NotificationsSystemService);
+  private dialog = inject(MatDialog);
 
   employeeControl = new FormControl();
   filteredEmployees!: Observable<IEmployeeListItem[]>;
@@ -49,7 +53,10 @@ export class PrestamosComponent implements OnInit {
   ];
   selectedClosed: boolean | null = null;
 
-  displayedColumns = ['trabajador', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion'];
+  displayedColumns = ['trabajador', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion', 'acciones'];
+  readonly prestamoNoModificableMsg = LOAN_NO_MODIFICABLE_MSG;
+  readonly prestamoTieneCuotasCobradas = loanTieneCuotasCobradas;
+  prestamosEliminando = new Set<number>();
   dataSource = new MatTableDataSource<ILoan>([]);
 
   ngOnInit(): void {
@@ -82,6 +89,33 @@ export class PrestamosComponent implements OnInit {
     }).subscribe({
       next: (resp) => this.dataSource.data = resp.data,
       error: (err) => this.notificationService.showError(extractErrorMessage(err, 'Ocurrió un error al listar los préstamos.'))
+    });
+  }
+
+  editarPrestamo(prestamo: ILoan): void {
+    if (loanTieneCuotasCobradas(prestamo)) return;
+    const dialogRef = this.dialog.open(DialogPrestamoComponent, { data: { employeeId: prestamo.employeeId, loan: prestamo } });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.buscar();
+    });
+  }
+
+  eliminarPrestamo(prestamo: ILoan): void {
+    if (loanTieneCuotasCobradas(prestamo) || this.prestamosEliminando.has(prestamo.id)) return;
+    const tipo = getLoanTypeLabel(prestamo.loanType).toLowerCase();
+    if (!confirm(`¿Eliminar el ${tipo} de ${prestamo.employeeName} por ${prestamo.amount.toFixed(2)}? Se eliminarán también sus cuotas pendientes.`)) return;
+
+    this.prestamosEliminando.add(prestamo.id);
+    this.loansService.eliminarPrestamo(prestamo.id).subscribe({
+      next: () => {
+        this.prestamosEliminando.delete(prestamo.id);
+        this.notificationService.showSuccess('Eliminado correctamente.');
+        this.buscar();
+      },
+      error: (err) => {
+        this.prestamosEliminando.delete(prestamo.id);
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo eliminar.'));
+      }
     });
   }
 

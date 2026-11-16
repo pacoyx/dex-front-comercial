@@ -24,7 +24,7 @@ import { IAttendanceIncident, IAttendanceRecord, IExtraHour } from '../../../int
 import { ILoan } from '../../../interfaces/ILoans';
 import { EMPLOYEE_CONTRACT_TYPE_OPTIONS, EmployeeContractTypeLabelPipe, esAdHonorem } from '../../../shared/employee-contract-type';
 import { IncidentTypeColorPipe, IncidentTypeLabelPipe } from '../../../shared/attendance-incident-type';
-import { LoanTypeLabelPipe } from '../../../shared/loan-type';
+import { LOAN_NO_MODIFICABLE_MSG, LoanTypeLabelPipe, getLoanTypeLabel, loanTieneCuotasCobradas } from '../../../shared/loan-type';
 import { extractErrorMessage, extractValidationErrors } from '../../../shared/http-error.util';
 import { DialogTerminarTrabajadorComponent } from './components/dialog-terminar-trabajador/dialog-terminar-trabajador.component';
 import { DialogDocumentoComponent } from './components/dialog-documento/dialog-documento.component';
@@ -91,7 +91,10 @@ export class TrabajadorDetailComponent implements OnInit {
   aprobandoHoraExtraIds = new Set<number>();
 
   prestamos: ILoan[] = [];
-  prestamosColumns = ['expandir', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion'];
+  prestamosColumns = ['expandir', 'tipo', 'fecha', 'monto', 'cuotas', 'saldo', 'estado', 'observacion', 'acciones'];
+  readonly prestamoNoModificableMsg = LOAN_NO_MODIFICABLE_MSG;
+  readonly prestamoTieneCuotasCobradas = loanTieneCuotasCobradas;
+  prestamosEliminando = new Set<number>();
   prestamosDataSource = new MatTableDataSource<ILoan>([]);
   prestamoExpandido: ILoan | null = null;
 
@@ -340,6 +343,34 @@ export class TrabajadorDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogPrestamoComponent, { data: { employeeId: this.employeeId } });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) this.cargarPrestamos();
+    });
+  }
+
+  editarPrestamo(prestamo: ILoan): void {
+    if (loanTieneCuotasCobradas(prestamo)) return;
+    const dialogRef = this.dialog.open(DialogPrestamoComponent, { data: { employeeId: this.employeeId, loan: prestamo } });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) this.cargarPrestamos();
+    });
+  }
+
+  eliminarPrestamo(prestamo: ILoan): void {
+    if (loanTieneCuotasCobradas(prestamo) || this.prestamosEliminando.has(prestamo.id)) return;
+    const tipo = getLoanTypeLabel(prestamo.loanType).toLowerCase();
+    if (!confirm(`¿Eliminar el ${tipo} por ${prestamo.amount.toFixed(2)}? Se eliminarán también sus cuotas pendientes.`)) return;
+
+    this.prestamosEliminando.add(prestamo.id);
+    this.loansService.eliminarPrestamo(prestamo.id).subscribe({
+      next: () => {
+        this.prestamosEliminando.delete(prestamo.id);
+        if (this.prestamoExpandido?.id === prestamo.id) this.prestamoExpandido = null;
+        this.notificationService.showSuccess('Eliminado correctamente.');
+        this.cargarPrestamos();
+      },
+      error: (err) => {
+        this.prestamosEliminando.delete(prestamo.id);
+        this.notificationService.showError(extractErrorMessage(err, 'No se pudo eliminar.'));
+      }
     });
   }
 

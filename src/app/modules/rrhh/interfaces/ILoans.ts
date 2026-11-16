@@ -31,6 +31,11 @@ export interface ILoanCreateRequest {
   installmentCount: number;
 }
 
+export interface ILoanDeleteResponse {
+  id: number;
+  deletedInstallments: number;
+}
+
 export interface ILoanListFilters {
   employeeId?: number;
   loanType?: number;

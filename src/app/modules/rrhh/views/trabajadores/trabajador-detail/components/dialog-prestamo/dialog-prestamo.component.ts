@@ -40,7 +40,8 @@ const MAX_CUOTAS = 48;
 })
 export class DialogPrestamoComponent {
 
-  readonly data = inject<{ employeeId: number }>(MAT_DIALOG_DATA);
+  /** Con `loan` el diálogo abre en modo edición (solo préstamos/adelantos sin cuotas cobradas). */
+  readonly data = inject<{ employeeId: number; loan?: ILoan }>(MAT_DIALOG_DATA);
   private loansService = inject(LoansService);
   private notificationService = inject(NotificationsSystemService);
 
@@ -72,6 +73,43 @@ export class DialogPrestamoComponent {
         cuotas.enable();
       }
     });
+
+    // Modo edición: se precarga el préstamo; el tipo no se puede cambiar.
+    const loan = this.data.loan;
+    if (loan) {
+      this.form.patchValue({
+        loanType: loan.loanType,
+        loanDate: this.fechaLocal(loan.loanDate),
+        amount: loan.amount,
+        installmentCount: loan.installmentCount,
+        observation: loan.observation ?? '',
+      });
+      this.form.get('loanType')!.disable();
+    }
+  }
+
+  /**
+   * La fecha llega del backend sin zona horaria ("2026-11-16T05:00:00"); `new Date()` la tomaría como hora local
+   * y cada edición la desplazaría. Se construye la fecha local solo con la parte de fecha.
+   */
+  private fechaLocal(valor: string): Date {
+    const [y, m, d] = valor.substring(0, 10).split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  /**
+   * Envía solo la fecha local ("yyyy-MM-dd"). Con `toISOString()` un registro hecho de noche
+   * (después de las 19:00 en Perú, UTC-5) se convertía al día siguiente en UTC.
+   */
+  private fechaIso(fecha: Date): string {
+    const y = fecha.getFullYear();
+    const m = String(fecha.getMonth() + 1).padStart(2, '0');
+    const d = String(fecha.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  get esEdicion(): boolean {
+    return !!this.data.loan;
   }
 
   readonly maxCuotas = MAX_CUOTAS;
@@ -96,20 +134,22 @@ export class DialogPrestamoComponent {
     this.loadingSave = true;
     const value = this.form.getRawValue();
     const req: ILoanCreateRequest = {
-      loanDate: (value.loanDate as Date).toISOString(),
+      loanDate: this.fechaIso(value.loanDate as Date),
       amount: value.amount,
       observation: value.observation || null,
       installmentCount: value.loanType === LoanType.SalaryAdvance ? 1 : Number(value.installmentCount),
     };
 
-    const request$: Observable<IResponseGeneric<ILoan>> = value.loanType === LoanType.SalaryAdvance
-      ? this.loansService.crearAdelanto(this.data.employeeId, req)
-      : this.loansService.crearPrestamo(this.data.employeeId, req);
+    const request$: Observable<IResponseGeneric<ILoan>> = this.data.loan
+      ? this.loansService.editarPrestamo(this.data.loan.id, req)
+      : value.loanType === LoanType.SalaryAdvance
+        ? this.loansService.crearAdelanto(this.data.employeeId, req)
+        : this.loansService.crearPrestamo(this.data.employeeId, req);
 
     request$.subscribe({
       next: () => {
         this.loadingSave = false;
-        this.notificationService.showSuccess('Registrado correctamente.');
+        this.notificationService.showSuccess(this.esEdicion ? 'Actualizado correctamente.' : 'Registrado correctamente.');
         this.dialogRef.close(true);
       },
       error: (err) => {
@@ -118,7 +158,7 @@ export class DialogPrestamoComponent {
         if (validation.length > 0) {
           this.validationErrors = validation;
         } else {
-          this.notificationService.showError(extractErrorMessage(err, 'No se pudo registrar.'));
+          this.notificationService.showError(extractErrorMessage(err, this.esEdicion ? 'No se pudo actualizar.' : 'No se pudo registrar.'));
         }
       }
     });

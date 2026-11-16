@@ -219,6 +219,12 @@
     cursor: pointer;
 }
 
+.col-acciones {
+    width: 96px;
+    white-space: nowrap;
+    cursor: default;
+}
+
 .fila-cronograma {
     height: 0 !important;
 }

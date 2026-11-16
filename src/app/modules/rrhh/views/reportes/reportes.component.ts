@@ -232,8 +232,16 @@ export class ReportesComponent implements OnInit {
     switch (col.type) {
       case 'currency':
         return `S/ ${Number(value).toFixed(2)}`;
-      case 'date':
-        return new Date(value as string).toLocaleDateString('es-PE');
+      case 'date': {
+        // Las fechas de solo día ("yyyy-MM-dd", DateOnly en el backend) JS las interpreta como medianoche UTC,
+        // lo que en Perú (UTC-5) mostraría el día anterior. Se construyen como fecha local.
+        const texto = value as string;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+          const [y, m, d] = texto.split('-').map(Number);
+          return new Date(y, m - 1, d).toLocaleDateString('es-PE');
+        }
+        return new Date(texto).toLocaleDateString('es-PE');
+      }
       case 'bool':
         return value ? 'Sí' : 'No';
       default:
