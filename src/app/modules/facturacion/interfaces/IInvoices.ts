@@ -128,6 +128,7 @@ export interface IPaymentCreateRequest {
   amount: number;
   operationNumber?: string;
   observation?: string;
+  paymentDate?: string;
 }
 
 export interface IInvoiceStoreDetailLine {

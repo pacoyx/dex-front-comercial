@@ -7,18 +7,26 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { CatalogosService } from '../../../../../services/catalogos.service';
 import { InvoicesService } from '../../../../../services/invoices.service';
 import { IPaymentMethod } from '../../../../../interfaces/ICatalogos';
 import { extractErrorMessage } from '../../../../../shared/http-error.util';
 import { NotificationsSystemService } from '../../../../../../../core/services/notifications-system.service';
+import { CustomDateAdapter } from '../../../../../../../core/configGlobal/custom-date-adapter';
+import { CUSTOM_DATE_FORMATS } from '../../../../../../../core/configGlobal/custom-date-formats';
 
 @Component({
   selector: 'app-dialog-registrar-pago',
   standalone: true,
   imports: [
     MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, MatIconModule, CurrencyPipe,
-    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule
+    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
   ],
   templateUrl: './dialog-registrar-pago.component.html',
   styleUrl: './dialog-registrar-pago.component.css'
@@ -32,6 +40,7 @@ export class DialogRegistrarPagoComponent implements OnInit {
   paymentMethods: IPaymentMethod[] = [];
   frmPago: FormGroup;
   saving = false;
+  readonly maxDate = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +49,7 @@ export class DialogRegistrarPagoComponent implements OnInit {
     this.frmPago = this.fb.group({
       paymentMethodId: [null, Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01), Validators.max(this.data.balance)]],
+      paymentDate: [new Date(), Validators.required],
       operationNumber: [''],
       observation: [''],
     });
@@ -62,8 +72,11 @@ export class DialogRegistrarPagoComponent implements OnInit {
       return;
     }
 
+    const formValue = this.frmPago.value;
+    const payload = { ...formValue, paymentDate: this.buildPaymentDate(formValue.paymentDate) };
+
     this.saving = true;
-    this.invoicesService.registrarPago(this.data.invoiceId, this.frmPago.value).subscribe({
+    this.invoicesService.registrarPago(this.data.invoiceId, payload).subscribe({
       next: () => {
         this.saving = false;
         this.notificationService.showSuccess('Pago registrado correctamente.');
@@ -74,6 +87,14 @@ export class DialogRegistrarPagoComponent implements OnInit {
         this.notificationService.showError(extractErrorMessage(err, 'No se pudo registrar el pago.'));
       }
     });
+  }
+
+  /** Toma año/mes/día de la fecha elegida y la hora local actual, y la envía en ISO (UTC). */
+  private buildPaymentDate(selected: Date): string {
+    const now = new Date();
+    const date = new Date(selected);
+    date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    return date.toISOString();
   }
 
 }

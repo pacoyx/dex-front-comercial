@@ -7,18 +7,26 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { PurchaseSettingServiceService } from '../../../../../services/purchase-setting-service.service';
 import { PurchaseOperationsService } from '../../../../../services/purchase-operations.service';
 import { IPaymentMethod } from '../../../../../interfaces/IMaestros';
 import { extractErrorMessage, extractValidationErrors } from '../../../../../shared/http-error.util';
 import { NotificationsSystemService } from '../../../../../../../core/services/notifications-system.service';
+import { CustomDateAdapter } from '../../../../../../../core/configGlobal/custom-date-adapter';
+import { CUSTOM_DATE_FORMATS } from '../../../../../../../core/configGlobal/custom-date-formats';
 
 @Component({
   selector: 'app-dialog-registrar-pago-compra',
   standalone: true,
   imports: [
     MatDialogActions, MatDialogTitle, MatDialogContent, MatButtonModule, MatIconModule, CurrencyPipe,
-    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule
+    ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatDatepickerModule
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: CustomDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
   ],
   templateUrl: './dialog-registrar-pago-compra.component.html',
   styleUrl: './dialog-registrar-pago-compra.component.css'
@@ -32,6 +40,7 @@ export class DialogRegistrarPagoCompraComponent implements OnInit {
   paymentMethods: IPaymentMethod[] = [];
   frmPago: FormGroup;
   saving = false;
+  readonly maxDate = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -40,6 +49,7 @@ export class DialogRegistrarPagoCompraComponent implements OnInit {
     this.frmPago = this.fb.group({
       paymentMethodId: [null, Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01), Validators.max(this.data.balance)]],
+      paymentDate: [new Date(), Validators.required],
       operationNumber: [''],
       observation: [''],
     });
@@ -62,8 +72,11 @@ export class DialogRegistrarPagoCompraComponent implements OnInit {
       return;
     }
 
+    const formValue = this.frmPago.value;
+    const payload = { ...formValue, paymentDate: this.buildPaymentDate(formValue.paymentDate) };
+
     this.saving = true;
-    this.purchaseOperationsService.registrarPago(this.data.purchaseInvoiceId, this.frmPago.value).subscribe({
+    this.purchaseOperationsService.registrarPago(this.data.purchaseInvoiceId, payload).subscribe({
       next: () => {
         this.saving = false;
         this.notificationService.showSuccess('Pago registrado correctamente.');
@@ -79,6 +92,14 @@ export class DialogRegistrarPagoCompraComponent implements OnInit {
         }
       }
     });
+  }
+
+  /** Toma año/mes/día de la fecha elegida y la hora local actual, y la envía en ISO (UTC). */
+  private buildPaymentDate(selected: Date): string {
+    const now = new Date();
+    const date = new Date(selected);
+    date.setHours(now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    return date.toISOString();
   }
 
 }

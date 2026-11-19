@@ -86,6 +86,7 @@ export interface IRegisterPurchasePaymentRequest {
     amount: number;
     operationNumber?: string | null;
     observation?: string | null;
+    paymentDate?: string;
 }
 
 export interface IPurchaseInvoiceCancelResponse {
