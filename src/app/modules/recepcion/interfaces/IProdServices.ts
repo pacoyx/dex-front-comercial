@@ -9,35 +9,38 @@ export interface IGetProdServicesPaginadoResponse {
     servicios: IResponseProdServices[];
 }
 
+/** Flag S/N usado por el backend en isPeso / isLavado. */
+export type FlagSN = 'S' | 'N';
+
+/** Estado del servicio: A = Activo, I = Inactivo. */
+export type EstadoProdService = 'A' | 'I';
+
+/** Servicio tal como lo devuelve el listado del backend. */
 export interface IResponseProdServices {
     id: number;
     name: string;
     description: string;
-    category: string;
     price: number;
     status: string;
-    idPeso: number;
-    idLavado: number;
+    catServiceId: number | null;
+    isPeso: string | null;
+    isLavado: string | null;
 }
 
-export interface IActuaizarProdServicesRequest {
-    name: string;
-    description: string;
-    category: string;
-    price: number;
-    status: string;
-    idPeso: number;
-    idLavado: number;
-}
-
+/** Body del POST de creación (backend: strings no nulos; name max 100, description max 250). */
 export interface ICrearProdServicesRequest {
     name: string;
     description: string;
-    category: string;
     price: number;
-    status: string;
-    idPeso: number;
-    idLavado: number;
+    status: EstadoProdService;
+    catServiceId: number;
+    isPeso: FlagSN;
+    isLavado: FlagSN;
+}
+
+/** Body del PUT /{id} de actualización: mismos campos de creación + id. */
+export interface IActuaizarProdServicesRequest extends ICrearProdServicesRequest {
+    id: number;
 }
 
 

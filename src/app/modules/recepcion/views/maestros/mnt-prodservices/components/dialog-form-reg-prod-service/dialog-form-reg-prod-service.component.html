@@ -1,87 +1,109 @@
-<h2 mat-dialog-title>
-    <mat-icon>edit_note</mat-icon> {{titulo}}
-</h2>
-<mat-dialog-content>
-    <form [formGroup]="servicioForm">
-        <div style="padding: 5px; display: flex; flex-direction: column;">
-            <mat-form-field appearance="outline">
+<form [formGroup]="servicioForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <div class="dialog-header">
+        <div class="dialog-header__title">
+            <mat-icon>{{ tituloIcono }}</mat-icon>
+            <h2 mat-dialog-title>{{ titulo }}</h2>
+        </div>
+    </div>
+
+    <mat-dialog-content class="dialog-content">
+        <div class="form-grid">
+
+            <mat-form-field appearance="outline" class="field--full">
                 <mat-label>Nombre</mat-label>
-                <input matInput formControlName="name">
+                <input matInput formControlName="name" [maxlength]="nameMaxLength" cdkFocusInitial autocomplete="off">
+                @if (servicioForm.controls.name.hasError('required')) {
+                <mat-error>El nombre es obligatorio.</mat-error>
+                } @else if (servicioForm.controls.name.hasError('pattern')) {
+                <mat-error>El nombre no puede contener solo espacios.</mat-error>
+                } @else if (servicioForm.controls.name.hasError('maxlength')) {
+                <mat-error>El nombre no puede superar {{ nameMaxLength }} caracteres.</mat-error>
+                }
             </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Description</mat-label>
-                <input matInput formControlName="description">
+
+            <mat-form-field appearance="outline" class="field--full">
+                <mat-label>Descripción</mat-label>
+                <textarea matInput formControlName="description" rows="2" [maxlength]="descriptionMaxLength"></textarea>
+                <mat-hint>Si la dejas vacía se usará el nombre.</mat-hint>
+                <mat-hint align="end">{{ servicioForm.controls.description.value.length || 0 }} / {{ descriptionMaxLength }}</mat-hint>
+                @if (servicioForm.controls.description.hasError('maxlength')) {
+                <mat-error>La descripción no puede superar {{ descriptionMaxLength }} caracteres.</mat-error>
+                }
             </mat-form-field>
+
             <mat-form-field appearance="outline">
                 <mat-label>Precio</mat-label>
-                <input matInput formControlName="price" type="number">
+                <span matTextPrefix>S/&nbsp;</span>
+                <input matInput formControlName="price" type="number" min="0" step="0.01" placeholder="0.00">
+                @if (servicioForm.controls.price.hasError('required')) {
+                <mat-error>El precio es obligatorio.</mat-error>
+                } @else if (servicioForm.controls.price.hasError('min')) {
+                <mat-error>El precio no puede ser negativo.</mat-error>
+                } @else if (servicioForm.controls.price.hasError('pattern')) {
+                <mat-error>El precio admite como máximo 2 decimales.</mat-error>
+                }
             </mat-form-field>
-            
-            <div style="display: flex; justify-content: space-between;">
-                <mat-form-field appearance="outline">
-                    <mat-label>Categoria</mat-label>
-                    <mat-select formControlName="catServiceId">
-                        @for (service of services; track $index) {
-                            <mat-option [value]="service.id">{{service.name}}</mat-option>
-                        }
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width: 120px;">
-                    <mat-label>Estado</mat-label>
-                    <mat-select formControlName="status">
-                        <mat-option value="A">Activo</mat-option>
-                        <mat-option value="I">Inactivo</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            
-            
-            <div style="display: flex;justify-content: space-between;">
-                
-                <mat-form-field appearance="outline" style="width: 150px;">
-                    <mat-label>Es Peso?</mat-label>
-                    <mat-select formControlName="isPeso">
-                        <mat-option value="S">Sí</mat-option>
-                        <mat-option value="N">No</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="width: 150px;">
-                    <mat-label>Es Lavado?</mat-label>
-                    <mat-select formControlName="isLavado">
-                        <mat-option value="S">Sí</mat-option>
-                        <mat-option value="N">No</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Categoría</mat-label>
+                <mat-select formControlName="catServiceId">
+                    @for (categoria of categorias; track categoria.id) {
+                    <mat-option [value]="categoria.id">{{ categoria.name }}</mat-option>
+                    }
+                </mat-select>
+                @if (servicioForm.controls.catServiceId.hasError('required')) {
+                <mat-error>Selecciona una categoría.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>¿Es por peso?</mat-label>
+                <mat-select formControlName="isPeso">
+                    <mat-option value="S">Sí</mat-option>
+                    <mat-option value="N">No</mat-option>
+                </mat-select>
+                @if (servicioForm.controls.isPeso.hasError('required')) {
+                <mat-error>Indica si es por peso.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>¿Es lavado?</mat-label>
+                <mat-select formControlName="isLavado">
+                    <mat-option value="S">Sí</mat-option>
+                    <mat-option value="N">No</mat-option>
+                </mat-select>
+                @if (servicioForm.controls.isLavado.hasError('required')) {
+                <mat-error>Indica si es lavado.</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="status">
+                    <mat-option value="A">Activo</mat-option>
+                    <mat-option value="I">Inactivo</mat-option>
+                </mat-select>
+                @if (servicioForm.controls.status.hasError('required')) {
+                <mat-error>Selecciona un estado.</mat-error>
+                }
+            </mat-form-field>
+
         </div>
+    </mat-dialog-content>
 
-    </form>
-</mat-dialog-content>
+    <mat-dialog-actions align="end" class="dialog-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="loadingSave">Cancelar</button>
 
-<mat-dialog-actions style="display: flex; justify-content: space-evenly;">
+        <button mat-flat-button color="primary" type="submit" [disabled]="loadingSave">
+            @if (loadingSave) {
+            <app-loading class="btn-spinner" aria-hidden="true"></app-loading>
+            } @else {
+            <mat-icon>save</mat-icon>
+            }
+            {{ loadingSave ? 'Grabando...' : 'Grabar' }}
+        </button>
+    </mat-dialog-actions>
 
-    <button mat-fab extended (click)="onCancel()">
-        <mat-icon>cancel</mat-icon>
-        Cancelar
-    </button>
-
-    <!-- 
-    <button mat-button (click)="onSubmit()" [disabled]="clienteForm.invalid">Guardar</button> -->
-
-    @if(loadingSave){
-    <button mat-fab extended>
-        <div style="display: flex; gap: 5px;">
-            <app-loading></app-loading>
-            Grabando...
-        </div>
-    </button>
-    }
-
-    @if(!loadingSave){
-    <button mat-fab extended (click)="onSubmit()">
-        <mat-icon>save</mat-icon>
-        Grabar
-    </button>
-    }
-
-</mat-dialog-actions>
+</form>
